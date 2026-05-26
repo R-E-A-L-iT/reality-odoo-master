@@ -520,6 +520,11 @@
     flex: 0 0 100% !important;
 }
 
+/* ── Video scroll: sticky full-viewport panel ─────────────────────────────
+   Row layout: text panel on one side, video on the other.
+   Section 1 (index 0): text LEFT, video RIGHT.
+   Section 2 (index 1): video LEFT, text RIGHT (row-reverse).
+   ─────────────────────────────────────────────────────────────────────── */
 .o_omnigo_video_scroll_inner {
     position: sticky;
     top: 0;
@@ -530,58 +535,98 @@
     height: 100vh;
     background: #ffffff;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;       /* side-by-side split */
+    align-items: stretch;      /* both panels fill full height */
+    justify-content: flex-start;
     overflow: hidden;
     padding: 0 !important;
     transform: translateZ(0);
 }
 
+/* Section 2: flip so video is on the left, text on the right */
+.o_omnigo_video_scroll_section[data-video-index="1"] .o_omnigo_video_scroll_inner {
+    flex-direction: row-reverse;
+}
+
+/* ── Text panel ──────────────────────────────────────────────────────────── */
 .o_omnigo_video_scroll_heading {
-    display: none !important;
+    flex: 0 0 42%;
+    max-width: 42%;
+    display: flex !important;     /* override any Odoo hide */
+    flex-direction: column;
+    justify-content: center;
+    padding: 72px clamp(32px, 5vw, 80px);
+    background: #ffffff;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .o_omnigo_video_scroll_title {
     margin: 0;
     color: #000000;
     font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
-    font-size: clamp(34px, 5vw, 72px);
-    line-height: 1.02;
+    font-size: clamp(30px, 3.8vw, 60px);
+    line-height: 1.05;
     font-weight: 900;
     letter-spacing: -0.03em;
 }
 
-.o_omnigo_video_scroll_subtitle {
-    margin: 18px auto 0 auto;
-    max-width: 760px;
-    color: #222222;
-    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
-    font-size: clamp(17px, 1.7vw, 24px);
-    line-height: 1.45;
-    font-weight: 400;
+/* Red accent line between title and subtitle */
+.o_omnigo_video_scroll_title::after {
+    content: "";
+    display: block;
+    width: 52px;
+    height: 4px;
+    background: #c40000;
+    border-radius: 999px;
+    margin-top: 20px;
 }
 
+.o_omnigo_video_scroll_subtitle {
+    margin: 16px 0 0;
+    color: #333333;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(15px, 1.35vw, 20px);
+    line-height: 1.65;
+    font-weight: 400;
+    max-width: 520px;
+}
+
+/* Tablet: narrow the text panel slightly and tighten padding */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .o_omnigo_video_scroll_heading {
+        flex: 0 0 46%;
+        max-width: 46%;
+        padding: 48px clamp(24px, 3.5vw, 56px);
+    }
+
+    .o_omnigo_video_scroll_video_wrap {
+        flex: 0 0 54%;
+        max-width: 54%;
+        width: 54%;
+    }
+}
+
+/* ── Video panel ─────────────────────────────────────────────────────────── */
 .o_omnigo_video_scroll_video_wrap {
-    width: 100%;
-    flex: 1 1 100%;
+    flex: 0 0 58%;
+    max-width: 58%;
+    width: 58%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background: #ffffff;
+    background: #000000;   /* letterbox colour when aspect ratio doesn't match */
     position: relative;
 }
 
-/* Video fills the full width; height follows the natural aspect ratio and is
-   centred vertically by the flex wrap. Any remaining space is white (blends). */
+/* Video fills the panel height; cover crops rather than letterboxing */
 .o_omnigo_video_scroll_video {
     width: 100%;
-    height: auto;
-    max-height: 100vh;
+    height: 100%;
     display: block;
-    object-fit: unset;
-    background: #ffffff;
+    object-fit: cover;
+    background: #000000;
     border: none;
     vertical-align: top;
 }
@@ -1062,7 +1107,7 @@
 
 /* ─── Mobile improvements ─── */
 
-/* Video scroll: shorter scroll distance + tighter layout on small screens */
+/* Video scroll: stack vertically on mobile — video above, text below */
 @media (max-width: 768px) {
     .o_three_scroll_section {
         min-height: 560vh;
@@ -1072,22 +1117,49 @@
         min-height: 260vh;
     }
 
-    .o_omnigo_video_scroll_inner {
+    /* Stack vertically regardless of which section */
+    .o_omnigo_video_scroll_inner,
+    .o_omnigo_video_scroll_section[data-video-index="1"] .o_omnigo_video_scroll_inner {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
         padding: 0 !important;
         width: 100vw;
         height: 100vh;
-        align-items: center;
-        justify-content: center;
     }
 
+    /* Video on top, takes ~60 % of the height */
     .o_omnigo_video_scroll_video_wrap {
+        flex: 0 0 60%;
+        max-width: 100%;
         width: 100%;
+        order: 1;
     }
 
     .o_omnigo_video_scroll_video {
         width: 100%;
-        height: auto;
-        max-height: 100vh;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Text panel below video, takes remaining height */
+    .o_omnigo_video_scroll_heading {
+        flex: 0 0 40%;
+        max-width: 100%;
+        width: 100%;
+        padding: 24px 24px;
+        order: 2;
+        justify-content: center;
+    }
+
+    .o_omnigo_video_scroll_title {
+        font-size: clamp(22px, 6vw, 36px);
+    }
+
+    .o_omnigo_video_scroll_subtitle {
+        font-size: 14px;
+        line-height: 1.55;
+        margin-top: 12px;
     }
 }
 

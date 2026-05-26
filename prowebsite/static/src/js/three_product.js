@@ -271,11 +271,16 @@ whenReady(async () => {
 
     const omnigoScrollVideo = document.getElementById("omnigo-scroll-video");
 
-    // All video scroll sections — supports multiple on the same page
+    // All video scroll sections — supports multiple on the same page.
+    // Stamp each section with a data-video-index so CSS can alternate the
+    // text-left / text-right split layout without a second query selector.
     const allVideoSections = [];
-    document.querySelectorAll(".o_omnigo_video_scroll_section").forEach(sec => {
+    document.querySelectorAll(".o_omnigo_video_scroll_section").forEach((sec, i) => {
         const vid = sec.querySelector(".o_omnigo_video_scroll_video");
-        if (vid) allVideoSections.push({ sec, vid, seeking: false });
+        if (vid) {
+            sec.dataset.videoIndex = i;
+            allVideoSections.push({ sec, vid, seeking: false });
+        }
     });
 
     if (!bottomModelHost || !scrollHost) {
@@ -1037,77 +1042,32 @@ whenReady(async () => {
     // iOS Safari (which uses the same WebKit engine and has the same video limits).
     const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent);
 
-    // ── Safari path: ping-pong autoplay, no scroll scrubbing ─────────────────
+    // ── Safari path: seamless loop autoplay, no scroll scrubbing ────────────
+    // The videos are already seamless loops, so native `loop` gives flicker-free
+    // repeat without the seek-reliability issues that made ping-pong necessary.
+    // Collapse the section to a normal height so the user scrolls past it naturally.
     if (isSafari && allVideoSections.length > 0) {
         allVideoSections.forEach(entry => {
             const { sec, vid } = entry;
 
             vid.muted = true;
+            vid.loop  = true;
             vid.setAttribute("playsinline", "");
             vid.setAttribute("preload", "auto");
 
-            // Collapse the 520vh scroll-scrub section to a normal viewport height.
-            // The sticky inner becomes a simple full-viewport panel.
-            sec.style.minHeight = "100vh";
-            sec.style.height = "100vh";
+            // Collapse the tall scroll-scrub section to a normal height.
+            // The sticky inner becomes a regular full-viewport panel.
+            sec.style.minHeight = "";
+            sec.style.height    = "auto";
             const inner = sec.querySelector(".o_omnigo_video_scroll_inner");
             if (inner) inner.style.position = "relative";
 
-            // Ping-pong state
-            entry.inView       = false;
-            entry.goingForward = true;
-            entry.rafId        = null;
-            entry.lastRafTime  = null;
-
-            // Backward playback: decrement currentTime each rAF frame until 0,
-            // then switch back to forward. This is reliable on Safari because
-            // seeks are tiny sequential steps (not arbitrary jumps like scrubbing).
-            function stepBackward(now) {
-                const dt = entry.lastRafTime !== null
-                    ? (now - entry.lastRafTime) / 1000
-                    : 1 / 60;
-                entry.lastRafTime = now;
-
-                const next = vid.currentTime - dt;
-                if (next <= 0) {
-                    // Reached the start — go forward again
-                    vid.currentTime = 0;
-                    entry.goingForward = true;
-                    entry.rafId = null;
-                    entry.lastRafTime = null;
-                    if (entry.inView) vid.play().catch(() => {});
-                } else {
-                    vid.currentTime = next;
-                    entry.rafId = requestAnimationFrame(stepBackward);
-                }
-            }
-
-            // When native forward playback ends, switch to backward rAF loop
-            vid.addEventListener("ended", () => {
-                entry.goingForward = false;
-                entry.lastRafTime  = null;
-                if (entry.inView) {
-                    entry.rafId = requestAnimationFrame(stepBackward);
-                }
-            }, { passive: true });
-
-            // IntersectionObserver drives play / pause based on visibility
+            // Play when in view, pause when hidden.
             const observer = new IntersectionObserver(([obs]) => {
-                entry.inView = obs.isIntersecting;
                 if (obs.isIntersecting) {
-                    if (entry.goingForward) {
-                        vid.play().catch(() => {});
-                    } else if (entry.rafId === null) {
-                        entry.lastRafTime = null;
-                        entry.rafId = requestAnimationFrame(stepBackward);
-                    }
+                    vid.play().catch(() => {});
                 } else {
-                    // Leaving viewport — pause everything
                     vid.pause();
-                    if (entry.rafId !== null) {
-                        cancelAnimationFrame(entry.rafId);
-                        entry.rafId = null;
-                    }
                 }
             }, { threshold: 0.15 });
 
