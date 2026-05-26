@@ -661,19 +661,16 @@ whenReady(async () => {
                 if (child.isMesh) meshBox.expandByObject(child);
             });
             const center = meshBox.isEmpty()
-                ? new THREE.Vector3()
+                ? new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3())
                 : meshBox.getCenter(new THREE.Vector3());
 
-            // Use a pivot group to carry the centering offset independently of obj.
-            // If the GLB animation has position tracks on the scene root they target
-            // obj, not pivot — so the rotation axis stays locked to the model centre
-            // even while the animation is playing.
-            const pivot = new THREE.Group();
-            pivot.position.set(-center.x, -center.y, -center.z);
-            pivot.add(obj);
+            // Shift the model so its geometric centre sits at the origin.
+            // This keeps the rotation axis centred on the model regardless of
+            // how the GLB positions its scene root.
+            obj.position.set(-center.x, -center.y, -center.z);
 
             bottomWrapper = new THREE.Group();
-            bottomWrapper.add(pivot);
+            bottomWrapper.add(obj);
             bottomWrapper.position.set(0, 0, 0);
             bottomScene.add(bottomWrapper);
 
