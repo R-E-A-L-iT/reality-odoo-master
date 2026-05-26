@@ -1981,8 +1981,15 @@
 }
 
 /* ── Video Gallery Section ───────────────────────────────────────────────── */
-.o_omnigo_vgallery_section {
-    background: #ffffff;
+/* Force white bg + dark text regardless of the Odoo page colour scheme     */
+/* (surrounding sections use o_cc5 dark theme which cascades in without this) */
+.o_omnigo_vgallery_section,
+.o_omnigo_vgallery_section.o_cc,
+.o_omnigo_vgallery_section.o_cc1,
+.o_omnigo_vgallery_section.o_cc5 {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #111111 !important;
     padding: 80px 0 88px;
     border-top: 2px solid #d8d8d8;
     border-bottom: 2px solid #d8d8d8;
@@ -2007,7 +2014,7 @@
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: #c40000;
+    color: #c40000 !important;
     margin-bottom: 12px;
 }
 
@@ -2015,7 +2022,7 @@
     font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(24px, 3vw, 36px);
     font-weight: 700;
-    color: #111;
+    color: #111111 !important;
     margin: 0;
     line-height: 1.15;
 }
@@ -2025,7 +2032,7 @@
     display: block;
     width: 48px;
     height: 4px;
-    background: #c40000;
+    background: #c40000 !important;
     border-radius: 999px;
     margin: 18px auto 0;
 }
@@ -2119,11 +2126,12 @@
 .o_omnigo_vgallery_caption {
     font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
     font-size: 13px;
-    color: #888;
+    color: #888888 !important;
     text-align: center;
     margin: 0;
     padding: 12px 20px 14px;
-    background: #fafafa;
+    background: #fafafa !important;
+    background-color: #fafafa !important;
     border-top: 1px solid #e8e8e8;
     letter-spacing: 0.01em;
 }
@@ -2168,7 +2176,7 @@
 .o_omnigo_vgallery_counter {
     font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
     font-size: 11px;
-    color: #bbb;
+    color: #bbbbbb !important;
     letter-spacing: 0.08em;
     user-select: none;
     min-width: 36px;
