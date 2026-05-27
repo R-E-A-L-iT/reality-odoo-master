@@ -385,7 +385,7 @@ whenReady(async () => {
         return;
     }
 
-    const adapterModelPath = "/prowebsite/static/src/models/BLK2GO_adapter_V04.glb";
+    const adapterModelPath = "/prowebsite/static/src/models/BLK2GO_Adapter_V02B.glb";
     const splitModelPath   = "/prowebsite/static/src/models/BLK2GO_with_Scanner.glb";
 
     function clamp(value, min, max) {
