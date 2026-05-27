@@ -1417,11 +1417,17 @@ class SaleOrderTemplateHandler(models.Model):
     _inherit = "sale.order"
 
     def _compute_line_data_for_template_change(self, line):
-        return {
+        data = {
             'display_type': line.display_type,
             'name': line.name,
             'state': 'draft',
         }
+        if line.product_id:
+            kit_desc = line.product_id.get_kit_description_text()
+            if kit_desc:
+                data['ba_kit_description'] = kit_desc
+                data['is_kit_product'] = True
+        return data
 
     @api.model
     def _get_customer_lead(self, product_tmpl_id):
