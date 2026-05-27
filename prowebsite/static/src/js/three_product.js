@@ -385,6 +385,7 @@ whenReady(async () => {
         return;
     }
 
+    // note so I can push a new commit
     const adapterModelPath = "/prowebsite/static/src/models/BLK2GO_Adapter_V02B.glb";
     const splitModelPath   = "/prowebsite/static/src/models/BLK2GO_with_Scanner.glb";
 
