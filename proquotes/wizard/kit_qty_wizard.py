@@ -34,7 +34,7 @@ class KitQtyWizard(models.TransientModel):
             return res
 
         sale_line = self.env['sale.order.line'].browse(sale_line_id)
-        bom = self.env['mrp.bom'].search([
+        bom = self.env['mrp.bom'].sudo().search([
             ('product_tmpl_id', '=', sale_line.product_id.product_tmpl_id.id),
             ('type', '=', 'phantom'),
         ], limit=1)
@@ -59,8 +59,8 @@ class KitQtyWizard(models.TransientModel):
                         current_qtys[rest] = qty
 
         wizard_lines = []
-        for bom_line in bom.bom_line_ids:
-            product = bom_line.product_id
+        for bom_line in bom.sudo().bom_line_ids:
+            product = bom_line.product_id.sudo()
             sku = product.product_tmpl_id.sku or ''
             qty = current_qtys.get(sku) or current_qtys.get(product.name) or bom_line.product_qty
             wizard_lines.append((0, 0, {
