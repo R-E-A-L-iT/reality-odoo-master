@@ -105,7 +105,7 @@ class SaleOrderLine(models.Model):
             if not line.product_id:
                 line.is_kit_product = False
                 continue
-            bom = self.env['mrp.bom'].search([
+            bom = self.env['mrp.bom'].sudo().search([
                 ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),
                 ('type', '=', 'phantom'),
             ], limit=1)
