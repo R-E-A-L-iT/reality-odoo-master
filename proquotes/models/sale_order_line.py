@@ -93,7 +93,23 @@ class SaleOrderLine(models.Model):
         help='Auto-generated kit component list for this quote line. Edit via the "Edit Kit Qty" button.',
     )
 
-    is_kit_product = fields.Boolean(string='Is Kit Product', default=False)
+    is_kit_product = fields.Boolean(
+        string='Is Kit Product',
+        compute='_compute_is_kit_product',
+        store=True,
+    )
+
+    @api.depends('product_id')
+    def _compute_is_kit_product(self):
+        for line in self:
+            if not line.product_id:
+                line.is_kit_product = False
+                continue
+            bom = self.env['mrp.bom'].search([
+                ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),
+                ('type', '=', 'phantom'),
+            ], limit=1)
+            line.is_kit_product = bool(bom)
 
     def action_open_kit_qty_wizard(self):
         return {
@@ -163,9 +179,7 @@ class SaleOrderLine(models.Model):
                     line.price_unit = line.product_id.list_price
                 else:
                     line.price_unit = line.product_id.lst_price
-                kit_desc = line.product_id.get_kit_description_text()
-                line.ba_kit_description = kit_desc or False
-                line.is_kit_product = bool(kit_desc)
+                line.ba_kit_description = line.product_id.get_kit_description_text() or False
             if line.order_id and line.order_id.sale_order_template_id.name.lower() == 'sales blank':
                 line.is_selected = True
             else:

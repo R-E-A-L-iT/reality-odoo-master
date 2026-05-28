@@ -1426,7 +1426,6 @@ class SaleOrderTemplateHandler(models.Model):
             kit_desc = line.product_id.get_kit_description_text()
             if kit_desc:
                 data['ba_kit_description'] = kit_desc
-                data['is_kit_product'] = True
         return data
 
     @api.model
