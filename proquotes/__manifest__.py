@@ -30,6 +30,7 @@
         "purchase",
         "crm",
         "website_crm",
+        "sale_renting",
     ],
     "assets": {
         "web.assets_common": [
