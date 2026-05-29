@@ -66,16 +66,16 @@ class StockPicking(models.Model):
             user = self.env.user
 
         # Get Prefered Footers
-        result_raw = user.prefered_quote_footers
+        # result_raw = user.prefered_quote_footers
 
-        if result_raw != False:
-            result = []
-            for item in result_raw:
-                # Verify footers are applicable for company
-                if company in item.company_ids or len(item.company_ids) == 0:
-                    result.append(item)
-            if len(result) != 0:
-                return result[-1]
+        # if result_raw != False:
+        #     result = []
+        #     for item in result_raw:
+        #         # Verify footers are applicable for company
+        #         if company in item.company_ids or len(item.company_ids) == 0:
+        #             result.append(item)
+        #     if len(result) != 0:
+        #         return result[-1]
 
         # Check for default footer that matches company
         defaults = self.env["header.footer"].search(
