@@ -26,6 +26,7 @@ from . import sale_order_template_line
 from . import sale_order_template
 from . import sale_order
 from . import sale_renting
+from . import rental_schedule
 from . import stock_lot
 from . import stock_picking
 from . import res_config_extend
