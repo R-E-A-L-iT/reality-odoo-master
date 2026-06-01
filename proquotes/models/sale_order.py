@@ -444,6 +444,36 @@ class order(models.Model):
                 vals['pickup_date'] = vals['rental_start_date']
                 break
 
+        # When pricelist changes on a website order, atomically sync company+warehouse
+        # so _check_company() never sees a pricelist/company mismatch.
+        if 'pricelist_id' in vals and not self.env.context.get('skip_company_consistency'):
+            website_orders = self.filtered('website_id')
+            if website_orders:
+                pricelist = self.env['product.pricelist'].browse(vals['pricelist_id'])
+                currency_name = pricelist.currency_id.name if pricelist.currency_id else None
+                if currency_name == 'USD':
+                    target_company = self.env['res.company'].search(
+                        [('name', '=', 'R-E-A-L.iT U.S. Inc.')], limit=1)
+                elif currency_name == 'CAD':
+                    target_company = self.env['res.company'].search(
+                        [('name', '=', 'R-E-A-L.iT Solutions')], limit=1)
+                else:
+                    target_company = None
+
+                if target_company:
+                    warehouse = self.env['stock.warehouse'].sudo().with_company(target_company.id).search(
+                        [('company_id', '=', target_company.id)], limit=1)
+                    vals = dict(vals)
+                    vals['company_id'] = target_company.id
+                    if warehouse:
+                        vals['warehouse_id'] = warehouse.id
+                    _logger.info(
+                        ">>>>>>> Syncing company %s and warehouse %s with pricelist %s",
+                        target_company.name,
+                        warehouse.display_name if warehouse else None,
+                        pricelist.display_name,
+                    )
+
         # Normal write first
         res = super().write(vals)
 
