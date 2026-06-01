@@ -12,6 +12,10 @@
                      which already uses your geo-based logic -->
                 <t t-set="current_pl" t-value="website.sale_get_pricelist()"/>
 
+                <xpath expr="//input[@name='email']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+
                 <!-- Safely pull the currency name -->
                 <t t-set="pl_currency"
                    t-value="current_pl and current_pl.currency_id and current_pl.currency_id.name or None"/>
