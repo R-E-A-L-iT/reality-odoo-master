@@ -2597,7 +2597,7 @@ body {
 }
 
 /* omnigo accessory menu header button */
-#top_menu > li:nth-child(3) > div > section > div > div > div.col-md-6.col-lg.pt16.o_colored_level.o_cc.o_cc4.rounded.shadow.pb0 > p > a {
+#top_menu > li:nth-child(3) > div > section > div > div > div.col-md-6.col-lg.pt16.o_colored_level.rounded.pb4.shadow.o_cc.o_cc4 > p > a {
     background-color: #fff !important;
     color: #000 !important;
     border-color: #dfdfdf !important;
