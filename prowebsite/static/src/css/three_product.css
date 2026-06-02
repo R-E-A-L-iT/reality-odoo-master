@@ -2595,3 +2595,12 @@ body {
         font-size: 26px;
     }
 }
+
+/* omnigo accessory menu header button */
+#top_menu > li:nth-child(3) > div > section > div > div > div.col-md-6.col-lg.pt16.o_colored_level.o_cc.o_cc4.rounded.shadow.pb0 > p > a {
+    background-color: #fff !important;
+    color: #000 !important;
+    border-color: #dfdfdf !important;
+    border-width: 1px !important;
+    width: 100% !important;
+}
