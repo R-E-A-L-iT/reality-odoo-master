@@ -2237,3 +2237,361 @@ body {
         margin-top: 16px;
     }
 }
+
+/* ─── OmniGO promo popup ────────────────────────────────────────────────────── */
+/* position:fixed keeps it viewport-anchored, never affects page flow or scroll */
+.o_omnigo_promo {
+    position: fixed;
+    top: 95px;
+    right: 24px;
+    z-index: 9000;
+    width: 380px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), 0 1px 4px rgba(0, 0, 0, 0.08);
+    color: #111;
+    font-family: inherit;
+    overflow: hidden;
+    animation: omnigo-promo-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.o_omnigo_promo.is-dismissed {
+    animation: omnigo-promo-out 0.3s ease forwards;
+    pointer-events: none;
+}
+
+@keyframes omnigo-promo-in {
+    from { opacity: 0; transform: translateY(-10px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)     scale(1);    }
+}
+
+@keyframes omnigo-promo-out {
+    from { opacity: 1; transform: translateY(0)     scale(1);    }
+    to   { opacity: 0; transform: translateY(-8px)  scale(0.97); }
+}
+
+/* Left image panel */
+.o_omnigo_promo_img_wrap {
+    flex: 0 0 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+}
+
+.o_omnigo_promo_img {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px rgba(224, 0, 0, 0.3));
+    animation: omnigo-promo-float 5s ease-in-out infinite;
+}
+
+@keyframes omnigo-promo-float {
+    0%, 100% { transform: translateY(0);   }
+    50%       { transform: translateY(-5px); }
+}
+
+/* Right text body */
+.o_omnigo_promo_body {
+    flex: 1 1 0;
+    padding: 14px 14px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.o_omnigo_promo_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 7px;
+}
+
+.o_omnigo_promo_badge {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #e00000;
+    background: rgba(224, 0, 0, 0.08);
+    border: 1px solid rgba(224, 0, 0, 0.22);
+    border-radius: 4px;
+    padding: 2px 7px;
+    line-height: 1.5;
+}
+
+.o_omnigo_promo_close {
+    background: none;
+    border: none;
+    color: rgba(0, 0, 0, 0.28);
+    font-size: 17px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0 0 8px;
+    margin: 0;
+    flex-shrink: 0;
+    transition: color 0.15s ease;
+}
+
+.o_omnigo_promo_close:hover {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.o_omnigo_promo_title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #111;
+    margin: 0 0 10px;
+    line-height: 1.25;
+}
+
+.o_omnigo_promo_cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e00000;
+    color: #fff !important;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none !important;
+    border-radius: 6px;
+    padding: 7px 12px;
+    align-self: flex-start;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.o_omnigo_promo_cta:hover {
+    background: #c80000;
+    transform: translateY(-1px);
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+.o_omnigo_promo_cta svg {
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+}
+
+.o_omnigo_promo_cta:hover svg {
+    transform: translateX(2px);
+}
+
+@media (max-width: 767px) {
+    .o_omnigo_promo {
+        top: auto;
+        bottom: 16px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+    }
+}
+
+/* ─── OmniGO rental-kit promo section ──────────────────────────────────────── */
+.o_omnigo_rental_promo {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 72px 0;
+
+    background:
+        radial-gradient(circle at 15% 25%, rgba(255, 100, 100, 0.15), transparent 38%),
+        radial-gradient(circle at 80% 70%, rgba(255, 60,  60,  0.10), transparent 42%),
+        radial-gradient(circle at 50% 50%, rgba(100, 0,   0,   0.20), transparent 55%),
+        linear-gradient(135deg, #2b0000 0%, #4d0000 35%, #7a0000 70%, #520000 100%);
+    background-blend-mode: screen, overlay, soft-light, normal;
+    color: #fff;
+}
+
+/* Diagonal-hatch texture overlay — matches o_three_scroll_section */
+.o_omnigo_rental_promo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.10;
+    background-image:
+        repeating-linear-gradient(
+            45deg,
+            rgba(255,255,255,0.04) 0px,
+            rgba(255,255,255,0.04) 2px,
+            transparent 2px,
+            transparent 7px
+        ),
+        repeating-linear-gradient(
+            -45deg,
+            rgba(255,255,255,0.02) 0px,
+            rgba(255,255,255,0.02) 1px,
+            transparent 1px,
+            transparent 7px
+        );
+}
+
+/* Vignette edges */
+.o_omnigo_rental_promo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,0.45) 100%);
+}
+
+.o_omnigo_rental_promo > .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Layout ── */
+.o_omnigo_rental_promo_inner {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+}
+
+/* Image column */
+.o_omnigo_rental_promo_img_wrap {
+    flex: 0 0 42%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    min-height: 280px;
+}
+
+.o_omnigo_rental_promo_img {
+    width: 85%;
+    max-width: 460px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 12px 40px rgba(0,0,0,0.55)) drop-shadow(0 2px 8px rgba(224,0,0,0.25));
+    animation: omnigo-promo-float 6s ease-in-out infinite;
+}
+
+@keyframes omnigo-promo-float {
+    0%, 100% { transform: translateY(0);    }
+    50%       { transform: translateY(-10px); }
+}
+
+/* Text column */
+.o_omnigo_rental_promo_content {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: left;
+}
+
+.o_omnigo_rental_promo_eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 180, 180, 0.9);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    padding: 3px 10px;
+    margin-bottom: 18px;
+}
+
+.o_omnigo_rental_promo_heading {
+    font-size: clamp(26px, 3.5vw, 42px);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin: 0 0 18px;
+}
+
+.o_omnigo_rental_promo_heading em {
+    font-style: normal;
+    color: #ff6666;
+}
+
+.o_omnigo_rental_promo_body {
+    font-size: 16px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.72);
+    margin: 0 0 32px;
+    max-width: 480px;
+}
+
+.o_omnigo_rental_promo_cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    color: #2b0000 !important;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-decoration: none !important;
+    border-radius: 8px;
+    padding: 13px 26px;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease,
+                box-shadow 0.2s ease;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.3);
+}
+
+.o_omnigo_rental_promo_cta:hover {
+    background: #ffe0e0;
+    color: #1a0000 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+    text-decoration: none !important;
+}
+
+.o_omnigo_rental_promo_cta svg {
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+}
+
+.o_omnigo_rental_promo_cta:hover svg {
+    transform: translateX(3px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+    .o_omnigo_rental_promo_inner {
+        flex-direction: column;
+        gap: 36px;
+        text-align: center;
+    }
+
+    .o_omnigo_rental_promo_img_wrap {
+        width: 70%;
+        max-width: 360px;
+    }
+
+    .o_omnigo_rental_promo_body {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 575px) {
+    .o_omnigo_rental_promo {
+        padding: 52px 0;
+    }
+
+    .o_omnigo_rental_promo_img_wrap {
+        width: 85%;
+    }
+
+    .o_omnigo_rental_promo_heading {
+        font-size: 26px;
+    }
+}

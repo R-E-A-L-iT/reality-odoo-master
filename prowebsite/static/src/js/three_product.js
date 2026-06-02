@@ -1727,3 +1727,16 @@ whenReady(async () => {
         });
     }
 });
+
+/* ─── OmniGO promo popup dismiss ───────────────────────────────────────────── */
+// Use event delegation on document — avoids DOMContentLoaded timing issues
+// (Odoo fires assets after DOMContentLoaded, so that event is already past).
+document.addEventListener("click", function (e) {
+    if (!e.target.closest(".o_omnigo_promo_close")) return;
+    var popup = e.target.closest(".o_omnigo_promo");
+    if (!popup) return;
+    popup.classList.add("is-dismissed");
+    popup.addEventListener("animationend", function () {
+        popup.style.display = "none";
+    }, { once: true });
+});
