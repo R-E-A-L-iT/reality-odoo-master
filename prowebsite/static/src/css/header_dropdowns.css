@@ -1,0 +1,191 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Universal header dropdown panels
+   Applies on ALL pages (normal Odoo header + OmniGO custom header).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Bar container (full-width, fixed below the header) ─────────────────── */
+.o_hdd_bar {
+    position: fixed;
+    /* top is set dynamically by JS (headerEl.offsetHeight) */
+    left: 0;
+    right: 0;
+    z-index: 999;
+    pointer-events: none;
+
+    /* Transparent background so the map image shows cleanly.
+       backdrop-filter still blurs everything behind the bar. */
+    background: transparent;
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Panels: hidden by default ───────────────────────────────────────────── */
+.o_hdd_panel {
+    display: none;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.o_hdd_bar.is-open {
+    pointer-events: auto;
+}
+
+.o_hdd_bar.is-open .o_hdd_panel.is-visible {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Lang panel is flex; override the generic block above */
+.o_hdd_panel[data-panel="lang"] {
+    flex-direction: row;
+    align-items: stretch;
+    min-height: 140px;
+    overflow: hidden;
+}
+
+.o_hdd_bar.is-open .o_hdd_panel[data-panel="lang"].is-visible {
+    display: flex !important;
+}
+
+/* ── Account panel ───────────────────────────────────────────────────────── */
+.o_hdd_account_inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 18px clamp(24px, 5vw, 64px);
+    background: rgba(6, 4, 4, 0.82);
+}
+
+.o_hdd_acct_link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.80);
+    text-decoration: none;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 9px 20px;
+    border-radius: 8px;
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.o_hdd_acct_link:hover {
+    background: rgba(255, 255, 255, 0.10);
+    color: #ffffff;
+}
+
+.o_hdd_acct_link i {
+    font-size: 14px;
+    color: #e00000;
+}
+
+/* ── Language panel ──────────────────────────────────────────────────────── */
+
+/* Map image — left column, bleeds naturally (no object-fit:contain) */
+.o_hdd_lang_map {
+    flex: 0 0 42%;
+    background-image: url("https://cdn.r-e-a-l.it/images/ecommerce/Map.png");
+    background-size: cover;
+    background-position: center 30%;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+/* Fade edge so map blends into the options area */
+.o_hdd_lang_map::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, transparent 60%, rgba(6, 4, 4, 0.82) 100%);
+}
+
+/* Options area — right column; dark fill here, not on the whole bar */
+.o_hdd_lang_options {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 28px clamp(24px, 4vw, 56px);
+    background: rgba(6, 4, 4, 0.82);
+}
+
+/* ── Option columns ──────────────────────────────────────────────────────── */
+.o_hdd_col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.o_hdd_col_divider {
+    width: 1px;
+    align-self: stretch;
+    background: rgba(255, 255, 255, 0.12);
+    margin: 0 32px;
+    flex-shrink: 0;
+}
+
+.o_hdd_col_label {
+    margin: 0;
+    font-family: "Montserrat", sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.o_hdd_col_items {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* ── Pills (language / currency options) ─────────────────────────────────── */
+.o_hdd_pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.75);
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.o_hdd_pill:hover {
+    border-color: rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+.o_hdd_pill.is-active {
+    border-color: #e00000;
+    background: rgba(224, 0, 0, 0.18);
+    color: #ffffff;
+}
+
+.o_hdd_loading {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 18px;
+}
+
+/* ── Mobile: hide entirely ───────────────────────────────────────────────── */
+@media (max-width: 767px) {
+    .o_hdd_bar {
+        display: none;
+    }
+}
