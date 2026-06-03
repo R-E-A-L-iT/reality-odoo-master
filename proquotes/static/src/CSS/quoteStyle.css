@@ -380,6 +380,16 @@ img.quoteFooterContactImage {
 	padding-bottom: 1.6rem !important;
 }
 
+/* Section fold rows — dark enough that the white circle icon has contrast */
+tr.quoteLineRowSection {
+	background-color: #aaaaaa !important;
+	color: #fff !important;
+}
+
+tr.quoteLineRowSection * {
+	color: #fff !important;
+}
+
 .cHead {
 	display: block;
 	padding: 0px !important;
@@ -431,16 +441,79 @@ img.quoteFooterContactImage {
 	margin-top: 5vh;
 }
 
-.priceChange {
-	display: inline;
-	float: left;
-	margin-right: 20px;
+/* ─── Custom product-line selection checkbox ────────────────────────────────── */
+input[type="checkbox"].priceChange {
+	-webkit-appearance: none;
+	appearance: none;
+	flex-shrink: 0;
+	width: 22px;
+	height: 22px;
+	border: 2px solid #cccccc;
+	border-radius: 6px;
+	background: #ffffff;
+	cursor: pointer;
+	margin-right: 14px;
+	transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.15s ease;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 13px 11px;
+}
+
+input[type="checkbox"].priceChange:hover:not(:disabled) {
+	border-color: #db0d0d;
+	box-shadow: 0 0 0 3px rgba(219, 13, 13, 0.12);
+}
+
+input[type="checkbox"].priceChange:checked {
+	background-color: #db0d0d;
+	border-color: #db0d0d;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpolyline points='1.5 5.5 4.5 8.5 10.5 1.5' stroke='%23ffffff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+input[type="checkbox"].priceChange:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* ─── Optional-section header checkbox (on dark background) ─────────────────── */
+input[type="checkbox"].optionalSectionCheckbox {
+	-webkit-appearance: none;
+	appearance: none;
+	flex-shrink: 0;
+	width: 20px;
+	height: 20px;
+	border: 2px solid rgba(255, 255, 255, 0.55);
+	border-radius: 5px;
+	background: transparent;
+	cursor: pointer;
+	margin-right: 10px;
+	vertical-align: middle;
+	transition: border-color 0.2s ease, background 0.2s ease;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 12px 10px;
+}
+
+input[type="checkbox"].optionalSectionCheckbox:hover:not(:disabled) {
+	border-color: rgba(255, 255, 255, 0.9);
+}
+
+input[type="checkbox"].optionalSectionCheckbox:checked {
+	background-color: #db0d0d;
+	border-color: #db0d0d;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpolyline points='1.5 5.5 4.5 8.5 10.5 1.5' stroke='%23ffffff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+input[type="checkbox"].optionalSectionCheckbox:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
 }
 
 .flex {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-start;
+	align-items: center;
 }
 
 .d-flex {
@@ -526,6 +599,56 @@ span.qtySpan {
 /* quote lines padding */
 .quoteLineRow > td.text-left {
 	padding: 20px !important;
+}
+
+/* ─── Section fold icon (replaces plain +/× text) ─────────────────────────── */
+.quote-folding-icon {
+	flex-shrink: 0;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	border: 2px solid rgba(255, 255, 255, 0.45);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	transition: border-color 0.25s ease, background 0.25s ease, transform 0.35s ease;
+	position: relative;
+	vertical-align: middle;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+.quote-folding-icon::before,
+.quote-folding-icon::after {
+	content: "";
+	position: absolute;
+	background: #ffffff;
+	border-radius: 2px;
+	transition: background 0.25s ease, transform 0.35s ease;
+}
+
+/* horizontal bar */
+.quote-folding-icon::before {
+	width: 12px;
+	height: 2px;
+}
+
+/* vertical bar */
+.quote-folding-icon::after {
+	width: 2px;
+	height: 12px;
+}
+
+/* open state: rotate 45° so + becomes × ; fill red */
+.quote-folding-icon.is-open {
+	border-color: #db0d0d;
+	background: #db0d0d;
+	transform: rotate(45deg);
+}
+
+.quote-folding-icon.is-open::before,
+.quote-folding-icon.is-open::after {
+	background: #ffffff;
 }
 
 /* terms and conditions */
