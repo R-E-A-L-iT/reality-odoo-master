@@ -18,6 +18,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
         await this._super(...arguments);
         this.orderDetail = this.$el.find('table#sales_order_table').data();
         this._onLoad();
+        this._initCountryStateFilter();
     },
 
     _onLoad: function () {
@@ -91,6 +92,56 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
 
     _productFoldChange: function (cb) {
         this._saveFoldStatus(cb.currentTarget);
+    },
+
+    _initCountryStateFilter: function () {
+        var pairs = [
+            { country: 'invoice-country-text',  state: 'invoice-state-text'  },
+            { country: 'delivery-country-text', state: 'delivery-state-text' },
+        ];
+
+        pairs.forEach(function (pair) {
+            var countryEl = document.getElementById(pair.country);
+            var stateEl   = document.getElementById(pair.state);
+            if (!countryEl || !stateEl) return;
+
+            // Snapshot every state option with its country association
+            var allStateOptions = Array.from(stateEl.querySelectorAll('option')).map(function (opt) {
+                return {
+                    value:     opt.value,
+                    text:      opt.text,
+                    countryId: opt.getAttribute('data-country-id'),
+                    selected:  opt.selected,
+                };
+            });
+
+            function applyFilter() {
+                var countryId     = countryEl.value;
+                var currentState  = stateEl.value;
+
+                // Rebuild the select with only matching options
+                stateEl.innerHTML = '';
+
+                var placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.text  = 'Select';
+                stateEl.appendChild(placeholder);
+
+                allStateOptions.forEach(function (optData) {
+                    if (!optData.value) return; // skip original placeholder
+                    if (optData.countryId !== countryId) return;
+                    var opt = document.createElement('option');
+                    opt.value = optData.value;
+                    opt.text  = optData.text;
+                    opt.setAttribute('data-country-id', optData.countryId);
+                    if (optData.value === currentState) opt.selected = true;
+                    stateEl.appendChild(opt);
+                });
+            }
+
+            applyFilter();
+            countryEl.addEventListener('change', applyFilter);
+        });
     },
 
     _saveFoldStatus: function (target) {

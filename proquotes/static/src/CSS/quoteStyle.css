@@ -805,32 +805,56 @@ label[for="terms-checkbox"] {
 	color: #fff;
 }
 
-/* ── Address row: gap between the two cards ── */
+/* ── Address row: side-by-side cards ──
+   Override Bootstrap's negative gutter margins so our gap is the sole
+   spacing mechanism. Columns are sized to fill exactly 50% minus half the gap. */
 #rental-info-section > .row:nth-child(2) {
-	gap: 20px 28px;
+	display: flex;
+	flex-wrap: wrap;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	gap: 20px 24px;
 }
 
 /* ── Address card columns: CSS Grid for label-left / input-right ── */
 #rental-info-section > .row:nth-child(2) > .col-md-6 {
+	/* Side-by-side at md+: each card = 50% minus half the 24px column gap */
+	flex: 0 0 calc(50% - 12px) !important;
+	max-width: calc(50% - 12px) !important;
+	/* Zero Bootstrap's own column padding — gap handles the separation */
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+
+	/* Internal layout: CSS Grid for label ↔ input rows */
 	display: grid;
 	grid-template-columns: max-content 1fr;
 	align-items: center;
 	row-gap: 10px;
 	column-gap: 16px;
 
+	/* Card appearance */
+	padding: 20px !important;
 	background: rgba(0, 0, 0, 0.20);
 	border: 1px solid rgba(255, 255, 255, 0.08);
 	border-radius: 14px;
-	padding: 20px;
 	margin-bottom: 0;
 	transition: background 0.2s ease;
+	box-sizing: border-box;
+}
+
+/* Stack on mobile */
+@media (max-width: 767px) {
+	#rental-info-section > .row:nth-child(2) > .col-md-6 {
+		flex: 0 0 100% !important;
+		max-width: 100% !important;
+	}
 }
 
 #rental-info-section > .row:nth-child(2) > .col-md-6:hover {
 	background: rgba(0, 0, 0, 0.28);
 }
 
-/* Heading and City/State/Country row each span the full width */
+/* Heading and City/State/Country row span the full card width */
 #rental-info-section > .row:nth-child(2) > .col-md-6 > h5,
 #rental-info-section > .row:nth-child(2) > .col-md-6 > .row {
 	grid-column: 1 / -1;
@@ -848,6 +872,14 @@ label[for="terms-checkbox"] {
 #rental-info-section > .row:nth-child(2) .col-md-6 > .form-control,
 #rental-info-section > .row:nth-child(2) .col-md-6 > .form-select {
 	margin-bottom: 0 !important;
+}
+
+/* ── City / State / Country: uniform height ──
+   .form-control gets padding:9px from the section-wide rule above;
+   selects only get Bootstrap's sm padding (4px). Match them. */
+#rental-info-section .row.g-2 .form-select {
+	padding-top: 9px !important;
+	padding-bottom: 9px !important;
 }
 
 /* Remove the old grey inner box */
