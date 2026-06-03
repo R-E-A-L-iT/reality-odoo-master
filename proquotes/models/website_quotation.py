@@ -13,3 +13,5 @@ class WebsiteQuotation(models.Model):
     user_id                = fields.Many2one('res.users', string='Salesperson',
                                              domain=[('share', '=', False)])
     sale_order_template_id = fields.Many2one('sale.order.template', string='Quotation Template')
+    pricelist_id           = fields.Many2one('product.pricelist', string='Pricelist',
+                                             domain="[('name', 'not ilike', 'Default')]")

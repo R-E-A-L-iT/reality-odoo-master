@@ -826,7 +826,7 @@ class WebsiteForm(form.WebsiteForm):
                     order_vals['date_order'] = dt.strptime(values['date_order'], '%Y-%m-%d')
                 except ValueError:
                     pass
-        for int_field in ('user_id', 'sale_order_template_id'):
+        for int_field in ('user_id', 'sale_order_template_id', 'pricelist_id'):
             if values.get(int_field):
                 try:
                     order_vals[int_field] = int(values[int_field])

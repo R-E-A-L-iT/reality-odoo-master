@@ -113,5 +113,10 @@ FormEditorRegistry.add('create_quotation', {
         relation: 'res.users',
         domain: [['share', '=', false]],
         string: _t('Salesperson'),
+    }, {
+        name: 'pricelist_id',
+        type: 'many2one',
+        relation: 'product.pricelist',
+        string: _t('Pricelist'),
     }],
 });
