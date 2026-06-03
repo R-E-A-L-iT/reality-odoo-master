@@ -1491,6 +1491,103 @@ body {
     }
 }
 
+/* ─── Standard Odoo icon bar injected into the OmniGO header ──────────────── */
+.o_omnigo_ch_icons {
+    /* Bootstrap's .navbar-nav defaults to flex-direction:column outside a .navbar;
+       force it horizontal here. */
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    flex-wrap: nowrap;
+    gap: 2px;
+    margin-left: 18px;
+    padding: 0;
+    list-style: none;
+    flex-shrink: 0;
+}
+
+/* Hide on mobile — hamburger handles that context */
+@media (max-width: 767px) {
+    .o_omnigo_ch_icons {
+        display: none;
+    }
+}
+
+/* Shrink with the header when scrolled */
+.o_omnigo_ch_header.is-scrolled .o_omnigo_ch_icons {
+    gap: 1px;
+}
+
+/* All buttons and icon links: white on the dark transparent header */
+.o_omnigo_ch_icons .btn,
+.o_omnigo_ch_icons > li > a:not(.dropdown-item) {
+    color: rgba(255, 255, 255, 0.80) !important;
+    border-color: transparent !important;
+}
+
+.o_omnigo_ch_icons .btn:hover,
+.o_omnigo_ch_icons > li > a:not(.dropdown-item):hover {
+    color: #ffffff !important;
+}
+
+/* Circular icon buttons (o_navlink_background) */
+.o_omnigo_ch_icons .o_navlink_background {
+    background: rgba(255, 255, 255, 0.10) !important;
+    border-color: transparent !important;
+    color: rgba(255, 255, 255, 0.82) !important;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.o_omnigo_ch_icons .o_navlink_background:hover,
+.o_omnigo_ch_icons .o_navlink_background:focus {
+    background: rgba(255, 255, 255, 0.20) !important;
+    color: #ffffff !important;
+}
+
+/* Hide Bootstrap dropdown caret arrows — keep the icons clean circles */
+.o_omnigo_ch_icons .dropdown-toggle::after {
+    display: none !important;
+}
+
+/* The user-dropdown button has pe-3 (extra right padding) which makes it oval.
+   Also d-flex / align-items-center stretch it. Force uniform padding + fixed size. */
+.o_omnigo_ch_icons .btn.rounded-circle {
+    padding: 0.4rem !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0;
+}
+
+/* Dropdown menus — dark to match the header */
+.o_omnigo_ch_icons .dropdown-menu {
+    background: rgba(12, 8, 8, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 10px;
+    margin-top: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+}
+
+.o_omnigo_ch_icons .dropdown-item {
+    color: rgba(255, 255, 255, 0.80);
+    font-size: 13px;
+}
+
+.o_omnigo_ch_icons .dropdown-item:hover,
+.o_omnigo_ch_icons .dropdown-item:focus {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+/* Cart badge — keep Odoo's default badge but ensure visibility */
+.o_omnigo_ch_icons .my_cart_quantity {
+    font-size: 10px;
+}
+
 /* Offset page content so it sits below the fixed header */
 .o_three_hero {
     padding-top: 92px;
@@ -2595,3 +2692,4 @@ body {
         font-size: 26px;
     }
 }
+

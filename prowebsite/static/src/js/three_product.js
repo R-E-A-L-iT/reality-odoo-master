@@ -1,6 +1,7 @@
 /** @odoo-module **/
 
 import { whenReady } from "@odoo/owl";
+import { initHeaderDropdowns } from "./header_dropdowns";
 
 whenReady(async () => {
     const heroHost = document.getElementById("three-product-canvas");
@@ -153,6 +154,42 @@ whenReady(async () => {
     function createOmnigoHeader() {
         if (!omniPage) return;
 
+        // ── Debug: snapshot the standard header DOM before touching anything ──
+        const stdNavDebug = document.getElementById("top");
+        console.log("[OmniGO] #top element:", stdNavDebug);
+        console.log("[OmniGO] #top visible?", stdNavDebug ? getComputedStyle(stdNavDebug).display : "not found");
+
+        const mainNavDebug = document.getElementById("o_main_nav");
+        console.log("[OmniGO] #o_main_nav element:", mainNavDebug);
+
+        const allUlsDebug = document.querySelectorAll("#o_main_nav > ul");
+        console.log("[OmniGO] #o_main_nav > ul count:", allUlsDebug.length);
+        allUlsDebug.forEach((ul, i) =>
+            console.log(`[OmniGO]   ul[${i}] classes="${ul.className}" children=${ul.children.length}`)
+        );
+
+        // Broader fallback selectors in priority order
+        const candidateSelectors = [
+            "#o_main_nav > ul:last-of-type",
+            "#o_main_nav > ul.align-items-center",
+            "header ul.align-items-center",
+            "#top ul.align-items-center",
+            "nav ul.align-items-center",
+        ];
+        let stdIconsUl = null;
+        for (const sel of candidateSelectors) {
+            const el = document.querySelector(sel);
+            console.log(`[OmniGO] Trying selector "${sel}":`, el, el ? `(${el.children.length} children)` : "");
+            if (el && el.children.length > 0) {
+                stdIconsUl = el;
+                console.log("[OmniGO] ✅ Using icon ul found with selector:", sel);
+                break;
+            }
+        }
+        if (!stdIconsUl) {
+            console.warn("[OmniGO] ❌ No icon <ul> found in the standard header — icons will be missing.");
+        }
+
         // Hide standard Odoo navbar and any submenu block
         const stdNav = document.getElementById("top");
         if (stdNav) stdNav.style.setProperty("display", "none", "important");
@@ -191,6 +228,25 @@ whenReady(async () => {
         `;
 
         document.body.prepend(header);
+
+        // Inject icon bar if found, otherwise log where we ended up
+        if (stdIconsUl) {
+            // Remove flex-grow-1 — it would stretch the icon bar across the entire header
+            stdIconsUl.classList.remove('ps-3', 'justify-content-end', 'flex-grow-1');
+
+            // Remove the "Call To Action" / Contact li — it's a flex-grow-1 spacer
+            // that Odoo uses to push icons right in the normal navbar; we don't want it here.
+            stdIconsUl.querySelector('li.flex-grow-1')?.remove();
+
+            stdIconsUl.classList.add('o_omnigo_ch_icons');
+            const hamburger = header.querySelector('.o_omnigo_ch_hamburger');
+            header.querySelector('.o_omnigo_ch_inner').insertBefore(stdIconsUl, hamburger);
+            console.log("[OmniGO] ✅ Icon bar injected. Children remaining:", stdIconsUl.children.length);
+            initHeaderDropdowns(header, stdIconsUl);
+        } else {
+            console.warn("[OmniGO] ❌ Icon bar injection skipped — element not found.");
+            console.log("[OmniGO] Full <header id=top> HTML:", document.getElementById("top")?.outerHTML?.slice(0, 2000));
+        }
 
         // Scroll shrink — Odoo scrolls #wrapwrap, not window
         const scrollRoot = document.getElementById("wrapwrap") || document.documentElement;
