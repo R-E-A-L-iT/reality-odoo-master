@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- Register the model for the website form builder -->
-    <function model="ir.model" name="search_write"
-              eval="[[('model','=','proquotes.website.quotation')],
-                     {'website_form_key': 'create_quotation',
-                      'website_form_access': True,
-                      'website_form_label': 'Create Quotation'}]"/>
+    <record id="proquotes.model_proquotes_website_quotation" model="ir.model">
+        <field name="website_form_key">create_quotation</field>
+        <field name="website_form_access">True</field>
+        <field name="website_form_label">Create Quotation</field>
+    </record>
 
     <!-- Whitelist fields that can be submitted via the website form -->
     <function model="ir.model.fields" name="formbuilder_whitelist">
