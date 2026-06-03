@@ -33,3 +33,4 @@ from . import res_config_extend
 from . import ccp_period_config
 from . import ccp_scanner_config
 from . import ccp_type_config
+from . import website_quotation

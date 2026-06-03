@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Register the model for the website form builder -->
+    <function model="ir.model" name="search_write"
+              eval="[[('model','=','proquotes.website.quotation')],
+                     {'website_form_key': 'create_quotation',
+                      'website_form_access': True,
+                      'website_form_label': 'Create Quotation'}]"/>
+
+    <!-- Whitelist fields that can be submitted via the website form -->
+    <function model="ir.model.fields" name="formbuilder_whitelist">
+        <value>proquotes.website.quotation</value>
+        <value eval="[
+            'company_name',
+            'partner_name',
+            'quote_email',
+            'date_order',
+            'user_id',
+            'sale_order_template_id'
+        ]"/>
+    </function>
+</odoo>

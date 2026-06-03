@@ -136,5 +136,6 @@
         "views/Other/crm_lead.xml",
         "data/thanks_for_payment.xml",
         "data/rental_quote_data.xml",
+        "data/quotation_form_data.xml",
     ],
 }
