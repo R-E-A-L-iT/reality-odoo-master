@@ -756,7 +756,7 @@ label[for="terms-checkbox"] {
 	font-weight: 700;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
-	margin-bottom: 14px;
+	margin-bottom: 0;
 	padding-bottom: 8px;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
@@ -805,8 +805,19 @@ label[for="terms-checkbox"] {
 	color: #fff;
 }
 
-/* ── Address card columns ── */
+/* ── Address row: gap between the two cards ── */
+#rental-info-section > .row:nth-child(2) {
+	gap: 20px 28px;
+}
+
+/* ── Address card columns: CSS Grid for label-left / input-right ── */
 #rental-info-section > .row:nth-child(2) > .col-md-6 {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	align-items: center;
+	row-gap: 10px;
+	column-gap: 16px;
+
 	background: rgba(0, 0, 0, 0.20);
 	border: 1px solid rgba(255, 255, 255, 0.08);
 	border-radius: 14px;
@@ -819,9 +830,24 @@ label[for="terms-checkbox"] {
 	background: rgba(0, 0, 0, 0.28);
 }
 
-/* Tighten the gap between the two address cards */
-#rental-info-section > .row:nth-child(2) {
-	gap: 16px 0;
+/* Heading and City/State/Country row each span the full width */
+#rental-info-section > .row:nth-child(2) > .col-md-6 > h5,
+#rental-info-section > .row:nth-child(2) > .col-md-6 > .row {
+	grid-column: 1 / -1;
+	margin-bottom: 0;
+}
+
+/* Labels: right-aligned, no bottom margin (row-gap handles spacing) */
+#rental-info-section > .row:nth-child(2) .col-md-6 > .form-label {
+	margin-bottom: 0;
+	text-align: right;
+	white-space: nowrap;
+}
+
+/* Inputs / selects: remove Bootstrap mb-2 inside the grid */
+#rental-info-section > .row:nth-child(2) .col-md-6 > .form-control,
+#rental-info-section > .row:nth-child(2) .col-md-6 > .form-select {
+	margin-bottom: 0 !important;
 }
 
 /* Remove the old grey inner box */
