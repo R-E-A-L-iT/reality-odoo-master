@@ -462,23 +462,23 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 
 		_updateFoldDisplay: function () {
 			var TRstyle;
-			var expandHTML;
 			var cbl = document.querySelectorAll(".foldInput");
 			for (var i = 0; i < cbl.length; i++) {
 				var cb = cbl[i];
 
 				if (cb.checked == true) {
 					TRstyle = "none";
-					expandHTML = "+";
 				} else {
 					TRstyle = "table-row";
-					expandHTML = "&#215;";
 				}
 				var x = cb;
 				while (x.tagName != "TR") {
 					x = x.parentNode;
 				}
-				x.querySelector(".quote-folding-arrow").innerHTML = expandHTML;
+				var icon = x.querySelector(".quote-folding-icon");
+				if (icon) {
+					icon.classList.toggle("is-open", cb.checked == false);
+				}
 				var y = x.nextElementSibling;
 				while (y != null && y != undefined) {
 					if (y.className.includes("is-subtotal")) {

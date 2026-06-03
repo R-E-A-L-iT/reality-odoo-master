@@ -883,9 +883,8 @@
                         <div style="width: 75%; float: left;">
                             <label t-attf-for="fold{{line}}{{line_index}}"
                                    style="display: inline-block; width: 100%; height: 100%; cursor: pointer;">
-                                <!-- Fold arrow -->
-                                <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
-                                <span t-else="" class="quote-folding-arrow">+</span>
+                                <!-- Section fold icon -->
+                                <span t-attf-class="quote-folding-icon {{ 'is-open' if line.hiddenSection == 'no' else '' }}"></span>
                                 <!-- Dynamic Title from Config -->
                                 <t t-if="ccp_scanner_config">
                                     <t t-out="ccp_scanner_config.get_title(language)"/>
@@ -982,10 +981,8 @@
                        style="display: inline-block; width: 100%; height: 100%;">
 
 
-                    <!-- DOWN ARROW THING -->
-                    <span t-if="line.hiddenSection == 'no'" class="quote-folding-arrow">×</span>
-                    <span t-else="" class="quote-folding-arrow">+</span>
-
+                    <!-- Section fold icon -->
+                    <span t-attf-class="quote-folding-icon {{ 'is-open' if line.hiddenSection == 'no' else '' }}"></span>
 
                     <t t-if="line.special == 'optional'">
                         <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox"
