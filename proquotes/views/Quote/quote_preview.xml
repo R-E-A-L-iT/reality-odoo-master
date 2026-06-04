@@ -747,10 +747,10 @@
                                             style="display:block; width:100%;"
                                         ></iframe>
                                     </t>
-                                    <!-- French video — replace 1197522692 with the French Vimeo video ID when available -->
+                                    <!-- French video -->
                                     <t t-else="">
                                         <iframe
-                                            src="https://player.vimeo.com/video/1197522692"
+                                            src="https://player.vimeo.com/video/1198501160"
                                             width="100%" height="400"
                                             frameborder="0"
                                             allow="autoplay; fullscreen; picture-in-picture"
