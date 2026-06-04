@@ -303,6 +303,23 @@ class SaleOrderLine(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        # Trace EVERY sale.order.line creation so we can see exactly when and
+        # how Odoo adds spurious lines during rental pickup/return.
+        for vals in vals_list:
+            _logger.info(
+                "[KIT-CLEANUP] SaleOrderLine.create — order_id=%s  product_id=%s  "
+                "selected=%s  optional=%s  x_is_rental_kit_component=%s  "
+                "context={skip_procurement:%s  tracking_disable:%s  suppress_extra_line_chatter:%s}",
+                vals.get('order_id'),
+                vals.get('product_id'),
+                vals.get('selected'),
+                vals.get('optional'),
+                vals.get('x_is_rental_kit_component'),
+                self.env.context.get('skip_procurement'),
+                self.env.context.get('tracking_disable'),
+                self.env.context.get('suppress_extra_line_chatter'),
+            )
+
         # When sale_renting._action_done adds retroactive lines after a transfer is validated,
         # it passes skip_procurement=True.  We intercept here to block duplicate creation for
         # any product that already has a kit-component line on the order.
