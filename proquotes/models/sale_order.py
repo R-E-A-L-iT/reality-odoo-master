@@ -171,6 +171,12 @@ class order(models.Model):
             if not order._is_rental_quote_for_template_domain():
                 continue
 
+            # Only apply the default when no template has been chosen yet.
+            # Without this guard the onchange fires on every date edit and
+            # silently discards whatever template the user had selected.
+            if order.sale_order_template_id:
+                continue
+
             template = self.env["sale.order.template"].search([
                 ("name", "=", "Rental Blank"),
             ], limit=1)
@@ -774,13 +780,16 @@ class order(models.Model):
 
             if component_line:
                 # Avoid touching quantity if it is already correct.
+                # Do NOT set selected/sectionSelected to 'true' here — component SOLs
+                # must stay selected='false' so they remain hidden on the quote.
+                # The selected field on component lines is not read by any rental
+                # processing code (all rental filters use x_is_rental_kit_component),
+                # so keeping it false has no functional side-effect.
                 update_vals = {
                     "name": vals["name"],
                     "price_unit": 0.0,
                     "discount": 0.0,
                     "tax_id": [Command.clear()],
-                    "selected": "true",
-                    "sectionSelected": "true",
                 }
 
                 if component_line.product_uom_qty != qty:
@@ -952,14 +961,99 @@ class order(models.Model):
 
         return move_vals_list
 
+    def _log_order_lines(self, checkpoint):
+        """Dump every order line to the log so we can see the state at each checkpoint."""
+        self.env.flush_all()
+        self.invalidate_recordset(['order_line'])
+        lines = self.order_line
+        _logger.info(
+            "[KIT-CLEANUP] %s — order %s has %d lines:",
+            checkpoint, self.name, len(lines),
+        )
+        for l in lines:
+            _logger.info(
+                "[KIT-CLEANUP]   id=%-6d  selected=%-5s  optional=%-3s  "
+                "x_is_rental_kit_component=%-5s  product=%s",
+                l.id,
+                l.selected,
+                l.optional,
+                l.x_is_rental_kit_component,
+                l.product_id.display_name if l.product_id else '(section)',
+            )
+
+    def _remove_extra_kit_sols(self, checkpoint):
+        """Delete lines that Odoo's rental module added for kit-component products.
+
+        These spurious lines share three characteristics confirmed by the user:
+          1. selected='false'  AND  optional='no'  simultaneously.
+          2. x_is_rental_kit_component=False  (not one of our own component SOLs).
+          3. product_id is a component of a kit that IS on the quote.
+
+        SQL is used because sale.order.line.unlink() raises UserError on confirmed orders.
+        """
+        self.env.flush_all()
+        self.invalidate_recordset(['order_line'])
+
+        component_product_ids = set(
+            self.order_line.filtered(lambda l: l.x_is_rental_kit_component)
+            .mapped('product_id.id')
+        )
+        _logger.info(
+            "[KIT-CLEANUP] %s — component_product_ids: %s",
+            checkpoint, component_product_ids,
+        )
+
+        if not component_product_ids:
+            _logger.info("[KIT-CLEANUP] %s — no component SOLs found, skipping.", checkpoint)
+            return
+
+        extra = self.order_line.filtered(
+            lambda l: (
+                l.selected == 'false'
+                and l.optional == 'no'
+                and not l.x_is_rental_kit_component
+                and not l.display_type
+                and l.product_id.id in component_product_ids
+            )
+        )
+        _logger.info(
+            "[KIT-CLEANUP] %s — filter matched %d line(s): %s",
+            checkpoint, len(extra),
+            [(l.id, l.product_id.display_name) for l in extra],
+        )
+
+        if not extra:
+            return
+
+        _logger.info(
+            "[KIT-CLEANUP] %s — DELETING %d spurious SOL(s) for order %s: %s",
+            checkpoint, len(extra), self.name,
+            extra.mapped('product_id.display_name'),
+        )
+
+        self.env['stock.move'].sudo().search(
+            [('sale_line_id', 'in', extra.ids)]
+        ).write({'sale_line_id': False})
+
+        self.env.cr.execute(
+            "DELETE FROM sale_order_line WHERE id IN %s",
+            [tuple(extra.ids)]
+        )
+        extra.invalidate_recordset()
+
     def action_open_pickup(self):
         self.ensure_one()
+
+        _logger.info("[KIT-CLEANUP] action_open_pickup START — order %s", self.name)
+        self._log_order_lines("BEFORE _build_rental_move_vals")
 
         picking_type = self._get_rental_picking_type('RENTALOUT')
         move_vals_list = self._build_rental_move_vals(picking_type)
 
         if not move_vals_list:
             raise UserError(_('No products to pick up. Please select at least one product line.'))
+
+        self._log_order_lines("AFTER _build_rental_move_vals / BEFORE picking.create")
 
         picking = self.env['stock.picking'].create({
             'picking_type_id': picking_type.id,
@@ -971,7 +1065,16 @@ class order(models.Model):
             'location_dest_id': picking_type.default_location_dest_id.id,
             'move_ids': [(0, 0, m) for m in move_vals_list],
         })
+
+        self._log_order_lines("AFTER picking.create / BEFORE action_confirm")
+        self._remove_extra_kit_sols("AFTER picking.create / BEFORE action_confirm")
+
         picking.action_confirm()
+
+        self._log_order_lines("AFTER action_confirm")
+        self._remove_extra_kit_sols("AFTER action_confirm")
+
+        _logger.info("[KIT-CLEANUP] action_open_pickup END — order %s", self.name)
 
         return {
             'type': 'ir.actions.act_window',
@@ -984,11 +1087,16 @@ class order(models.Model):
     def action_open_return(self):
         self.ensure_one()
 
+        _logger.info("[KIT-CLEANUP] action_open_return START — order %s", self.name)
+        self._log_order_lines("RETURN: BEFORE _build_rental_return_move_vals")
+
         picking_type = self._get_rental_picking_type('RENTALIN')
         move_vals_list = self._build_rental_return_move_vals(picking_type)
 
         if not move_vals_list:
             raise UserError(_('No products to return. Please ensure the order has selected delivered products.'))
+
+        self._log_order_lines("RETURN: AFTER _build_rental_return_move_vals / BEFORE picking.create")
 
         picking = self.env['stock.picking'].create({
             'picking_type_id': picking_type.id,
@@ -1000,7 +1108,16 @@ class order(models.Model):
             'location_dest_id': picking_type.default_location_dest_id.id,
             'move_ids': [(0, 0, m) for m in move_vals_list],
         })
+
+        self._log_order_lines("RETURN: AFTER picking.create / BEFORE action_confirm")
+        self._remove_extra_kit_sols("RETURN: AFTER picking.create / BEFORE action_confirm")
+
         picking.action_confirm()
+
+        self._log_order_lines("RETURN: AFTER action_confirm")
+        self._remove_extra_kit_sols("RETURN: AFTER action_confirm")
+
+        _logger.info("[KIT-CLEANUP] action_open_return END — order %s", self.name)
 
         return {
             'type': 'ir.actions.act_window',
