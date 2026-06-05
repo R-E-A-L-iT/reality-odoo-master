@@ -15,11 +15,8 @@
    </record>
 
    <!--
-       Extend the default product search view so that typing a value in the
-       search bar also matches the SKU field.  The original filter_domain covers
-       default_code, product_variant_ids.default_code, name, and barcode; we
-       OR in sku so it behaves like a first-class search target everywhere
-       products are listed (Inventory, Sales, Purchases, etc.).
+       Extend the default product.template search view so that typing a value
+       in the search bar also matches the SKU field.
    -->
    <record id="product_template_search_view_sku" model="ir.ui.view">
        <field name="name">product.template.search.sku</field>
@@ -31,6 +28,30 @@
                    filter_domain="['|', '|', '|', '|',
                        ('default_code', 'ilike', self),
                        ('product_variant_ids.default_code', 'ilike', self),
+                       ('name', 'ilike', self),
+                       ('barcode', 'ilike', self),
+                       ('sku', 'ilike', self)]"/>
+           </xpath>
+       </field>
+   </record>
+
+   <!--
+       product.product_search_form_view inherits the template search view and
+       replaces the name field with its own filter_domain for product.product
+       (the variant model used by Inventory, Purchases, etc.).  Override it
+       here so SKU is included at that level too.  Because product.product
+       uses _inherits from product.template, 'sku' is a delegated field and
+       is directly searchable on product.product without a dot-path.
+   -->
+   <record id="product_product_search_form_view_sku" model="ir.ui.view">
+       <field name="name">product.product.search.sku</field>
+       <field name="model">product.product</field>
+       <field name="inherit_id" ref="product.product_search_form_view"/>
+       <field name="arch" type="xml">
+           <xpath expr="//field[@name='name']" position="replace">
+               <field name="name" string="Product"
+                   filter_domain="['|', '|', '|',
+                       ('default_code', 'ilike', self),
                        ('name', 'ilike', self),
                        ('barcode', 'ilike', self),
                        ('sku', 'ilike', self)]"/>
