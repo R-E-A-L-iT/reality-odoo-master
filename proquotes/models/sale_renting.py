@@ -102,21 +102,28 @@ class SaleOrderLine(models.Model):
 
 	@staticmethod
 	def _compute_custom_rental_price(daily_price, days):
+		"""Custom rental pricing formula — must stay in sync with the multiplier
+		display logic in quote_preview.xml.
+
+		Rules (matching the XML template exactly):
+		  • ≤ 30 days : 4 paid days per full week, up to 4 for the partial week,
+		                capped at 12 paid days total.
+		  • > 30 days : 12 paid days for the first 30 calendar days, then every
+		                additional calendar day counts as 1 paid day (linear).
+
+		Example: 48 days → 12 + (48 − 30) = 30 paid days → price = daily × 30.
+		"""
 		if days <= 0:
 			return 0
 
-		def paid_days_for_partial_month(day_count):
-			full_weeks = day_count // 7
-			extra_days = day_count % 7
-			return min((full_weeks * 4) + min(extra_days, 4), 12)
-
-		full_months = days // 30
-		remaining_days = days % 30
-
-		paid_days = full_months * 12
-
-		if remaining_days:
-			paid_days += paid_days_for_partial_month(remaining_days)
+		if days <= 30:
+			full_weeks = days // 7
+			extra_days = days % 7
+			paid_days = (full_weeks * 4) + min(extra_days, 4)
+			paid_days = min(paid_days, 12)
+		else:
+			# First 30 days → 12 paid days, then linear for the rest
+			paid_days = 12 + (days - 30)
 
 		return daily_price * paid_days
 
