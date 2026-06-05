@@ -78,6 +78,88 @@ class QuoCall(models.Model):
         ("quo_call_id_unique", "unique(quo_call_id)", "Quo Call ID must be unique."),
     ]
 
+    # ------------------------------------------------------------------
+    # Smart-button counts (related quotes & opportunities)
+    # ------------------------------------------------------------------
+    quote_count = fields.Integer(
+        string="Quotes",
+        compute="_compute_related_record_counts",
+    )
+    opportunity_count = fields.Integer(
+        string="Opportunities",
+        compute="_compute_related_record_counts",
+    )
+
+    @api.depends("partner_ids", "caller_from_partner_id", "caller_to_partner_id")
+    def _compute_related_record_counts(self):
+        for call in self:
+            external = call._get_external_partners()
+            if not external:
+                call.quote_count = 0
+                call.opportunity_count = 0
+                continue
+
+            partner_ids = external.ids
+            commercial_ids = list({p.commercial_partner_id.id for p in external})
+            all_ids = list(set(partner_ids + commercial_ids))
+
+            call.quote_count = self.env["sale.order"].sudo().search_count([
+                ("state", "in", ["draft", "sent"]),
+                "|", "|", "|",
+                    ("partner_id", "in", all_ids),
+                    ("partner_shipping_id", "in", all_ids),
+                    ("partner_invoice_id", "in", all_ids),
+                    ("message_partner_ids", "in", partner_ids),
+            ])
+            call.opportunity_count = self.env["crm.lead"].sudo().search_count([
+                ("type", "=", "opportunity"),
+                ("active", "=", True),
+                "|",
+                    ("partner_id", "in", all_ids),
+                    ("message_partner_ids", "in", partner_ids),
+            ])
+
+    def action_view_related_quotes(self):
+        self.ensure_one()
+        external = self._get_external_partners()
+        partner_ids = external.ids
+        commercial_ids = list({p.commercial_partner_id.id for p in external})
+        all_ids = list(set(partner_ids + commercial_ids))
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Related Quotes",
+            "res_model": "sale.order",
+            "view_mode": "tree,form",
+            "domain": [
+                ("state", "in", ["draft", "sent"]),
+                "|", "|", "|",
+                    ("partner_id", "in", all_ids),
+                    ("partner_shipping_id", "in", all_ids),
+                    ("partner_invoice_id", "in", all_ids),
+                    ("message_partner_ids", "in", partner_ids),
+            ],
+        }
+
+    def action_view_related_opportunities(self):
+        self.ensure_one()
+        external = self._get_external_partners()
+        partner_ids = external.ids
+        commercial_ids = list({p.commercial_partner_id.id for p in external})
+        all_ids = list(set(partner_ids + commercial_ids))
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Related Opportunities",
+            "res_model": "crm.lead",
+            "view_mode": "tree,form",
+            "domain": [
+                ("type", "=", "opportunity"),
+                ("active", "=", True),
+                "|",
+                    ("partner_id", "in", all_ids),
+                    ("message_partner_ids", "in", partner_ids),
+            ],
+        }
+
     # ----- Summary -----
     summary_text = fields.Text(string="Summary", readonly=True)
     next_steps_text = fields.Text(string="Next Steps", readonly=True)
@@ -426,8 +508,10 @@ class QuoCall(models.Model):
         })
 
     @api.model
-    def _get_or_create_partner_for_phone(self, phone, default_name="Unknown Caller"):
-        """Return a single res.partner for a phone. If none, create Unknown Caller."""
+    def _get_or_create_partner_for_phone(self, phone, default_name=None):
+        """Return a single res.partner for a phone.
+        If none exists, create a contact named 'Unknown: <phone>' (or default_name if provided).
+        """
         sanitized = self._sanitize_phone(phone)
         if not sanitized:
             return self.env["res.partner"]
@@ -437,9 +521,11 @@ class QuoCall(models.Model):
             # choose the first deterministically
             return matches.sorted(lambda p: p.id)[0]
 
-        # create a new contact with that number
+        # create a new contact — use the phone number in the name so records are
+        # identifiable at a glance even before a name is manually added.
+        name = default_name or f"Unknown: {sanitized}"
         return self.env["res.partner"].sudo().create({
-            "name": default_name,
+            "name": name,
             "phone": sanitized,
         })
 
@@ -503,9 +589,15 @@ class QuoCall(models.Model):
         """Update partner fields only if empty (except name if Unknown Caller)."""
         vals = {}
 
-        # Name: only set if empty or Unknown Caller
+        # Name: only set if empty or placeholder (Unknown Caller / Unknown: <phone>)
         if display_name:
-            if not (partner.name or "").strip() or (partner.name or "").strip() == "Unknown Caller":
+            existing = (partner.name or "").strip()
+            is_placeholder = (
+                not existing
+                or existing == "Unknown Caller"
+                or existing.startswith("Unknown: ")
+            )
+            if is_placeholder:
                 vals["name"] = display_name
 
         # Email: only set if empty
@@ -656,7 +748,7 @@ class QuoCall(models.Model):
                     continue
 
                 vals = {
-                    "name": display_name or "Unknown Caller",
+                    "name": display_name or f"Unknown: {sanitized}",
                     "phone": sanitized,
                 }
                 if email:
@@ -836,9 +928,9 @@ class QuoCall(models.Model):
         p_from = self.env["res.partner"]
         p_to = self.env["res.partner"]
         if from_num:
-            p_from = self._get_or_create_partner_for_phone(from_num, default_name="Unknown Caller")
+            p_from = self._get_or_create_partner_for_phone(from_num)
         if to_num:
-            p_to = self._get_or_create_partner_for_phone(to_num, default_name="Unknown Caller")
+            p_to = self._get_or_create_partner_for_phone(to_num)
 
         from_s = self._sanitize_phone(from_num)
         to_s = self._sanitize_phone(to_num)
@@ -925,10 +1017,10 @@ class QuoCall(models.Model):
         for call in self:
             updates = {}
             if call.from_number and not call.caller_from_partner_id:
-                p_from = call.sudo()._get_or_create_partner_for_phone(call.from_number, default_name="Unknown Caller")
+                p_from = call.sudo()._get_or_create_partner_for_phone(call.from_number)
                 updates["caller_from_partner_id"] = p_from.id or False
             if call.to_number and not call.caller_to_partner_id:
-                p_to = call.sudo()._get_or_create_partner_for_phone(call.to_number, default_name="Unknown Caller")
+                p_to = call.sudo()._get_or_create_partner_for_phone(call.to_number)
                 updates["caller_to_partner_id"] = p_to.id or False
             if updates:
                 call.sudo().with_context(skip_ensure_callers=True).write(updates)
@@ -1192,19 +1284,41 @@ class QuoCall(models.Model):
                     partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
                 )
 
-            # Create follow-up activities with your rules (only once per call)
-            # Priority: newest opportunity -> newest quote -> (fallback) first external partner
+            # Create follow-up activities ONLY on the latest opportunity.
+            # If no opportunity exists, create one and assign it to Derek deBlois.
             if next_steps:
                 if best_opp:
-                    target = best_opp[0]
-                elif best_quote:
-                    target = best_quote[0]
-                elif best_ticket:
-                    target = best_ticket[0]
-                else:
-                    target = external_partners[0]
+                    activity_target = best_opp[0]
+                elif external_partners:
+                    # Resolve Derek deBlois as the assignee
+                    derek_user = self.env["res.users"].sudo().search([
+                        "|",
+                        ("login", "=", "derek@r-e-a-l.it"),
+                        ("email", "=", "derek@r-e-a-l.it"),
+                    ], limit=1)
+                    if not derek_user:
+                        derek_user = self.env["res.users"].sudo().search([
+                            ("name", "ilike", "Derek deBlois"),
+                        ], limit=1)
 
-                _schedule_followups_on_record(target, next_steps, call_link)
+                    fallback_partner = external_partners[0]
+                    activity_target = self.env["crm.lead"].sudo().create({
+                        "name": f"Follow-up: {fallback_partner.display_name}",
+                        "type": "opportunity",
+                        "partner_id": fallback_partner.id,
+                        "user_id": (derek_user.id if derek_user else self.env.user.id),
+                    })
+                    _logger.info(
+                        "Quo call %s: created opportunity %s for partner %s (assigned to %s)",
+                        call.id, activity_target.id,
+                        fallback_partner.display_name,
+                        derek_user.name if derek_user else "current user",
+                    )
+                else:
+                    activity_target = None
+
+                if activity_target:
+                    _schedule_followups_on_record(activity_target, next_steps, call_link)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -1721,8 +1835,8 @@ class QuoText(models.Model):
         to_s = self.env["quo.call"].sudo()._sanitize_phone(to_num)
 
         # Create / resolve partners (Unknown Caller if missing)
-        p_from = self.env["quo.call"].sudo()._get_or_create_partner_for_phone(from_num, default_name="Unknown Caller") if from_num else self.env["res.partner"]
-        p_to = self.env["quo.call"].sudo()._get_or_create_partner_for_phone(to_num, default_name="Unknown Caller") if to_num else self.env["res.partner"]
+        p_from = self.env["quo.call"].sudo()._get_or_create_partner_for_phone(from_num) if from_num else self.env["res.partner"]
+        p_to = self.env["quo.call"].sudo()._get_or_create_partner_for_phone(to_num) if to_num else self.env["res.partner"]
 
         direction = self.env["quo.call"].sudo()._normalize_direction(payload.get("direction"))
 
