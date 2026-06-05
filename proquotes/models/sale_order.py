@@ -880,7 +880,13 @@ class order(models.Model):
         return picking_type
 
     def _build_rental_move_vals(self, picking_type):
-        """Build stock.move value dicts for all selected lines, exploding kits into components."""
+        """Build stock.move value dicts for all selected lines, exploding kits into components.
+
+        Component moves are linked to the KIT PARENT SOL (not to per-component helper SOLs).
+        Odoo's sale_renting only creates "extra" order lines for moves where sale_line_id is
+        False; pointing to the kit parent satisfies that check without adding hidden SOLs to
+        the order.
+        """
         src = picking_type.default_location_src_id
         dest = picking_type.default_location_dest_id
         move_vals_list = []
@@ -893,18 +899,22 @@ class order(models.Model):
 
             bom = self._get_phantom_bom_for_line(line)
             if bom:
-                component_lines = self._ensure_rental_kit_component_lines(line, bom)
-                for comp in component_lines:
-                    if not comp.product_id:
+                # Explode the BOM directly — no component SOLs are created.
+                # All component moves point to the kit parent SOL so Odoo does
+                # not add "extra" lines for the component products.
+                for bom_line in bom.bom_line_ids:
+                    comp = bom_line.product_id
+                    qty = bom_line.product_qty * (line.product_uom_qty or 1.0)
+                    if not comp or qty <= 0:
                         continue
                     move_vals_list.append({
-                        'name': comp.product_id.display_name,
-                        'product_id': comp.product_id.id,
-                        'product_uom_qty': comp.product_uom_qty,
-                        'product_uom': (comp.product_uom.id or comp.product_id.uom_id.id),
+                        'name': comp.display_name,
+                        'product_id': comp.id,
+                        'product_uom_qty': qty,
+                        'product_uom': bom_line.product_uom_id.id or comp.uom_id.id,
                         'location_id': src.id,
                         'location_dest_id': dest.id,
-                        'sale_line_id': comp.id,
+                        'sale_line_id': line.id,   # kit parent SOL
                     })
             else:
                 move_vals_list.append({
@@ -920,7 +930,11 @@ class order(models.Model):
         return move_vals_list
 
     def _build_rental_return_move_vals(self, picking_type):
-        """Build stock.move value dicts for the return transfer (mirrors pickup, reverse direction)."""
+        """Build stock.move value dicts for the return transfer (mirrors pickup, reverse direction).
+
+        Same kit-parent SOL strategy as _build_rental_move_vals — BOM is re-exploded
+        directly rather than looking up component SOLs.
+        """
         src = picking_type.default_location_src_id
         dest = picking_type.default_location_dest_id
         move_vals_list = []
@@ -933,20 +947,19 @@ class order(models.Model):
 
             bom = self._get_phantom_bom_for_line(line)
             if bom:
-                component_lines = self.order_line.filtered(
-                    lambda l: l.x_is_rental_kit_component and l.x_parent_rental_kit_line_id == line
-                )
-                for comp in component_lines:
-                    if not comp.product_id:
+                for bom_line in bom.bom_line_ids:
+                    comp = bom_line.product_id
+                    qty = bom_line.product_qty * (line.product_uom_qty or 1.0)
+                    if not comp or qty <= 0:
                         continue
                     move_vals_list.append({
-                        'name': comp.product_id.display_name,
-                        'product_id': comp.product_id.id,
-                        'product_uom_qty': comp.product_uom_qty,
-                        'product_uom': (comp.product_uom.id or comp.product_id.uom_id.id),
+                        'name': comp.display_name,
+                        'product_id': comp.id,
+                        'product_uom_qty': qty,
+                        'product_uom': bom_line.product_uom_id.id or comp.uom_id.id,
                         'location_id': src.id,
                         'location_dest_id': dest.id,
-                        'sale_line_id': comp.id,
+                        'sale_line_id': line.id,   # kit parent SOL
                     })
             else:
                 move_vals_list.append({
@@ -981,59 +994,81 @@ class order(models.Model):
                 l.product_id.display_name if l.product_id else '(section)',
             )
 
-    def _remove_extra_kit_sols(self, checkpoint):
-        """Delete lines that Odoo's rental module added for kit-component products.
+    def _remove_extra_kit_sols(self, checkpoint=""):
+        """Delete any order lines for kit-component products that should not appear on the quote.
 
-        These spurious lines share three characteristics confirmed by the user:
-          1. selected='false'  AND  optional='no'  simultaneously.
-          2. x_is_rental_kit_component=False  (not one of our own component SOLs).
-          3. product_id is a component of a kit that IS on the quote.
+        This covers two cases:
+          (a) Lines created by the OLD approach (_ensure_rental_kit_component_lines) that
+              have x_is_rental_kit_component=True — no longer needed because we now point
+              all component moves directly to the kit-parent SOL.
+          (b) Lines added by Odoo's sale_renting when it detects component products in the
+              transfer — these are always selected='false', optional='no'.
+
+        Detection: selected='false' AND optional='no' AND product is a BOM component of a
+        selected kit line on this order.  optional='yes' lines (user-visible add-ons) are
+        intentionally excluded.
+
+        Before deletion, any stock moves that still reference the removed SOLs are redirected
+        to the kit-parent SOL so picking state is not corrupted.
 
         SQL is used because sale.order.line.unlink() raises UserError on confirmed orders.
         """
         self.env.flush_all()
         self.invalidate_recordset(['order_line'])
 
-        component_product_ids = set(
-            self.order_line.filtered(lambda l: l.x_is_rental_kit_component)
-            .mapped('product_id.id')
-        )
-        _logger.info(
-            "[KIT-CLEANUP] %s — component_product_ids: %s",
-            checkpoint, component_product_ids,
-        )
+        # Build: component_product_id → kit_parent_sol_id  (from selected kit lines' BOMs)
+        kit_parent_by_component = {}
+        for line in self.order_line.filtered(
+            lambda l: l.selected == 'true' and not l.display_type and l.product_id
+        ):
+            bom = self._get_phantom_bom_for_line(line)
+            if not bom:
+                continue
+            for bom_line in bom.bom_line_ids:
+                if bom_line.product_id:
+                    kit_parent_by_component[bom_line.product_id.id] = line.id
 
-        if not component_product_ids:
-            _logger.info("[KIT-CLEANUP] %s — no component SOLs found, skipping.", checkpoint)
+        if not kit_parent_by_component:
+            _logger.info("[KIT-CLEANUP] %s — no kit BOMs found, skipping.", checkpoint)
             return
 
+        _logger.info(
+            "[KIT-CLEANUP] %s — kit component product IDs: %s",
+            checkpoint, set(kit_parent_by_component.keys()),
+        )
+
+        # Find all spurious lines: selected=false, optional=no, product is a BOM component.
+        # This intentionally INCLUDES x_is_rental_kit_component=True lines (old approach).
         extra = self.order_line.filtered(
             lambda l: (
                 l.selected == 'false'
                 and l.optional == 'no'
-                and not l.x_is_rental_kit_component
                 and not l.display_type
-                and l.product_id.id in component_product_ids
+                and l.product_id.id in kit_parent_by_component
             )
         )
         _logger.info(
-            "[KIT-CLEANUP] %s — filter matched %d line(s): %s",
+            "[KIT-CLEANUP] %s — matched %d line(s): %s",
             checkpoint, len(extra),
-            [(l.id, l.product_id.display_name) for l in extra],
+            [(l.id, l.product_id.display_name, l.x_is_rental_kit_component) for l in extra],
         )
 
         if not extra:
             return
 
         _logger.info(
-            "[KIT-CLEANUP] %s — DELETING %d spurious SOL(s) for order %s: %s",
+            "[KIT-CLEANUP] %s — DELETING %d SOL(s) for order %s: %s",
             checkpoint, len(extra), self.name,
             extra.mapped('product_id.display_name'),
         )
 
-        self.env['stock.move'].sudo().search(
-            [('sale_line_id', 'in', extra.ids)]
-        ).write({'sale_line_id': False})
+        # Redirect moves from each spurious SOL to its kit-parent SOL so the picking
+        # is not left with dangling sale_line_id references.
+        for sol in extra:
+            kit_parent_id = kit_parent_by_component.get(sol.product_id.id)
+            moves = self.env['stock.move'].sudo().search([('sale_line_id', '=', sol.id)])
+            if moves:
+                moves.write({'sale_line_id': kit_parent_id or False})
 
         self.env.cr.execute(
             "DELETE FROM sale_order_line WHERE id IN %s",
@@ -1045,15 +1080,16 @@ class order(models.Model):
         self.ensure_one()
 
         _logger.info("[KIT-CLEANUP] action_open_pickup START — order %s", self.name)
-        self._log_order_lines("BEFORE _build_rental_move_vals")
+
+        # Remove any component SOLs left over from the old _ensure_rental_kit_component_lines
+        # approach (or from a previous failed attempt) before building new move vals.
+        self._remove_extra_kit_sols("BEFORE pickup build")
 
         picking_type = self._get_rental_picking_type('RENTALOUT')
         move_vals_list = self._build_rental_move_vals(picking_type)
 
         if not move_vals_list:
             raise UserError(_('No products to pick up. Please select at least one product line.'))
-
-        self._log_order_lines("AFTER _build_rental_move_vals / BEFORE picking.create")
 
         picking = self.env['stock.picking'].create({
             'picking_type_id': picking_type.id,
@@ -1065,14 +1101,10 @@ class order(models.Model):
             'location_dest_id': picking_type.default_location_dest_id.id,
             'move_ids': [(0, 0, m) for m in move_vals_list],
         })
-
-        self._log_order_lines("AFTER picking.create / BEFORE action_confirm")
-        self._remove_extra_kit_sols("AFTER picking.create / BEFORE action_confirm")
-
         picking.action_confirm()
 
-        self._log_order_lines("AFTER action_confirm")
-        self._remove_extra_kit_sols("AFTER action_confirm")
+        # Safety net: remove any extra lines Odoo added during confirm.
+        self._remove_extra_kit_sols("AFTER pickup confirm")
 
         _logger.info("[KIT-CLEANUP] action_open_pickup END — order %s", self.name)
 
@@ -1088,15 +1120,14 @@ class order(models.Model):
         self.ensure_one()
 
         _logger.info("[KIT-CLEANUP] action_open_return START — order %s", self.name)
-        self._log_order_lines("RETURN: BEFORE _build_rental_return_move_vals")
+
+        self._remove_extra_kit_sols("BEFORE return build")
 
         picking_type = self._get_rental_picking_type('RENTALIN')
         move_vals_list = self._build_rental_return_move_vals(picking_type)
 
         if not move_vals_list:
             raise UserError(_('No products to return. Please ensure the order has selected delivered products.'))
-
-        self._log_order_lines("RETURN: AFTER _build_rental_return_move_vals / BEFORE picking.create")
 
         picking = self.env['stock.picking'].create({
             'picking_type_id': picking_type.id,
@@ -1108,14 +1139,9 @@ class order(models.Model):
             'location_dest_id': picking_type.default_location_dest_id.id,
             'move_ids': [(0, 0, m) for m in move_vals_list],
         })
-
-        self._log_order_lines("RETURN: AFTER picking.create / BEFORE action_confirm")
-        self._remove_extra_kit_sols("RETURN: AFTER picking.create / BEFORE action_confirm")
-
         picking.action_confirm()
 
-        self._log_order_lines("RETURN: AFTER action_confirm")
-        self._remove_extra_kit_sols("RETURN: AFTER action_confirm")
+        self._remove_extra_kit_sols("AFTER return confirm")
 
         _logger.info("[KIT-CLEANUP] action_open_return END — order %s", self.name)
 
