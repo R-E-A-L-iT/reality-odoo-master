@@ -13,4 +13,28 @@
             </xpath>
        </field>
    </record>
+
+   <!--
+       Extend the default product search view so that typing a value in the
+       search bar also matches the SKU field.  The original filter_domain covers
+       default_code, product_variant_ids.default_code, name, and barcode; we
+       OR in sku so it behaves like a first-class search target everywhere
+       products are listed (Inventory, Sales, Purchases, etc.).
+   -->
+   <record id="product_template_search_view_sku" model="ir.ui.view">
+       <field name="name">product.template.search.sku</field>
+       <field name="model">product.template</field>
+       <field name="inherit_id" ref="product.product_template_search_view"/>
+       <field name="arch" type="xml">
+           <xpath expr="//field[@name='name']" position="replace">
+               <field name="name" string="Product"
+                   filter_domain="['|', '|', '|', '|',
+                       ('default_code', 'ilike', self),
+                       ('product_variant_ids.default_code', 'ilike', self),
+                       ('name', 'ilike', self),
+                       ('barcode', 'ilike', self),
+                       ('sku', 'ilike', self)]"/>
+           </xpath>
+       </field>
+   </record>
 </odoo>
