@@ -715,158 +715,139 @@
                 <tr style="padding: 0; margin: 0;">
                     <td colspan="100" style="border: none; padding: 0 !important; margin: 0;">
 
-                        <!--
-                            OmniGO promotional block.
-                            Design: dark card with a red top-accent bar, bold headline,
-                            full-width rounded video, body copy, and a high-contrast CTA button.
-                            Everything stays within the quote column width.
-                        -->
+                        <!-- OmniGO promotional block: dark-red background, no rounded corners, no margin -->
                         <div style="
-                            background-color: #111111;
-                            border-radius: 10px;
-                            overflow: hidden;
-                            margin: 8px 0;
-                            box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+                            background: #1e0505;
+                            margin: 0;
+                            padding: 20px 20px 22px;
                             font-family: inherit;
                             line-height: normal;
                         ">
-                            <!-- Red accent bar at top -->
-                            <div style="height: 5px; background: #db0d0d;"></div>
+                            <!-- NEW badge + headline row -->
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                                <span style="
+                                    background: #db0d0d;
+                                    color: #ffffff;
+                                    font-size: 10px;
+                                    font-weight: 800;
+                                    letter-spacing: 1.5px;
+                                    text-transform: uppercase;
+                                    padding: 3px 8px;
+                                    border-radius: 3px;
+                                    flex-shrink: 0;
+                                ">NEW</span>
+                                <span style="
+                                    color: #ffffff;
+                                    font-size: 20px;
+                                    font-weight: 800;
+                                    letter-spacing: -0.3px;
+                                    line-height: 1.2;
+                                ">OmniGO</span>
+                            </div>
 
-                            <!-- Inner content -->
-                            <div style="padding: 22px 20px 26px;">
+                            <!-- Sub-headline -->
+                            <p style="
+                                color: #e8b0b0;
+                                font-size: 13px;
+                                font-weight: 400;
+                                margin: 0 0 14px 0;
+                                line-height: 1.4;
+                            ">
+                                <t t-if="language == 'fr_CA'">
+                                    L'adaptateur tout-en-un pour le BLK2GO — conçu pour simplifier vos workflows de terrain.
+                                </t>
+                                <t t-else="">
+                                    The all-in-one adapter for the BLK2GO — built to simplify your field workflows.
+                                </t>
+                            </p>
 
-                                <!-- NEW badge + headline -->
-                                <div style="
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 10px;
-                                    margin-bottom: 6px;
-                                ">
-                                    <span style="
-                                        background: #db0d0d;
-                                        color: #ffffff;
-                                        font-size: 10px;
-                                        font-weight: 800;
-                                        letter-spacing: 1.5px;
-                                        text-transform: uppercase;
-                                        padding: 3px 8px;
-                                        border-radius: 3px;
-                                        flex-shrink: 0;
-                                    ">NEW</span>
-                                    <span style="
-                                        color: #ffffff;
-                                        font-size: 20px;
-                                        font-weight: 800;
-                                        letter-spacing: -0.3px;
-                                        line-height: 1.2;
-                                    ">OmniGO</span>
-                                </div>
+                            <!--
+                                Responsive 16:9 video container.
+                                padding-bottom: 56.25% sets the height to match a 16:9 ratio so the
+                                iframe fills the box exactly with no black bars.
+                            -->
+                            <div style="
+                                position: relative;
+                                width: 100%;
+                                padding-bottom: 56.25%;
+                                height: 0;
+                                overflow: hidden;
+                                margin-bottom: 16px;
+                            ">
+                                <t t-if="language != 'fr_CA'">
+                                    <iframe
+                                        src="https://player.vimeo.com/video/1197522692"
+                                        frameborder="0"
+                                        allow="autoplay; fullscreen; picture-in-picture"
+                                        allowfullscreen=""
+                                        style="position:absolute; top:0; left:0; width:100%; height:100%; display:block;"
+                                    ></iframe>
+                                </t>
+                                <t t-else="">
+                                    <iframe
+                                        src="https://player.vimeo.com/video/1198501160"
+                                        frameborder="0"
+                                        allow="autoplay; fullscreen; picture-in-picture"
+                                        allowfullscreen=""
+                                        style="position:absolute; top:0; left:0; width:100%; height:100%; display:block;"
+                                    ></iframe>
+                                </t>
+                            </div>
 
-                                <!-- Sub-headline -->
-                                <p style="
-                                    color: #cccccc;
-                                    font-size: 13px;
-                                    font-weight: 400;
-                                    margin: 0 0 16px 0;
-                                    line-height: 1.4;
+                            <!-- Bottom row: body text left, CTA button right -->
+                            <div style="
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                gap: 16px;
+                                flex-wrap: wrap;
+                            ">
+                                <span style="
+                                    color: #e8b0b0;
+                                    font-size: 12px;
+                                    line-height: 1.5;
+                                    flex: 1 1 140px;
                                 ">
                                     <t t-if="language == 'fr_CA'">
-                                        L'adaptateur tout-en-un pour le BLK2GO — conçu pour simplifier vos workflows de terrain.
+                                        Découvrez toutes les caractéristiques et les prix sur notre site web.
                                     </t>
                                     <t t-else="">
-                                        The all-in-one adapter for the BLK2GO — built to simplify your field workflows.
+                                        See full specs and pricing on our website.
                                     </t>
-                                </p>
+                                </span>
 
-                                <!-- Video with rounded corners -->
-                                <div style="
-                                    border-radius: 8px;
-                                    overflow: hidden;
-                                    margin-bottom: 18px;
-                                    border: 1px solid #333333;
-                                ">
-                                    <t t-if="language != 'fr_CA'">
-                                        <iframe
-                                            src="https://player.vimeo.com/video/1197522692"
-                                            width="100%" height="360"
-                                            frameborder="0"
-                                            allow="autoplay; fullscreen; picture-in-picture"
-                                            allowfullscreen=""
-                                            style="display:block; width:100%;"
-                                        ></iframe>
-                                    </t>
-                                    <t t-else="">
-                                        <iframe
-                                            src="https://player.vimeo.com/video/1198501160"
-                                            width="100%" height="360"
-                                            frameborder="0"
-                                            allow="autoplay; fullscreen; picture-in-picture"
-                                            allowfullscreen=""
-                                            style="display:block; width:100%;"
-                                        ></iframe>
-                                    </t>
-                                </div>
-
-                                <!-- Divider -->
-                                <div style="height: 1px; background: #2a2a2a; margin-bottom: 18px;"></div>
-
-                                <!-- Bottom row: body text left, CTA right -->
-                                <div style="
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: space-between;
-                                    gap: 16px;
-                                    flex-wrap: wrap;
-                                ">
-                                    <span style="
-                                        color: #aaaaaa;
-                                        font-size: 12px;
-                                        line-height: 1.5;
-                                        flex: 1 1 160px;
-                                    ">
-                                        <t t-if="language == 'fr_CA'">
-                                            Découvrez toutes les caractéristiques et les prix sur notre site web.
-                                        </t>
-                                        <t t-else="">
-                                            See full specs and pricing on our website.
-                                        </t>
-                                    </span>
-
-                                    <a t-if="language == 'fr_CA'"
-                                       href="https://www.r-e-a-l.it/omnigo"
-                                       target="_blank"
-                                       style="
-                                           flex-shrink: 0;
-                                           display: inline-block;
-                                           background: #db0d0d;
-                                           color: #ffffff;
-                                           text-decoration: none;
-                                           font-size: 13px;
-                                           font-weight: 700;
-                                           letter-spacing: 0.3px;
-                                           padding: 10px 24px;
-                                           border-radius: 5px;
-                                           white-space: nowrap;
-                                       ">En savoir plus →</a>
-                                    <a t-else=""
-                                       href="https://www.r-e-a-l.it/omnigo"
-                                       target="_blank"
-                                       style="
-                                           flex-shrink: 0;
-                                           display: inline-block;
-                                           background: #db0d0d;
-                                           color: #ffffff;
-                                           text-decoration: none;
-                                           font-size: 13px;
-                                           font-weight: 700;
-                                           letter-spacing: 0.3px;
-                                           padding: 10px 24px;
-                                           border-radius: 5px;
-                                           white-space: nowrap;
-                                       ">Learn More →</a>
-                                </div>
-
+                                <a t-if="language == 'fr_CA'"
+                                   href="https://www.r-e-a-l.it/omnigo"
+                                   target="_blank"
+                                   style="
+                                       flex-shrink: 0;
+                                       display: inline-block;
+                                       background: #db0d0d;
+                                       color: #ffffff;
+                                       text-decoration: none;
+                                       font-size: 13px;
+                                       font-weight: 700;
+                                       letter-spacing: 0.3px;
+                                       padding: 10px 24px;
+                                       border-radius: 4px;
+                                       white-space: nowrap;
+                                   ">En savoir plus →</a>
+                                <a t-else=""
+                                   href="https://www.r-e-a-l.it/omnigo"
+                                   target="_blank"
+                                   style="
+                                       flex-shrink: 0;
+                                       display: inline-block;
+                                       background: #db0d0d;
+                                       color: #ffffff;
+                                       text-decoration: none;
+                                       font-size: 13px;
+                                       font-weight: 700;
+                                       letter-spacing: 0.3px;
+                                       padding: 10px 24px;
+                                       border-radius: 4px;
+                                       white-space: nowrap;
+                                   ">Learn More →</a>
                             </div>
                         </div>
 
