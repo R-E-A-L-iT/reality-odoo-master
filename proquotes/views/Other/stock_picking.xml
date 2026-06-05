@@ -13,6 +13,16 @@
                        invisible="not rental_operation"
                        readonly="state == 'done'"/>
             </xpath>
+
+            <!-- carrier_id and carrier_tracking_ref are locked readonly after
+                 validation by the base delivery module.  Override that so
+                 shipping info can always be corrected after the fact. -->
+            <xpath expr="//field[@name='carrier_id']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='carrier_tracking_ref']" position="attributes">
+                <attribute name="readonly">0</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>
