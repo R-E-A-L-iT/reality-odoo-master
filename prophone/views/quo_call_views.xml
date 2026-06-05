@@ -22,15 +22,24 @@
         <field name="model">quo.call</field>
         <field name="arch" type="xml">
             <form>
-                <header>
-                    <!-- <button name="%(action_quo_import_transcript_wizard)d"
-                        type="action"
-                        string="Import Transcript by Call ID"
-                        class="btn-primary"
-                        groups="base.group_system"/> -->
-
-                </header>
+                <header/>
                 <sheet>
+
+                    <!-- Smart buttons: related quotes & opportunities -->
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_view_related_quotes"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-file-text-o">
+                            <field name="quote_count" widget="statinfo" string="Quotes"/>
+                        </button>
+                        <button name="action_view_related_opportunities"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-star">
+                            <field name="opportunity_count" widget="statinfo" string="Opportunities"/>
+                        </button>
+                    </div>
 
                     <div class="oe_title">
                         <h1>
@@ -44,21 +53,14 @@
                             <field name="caller_to_partner_id" options="{'no_create': False}" class="oe_inline"/>
                         </div>
                     </div>
-                    
-                    <br></br>
+
+                    <br/>
                     <group string="Call details" colspan="2">
                         <group>
                             <field name="started_at" readonly="1"/>
                             <field name="ended_at" readonly="1"/>
                             <field name="direction" readonly="1"/>
                         </group>
-
-                        <!-- Dev-only -->
-                        <!-- <group groups="base.group_system">
-                            <field name="quo_call_id"/>
-                            <field name="phone_number_id"/>
-                            <field name="duration_seconds"/>
-                        </group> -->
                     </group>
 
                     <notebook>
@@ -85,31 +87,21 @@
                                     placeholder="No next steps yet..."
                                     class="oe_full_width"/>
                             </div>
-                             <!-- <group string="Raw">
-                                <field name="raw_summary_json" nolabel="1"/>
-                            </group> -->
                         </page>
                         <page string="Recording">
                             <group>
                                 <field name="recording_url" widget="url"/>
-                                <!-- <field name="recording_mimetype"/>
-                                <field name="recording_duration_seconds"/> -->
                             </group>
-                            <!-- <group string="Raw">
-                                <field name="raw_recording_json" nolabel="1"/>
-                            </group> -->
                         </page>
-                        <!-- <page string="Raw JSON" groups="base.group_system">
-                            <group>
-                                <field name="participants_json" widget="text"/>
-                                <field name="contact_ids_json" widget="text"/>
-                                <field name="raw_call_json" widget="text"/>
-                                <field name="raw_summary_json" widget="text"/>
-                                <field name="raw_recording_json" widget="text"/>
-                            </group>
-                        </page> -->
                     </notebook>
                 </sheet>
+
+                <!-- Chatter (log notes, activities, messages) -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
