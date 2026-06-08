@@ -90,6 +90,8 @@
         "views/Configuration/ccp_type_config_view.xml",
         "views/Configuration/ccp_period_config_view.xml",
         "views/Configuration/ccp_scanner_config_view.xml",
+        # confirmation activity templates
+        "views/Configuration/confirmation_activity_view.xml",
         # quotes
         "views/Quote/quote_report.xml",
         "views/Quote/quote_preview.xml",

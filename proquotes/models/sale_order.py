@@ -1325,6 +1325,50 @@ class order(models.Model):
             lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
         selected_lines._action_launch_stock_rule()
 
+        self._create_confirmation_activities()
+
+    def _create_confirmation_activities(self):
+        """
+        Create mail.activity records on each order based on the active
+        proquotes.confirmation.activity.template records.
+
+        Called automatically from _action_confirm.  Each template whose
+        ``order_type`` matches the order type (sale / rental / both) spawns
+        one activity on the order, assigned to the template's user with a
+        deadline of confirmation_date + days_after_confirmation.
+        """
+        templates = self.env['proquotes.confirmation.activity.template'].search([
+            ('active', '=', True),
+        ])
+        if not templates:
+            return
+
+        ActivityModel = self.env['mail.activity'].sudo()
+        sale_order_model = self.env['ir.model']._get('sale.order')
+        today = fields.Date.today()
+
+        for order in self:
+            is_rental = bool(getattr(order, 'is_rental_order', False))
+
+            for tmpl in templates:
+                # Filter by order type
+                if tmpl.order_type == 'sale' and is_rental:
+                    continue
+                if tmpl.order_type == 'rental' and not is_rental:
+                    continue
+
+                deadline = today + timedelta(days=tmpl.days_after_confirmation)
+
+                ActivityModel.create({
+                    'activity_type_id': tmpl.activity_type_id.id,
+                    'summary':          tmpl.name,
+                    'note':             tmpl.description or '',
+                    'user_id':          tmpl.user_id.id,
+                    'date_deadline':    deadline,
+                    'res_model_id':     sale_order_model.id,
+                    'res_id':           order.id,
+                })
+
     def _is_rental_quote_for_template_domain(self):
         self.ensure_one()
 
