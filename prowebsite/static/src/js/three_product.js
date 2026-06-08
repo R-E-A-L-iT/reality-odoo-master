@@ -23,7 +23,7 @@ whenReady(async () => {
     const _i18n = {
         fr_CA: {
             navAdapt:          'Adapter',
-            navExpand:         'Étendre',
+            navExpand:         'Augmentez',
             navCapture:        'Capturer',
             buyNow:            'Acheter maintenant',
             ariaHome:          'Accueil R-E-A-L',
