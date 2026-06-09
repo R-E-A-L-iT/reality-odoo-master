@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Product form: add Shipping tab -->
+    <record id="product_template_shipping_form_view" model="ir.ui.view">
+        <field name="name">product.template.shipping.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales']" position="after">
+                <page string="Shipping" name="shipping_config">
+                    <group string="Shipping Configuration">
+                        <field name="no_shipping"/>
+                        <field name="allowed_carrier_ids"
+                               widget="many2many_tags"
+                               invisible="no_shipping"
+                               options="{'no_create': True}"/>
+                    </group>
+                    <p class="text-muted fst-italic" invisible="not no_shipping">
+                        This product is marked as digital/software. No shipping method will be
+                        presented to the customer for this product at checkout.
+                    </p>
+                    <p class="text-muted fst-italic"
+                       invisible="no_shipping or allowed_carrier_ids">
+                        No carrier restriction set — all published shipping methods will be
+                        available for this product.
+                    </p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Product list: add optional No Shipping column -->
+    <record id="product_template_shipping_list_view" model="ir.ui.view">
+        <field name="name">product.template.shipping.list</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="no_shipping" optional="show" string="No Shipping"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
