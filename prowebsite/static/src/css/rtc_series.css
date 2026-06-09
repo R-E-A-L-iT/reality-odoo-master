@@ -16,37 +16,50 @@
     box-sizing: border-box;
 }
 
-/* ─── Hero ──────────────────────────────────────────────────────────────────── */
-.o_rtc_hero {
+/* ─── Viewport escape helper
+   Applied to every full-bleed section so it punches out of Odoo's
+   centered container and spans the full browser viewport width.
+   Same technique as o_omnigo_video_scroll_inner in three_product.css.
+   ─────────────────────────────────────────────────────────────────────── */
+.o_rtc_hero,
+.o_rtc_tabs_wrap,
+.o_rtc_panel,
+.o_rtc_compare_section,
+.o_rtc_tech_section {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
     position: relative;
-    overflow: hidden;
-    padding: 110px clamp(24px, 6vw, 80px) 90px;
-    text-align: center;
-
-    background:
-        radial-gradient(circle at 15% 25%, rgba(255, 100, 100, 0.15), transparent 38%),
-        radial-gradient(circle at 80% 70%, rgba(255, 60,  60,  0.10), transparent 42%),
-        radial-gradient(circle at 50% 50%, rgba(100, 0,   0,   0.20), transparent 55%),
-        linear-gradient(135deg, #2b0000 0%, #4d0000 35%, #7a0000 70%, #520000 100%);
-    background-blend-mode: screen, overlay, soft-light, normal;
-    color: #fff;
 }
 
+/* ─── Hero ──────────────────────────────────────────────────────────────────── */
+.o_rtc_hero {
+    padding: 110px clamp(24px, 6vw, 80px) 90px;
+    text-align: center;
+    color: #fff;
+
+    /* Photo background — dark gradient overlay on top keeps text legible */
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,0.52) 0%,
+            rgba(10,0,0,0.38) 45%,
+            rgba(30,0,0,0.70) 100%
+        ),
+        url("https://leica-geosystems.com/-/media/images/leicageosystems/products/laserscanners/tandt-project/press-release/leica-rtc-series-3d-laser-scanners-2480x750.jpg?h=750&iar=0&w=2480&hash=C3BF3771851EAE9B5EFDFBECCF141F93");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* Subtle vignette on the edges */
 .o_rtc_hero::before {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.09;
-    background-image:
-        repeating-linear-gradient(
-            45deg,
-            rgba(255,255,255,0.04) 0px,
-            rgba(255,255,255,0.04) 2px,
-            transparent 2px,
-            transparent 6px
-        );
+    background: radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(0,0,0,0.35) 100%);
 }
 
 .o_rtc_hero_inner {
@@ -532,7 +545,6 @@
 
 /* ─── Core technology section ───────────────────────────────────────────────── */
 .o_rtc_tech_section {
-    position: relative;
     overflow: hidden;
     padding: 88px clamp(20px, 5vw, 64px);
     color: #fff;
