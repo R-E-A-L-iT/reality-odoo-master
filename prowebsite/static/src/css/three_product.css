@@ -2426,7 +2426,8 @@ body {
     line-height: 1.5;
 }
 
-.o_omnigo_promo_close {
+.o_omnigo_promo_close,
+.o_rtc_promo_close {
     background: none;
     border: none;
     color: rgba(0, 0, 0, 0.28);
@@ -2439,7 +2440,8 @@ body {
     transition: color 0.15s ease;
 }
 
-.o_omnigo_promo_close:hover {
+.o_omnigo_promo_close:hover,
+.o_rtc_promo_close:hover {
     color: rgba(0, 0, 0, 0.7);
 }
 
