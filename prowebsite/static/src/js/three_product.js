@@ -419,7 +419,28 @@ whenReady(async () => {
     });
 
     if (!bottomModelHost || !scrollHost) {
-        console.warn("[loader] early exit — missing host element(s), script will not run on this page");
+        console.warn("[loader] early exit — missing host element(s), Three.js will not run on this page");
+        // Still wire up lightweight features that don't need the 3D canvas
+        initVideoGallery();
+        initOmnigoBuySection();
+        const _faqListEarly = document.querySelector(".o_omnigo_faq_list");
+        if (_faqListEarly) {
+            _faqListEarly.addEventListener("click", e => {
+                const btn = e.target.closest(".o_omnigo_faq_q");
+                if (!btn) return;
+                const item = btn.closest(".o_omnigo_faq_item");
+                if (!item) return;
+                const isOpen = item.classList.contains("is-open");
+                _faqListEarly.querySelectorAll(".o_omnigo_faq_item.is-open").forEach(el => {
+                    el.classList.remove("is-open");
+                    el.querySelector(".o_omnigo_faq_q")?.setAttribute("aria-expanded", "false");
+                });
+                if (!isOpen) {
+                    item.classList.add("is-open");
+                    btn.setAttribute("aria-expanded", "true");
+                }
+            });
+        }
         return;
     }
 
