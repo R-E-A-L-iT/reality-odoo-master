@@ -254,6 +254,7 @@
 .o_rtc_info {
     flex: 1 1 0;
     min-width: 0;
+    text-align: left;
 }
 
 .o_rtc_badge {
@@ -396,6 +397,24 @@
     color: #0a0a0a;
     letter-spacing: -0.02em;
     line-height: 1.1;
+}
+
+.o_rtc_price_currency {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #888;
+    vertical-align: super;
+    margin-left: 5px;
+}
+
+.o_rtc_price_note {
+    margin: 6px 0 0;
+    font-size: 11px;
+    color: #aaa;
+    font-weight: 500;
+    line-height: 1.4;
 }
 
 .o_rtc_buy_btn {
