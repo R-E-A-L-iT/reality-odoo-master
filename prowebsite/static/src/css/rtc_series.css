@@ -34,9 +34,13 @@
 
 /* ─── Hero ──────────────────────────────────────────────────────────────────── */
 .o_rtc_hero {
-    padding: 110px clamp(24px, 6vw, 80px) 90px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px clamp(24px, 6vw, 80px);
     text-align: center;
-    color: #fff;
+    color: #fff !important;
 
     /* Photo background — dark gradient overlay on top keeps text legible */
     background-image:
