@@ -4,6 +4,9 @@
    Colour palette and typography match the existing prowebsite design language.
    ════════════════════════════════════════════════════════════════════════════ */
 
+/* Pricing temporarily hidden — re-enable by removing this rule */
+.o_rtc_price_wrap { display: none !important; }
+
 /* ─── Reset / base ─────────────────────────────────────────────────────────── */
 .o_rtc_page {
     font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
