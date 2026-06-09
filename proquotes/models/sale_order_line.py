@@ -128,6 +128,16 @@ class SaleOrderLine(models.Model):
             ], limit=1)
             line.is_kit_product = bool(bom)
 
+    def action_open_kit_qty_wizard(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Edit Kit Component Quantities',
+            'res_model': 'proquotes.kit.qty.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_sale_line_id': self.id},
+        }
+
     def _extract_move_ids_from_commands(self, cmds):
         ids = []
         if not cmds:
