@@ -1,5 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_proquotes_variant,access_proquotes_variant,model_proquotes_variant,base.group_user,1,1,1,1
+proquotes.access_website_quotation_public,access_website_quotation_public,proquotes.model_proquotes_website_quotation,base.group_public,1,0,1,0
+proquotes.access_website_quotation_user,access_website_quotation_user,proquotes.model_proquotes_website_quotation,base.group_user,1,1,1,1
 proquotes.access_renewal_entry,access_renewal_entry,proquotes.model_renewal_entry,base.group_user,1,1,1,1
 proquotes.access_renewal_map,access_renewal_map,proquotes.model_renewal_map,base.group_user,1,1,1,1
 proquotes.access_header_footer,access_header_footer,proquotes.model_header_footer,base.group_user,1,1,1,1
@@ -12,5 +14,7 @@ proquotes.access_ccp_period_config_manager,access_ccp_period_config_manager,proq
 proquotes.access_ccp_scanner_config_user,access_ccp_scanner_config_user,proquotes.model_ccp_scanner_config,base.group_user,1,0,0,0
 proquotes.access_ccp_scanner_config_manager,access_ccp_scanner_config_manager,proquotes.model_ccp_scanner_config,sales_team.group_sale_manager,1,1,1,1
 access_res_users_company_footer_user,res.users.company.footer.user,model_res_users_company_footer,base.group_user,1,1,1,1
+proquotes.access_kit_qty_wizard,access_kit_qty_wizard,proquotes.model_proquotes_kit_qty_wizard,base.group_user,1,1,1,1
+proquotes.access_kit_qty_wizard_line,access_kit_qty_wizard_line,proquotes.model_proquotes_kit_qty_wizard_line,base.group_user,1,1,1,1
 proquotes.access_confirmation_activity_template_user,access_confirmation_activity_template_user,proquotes.model_proquotes_confirmation_activity_template,base.group_user,1,0,0,0
 proquotes.access_confirmation_activity_template_manager,access_confirmation_activity_template_manager,proquotes.model_proquotes_confirmation_activity_template,sales_team.group_sale_manager,1,1,1,1

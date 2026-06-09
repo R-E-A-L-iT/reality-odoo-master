@@ -88,6 +88,11 @@ class SaleOrderLine(models.Model):
                                    help="Field to Mark Wether Customer has Selected Product",
                                    )
 
+    ba_kit_description = fields.Text(
+        string='Kit Items',
+        help='Auto-generated kit component list for this quote line. Edit via the "Edit Kit Qty" button.',
+    )
+
     x_parent_rental_kit_line_id = fields.Many2one(
         "sale.order.line",
         string="Parent Rental Kit Line",
@@ -103,6 +108,25 @@ class SaleOrderLine(models.Model):
     )
 
     preconfigured_section_id = fields.Many2one('preconfigured.section', string='Preconfigured Section')
+
+
+    is_kit_product = fields.Boolean(
+        string='Is Kit Product',
+        compute='_compute_is_kit_product',
+        store=True,
+    )
+
+    @api.depends('product_id')
+    def _compute_is_kit_product(self):
+        for line in self:
+            if not line.product_id:
+                line.is_kit_product = False
+                continue
+            bom = self.env['mrp.bom'].sudo().search([
+                ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),
+                ('type', '=', 'phantom'),
+            ], limit=1)
+            line.is_kit_product = bool(bom)
 
     def _extract_move_ids_from_commands(self, cmds):
         ids = []
@@ -130,6 +154,7 @@ class SaleOrderLine(models.Model):
                     line.price_unit = line.product_id.list_price
                 else:
                     line.price_unit = line.product_id.lst_price
+                line.ba_kit_description = line.product_id.get_kit_description_text() or False
             if line.order_id and line.order_id.sale_order_template_id.name.lower() == 'sales blank':
                 line.is_selected = True
             else:

@@ -90,3 +90,48 @@ FormEditorRegistry.add('create_rental_quote', {
 //     }, 
     // successPage: '/job-thank-you',
 });
+
+
+FormEditorRegistry.add('create_quotation', {
+    formFields: [{
+        type: 'char',
+        required: true,
+        fillWith: 'company_name',
+        name: 'company_name',
+        string: _t('Company Name'),
+    }, {
+        type: 'char',
+        required: true,
+        fillWith: 'partner_name',
+        name: 'partner_name',
+        string: _t('Name'),
+    }, {
+        type: 'char',
+        required: true,
+        fillWith: 'quote_email',
+        name: 'quote_email',
+        string: _t('Email'),
+    }, {
+        type: 'datetime',
+        required: false,
+        name: 'date_order',
+        string: _t('Order Date'),
+    }],
+    fields: [{
+        name: 'sale_order_template_id',
+        type: 'many2one',
+        relation: 'sale.order.template',
+        string: _t('Quotation Template'),
+    }, {
+        name: 'user_id',
+        type: 'many2one',
+        relation: 'res.users',
+        domain: [['share', '=', false]],
+        string: _t('Salesperson'),
+    }, {
+        name: 'pricelist_id',
+        type: 'many2one',
+        relation: 'product.pricelist',
+        string: _t('Pricelist'),
+    }],
+});

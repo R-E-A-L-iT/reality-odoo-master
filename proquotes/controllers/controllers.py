@@ -781,8 +781,69 @@ class WebsiteForm(form.WebsiteForm):
     #     return super().insert_record(request, model, values, custom, meta=meta)
 
 
+    def _handle_quotation_form(self, request, values):
+        from datetime import datetime as dt
+        partner_email = values.get('quote_email') or values.get('email')
+        partner_name  = values.get('partner_name') or partner_email or 'Website Customer'
+        company_name  = values.get('company_name') or partner_name
+
+        if not partner_email:
+            raise UserError(_("Email is required for creating a quotation."))
+
+        company_partner = request.env['res.partner'].sudo().search(
+            [('name', '=', company_name), ('is_company', '=', True)], limit=1
+        )
+        if not company_partner:
+            company_partner = request.env['res.partner'].sudo().create({
+                'name': company_name,
+                'is_company': True,
+                'lang': request.context.get('lang', 'en_US'),
+            })
+
+        individual = request.env['res.partner'].sudo().search(
+            [('email', '=', partner_email), ('is_company', '=', False)], limit=1
+        )
+        if not individual:
+            individual = request.env['res.partner'].sudo().create({
+                'name': partner_name,
+                'email': partner_email,
+                'parent_id': company_partner.id,
+                'is_company': False,
+                'lang': request.context.get('lang', 'en_US'),
+            })
+
+        order_vals = {
+            'partner_id': company_partner.id,
+            'company_id': request.website.company_id.id,
+            'is_rental_order': False,
+        }
+        if values.get('date_order') and isinstance(values['date_order'], str):
+            try:
+                order_vals['date_order'] = dt.strptime(values['date_order'], '%Y-%m-%d %H:%M:%S')
+            except ValueError:
+                try:
+                    order_vals['date_order'] = dt.strptime(values['date_order'], '%Y-%m-%d')
+                except ValueError:
+                    pass
+        for int_field in ('user_id', 'sale_order_template_id', 'pricelist_id'):
+            if values.get(int_field):
+                try:
+                    order_vals[int_field] = int(values[int_field])
+                except (ValueError, TypeError):
+                    pass
+
+        order = request.env['sale.order'].sudo().create(order_vals)
+        if order.sale_order_template_id:
+            order._onchange_sale_order_template_id()
+        order.message_subscribe(partner_ids=[individual.id])
+        _logger.info('Created quotation sale.order: %s', order.id)
+        return order.id
+
+
 
     def insert_record(self, request, model, values, custom, meta=None):
+        if model.model == 'proquotes.website.quotation':
+            return self._handle_quotation_form(request, values)
         if model.model == 'sale.order':
             _logger.info('Processing sale.order form submission: %s', values)
             _logger.info('Processing  form custom: %s', custom)

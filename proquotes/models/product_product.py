@@ -22,6 +22,23 @@ _logger = logging.getLogger(__name__)
 class products(models.Model):
     _inherit = "product.product"
     
+
+    def get_kit_description_text(self):
+        bom = self.env['mrp.bom'].sudo().search([
+            ('product_tmpl_id', '=', self.product_tmpl_id.id),
+            ('type', '=', 'phantom'),
+        ], limit=1)
+        if not bom or not bom.bom_line_ids:
+            return ''
+        lines = []
+        for line in bom.sudo().bom_line_ids:
+            qty = int(line.product_qty) if line.product_qty == int(line.product_qty) else line.product_qty
+            sku = line.product_id.product_tmpl_id.sku
+            name = line.product_id.name
+            part = f"{qty}x {sku} - {name}" if sku else f"{qty}x {name}"
+            lines.append(part)
+        return '\n'.join(lines)
+        
     def get_product_multiline_description_sale(self):
         bom = self.env['mrp.bom'].search([
             ('product_tmpl_id', '=', self.product_tmpl_id.id),
