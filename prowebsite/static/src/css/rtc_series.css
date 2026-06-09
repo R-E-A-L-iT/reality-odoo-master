@@ -50,6 +50,7 @@
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
+    color: #fff !important;
 }
 
 /* Subtle vignette on the edges */
@@ -75,7 +76,7 @@
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba(255, 180, 180, 0.88);
+    color: rgba(255, 180, 180, 0.88) !important;
 }
 
 .o_rtc_hero_title {
@@ -83,7 +84,7 @@
     font-size: clamp(48px, 10vw, 110px);
     font-weight: 900;
     letter-spacing: -0.02em;
-    color: #fff;
+    color: #fff !important;
     margin: 0 0 24px;
     line-height: 1;
 }
@@ -98,7 +99,7 @@
 
 .o_rtc_hero_sub {
     font-size: clamp(15px, 1.8vw, 21px);
-    color: rgba(255, 255, 255, 0.70);
+    color: rgba(255, 255, 255, 0.70) !important;
     margin: 0;
     line-height: 1.65;
     max-width: 600px;
@@ -547,7 +548,7 @@
 .o_rtc_tech_section {
     overflow: hidden;
     padding: 88px clamp(20px, 5vw, 64px);
-    color: #fff;
+    color: #fff !important;
 
     background:
         radial-gradient(circle at 15% 25%, rgba(255, 100, 100, 0.15), transparent 38%),
@@ -592,14 +593,14 @@
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: rgba(255, 180, 180, 0.88);
+    color: rgba(255, 180, 180, 0.88) !important;
 }
 
 .o_rtc_tech_title {
     font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(28px, 3.5vw, 44px);
     font-weight: 900;
-    color: #fff;
+    color: #fff !important;
     margin: 0;
     letter-spacing: -0.02em;
 }
@@ -651,7 +652,7 @@
 .o_rtc_tech_card_title {
     font-size: 17px;
     font-weight: 800;
-    color: #fff;
+    color: #fff !important;
     margin: 0 0 12px;
     line-height: 1.25;
     letter-spacing: -0.01em;
@@ -659,7 +660,7 @@
 
 .o_rtc_tech_card_body {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.65);
+    color: rgba(255, 255, 255, 0.65) !important;
     line-height: 1.75;
     margin: 0;
 }
