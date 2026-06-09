@@ -2493,6 +2493,85 @@ body {
     }
 }
 
+/* ─── Notification stack — wraps OmniGO + RTC popups together ──────────────── */
+/* JS creates this container and moves any .*_promo elements into it.
+   flex-direction:column makes them stack; when one is dismissed (display:none)
+   the other slides up naturally. pointer-events:none on the container means
+   only the popup cards themselves are clickable, not the gap between them.   */
+.o_promo_stack {
+    position: fixed;
+    top: 95px;
+    right: 24px;
+    z-index: 9000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+/* Popups inside the stack: override their individual fixed positioning */
+.o_promo_stack .o_omnigo_promo,
+.o_promo_stack .o_rtc_promo {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    pointer-events: auto;
+}
+
+/* Stagger entry: second popup in the stack slides in 150 ms after the first */
+.o_promo_stack > :nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+@media (max-width: 767px) {
+    .o_promo_stack {
+        top: auto;
+        bottom: 16px;
+        right: 12px;
+        left: 12px;
+        flex-direction: column-reverse; /* most recent notification closest to bottom edge */
+    }
+}
+
+/* ─── RTC Series promo popup — same visual style as OmniGO promo ────────────── */
+.o_rtc_promo {
+    position: fixed;
+    top: 95px;
+    right: 24px;
+    z-index: 9000;
+    width: 380px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), 0 1px 4px rgba(0, 0, 0, 0.08);
+    color: #111;
+    font-family: inherit;
+    overflow: hidden;
+    animation: omnigo-promo-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.o_rtc_promo.is-dismissed {
+    animation: omnigo-promo-out 0.3s ease forwards;
+    pointer-events: none;
+}
+
+@media (max-width: 767px) {
+    .o_rtc_promo {
+        top: auto;
+        bottom: 16px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+    }
+}
+
 /* ─── OmniGO rental-kit promo section ──────────────────────────────────────── */
 .o_omnigo_rental_promo {
     position: relative;
