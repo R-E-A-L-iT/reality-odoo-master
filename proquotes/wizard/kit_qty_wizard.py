@@ -91,14 +91,7 @@ class KitQtyWizard(models.TransientModel):
             parts.append(part)
         line.write({'ba_kit_description': '\n'.join(parts)})
 
-        # Sync quantities to pending (non-done) stock moves on linked delivery
-        moves = self.env['stock.move'].search([
-            ('sale_line_id', '=', line.id),
-            ('state', 'not in', ['done', 'cancel']),
-        ])
-        for wl in self.line_ids:
-            matching = moves.filtered(lambda m: m.product_id == wl.product_id)
-            if matching:
-                matching.write({'product_uom_qty': wl.qty})
+        # Sync to any pending delivery moves (order already confirmed case)
+        line._sync_kit_qty_to_delivery()
 
         return {'type': 'ir.actions.act_window_close'}

@@ -725,6 +725,7 @@ class order(models.Model):
         selected_lines = self.order_line.sudo().filtered(
             lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
         selected_lines._action_launch_stock_rule()
+        selected_lines.filtered('is_kit_product')._sync_kit_qty_to_delivery()
 
 
 
