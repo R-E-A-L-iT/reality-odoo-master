@@ -84,4 +84,23 @@ whenReady(() => {
 
         observer.observe(gallery);
     });
+
+    // ── Specs section scrollspy — highlight active nav link ──────────────────
+    const specNavLinks = Array.from(page.querySelectorAll(".o_rtc_specs_nav_link"));
+    const specGroups   = Array.from(page.querySelectorAll(".o_rtc_spec_group[id]"));
+
+    if (specNavLinks.length && specGroups.length) {
+        // rootMargin: ignore top 15% and bottom 60% of viewport so only the
+        // section occupying the upper-middle band triggers "active".
+        const spyObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                const link = page.querySelector(
+                    `.o_rtc_specs_nav_link[href="#${entry.target.id}"]`
+                );
+                if (link) link.classList.toggle("is-active", entry.isIntersecting);
+            });
+        }, { rootMargin: "-15% 0px -60% 0px", threshold: 0 });
+
+        specGroups.forEach(g => spyObserver.observe(g));
+    }
 });
