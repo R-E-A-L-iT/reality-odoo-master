@@ -1,3 +1,9 @@
+
+/* livechat thing */
+div.o-mail-ChatWindowContainer > div > div.o-mail-ChatWindow-header.d-flex.align-items-center.flex-shrink-0.bg-100.cursor-pointer.border-bottom > button:nth-child(5) > i, div.o-mail-ChatWindowContainer > div > div.o-mail-ChatWindow-header.d-flex.align-items-center.flex-shrink-0.bg-100.cursor-pointer.border-bottom > button:nth-child(4) > i {
+    color: white !important;
+}
+
 .oe_product_cart {
     background-color: #181A1E !important;
     color: #fff !important;
