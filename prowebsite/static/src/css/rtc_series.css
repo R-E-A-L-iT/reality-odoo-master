@@ -12,7 +12,7 @@
     width: 100vw;
     max-width: 100vw;
     margin-left: calc(50% - 50vw);
-    background: #f7f8fa;
+    background: #ffffff;
     padding: 80px clamp(24px, 5vw, 80px) 100px;
 }
 
@@ -47,7 +47,7 @@
     color: #0a0a0a;
 }
 
-/* Layout: sticky nav (25%) + content (75%) */
+/* Layout: sticky nav + content */
 .o_rtc_specs_layout {
     display: flex;
     gap: 56px;
@@ -56,7 +56,7 @@
 
 /* ── Left nav ── */
 .o_rtc_specs_nav {
-    width: 200px;
+    width: 190px;
     flex-shrink: 0;
     position: sticky;
     top: 110px;
@@ -68,29 +68,37 @@
     font-weight: 800;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: #b0b0b0;
+    color: #c0c0c0;
     display: block;
-    margin: 0 0 12px 16px;
+    margin: 0 0 10px 14px;
 }
 
 .o_rtc_specs_nav_link {
     display: block;
-    padding: 9px 16px;
-    color: #555 !important;
+    padding: 8px 14px;
+    color: #aaa !important;
     text-decoration: none !important;
     font-family: "Montserrat", sans-serif;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 600;
-    border-left: 3px solid transparent;
+    border-left: 2px solid transparent;
     border-radius: 0 6px 6px 0;
-    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    letter-spacing: 0.01em;
 }
 
-.o_rtc_specs_nav_link:hover,
+.o_rtc_specs_nav_link:hover {
+    color: #333 !important;
+    border-left-color: #ddd;
+    background: #f5f5f5;
+    text-decoration: none !important;
+}
+
 .o_rtc_specs_nav_link.is-active {
-    color: #e00000 !important;
+    color: #0a0a0a !important;
     border-left-color: #e00000;
-    background: rgba(224, 0, 0, 0.05);
+    background: transparent;
+    font-weight: 700;
     text-decoration: none !important;
 }
 
@@ -102,65 +110,61 @@
 
 /* ── Spec group ── */
 .o_rtc_spec_group {
-    margin-bottom: 48px;
+    margin-bottom: 52px;
     scroll-margin-top: 120px;
 }
 
+/* Group heading: clean typographic label, no red bar */
 .o_rtc_spec_group_heading {
-    padding-bottom: 14px;
-    border-bottom: 2px solid #e00000;
+    padding-bottom: 16px;
     margin-bottom: 0;
 }
 
 .o_rtc_spec_group_heading h3 {
     margin: 0;
-    font-family: "Arial Black", "Montserrat", sans-serif;
-    font-size: 13px;
-    font-weight: 900;
-    letter-spacing: 0.09em;
+    font-family: "Montserrat", sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #0a0a0a;
+    color: #999;
 }
 
-/* ── Spec table (card) ── */
+/* ── Spec table: no card, just clean rows ── */
 .o_rtc_spec_table {
-    background: #ffffff;
-    border: 1px solid #e8e8e8;
-    border-top: none;
-    border-radius: 0 0 10px 10px;
-    overflow: hidden;
+    border-top: 1px solid #ebebeb;
 }
 
 /* ── Individual spec rows ── */
 .o_rtc_spec_row {
     display: grid;
-    grid-template-columns: 200px 1fr;
-    border-bottom: 1px solid #f0f0f0;
-    min-height: 50px;
+    grid-template-columns: 210px 1fr;
+    border-bottom: 1px solid #f2f2f2;
+    min-height: 52px;
+    transition: background 0.12s ease;
 }
 
+.o_rtc_spec_row:hover { background: #fafafa; }
 .o_rtc_spec_row:last-child { border-bottom: none; }
-.o_rtc_spec_row:nth-child(odd)  { background: #fafafa; }
-.o_rtc_spec_row:nth-child(even) { background: #ffffff; }
 
 .o_rtc_spec_row_label {
-    padding: 13px 18px;
+    padding: 15px 18px 15px 0;
     font-family: "Montserrat", sans-serif;
     font-size: 12px;
-    font-weight: 700;
-    color: #666;
+    font-weight: 600;
+    color: #888;
     line-height: 1.45;
-    border-right: 1px solid #f0f0f0;
     display: flex;
     align-items: flex-start;
 }
 
 .o_rtc_spec_row_value {
-    padding: 13px 18px;
+    padding: 15px 0 15px 18px;
     font-family: "Montserrat", sans-serif;
     font-size: 13px;
-    color: #1a1a1a;
-    line-height: 1.6;
+    color: #111;
+    line-height: 1.65;
+    border-left: 1px solid #f2f2f2;
 }
 
 /* ── Model-specific rows: 3-column sub-grid ── */
@@ -171,8 +175,8 @@
 }
 
 .o_rtc_spec_model_col {
-    padding: 13px 16px;
-    border-right: 1px solid #f0f0f0;
+    padding: 15px 16px;
+    border-right: 1px solid #f2f2f2;
 }
 .o_rtc_spec_model_col:last-child { border-right: none; }
 
@@ -182,35 +186,35 @@
     font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #e00000;
+    color: #c8c8c8;
     margin-bottom: 5px;
 }
 
 .o_rtc_spec_model_value {
     font-family: "Montserrat", sans-serif;
     font-size: 12.5px;
-    color: #1a1a1a;
+    color: #111;
     line-height: 1.55;
 }
 
 .o_rtc_spec_na {
-    color: #bbb;
+    color: #d0d0d0;
     font-size: 15px;
     line-height: 1;
 }
 
 /* ── Column header row (model names as labels) ── */
 .o_rtc_spec_row--colheader {
-    background: #f0f2f5 !important;
-    min-height: 36px;
+    background: #f8f8f8 !important;
+    min-height: 34px;
+    border-bottom: 1px solid #ebebeb !important;
 }
 
+.o_rtc_spec_row--colheader:hover { background: #f8f8f8 !important; }
+
 .o_rtc_spec_row--colheader .o_rtc_spec_row_label {
-    color: #aaa;
+    color: transparent;
     font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    align-items: center;
 }
 
 .o_rtc_spec_row--colheader .o_rtc_spec_row_value {
@@ -226,8 +230,10 @@
 }
 
 .o_rtc_spec_row--colheader .o_rtc_spec_model_name {
-    font-size: 11px;
-    color: #444;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #555;
     margin-bottom: 0;
 }
 
@@ -244,14 +250,14 @@
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
-        padding: 16px;
-        background: #eef0f3;
+        padding: 14px;
+        background: #f5f5f5;
         border-radius: 10px;
     }
 
     .o_rtc_specs_nav_label {
         width: 100%;
-        margin: 0 0 6px 0;
+        margin: 0 0 4px 0;
     }
 
     .o_rtc_specs_nav_link {
@@ -262,10 +268,15 @@
         font-size: 11px;
     }
 
-    .o_rtc_specs_nav_link:hover,
+    .o_rtc_specs_nav_link:hover {
+        border-left-color: transparent;
+        background: #ececec;
+    }
+
     .o_rtc_specs_nav_link.is-active {
         border-left-color: transparent;
-        background: rgba(224, 0, 0, 0.08);
+        background: rgba(224, 0, 0, 0.07);
+        color: #e00000 !important;
     }
 }
 
@@ -281,14 +292,16 @@
     }
 
     .o_rtc_spec_row_label {
-        border-right: none;
-        border-bottom: 1px solid #f0f0f0;
-        padding: 10px 14px 7px;
+        padding: 12px 0 4px;
         font-size: 10.5px;
-        color: #999;
+        color: #aaa;
+        border-left: none;
     }
 
-    .o_rtc_spec_row_value { padding: 10px 14px; }
+    .o_rtc_spec_row_value {
+        padding: 0 0 12px;
+        border-left: none;
+    }
 
     .o_rtc_spec_row--model .o_rtc_spec_row_value {
         grid-template-columns: 1fr;
@@ -296,7 +309,8 @@
 
     .o_rtc_spec_model_col {
         border-right: none;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f2f2f2;
+        padding: 10px 0;
     }
     .o_rtc_spec_model_col:last-child { border-bottom: none; }
 
