@@ -340,35 +340,54 @@
     padding: 120px clamp(24px, 6vw, 80px);
     text-align: center;
     color: #fff !important;
-
-    /* Photo background — dark gradient overlay on top keeps text legible */
-    background-image:
-        linear-gradient(
-            180deg,
-            rgba(0,0,0,0.52) 0%,
-            rgba(10,0,0,0.38) 45%,
-            rgba(30,0,0,0.70) 100%
-        ),
-        url("https://leica-geosystems.com/-/media/images/leicageosystems/products/laserscanners/tandt-project/press-release/leica-rtc-series-3d-laser-scanners-2480x750.jpg?h=750&iar=0&w=2480&hash=C3BF3771851EAE9B5EFDFBECCF141F93");
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    color: #fff !important;
+    overflow: hidden;
+    background: #000; /* fallback while video loads */
 }
 
-/* Subtle vignette on the edges */
+/* ── Video background ── */
+.o_rtc_hero_video_bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Scale-to-cover: always fill the hero, centred, 16:9 source */
+.o_rtc_hero_video_bg iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* whichever dimension would be smaller is bumped to 100% */
+    width: 177.78vh;   /* = 100vh × (16/9) */
+    height: 56.25vw;   /* = 100vw × (9/16) */
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    border: none;
+    pointer-events: none;
+}
+
+/* Gradient overlay + vignette layered above the video */
 .o_rtc_hero::before {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 0;
-    background: radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(0,0,0,0.35) 100%);
+    z-index: 1;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,0.52) 0%,
+            rgba(10,0,0,0.38) 45%,
+            rgba(30,0,0,0.72) 100%
+        ),
+        radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(0,0,0,0.35) 100%);
 }
 
 .o_rtc_hero_inner {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     max-width: 860px;
     margin: 0 auto;
 }
