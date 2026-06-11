@@ -25,15 +25,17 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
         : [];
 
     // ── Extract language items from the existing Odoo dropdown ────────────
-    const langItems = langLi
-        ? Array.from(langLi.querySelectorAll('.js_change_lang')).map(a => ({
-            href:   a.getAttribute('href') || '#',
-            code:   a.dataset.url_code || '',
-            label:  a.querySelector('span')?.textContent.trim()
-                      || (a.dataset.url_code || '').toUpperCase(),
-            active: a.classList.contains('active'),
-          }))
+    const langAnchors = langLi
+        ? Array.from(langLi.querySelectorAll('.js_change_lang'))
         : [];
+
+    const langItems = langAnchors.map(a => ({
+        href:   a.getAttribute('href') || '#',
+        code:   a.dataset.url_code || '',
+        label:  a.querySelector('span')?.textContent.trim()
+                  || (a.dataset.url_code || '').toUpperCase(),
+        active: a.classList.contains('active'),
+    }));
 
     // ── Build the dropdown bar ─────────────────────────────────────────────
     const bar = document.createElement('div');
@@ -70,6 +72,22 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
 
     // Always append to body — position:fixed handles placement
     document.body.appendChild(bar);
+
+    // ── Delegate language pill clicks to original Odoo anchors ────────────
+    // Copying the href alone doesn't work for all languages: the default
+    // language (English) often has href="" on its .js_change_lang element,
+    // which our || '#' fallback turns into a no-op anchor. Delegating to the
+    // original element ensures Odoo's own click/routing logic runs instead.
+    const langAnchorsByCode = new Map(langAnchors.map(a => [a.dataset.url_code || '', a]));
+    bar.querySelectorAll('[data-panel="lang"] .o_hdd_pill').forEach(pill => {
+        const orig = langAnchorsByCode.get(pill.dataset.url_code || '');
+        if (orig) {
+            pill.addEventListener('click', e => {
+                e.preventDefault();
+                orig.click();
+            });
+        }
+    });
 
     // ── Keep bar pinned to the bottom edge of the header ──────────────────
     function updateBarTop() {

@@ -23,7 +23,7 @@ whenReady(async () => {
     const _i18n = {
         fr_CA: {
             navAdapt:          'Adapter',
-            navExpand:         'Étendre',
+            navExpand:         'Augmentez',
             navCapture:        'Capturer',
             buyNow:            'Acheter maintenant',
             ariaHome:          'Accueil R-E-A-L',
@@ -419,7 +419,28 @@ whenReady(async () => {
     });
 
     if (!bottomModelHost || !scrollHost) {
-        console.warn("[loader] early exit — missing host element(s), script will not run on this page");
+        console.warn("[loader] early exit — missing host element(s), Three.js will not run on this page");
+        // Still wire up lightweight features that don't need the 3D canvas
+        initVideoGallery();
+        initOmnigoBuySection();
+        const _faqListEarly = document.querySelector(".o_omnigo_faq_list");
+        if (_faqListEarly) {
+            _faqListEarly.addEventListener("click", e => {
+                const btn = e.target.closest(".o_omnigo_faq_q");
+                if (!btn) return;
+                const item = btn.closest(".o_omnigo_faq_item");
+                if (!item) return;
+                const isOpen = item.classList.contains("is-open");
+                _faqListEarly.querySelectorAll(".o_omnigo_faq_item.is-open").forEach(el => {
+                    el.classList.remove("is-open");
+                    el.querySelector(".o_omnigo_faq_q")?.setAttribute("aria-expanded", "false");
+                });
+                if (!isOpen) {
+                    item.classList.add("is-open");
+                    btn.setAttribute("aria-expanded", "true");
+                }
+            });
+        }
         return;
     }
 
@@ -1784,15 +1805,40 @@ whenReady(async () => {
     }
 });
 
-/* ─── OmniGO promo popup dismiss ───────────────────────────────────────────── */
-// Use event delegation on document — avoids DOMContentLoaded timing issues
-// (Odoo fires assets after DOMContentLoaded, so that event is already past).
-document.addEventListener("click", function (e) {
-    if (!e.target.closest(".o_omnigo_promo_close")) return;
-    var popup = e.target.closest(".o_omnigo_promo");
-    if (!popup) return;
-    popup.classList.add("is-dismissed");
-    popup.addEventListener("animationend", function () {
-        popup.style.display = "none";
-    }, { once: true });
-});
+/* ─── Promo popup dismiss (handles OmniGO + RTC) ───────────────────────────── */
+// One delegated handler per close-button class. Finds the nearest ancestor
+// promo card, animates it out, then removes it from layout so the stack collapses.
+(function () {
+    function dismissPromo(closeSelector, cardSelector) {
+        document.addEventListener("click", function (e) {
+            if (!e.target.closest(closeSelector)) return;
+            var popup = e.target.closest(cardSelector);
+            if (!popup) return;
+            popup.classList.add("is-dismissed");
+            popup.addEventListener("animationend", function () {
+                popup.style.display = "none";
+            }, { once: true });
+        });
+    }
+    dismissPromo(".o_omnigo_promo_close", ".o_omnigo_promo");
+    dismissPromo(".o_rtc_promo_close",    ".o_rtc_promo");
+})();
+
+/* ─── Notification stack — groups OmniGO + RTC popups ──────────────────────── */
+// Runs immediately (no DOMContentLoaded wait needed — Odoo script injection
+// happens after the DOM is already built). Finds any promo popups on the page,
+// moves them into a single flex container so they stack and auto-collapse on dismiss.
+(function () {
+    var omnigo = document.querySelector(".o_omnigo_promo");
+    var rtc    = document.querySelector(".o_rtc_promo");
+    if (!omnigo && !rtc) return;
+
+    var stack = document.createElement("div");
+    stack.className = "o_promo_stack";
+
+    // OmniGO on top, RTC below
+    if (omnigo) { omnigo.parentNode.removeChild(omnigo); stack.appendChild(omnigo); }
+    if (rtc)    { rtc.parentNode.removeChild(rtc);       stack.appendChild(rtc);    }
+
+    document.body.appendChild(stack);
+})();
