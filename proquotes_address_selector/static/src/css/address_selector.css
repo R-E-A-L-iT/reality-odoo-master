@@ -1,26 +1,98 @@
 /* ProQuotes Address Selector
-   All card styles come from proquotes/static/src/CSS/quoteStyle.css
-   (.addr_matrix, .addr_card, .addr_card.current, .addr_card.add_card, etc.)
-   Only minor tweaks live here. */
+   Base card styles come from proquotes/static/src/CSS/quoteStyle.css
+   (.addr_matrix, .addr_card, .addr_card.current, .addr_card.add_card, .addr_edit, etc.) */
 
-/* Ensure addr_matrix inherits the rental-info-section text colour */
-#rental-address-section .addr_matrix {
-    margin-bottom: 0;
+/* ── Card action buttons container ── */
+.addr_card_actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    z-index: 2;
 }
 
-/* Give address cards a pointer and smooth selection feedback */
-#rental-address-section .addr_card[data-partner-id] {
+/* ── Shared pill button base ── */
+.addr_action_btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transition: outline 0.15s ease, box-shadow 0.15s ease;
+    opacity: 0.7;
+    transition: opacity 0.15s ease, box-shadow 0.15s ease;
+    padding: 0;
+    background: none;
+    border: none;
+}
+.addr_action_btn svg {
+    width: 12px;
+    height: 12px;
+    display: block;
+    pointer-events: none;
+}
+.addr_card:hover .addr_action_btn { opacity: 1; }
+
+/* ── Edit button — reuses .addr_edit colours ── */
+.addr_edit_btn {
+    border: 1px solid #4b1f1f;
+    background: #231314;
+    color: #db0d0d;
+}
+.addr_edit_btn:hover {
+    box-shadow: 0 0 0 2px rgba(219, 13, 13, 0.20) inset;
 }
 
+/* ── Delete button — blue-tinted to visually distinguish from edit ── */
+.addr_delete_btn {
+    border: 1px solid #1f2b4b;
+    background: #131823;
+    color: #5f8dd3;
+}
+.addr_delete_btn:hover {
+    box-shadow: 0 0 0 2px rgba(95, 141, 211, 0.20) inset;
+}
+
+/* ── Make .addr_edit in quoteStyle.css clickable (it was cursor:default) ── */
+.addr_edit { cursor: pointer !important; }
+
+/* ── Card hover highlight (non-selected) ── */
 #rental-address-section .addr_card[data-partner-id]:hover:not(.current) {
-    outline: 1px solid rgba(219, 13, 13, 0.45);
+    outline: 1px solid rgba(219, 13, 13, 0.35);
 }
 
-/* New-address form inputs inherit dark theme via .addresses .addr_editor in quoteStyle.css */
+/* ── Empty state placeholder ── */
+.addr_empty_state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #8b949e;
+    padding: 20px 16px;
+    min-width: 160px;
+    text-align: center;
+}
+.addr_empty_state .fa {
+    font-size: 1.6rem;
+    opacity: 0.35;
+    margin-bottom: 6px;
+}
+.addr_empty_state div {
+    font-size: 0.80rem;
+}
+
+/* ── New/edit form select option colours ── */
 #new-invoice-address-form select option,
-#new-delivery-address-form select option {
+#new-delivery-address-form select option,
+#edit-invoice-address-form select option,
+#edit-delivery-address-form select option {
     background: #0a0d11;
     color: #e6edf3;
+}
+
+/* ── addr_matrix spacing ── */
+#rental-address-section .addr_matrix {
+    margin-bottom: 0;
 }

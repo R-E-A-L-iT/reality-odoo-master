@@ -131,3 +131,69 @@ class AddressSelectorPortal(http.Controller):
             "zip": new_partner.zip or "",
             "country": new_partner.country_id.name or "",
         }
+
+    @http.route(
+        ["/my/orders/<int:order_id>/update_address"],
+        type="json",
+        auth="public",
+        website=True,
+    )
+    def update_address(
+        self, order_id, partner_id=None, name=None, street=None, city=None,
+        state=None, zip=None, country=None, access_token=None, **post
+    ):
+        order = self._get_order(order_id, access_token)
+        if not order:
+            return {"error": "Access denied"}
+        if not partner_id:
+            return {"error": "No partner_id provided"}
+
+        partner = request.env["res.partner"].sudo().browse(int(partner_id))
+        if not partner.exists():
+            return {"error": "Partner not found"}
+
+        vals = {"name": name, "street": street, "city": city, "zip": zip}
+        if country:
+            vals["country_id"] = int(country)
+        if state:
+            vals["state_id"] = int(state)
+
+        partner.sudo().write(vals)
+        return {
+            "success": True,
+            "partner_id": partner.id,
+            "name": partner.name or "",
+            "street": partner.street or "",
+            "city": partner.city or "",
+            "state": partner.state_id.name or "",
+            "zip": partner.zip or "",
+            "country": partner.country_id.name or "",
+        }
+
+    @http.route(
+        ["/my/orders/<int:order_id>/delete_address"],
+        type="json",
+        auth="public",
+        website=True,
+    )
+    def delete_address(self, order_id, partner_id=None, address_type=None, access_token=None, **post):
+        order = self._get_order(order_id, access_token)
+        if not order:
+            return {"error": "Access denied"}
+        if not partner_id:
+            return {"error": "No partner_id provided"}
+
+        partner = request.env["res.partner"].sudo().browse(int(partner_id))
+        if not partner.exists():
+            return {"error": "Partner not found"}
+
+        was_selected = False
+        if address_type == "invoice" and order.partner_invoice_id.id == partner.id:
+            order.sudo().partner_invoice_id = order.partner_id.id
+            was_selected = True
+        elif address_type == "delivery" and order.partner_shipping_id.id == partner.id:
+            order.sudo().partner_shipping_id = order.partner_id.id
+            was_selected = True
+
+        partner.sudo().write({"active": False})
+        return {"success": True, "was_selected": was_selected}
