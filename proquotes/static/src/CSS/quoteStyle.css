@@ -5,7 +5,7 @@
 
 /* address editor */
 /* Dark theme matrix */
-                        .addr_matrix { margin: 18px 0; padding: 14px; background:#14171c; border:1px solid #23272f; border-radius:12px; color:#e6edf3; }
+                        .addr_matrix { margin: 18px 0; padding: 14px; border-radius:12px; color:#e6edf3; }
                         .addr_hdr { display:flex; align-items:center; justify-content:space-between; margin: 2px 2px 10px; }
                         .addr_hdr h4 { font-size:1.05rem; margin:0; color:#e6edf3; }
                         .addr_row { margin-top: 14px; }
