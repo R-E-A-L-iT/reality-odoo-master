@@ -143,6 +143,31 @@
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
+/* ── Select fields: suppress native browser styling, match text inputs ── */
+#addr-edit-modal-box select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #0a0d11;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23c9d1d9' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px 10px;
+    color: #e6edf3;
+    border: 1px solid #2b3139;
+    border-radius: 8px;
+    padding: 8px 34px 8px 12px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+#addr-edit-modal-box select:focus {
+    border-color: #3f8cff;
+    box-shadow: 0 0 0 3px rgba(63, 140, 255, 0.20);
+    outline: none;
+}
+
 /* Make the addr_editor inside the modal clean (no extra margins/borders) */
 #addr-edit-modal-box .addr_editor {
     margin: 0;

@@ -284,7 +284,7 @@
                                         <label t-if="language == 'fr_CA'">Pays</label>
                                         <label t-elif="language == 'es_ES'">País</label>
                                         <label t-else="">Country</label>
-                                        <select id="edit-modal-country" class="form-select form-select-sm" style="flex:1; background:#0a0d11; color:#e6edf3; border:1px solid #2b3139; border-radius:8px; padding:8px 10px;">
+                                        <select id="edit-modal-country" class="form-select form-select-sm">
                                             <option value="">— Select —</option>
                                             <t t-foreach="all_countries" t-as="c">
                                                 <option t-att-value="c.id" t-esc="c.name"/>
@@ -295,7 +295,7 @@
                                         <label t-if="language == 'fr_CA'">État/Province</label>
                                         <label t-elif="language == 'es_ES'">Estado</label>
                                         <label t-else="">State/Province</label>
-                                        <select id="edit-modal-state" class="form-select form-select-sm" style="flex:1; background:#0a0d11; color:#e6edf3; border:1px solid #2b3139; border-radius:8px; padding:8px 10px;">
+                                        <select id="edit-modal-state" class="form-select form-select-sm">
                                             <option value="">— Select —</option>
                                             <t t-foreach="all_states" t-as="s">
                                                 <option t-att-value="s.id"
