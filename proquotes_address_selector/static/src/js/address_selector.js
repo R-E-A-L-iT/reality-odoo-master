@@ -12,22 +12,12 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         // Edit / Delete action buttons (stopImmediatePropagation inside)
         "click .addr_edit_btn":   "_onEditAddress",
         "click .addr_delete_btn": "_onDeleteAddress",
-        // New address triggers
-        "click #new-invoice-trigger":  "_onNewInvoiceTrigger",
-        "click #new-delivery-trigger": "_onNewDeliveryTrigger",
-        // Save / cancel new address
-        "click #save-new-invoice-address":    "_onSaveNewInvoice",
-        "click #save-new-delivery-address":   "_onSaveNewDelivery",
-        "click #cancel-new-invoice-address":  "_onCancelNewInvoice",
-        "click #cancel-new-delivery-address": "_onCancelNewDelivery",
         // Modal save / cancel / backdrop
         "click #save-edit-modal":          "_onSaveEditModal",
         "click #cancel-edit-modal":        "_onCloseModal",
         "click #addr-edit-modal-backdrop": "_onCloseModal",
-        // Country dropdowns
-        "change #new-invoice-country":  "_onNewInvoiceCountryChange",
-        "change #new-delivery-country": "_onNewDeliveryCountryChange",
-        "change #edit-modal-country":   "_onModalCountryChange",
+        // Country dropdown in modal
+        "change #edit-modal-country": "_onModalCountryChange",
     },
 
     async start() {
@@ -38,11 +28,10 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     // ── Unified section click → card selection ────────────────────────────────
 
     async _onSectionClick(ev) {
-        // Ignore if the click was on (or inside) an action button, trigger, or form
-        if (ev.target.closest(".addr_action_btn"))   return;
-        if (ev.target.closest(".addr_card.add_card")) return;
-        if (ev.target.closest(".addresses"))          return;
-        if (ev.target.closest("#addr-edit-modal"))    return;
+        // Ignore if the click was on (or inside) an action button, form, or modal
+        if (ev.target.closest(".addr_action_btn")) return;
+        if (ev.target.closest(".addresses"))       return;
+        if (ev.target.closest("#addr-edit-modal")) return;
 
         const card = ev.target.closest(".addr_card[data-partner-id]");
         if (!card) return;
@@ -212,9 +201,8 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
 
             // If no typed addresses remain, inject the default company card
             if (remaining === 0) {
-                const trigger = document.getElementById(`new-${type}-trigger`);
                 const defaultCard = this._buildDefaultCard(container, type);
-                if (defaultCard) container.insertBefore(defaultCard, trigger);
+                if (defaultCard) container.appendChild(defaultCard);
             }
         }
     },
@@ -253,58 +241,6 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         return card;
     },
 
-    // ── New address ───────────────────────────────────────────────────────────
-
-    _onNewInvoiceTrigger(ev) {
-        ev.stopImmediatePropagation();
-        this._toggleForm("new-invoice-address-form");
-    },
-
-    _onNewDeliveryTrigger(ev) {
-        ev.stopImmediatePropagation();
-        this._toggleForm("new-delivery-address-form");
-    },
-
-    _onCancelNewInvoice()  { this._hideForm("new-invoice-address-form");  },
-    _onCancelNewDelivery() { this._hideForm("new-delivery-address-form"); },
-
-    async _onSaveNewInvoice()  { await this._saveNew("invoice");  },
-    async _onSaveNewDelivery() { await this._saveNew("delivery"); },
-
-    async _saveNew(type) {
-        const prefix = `new-${type}`;
-        const result = await jsonrpc(
-            "/my/orders/" + this.orderDetail.orderId + `/create_${type}_address`,
-            {
-                access_token: this.orderDetail.token,
-                name:    document.getElementById(`${prefix}-name`)?.value    || "",
-                street:  document.getElementById(`${prefix}-street`)?.value  || "",
-                city:    document.getElementById(`${prefix}-city`)?.value    || "",
-                state:   document.getElementById(`${prefix}-state`)?.value   || "",
-                zip:     document.getElementById(`${prefix}-zip`)?.value     || "",
-                country: document.getElementById(`${prefix}-country`)?.value || "",
-            }
-        );
-        if (result && result.success) {
-            const container = document.getElementById(`${type}-address-cards`);
-            const trigger   = document.getElementById(`new-${type}-trigger`);
-
-            // Remove any default card (no edit/delete buttons = default)
-            container.querySelectorAll(".addr_card[data-partner-id]").forEach(c => {
-                if (!c.querySelector(".addr_edit_btn")) c.remove();
-            });
-
-            // Remove current highlight from all remaining cards
-            container.querySelectorAll(".addr_card").forEach(c => c.classList.remove("current"));
-
-            const card = this._buildAddressCard(result, type);
-            container.insertBefore(card, trigger);
-
-            this._hideForm(`${prefix}-address-form`);
-            this._clearForm(prefix);
-        }
-    },
-
     // ── Country/state filtering ───────────────────────────────────────────────
 
     _filterStatesByCountry(countryId, stateId) {
@@ -322,84 +258,12 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         }
     },
 
-    _onNewInvoiceCountryChange()  { this._filterStatesByCountry("new-invoice-country",  "new-invoice-state");  },
-    _onNewDeliveryCountryChange() { this._filterStatesByCountry("new-delivery-country", "new-delivery-state"); },
-    _onModalCountryChange()       { this._filterStatesByCountry("edit-modal-country",   "edit-modal-state");   },
+    _onModalCountryChange() { this._filterStatesByCountry("edit-modal-country", "edit-modal-state"); },
 
     // ── DOM helpers ───────────────────────────────────────────────────────────
 
     _setVal(id, val) {
         const el = document.getElementById(id);
         if (el) el.value = val;
-    },
-
-    _hideForm(id) {
-        const el = document.getElementById(id);
-        if (el) el.style.display = "none";
-    },
-
-    _toggleForm(id) {
-        const el = document.getElementById(id);
-        if (el) el.style.display = el.style.display === "none" ? "" : "none";
-    },
-
-    _clearForm(prefix) {
-        ["name", "street", "city", "zip"].forEach(f => this._setVal(`${prefix}-${f}`, ""));
-        this._setVal(`${prefix}-country`, "");
-        this._setVal(`${prefix}-state`,   "");
-    },
-
-    _buildAddressCard(data, addressType) {
-        const lines = [
-            data.street,
-            [data.city, data.state, data.zip].filter(Boolean).join(", "),
-            data.country,
-        ].filter(Boolean).join("\n");
-
-        const card = document.createElement("div");
-        card.className = "addr_card current";
-        card.dataset.partnerId   = String(data.partner_id);
-        card.dataset.addressType = addressType;
-        card.style.cursor     = "pointer";
-        card.style.paddingTop = "36px";
-
-        const actions = document.createElement("div");
-        actions.className = "addr_card_actions";
-        actions.innerHTML = `
-            <button class="addr_action_btn addr_edit_btn"
-                    data-partner-id="${data.partner_id}"
-                    data-address-type="${addressType}"
-                    data-name="${data.name || ""}"
-                    data-street="${data.street || ""}"
-                    data-city="${data.city || ""}"
-                    data-zip="${data.zip || ""}"
-                    data-state-id="0"
-                    data-country-id="0"
-                    title="Edit">
-                <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
-            <button class="addr_action_btn addr_delete_btn"
-                    data-partner-id="${data.partner_id}"
-                    data-address-type="${addressType}"
-                    title="Delete">
-                <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>`;
-
-        const nameEl = document.createElement("div");
-        nameEl.className = "name";
-        nameEl.textContent = data.name || "";
-
-        const linesEl = document.createElement("div");
-        linesEl.className = "lines";
-        linesEl.textContent = lines;
-
-        card.appendChild(actions);
-        card.appendChild(nameEl);
-        card.appendChild(linesEl);
-        return card;
     },
 });

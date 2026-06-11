@@ -63,9 +63,7 @@
     outline: 1px solid rgba(219, 13, 13, 0.35);
 }
 
-/* ── New/edit form select option colours ── */
-#new-invoice-address-form select option,
-#new-delivery-address-form select option,
+/* ── Edit modal select option colours ── */
 #addr-edit-modal select option {
     background: #0a0d11;
     color: #e6edf3;
