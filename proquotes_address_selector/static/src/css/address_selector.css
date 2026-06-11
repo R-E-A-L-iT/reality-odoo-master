@@ -1,0 +1,26 @@
+/* ProQuotes Address Selector
+   All card styles come from proquotes/static/src/CSS/quoteStyle.css
+   (.addr_matrix, .addr_card, .addr_card.current, .addr_card.add_card, etc.)
+   Only minor tweaks live here. */
+
+/* Ensure addr_matrix inherits the rental-info-section text colour */
+#rental-address-section .addr_matrix {
+    margin-bottom: 0;
+}
+
+/* Give address cards a pointer and smooth selection feedback */
+#rental-address-section .addr_card[data-partner-id] {
+    cursor: pointer;
+    transition: outline 0.15s ease, box-shadow 0.15s ease;
+}
+
+#rental-address-section .addr_card[data-partner-id]:hover:not(.current) {
+    outline: 1px solid rgba(219, 13, 13, 0.45);
+}
+
+/* New-address form inputs inherit dark theme via .addresses .addr_editor in quoteStyle.css */
+#new-invoice-address-form select option,
+#new-delivery-address-form select option {
+    background: #0a0d11;
+    color: #e6edf3;
+}

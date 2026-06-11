@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="quote_address_selector"
+              name="Quote Address Selector"
+              inherit_id="proquotes.sale_order_portal_content"
+              priority="18">
+
+        <xpath expr="//div[@id='rental-address-section']" position="replace">
+
+            <!-- ===== ADDRESS SELECTOR SECTION ===== -->
+            <div id="rental-address-section">
+
+                <!-- Precompute address lists -->
+                <t t-set="invoice_addresses" t-value="sale_order.partner_id.child_ids.filtered(lambda p: p.type == 'invoice' and p.active)"/>
+                <t t-set="delivery_addresses" t-value="sale_order.partner_id.child_ids.filtered(lambda p: p.type == 'delivery' and p.active)"/>
+
+                <!-- Country / state lists for new-address form -->
+                <t t-set="all_countries" t-value="request.env['res.country'].sudo().search([], order='name asc')"/>
+                <t t-set="all_states"    t-value="request.env['res.country.state'].sudo().search([], order='name asc')"/>
+
+                <!-- ===== INVOICE ADDRESS ===== -->
+                <div class="addr_matrix mb-3">
+                    <div class="addr_hdr">
+                        <h4 t-if="language == 'fr_CA'">Adresse de facturation</h4>
+                        <h4 t-elif="language == 'es_ES'">Dirección de facturación</h4>
+                        <h4 t-else="">Invoice Address</h4>
+                    </div>
+
+                    <div class="addr_cards" id="invoice-address-cards">
+
+                        <!-- Existing invoice address cards -->
+                        <t t-foreach="invoice_addresses" t-as="addr">
+                            <div t-attf-class="addr_card{{ ' current' if addr.id == sale_order.partner_invoice_id.id else '' }}"
+                                 t-att-data-partner-id="addr.id"
+                                 data-address-type="invoice"
+                                 style="cursor:pointer;">
+                                <div class="name" t-esc="addr.name"/>
+                                <div class="lines">
+                                    <t t-if="addr.street"><t t-esc="addr.street"/><br/></t>
+                                    <t t-if="addr.city or addr.state_id or addr.zip">
+                                        <t t-if="addr.city"><t t-esc="addr.city"/><t t-if="addr.state_id or addr.zip">, </t></t>
+                                        <t t-if="addr.state_id"><t t-esc="addr.state_id.name"/> </t>
+                                        <t t-if="addr.zip"><t t-esc="addr.zip"/></t>
+                                        <br/>
+                                    </t>
+                                    <t t-if="addr.country_id"><t t-esc="addr.country_id.name"/></t>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- New Address card -->
+                        <div class="addr_card add_card" id="new-invoice-trigger" data-address-type="invoice" style="cursor:pointer; min-height:120px;">
+                            <div class="add_inner">
+                                <span class="add_plus">+</span>
+                                <span class="add_label" t-if="language == 'fr_CA'">Nouvelle adresse</span>
+                                <span class="add_label" t-elif="language == 'es_ES'">Nueva dirección</span>
+                                <span class="add_label" t-else="">New Address</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- New Invoice Address Form (hidden by default) -->
+                    <div class="addresses" id="new-invoice-address-form" style="display:none; margin-top:14px;">
+                        <div class="addr_editor">
+                            <div class="cols">
+                                <fieldset>
+                                    <legend t-if="language == 'fr_CA'">Nouvelle adresse de facturation</legend>
+                                    <legend t-elif="language == 'es_ES'">Nueva dirección de facturación</legend>
+                                    <legend t-else="">New Invoice Address</legend>
+
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Nom</label>
+                                        <label t-elif="language == 'es_ES'">Nombre</label>
+                                        <label t-else="">Name</label>
+                                        <input type="text" id="new-invoice-name" placeholder=""/>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Rue</label>
+                                        <label t-elif="language == 'es_ES'">Calle</label>
+                                        <label t-else="">Street</label>
+                                        <input type="text" id="new-invoice-street" placeholder=""/>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Ville</label>
+                                        <label t-elif="language == 'es_ES'">Ciudad</label>
+                                        <label t-else="">City</label>
+                                        <input type="text" id="new-invoice-city" placeholder=""/>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Pays</label>
+                                        <label t-elif="language == 'es_ES'">País</label>
+                                        <label t-else="">Country</label>
+                                        <select id="new-invoice-country" class="form-select form-select-sm" style="flex:1; background:#0a0d11; color:#e6edf3; border:1px solid #2b3139; border-radius:8px; padding:8px 10px;">
+                                            <option value="">— Select —</option>
+                                            <t t-foreach="all_countries" t-as="c">
+                                                <option t-att-value="c.id" t-esc="c.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">État/Province</label>
+                                        <label t-elif="language == 'es_ES'">Estado</label>
+                                        <label t-else="">State/Province</label>
+                                        <select id="new-invoice-state" class="form-select form-select-sm" style="flex:1; background:#0a0d11; color:#e6edf3; border:1px solid #2b3139; border-radius:8px; padding:8px 10px;">
+                                            <option value="">— Select —</option>
+                                            <t t-foreach="all_states" t-as="s">
+                                                <option t-att-value="s.id"
+                                                        t-att-data-country-id="s.country_id.id"
+                                                        t-esc="s.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Code postal</label>
+                                        <label t-elif="language == 'es_ES'">Código postal</label>
+                                        <label t-else="">Zip/Postal Code</label>
+                                        <input type="text" id="new-invoice-zip" placeholder=""/>
+                                    </div>
+
+                                    <div class="actions">
+                                        <button type="button" id="save-new-invoice-address" class="btn btn-primary btn-sm">
+                                            <t t-if="language == 'fr_CA'">Enregistrer</t>
+                                            <t t-elif="language == 'es_ES'">Guardar</t>
+                                            <t t-else="">Save</t>
+                                        </button>
+                                        <button type="button" id="cancel-new-invoice-address" class="btn btn-secondary btn-sm ms-2">
+                                            <t t-if="language == 'fr_CA'">Annuler</t>
+                                            <t t-elif="language == 'es_ES'">Cancelar</t>
+                                            <t t-else="">Cancel</t>
+                                        </button>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ===== DELIVERY ADDRESS ===== -->
+                <div class="addr_matrix">
+                    <div class="addr_hdr">
+                        <h4 t-if="language == 'fr_CA'">Adresse de livraison</h4>
+                        <h4 t-elif="language == 'es_ES'">Dirección de entrega</h4>
+                        <h4 t-else="">Delivery Address</h4>
+                    </div>
+
+                    <div class="addr_cards" id="delivery-address-cards">
+
+                        <!-- Existing delivery address cards -->
+                        <t t-foreach="delivery_addresses" t-as="addr">
+                            <div t-attf-class="addr_card{{ ' current' if addr.id == sale_order.partner_shipping_id.id else '' }}"
+                                 t-att-data-partner-id="addr.id"
+                                 data-address-type="delivery"
+                                 style="cursor:pointer;">
+                                <div class="name" t-esc="addr.name"/>
+                                <div class="lines">
+                                    <t t-if="addr.street"><t t-esc="addr.street"/><br/></t>
+                                    <t t-if="addr.city or addr.state_id or addr.zip">
+                                        <t t-if="addr.city"><t t-esc="addr.city"/><t t-if="addr.state_id or addr.zip">, </t></t>
+                                        <t t-if="addr.state_id"><t t-esc="addr.state_id.name"/> </t>
+                                        <t t-if="addr.zip"><t t-esc="addr.zip"/></t>
+                                        <br/>
+                                    </t>
+                                    <t t-if="addr.country_id"><t t-esc="addr.country_id.name"/></t>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- New Address card -->
+                        <div class="addr_card add_card" id="new-delivery-trigger" data-address-type="delivery" style="cursor:pointer; min-height:120px;">
+                            <div class="add_inner">
+                                <span class="add_plus">+</span>
+                                <span class="add_label" t-if="language == 'fr_CA'">Nouvelle adresse</span>
+                                <span class="add_label" t-elif="language == 'es_ES'">Nueva dirección</span>
+                                <span class="add_label" t-else="">New Address</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- New Delivery Address Form (hidden by default) -->
+                    <div class="addresses" id="new-delivery-address-form" style="display:none; margin-top:14px;">
+                        <div class="addr_editor">
+                            <div class="cols">
+                                <fieldset>
+                                    <legend t-if="language == 'fr_CA'">Nouvelle adresse de livraison</legend>
+                                    <legend t-elif="language == 'es_ES'">Nueva dirección de entrega</legend>
+                                    <legend t-else="">New Delivery Address</legend>
+
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Nom</label>
+                                        <label t-elif="language == 'es_ES'">Nombre</label>
+                                        <label t-else="">Name</label>
+                                        <input type="text" id="new-delivery-name" placeholder=""/>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Rue</label>
+                                        <label t-elif="language == 'es_ES'">Calle</label>
+                                        <label t-else="">Street</label>
+                                        <input type="text" id="new-delivery-street" placeholder=""/>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Ville</label>
+                                        <label t-elif="language == 'es_ES'">Ciudad</label>
+                                        <label t-else="">City</label>
+                                        <input type="text" id="new-delivery-city" placeholder=""/>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Pays</label>
+                                        <label t-elif="language == 'es_ES'">País</label>
+                                        <label t-else="">Country</label>
+                                        <select id="new-delivery-country" class="form-select form-select-sm" style="flex:1; background:#0a0d11; color:#e6edf3; border:1px solid #2b3139; border-radius:8px; padding:8px 10px;">
+                                            <option value="">— Select —</option>
+                                            <t t-foreach="all_countries" t-as="c">
+                                                <option t-att-value="c.id" t-esc="c.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">État/Province</label>
+                                        <label t-elif="language == 'es_ES'">Estado</label>
+                                        <label t-else="">State/Province</label>
+                                        <select id="new-delivery-state" class="form-select form-select-sm" style="flex:1; background:#0a0d11; color:#e6edf3; border:1px solid #2b3139; border-radius:8px; padding:8px 10px;">
+                                            <option value="">— Select —</option>
+                                            <t t-foreach="all_states" t-as="s">
+                                                <option t-att-value="s.id"
+                                                        t-att-data-country-id="s.country_id.id"
+                                                        t-esc="s.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Code postal</label>
+                                        <label t-elif="language == 'es_ES'">Código postal</label>
+                                        <label t-else="">Zip/Postal Code</label>
+                                        <input type="text" id="new-delivery-zip" placeholder=""/>
+                                    </div>
+
+                                    <div class="actions">
+                                        <button type="button" id="save-new-delivery-address" class="btn btn-primary btn-sm">
+                                            <t t-if="language == 'fr_CA'">Enregistrer</t>
+                                            <t t-elif="language == 'es_ES'">Guardar</t>
+                                            <t t-else="">Save</t>
+                                        </button>
+                                        <button type="button" id="cancel-new-delivery-address" class="btn btn-secondary btn-sm ms-2">
+                                            <t t-if="language == 'fr_CA'">Annuler</t>
+                                            <t t-elif="language == 'es_ES'">Cancelar</t>
+                                            <t t-else="">Cancel</t>
+                                        </button>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- ===== END ADDRESS SELECTOR SECTION ===== -->
+
+        </xpath>
+
+    </template>
+
+</odoo>
