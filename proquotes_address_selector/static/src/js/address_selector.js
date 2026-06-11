@@ -7,14 +7,12 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     selector: ".o_portal_sale_sidebar",
     events: {
-        // Card selection
-        "click #invoice-address-cards .addr_card[data-partner-id]": "_onSelectInvoiceCard",
-        "click #delivery-address-cards .addr_card[data-partner-id]": "_onSelectDeliveryCard",
-        // Edit buttons
-        "click .addr_edit_btn": "_onEditAddress",
-        // Delete buttons
+        // Card selection — use broad click on the section, resolved via closest()
+        "click #rental-address-section": "_onSectionClick",
+        // Edit / Delete action buttons (stopImmediatePropagation inside)
+        "click .addr_edit_btn":   "_onEditAddress",
         "click .addr_delete_btn": "_onDeleteAddress",
-        // New address trigger
+        // New address triggers
         "click #new-invoice-trigger":  "_onNewInvoiceTrigger",
         "click #new-delivery-trigger": "_onNewDeliveryTrigger",
         // Save / cancel new address
@@ -22,16 +20,14 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         "click #save-new-delivery-address":   "_onSaveNewDelivery",
         "click #cancel-new-invoice-address":  "_onCancelNewInvoice",
         "click #cancel-new-delivery-address": "_onCancelNewDelivery",
-        // Save / cancel edit address
-        "click #save-edit-invoice-address":    "_onSaveEditInvoice",
-        "click #save-edit-delivery-address":   "_onSaveEditDelivery",
-        "click #cancel-edit-invoice-address":  "_onCancelEditInvoice",
-        "click #cancel-edit-delivery-address": "_onCancelEditDelivery",
+        // Modal save / cancel / backdrop
+        "click #save-edit-modal":          "_onSaveEditModal",
+        "click #cancel-edit-modal":        "_onCloseModal",
+        "click #addr-edit-modal-backdrop": "_onCloseModal",
         // Country dropdowns
         "change #new-invoice-country":  "_onNewInvoiceCountryChange",
         "change #new-delivery-country": "_onNewDeliveryCountryChange",
-        "change #edit-invoice-country": "_onEditInvoiceCountryChange",
-        "change #edit-delivery-country":"_onEditDeliveryCountryChange",
+        "change #edit-modal-country":   "_onModalCountryChange",
     },
 
     async start() {
@@ -39,30 +35,38 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         this.orderDetail = this.$el.find("table#sales_order_table").data();
     },
 
-    // ── Country/state filtering ───────────────────────────────────────────────
+    // ── Unified section click → card selection ────────────────────────────────
 
-    _filterStatesByCountry(countryId, stateId) {
-        const countryEl = document.getElementById(countryId);
-        const stateEl   = document.getElementById(stateId);
-        if (!countryEl || !stateEl) return;
-        const selected = countryEl.value;
-        Array.from(stateEl.options).forEach(opt => {
-            if (!opt.value) return;
-            opt.hidden = !!(selected && opt.dataset.countryId != selected);
+    async _onSectionClick(ev) {
+        // Ignore if the click was on (or inside) an action button, trigger, or form
+        if (ev.target.closest(".addr_action_btn"))   return;
+        if (ev.target.closest(".addr_card.add_card")) return;
+        if (ev.target.closest(".addresses"))          return;
+        if (ev.target.closest("#addr-edit-modal"))    return;
+
+        const card = ev.target.closest(".addr_card[data-partner-id]");
+        if (!card) return;
+
+        const partnerId  = card.dataset.partnerId;
+        const addressType = card.dataset.addressType;
+        if (!partnerId || !addressType) return;
+
+        const route = addressType === "invoice"
+            ? "/my/orders/" + this.orderDetail.orderId + "/select_invoice_address"
+            : "/my/orders/" + this.orderDetail.orderId + "/select_delivery_address";
+
+        const result = await jsonrpc(route, {
+            partner_id:   parseInt(partnerId),
+            access_token: this.orderDetail.token,
         });
-        // Clear state if it no longer matches country
-        const sel = stateEl.options[stateEl.selectedIndex];
-        if (sel?.value && selected && sel.dataset.countryId != selected) {
-            stateEl.value = "";
+
+        if (result && result.success) {
+            const containerId = addressType === "invoice"
+                ? "invoice-address-cards"
+                : "delivery-address-cards";
+            this._setActiveCard(containerId, partnerId);
         }
     },
-
-    _onNewInvoiceCountryChange()  { this._filterStatesByCountry("new-invoice-country",  "new-invoice-state");  },
-    _onNewDeliveryCountryChange() { this._filterStatesByCountry("new-delivery-country", "new-delivery-state"); },
-    _onEditInvoiceCountryChange() { this._filterStatesByCountry("edit-invoice-country", "edit-invoice-state"); },
-    _onEditDeliveryCountryChange(){ this._filterStatesByCountry("edit-delivery-country","edit-delivery-state");},
-
-    // ── Card selection ────────────────────────────────────────────────────────
 
     _setActiveCard(containerId, partnerId) {
         const container = document.getElementById(containerId);
@@ -72,80 +76,41 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         });
     },
 
-    async _onSelectInvoiceCard(ev) {
-        if (ev.target.closest(".addr_action_btn")) return;
-        const card = ev.currentTarget;
-        const partnerId = card.dataset.partnerId;
-        if (!partnerId) return;
-        const result = await jsonrpc(
-            "/my/orders/" + this.orderDetail.orderId + "/select_invoice_address",
-            { partner_id: parseInt(partnerId), access_token: this.orderDetail.token }
-        );
-        if (result && result.success) {
-            this._setActiveCard("invoice-address-cards", partnerId);
-        }
-    },
-
-    async _onSelectDeliveryCard(ev) {
-        if (ev.target.closest(".addr_action_btn")) return;
-        const card = ev.currentTarget;
-        const partnerId = card.dataset.partnerId;
-        if (!partnerId) return;
-        const result = await jsonrpc(
-            "/my/orders/" + this.orderDetail.orderId + "/select_delivery_address",
-            { partner_id: parseInt(partnerId), access_token: this.orderDetail.token }
-        );
-        if (result && result.success) {
-            this._setActiveCard("delivery-address-cards", partnerId);
-        }
-    },
-
-    // ── Edit address ──────────────────────────────────────────────────────────
+    // ── Edit address → modal popup ────────────────────────────────────────────
 
     _onEditAddress(ev) {
-        ev.stopPropagation();
+        ev.stopImmediatePropagation();
         const btn = ev.currentTarget;
-        const type      = btn.dataset.addressType;
-        const partnerId = btn.dataset.partnerId;
-        const prefix    = type === "invoice" ? "edit-invoice" : "edit-delivery";
 
-        // Hide new-address form if open
-        const newForm = document.getElementById(`new-${type}-address-form`);
-        if (newForm) newForm.style.display = "none";
+        // Store partner id + address type in modal hidden inputs
+        this._setVal("edit-modal-partner-id",   btn.dataset.partnerId);
+        this._setVal("edit-modal-address-type", btn.dataset.addressType);
 
-        // Populate hidden partner id
-        const hiddenId = document.getElementById(`${prefix}-partner-id`);
-        if (hiddenId) hiddenId.value = partnerId;
+        // Pre-fill fields
+        this._setVal("edit-modal-name",   btn.dataset.name   || "");
+        this._setVal("edit-modal-street", btn.dataset.street || "");
+        this._setVal("edit-modal-city",   btn.dataset.city   || "");
+        this._setVal("edit-modal-zip",    btn.dataset.zip    || "");
 
-        // Populate fields from data attributes on the button
-        this._setVal(`${prefix}-name`,   btn.dataset.name   || "");
-        this._setVal(`${prefix}-street`, btn.dataset.street || "");
-        this._setVal(`${prefix}-city`,   btn.dataset.city   || "");
-        this._setVal(`${prefix}-zip`,    btn.dataset.zip    || "");
-
-        const countryEl = document.getElementById(`${prefix}-country`);
-        const stateEl   = document.getElementById(`${prefix}-state`);
+        const countryEl = document.getElementById("edit-modal-country");
         if (countryEl) countryEl.value = btn.dataset.countryId || "";
-        this._filterStatesByCountry(`${prefix}-country`, `${prefix}-state`);
-        if (stateEl)   stateEl.value   = btn.dataset.stateId   || "";
+        this._filterStatesByCountry("edit-modal-country", "edit-modal-state");
+        const stateEl = document.getElementById("edit-modal-state");
+        if (stateEl) stateEl.value = btn.dataset.stateId || "";
 
-        // Show the form
-        const editForm = document.getElementById(`${prefix}-address-form`);
-        if (editForm) editForm.style.display = "";
-        editForm?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        // Show modal
+        const modal = document.getElementById("addr-edit-modal");
+        if (modal) modal.style.display = "flex";
     },
 
-    async _onSaveEditInvoice() {
-        await this._saveEdit("invoice");
+    _onCloseModal() {
+        const modal = document.getElementById("addr-edit-modal");
+        if (modal) modal.style.display = "none";
     },
 
-    async _onSaveEditDelivery() {
-        await this._saveEdit("delivery");
-    },
-
-    async _saveEdit(type) {
-        const prefix    = `edit-${type}`;
-        const partnerId = document.getElementById(`${prefix}-partner-id`)?.value;
+    async _onSaveEditModal() {
+        const partnerId   = document.getElementById("edit-modal-partner-id")?.value;
+        const addressType = document.getElementById("edit-modal-address-type")?.value;
         if (!partnerId) return;
 
         const result = await jsonrpc(
@@ -153,18 +118,22 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             {
                 access_token: this.orderDetail.token,
                 partner_id: parseInt(partnerId),
-                name:    document.getElementById(`${prefix}-name`)?.value    || "",
-                street:  document.getElementById(`${prefix}-street`)?.value  || "",
-                city:    document.getElementById(`${prefix}-city`)?.value    || "",
-                state:   document.getElementById(`${prefix}-state`)?.value   || "",
-                zip:     document.getElementById(`${prefix}-zip`)?.value     || "",
-                country: document.getElementById(`${prefix}-country`)?.value || "",
+                name:    document.getElementById("edit-modal-name")?.value    || "",
+                street:  document.getElementById("edit-modal-street")?.value  || "",
+                city:    document.getElementById("edit-modal-city")?.value    || "",
+                state:   document.getElementById("edit-modal-state")?.value   || "",
+                zip:     document.getElementById("edit-modal-zip")?.value     || "",
+                country: document.getElementById("edit-modal-country")?.value || "",
             }
         );
+
         if (result && result.success) {
-            // Update the card in place
-            const containerId = `${type}-address-cards`;
-            const card = document.querySelector(`#${containerId} .addr_card[data-partner-id="${partnerId}"]`);
+            const containerId = addressType === "invoice"
+                ? "invoice-address-cards"
+                : "delivery-address-cards";
+            const card = document.querySelector(
+                `#${containerId} .addr_card[data-partner-id="${partnerId}"]`
+            );
             if (card) {
                 const nameEl = card.querySelector(".name");
                 if (nameEl) nameEl.textContent = result.name;
@@ -179,28 +148,23 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
                     linesEl.textContent = parts.join("\n");
                 }
 
-                // Update data attributes on edit button so re-editing is accurate
+                // Refresh data attrs on the edit button for accurate re-editing
                 const editBtn = card.querySelector(".addr_edit_btn");
                 if (editBtn) {
-                    editBtn.dataset.name      = result.name;
-                    editBtn.dataset.street    = result.street;
-                    editBtn.dataset.city      = result.city;
-                    editBtn.dataset.zip       = result.zip;
+                    editBtn.dataset.name   = result.name;
+                    editBtn.dataset.street = result.street;
+                    editBtn.dataset.city   = result.city;
+                    editBtn.dataset.zip    = result.zip;
                 }
             }
-            // Hide edit form
-            const form = document.getElementById(`${prefix}-address-form`);
-            if (form) form.style.display = "none";
+            this._onCloseModal();
         }
     },
-
-    _onCancelEditInvoice()  { this._hideForm("edit-invoice-address-form");  },
-    _onCancelEditDelivery() { this._hideForm("edit-delivery-address-form"); },
 
     // ── Delete address ────────────────────────────────────────────────────────
 
     async _onDeleteAddress(ev) {
-        ev.stopPropagation();
+        ev.stopImmediatePropagation();
         const btn       = ev.currentTarget;
         const partnerId = btn.dataset.partnerId;
         const type      = btn.dataset.addressType;
@@ -223,62 +187,89 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
 
         if (result && result.success) {
             const containerId = `${type}-address-cards`;
-            const card = document.querySelector(`#${containerId} .addr_card[data-partner-id="${partnerId}"]`);
+            const card = document.querySelector(
+                `#${containerId} .addr_card[data-partner-id="${partnerId}"]`
+            );
             if (card) card.remove();
 
-            // Hide any open edit/new forms for this type
-            this._hideForm(`edit-${type}-address-form`);
+            // Close modal if it was open for this partner
+            this._onCloseModal();
 
-            // If the deleted address was selected, select the first remaining card
+            const container  = document.getElementById(containerId);
+            const remaining  = container?.querySelectorAll(".addr_card[data-partner-id]").length || 0;
+
             if (result.was_selected) {
-                const container  = document.getElementById(containerId);
-                const firstCard  = container?.querySelector(".addr_card[data-partner-id]");
-                if (firstCard) {
-                    firstCard.classList.add("current");
-                    // Persist selection to backend
-                    const newPartnerId = parseInt(firstCard.dataset.partnerId);
+                if (remaining > 0) {
+                    const firstCard = container.querySelector(".addr_card[data-partner-id]");
+                    firstCard?.classList.add("current");
+                    const newId = parseInt(firstCard.dataset.partnerId);
                     const route = type === "invoice"
                         ? "/my/orders/" + this.orderDetail.orderId + "/select_invoice_address"
                         : "/my/orders/" + this.orderDetail.orderId + "/select_delivery_address";
-                    jsonrpc(route, { partner_id: newPartnerId, access_token: this.orderDetail.token });
+                    jsonrpc(route, { partner_id: newId, access_token: this.orderDetail.token });
                 }
             }
 
-            // Show empty state if no cards remain
-            const container = document.getElementById(containerId);
-            const remaining = container?.querySelectorAll(".addr_card[data-partner-id]").length || 0;
+            // If no typed addresses remain, inject the default company card
             if (remaining === 0) {
-                const emptyState = document.createElement("div");
-                emptyState.className = "addr_empty_state";
-                emptyState.innerHTML = '<i class="fa fa-inbox"></i><div>No saved addresses on file</div>';
                 const trigger = document.getElementById(`new-${type}-trigger`);
-                container.insertBefore(emptyState, trigger);
+                const defaultCard = this._buildDefaultCard(container, type);
+                if (defaultCard) container.insertBefore(defaultCard, trigger);
             }
         }
     },
 
-    // ── New address trigger ───────────────────────────────────────────────────
+    _buildDefaultCard(container, addressType) {
+        const d = container?.dataset;
+        if (!d || !d.defaultPartnerId) return null;
 
-    _onNewInvoiceTrigger() {
-        this._hideForm("edit-invoice-address-form");
+        const lines = [
+            d.defaultStreet,
+            [d.defaultCity, d.defaultState, d.defaultZip].filter(Boolean).join(", "),
+            d.defaultCountry,
+        ].filter(Boolean).join("\n");
+
+        const card = document.createElement("div");
+        card.className = "addr_card";
+        card.dataset.partnerId   = d.defaultPartnerId;
+        card.dataset.addressType = addressType;
+        card.style.cursor = "pointer";
+
+        const badge = document.createElement("span");
+        badge.className = "addr_badge mb-1";
+        badge.textContent = "Default";
+
+        const nameEl = document.createElement("div");
+        nameEl.className = "name";
+        nameEl.textContent = d.defaultName || "";
+
+        const linesEl = document.createElement("div");
+        linesEl.className = "lines";
+        linesEl.textContent = lines;
+
+        card.appendChild(badge);
+        card.appendChild(nameEl);
+        card.appendChild(linesEl);
+        return card;
+    },
+
+    // ── New address ───────────────────────────────────────────────────────────
+
+    _onNewInvoiceTrigger(ev) {
+        ev.stopImmediatePropagation();
         this._toggleForm("new-invoice-address-form");
     },
 
-    _onNewDeliveryTrigger() {
-        this._hideForm("edit-delivery-address-form");
+    _onNewDeliveryTrigger(ev) {
+        ev.stopImmediatePropagation();
         this._toggleForm("new-delivery-address-form");
     },
 
     _onCancelNewInvoice()  { this._hideForm("new-invoice-address-form");  },
     _onCancelNewDelivery() { this._hideForm("new-delivery-address-form"); },
 
-    async _onSaveNewInvoice() {
-        await this._saveNew("invoice");
-    },
-
-    async _onSaveNewDelivery() {
-        await this._saveNew("delivery");
-    },
+    async _onSaveNewInvoice()  { await this._saveNew("invoice");  },
+    async _onSaveNewDelivery() { await this._saveNew("delivery"); },
 
     async _saveNew(type) {
         const prefix = `new-${type}`;
@@ -298,13 +289,14 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             const container = document.getElementById(`${type}-address-cards`);
             const trigger   = document.getElementById(`new-${type}-trigger`);
 
-            // Remove any empty-state placeholder
-            container.querySelectorAll(".addr_empty_state").forEach(el => el.remove());
+            // Remove any default card (no edit/delete buttons = default)
+            container.querySelectorAll(".addr_card[data-partner-id]").forEach(c => {
+                if (!c.querySelector(".addr_edit_btn")) c.remove();
+            });
 
-            // Remove current highlight from all cards
+            // Remove current highlight from all remaining cards
             container.querySelectorAll(".addr_card").forEach(c => c.classList.remove("current"));
 
-            // Build and insert new card before the trigger
             const card = this._buildAddressCard(result, type);
             container.insertBefore(card, trigger);
 
@@ -312,6 +304,27 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             this._clearForm(prefix);
         }
     },
+
+    // ── Country/state filtering ───────────────────────────────────────────────
+
+    _filterStatesByCountry(countryId, stateId) {
+        const countryEl = document.getElementById(countryId);
+        const stateEl   = document.getElementById(stateId);
+        if (!countryEl || !stateEl) return;
+        const selected = countryEl.value;
+        Array.from(stateEl.options).forEach(opt => {
+            if (!opt.value) return;
+            opt.hidden = !!(selected && opt.dataset.countryId != selected);
+        });
+        const sel = stateEl.options[stateEl.selectedIndex];
+        if (sel?.value && selected && sel.dataset.countryId != selected) {
+            stateEl.value = "";
+        }
+    },
+
+    _onNewInvoiceCountryChange()  { this._filterStatesByCountry("new-invoice-country",  "new-invoice-state");  },
+    _onNewDeliveryCountryChange() { this._filterStatesByCountry("new-delivery-country", "new-delivery-state"); },
+    _onModalCountryChange()       { this._filterStatesByCountry("edit-modal-country",   "edit-modal-state");   },
 
     // ── DOM helpers ───────────────────────────────────────────────────────────
 
@@ -347,10 +360,9 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         card.className = "addr_card current";
         card.dataset.partnerId   = String(data.partner_id);
         card.dataset.addressType = addressType;
-        card.style.cursor   = "pointer";
+        card.style.cursor     = "pointer";
         card.style.paddingTop = "36px";
 
-        // Action buttons
         const actions = document.createElement("div");
         actions.className = "addr_card_actions";
         actions.innerHTML = `

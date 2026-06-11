@@ -1,5 +1,5 @@
 /* ProQuotes Address Selector
-   Base card styles come from proquotes/static/src/CSS/quoteStyle.css
+   Base card styles from proquotes/static/src/CSS/quoteStyle.css
    (.addr_matrix, .addr_card, .addr_card.current, .addr_card.add_card, .addr_edit, etc.) */
 
 /* ── Card action buttons container ── */
@@ -35,7 +35,7 @@
 }
 .addr_card:hover .addr_action_btn { opacity: 1; }
 
-/* ── Edit button — reuses .addr_edit colours ── */
+/* ── Edit button ── */
 .addr_edit_btn {
     border: 1px solid #4b1f1f;
     background: #231314;
@@ -45,7 +45,7 @@
     box-shadow: 0 0 0 2px rgba(219, 13, 13, 0.20) inset;
 }
 
-/* ── Delete button — blue-tinted to visually distinguish from edit ── */
+/* ── Delete button ── */
 .addr_delete_btn {
     border: 1px solid #1f2b4b;
     background: #131823;
@@ -55,39 +55,18 @@
     box-shadow: 0 0 0 2px rgba(95, 141, 211, 0.20) inset;
 }
 
-/* ── Make .addr_edit in quoteStyle.css clickable (it was cursor:default) ── */
+/* ── Override quoteStyle.css cursor:default on .addr_edit ── */
 .addr_edit { cursor: pointer !important; }
 
-/* ── Card hover highlight (non-selected) ── */
+/* ── Hover highlight for non-selected cards ── */
 #rental-address-section .addr_card[data-partner-id]:hover:not(.current) {
     outline: 1px solid rgba(219, 13, 13, 0.35);
-}
-
-/* ── Empty state placeholder ── */
-.addr_empty_state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #8b949e;
-    padding: 20px 16px;
-    min-width: 160px;
-    text-align: center;
-}
-.addr_empty_state .fa {
-    font-size: 1.6rem;
-    opacity: 0.35;
-    margin-bottom: 6px;
-}
-.addr_empty_state div {
-    font-size: 0.80rem;
 }
 
 /* ── New/edit form select option colours ── */
 #new-invoice-address-form select option,
 #new-delivery-address-form select option,
-#edit-invoice-address-form select option,
-#edit-delivery-address-form select option {
+#addr-edit-modal select option {
     background: #0a0d11;
     color: #e6edf3;
 }
@@ -95,4 +74,84 @@
 /* ── addr_matrix spacing ── */
 #rental-address-section .addr_matrix {
     margin-bottom: 0;
+}
+
+/* ══════════════════════════════════════════════
+   EDIT MODAL
+══════════════════════════════════════════════ */
+
+#addr-edit-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#addr-edit-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    cursor: pointer;
+}
+
+#addr-edit-modal-box {
+    position: relative;
+    z-index: 1;
+    width: min(500px, 92vw);
+    background: #14171c;
+    border: 1px solid #23272f;
+    border-radius: 14px;
+    padding: 24px;
+    color: #e6edf3;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* Make the addr_editor inside the modal clean (no extra margins/borders) */
+#addr-edit-modal-box .addr_editor {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: #e6edf3;
+}
+
+#addr-edit-modal-box .addr_editor fieldset {
+    min-width: 100%;
+    flex: 1 1 100%;
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+#addr-edit-modal-box .addr_editor legend {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #e6edf3;
+    padding: 0;
+    margin-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+#addr-edit-modal-box .addr_editor input[type="text"] {
+    background: #0a0d11;
+    color: #e6edf3;
+    border: 1px solid #2b3139;
+    border-radius: 8px;
+}
+#addr-edit-modal-box .addr_editor input[type="text"]:focus {
+    border-color: #3f8cff;
+    box-shadow: 0 0 0 3px rgba(63, 140, 255, 0.20);
+    outline: none;
+}
+
+#addr-edit-modal-box .actions {
+    margin-top: 16px;
+    text-align: right;
 }
