@@ -90,16 +90,34 @@ whenReady(() => {
     const specGroups   = Array.from(page.querySelectorAll(".o_rtc_spec_group[id]"));
 
     if (specNavLinks.length && specGroups.length) {
-        // rootMargin: ignore top 15% and bottom 60% of viewport so only the
-        // section occupying the upper-middle band triggers "active".
+        // Track which groups are currently intersecting the "active zone"
+        // (top 15% → bottom 60% of viewport). On each update, only the
+        // topmost intersecting group wins — prevents two items being active.
+        const intersecting = new Set();
+
         const spyObserver = new IntersectionObserver(entries => {
             entries.forEach(entry => {
-                const link = page.querySelector(
-                    `.o_rtc_specs_nav_link[href="#${entry.target.id}"]`
-                );
-                if (link) link.classList.toggle("is-active", entry.isIntersecting);
+                if (entry.isIntersecting) {
+                    intersecting.add(entry.target);
+                } else {
+                    intersecting.delete(entry.target);
+                }
             });
-        }, { rootMargin: "-15% 0px -60% 0px", threshold: 0 });
+
+            // Pick the group whose top edge is closest to (but below) the
+            // active-zone boundary — i.e. the highest one on screen.
+            let winner = null;
+            let winnerTop = Infinity;
+            intersecting.forEach(el => {
+                const top = el.getBoundingClientRect().top;
+                if (top < winnerTop) { winnerTop = top; winner = el; }
+            });
+
+            specNavLinks.forEach(link => {
+                const id = link.getAttribute("href").slice(1);
+                link.classList.toggle("is-active", winner !== null && winner.id === id);
+            });
+        }, { rootMargin: "-10% 0px -55% 0px", threshold: 0 });
 
         specGroups.forEach(g => spyObserver.observe(g));
     }
