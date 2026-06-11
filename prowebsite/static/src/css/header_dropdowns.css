@@ -189,3 +189,8 @@
         display: none;
     }
 }
+
+/* livechat thing */
+div.o-mail-ChatWindowContainer > div > div.o-mail-ChatWindow-header.d-flex.align-items-center.flex-shrink-0.bg-100.cursor-pointer.border-bottom > button:nth-child(5) > i, div.o-mail-ChatWindowContainer > div > div.o-mail-ChatWindow-header.d-flex.align-items-center.flex-shrink-0.bg-100.cursor-pointer.border-bottom > button:nth-child(4) > i {
+    color: white !important;
+}
