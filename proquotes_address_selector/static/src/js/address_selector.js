@@ -28,7 +28,6 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     // ── Unified section click → card selection ────────────────────────────────
 
     async _onSectionClick(ev) {
-        // Ignore if the click was on (or inside) an action button, form, or modal
         if (ev.target.closest(".addr_action_btn")) return;
         if (ev.target.closest(".addresses"))       return;
         if (ev.target.closest("#addr-edit-modal")) return;
@@ -36,7 +35,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const card = ev.target.closest(".addr_card[data-partner-id]");
         if (!card) return;
 
-        const partnerId  = card.dataset.partnerId;
+        const partnerId   = card.dataset.partnerId;
         const addressType = card.dataset.addressType;
         if (!partnerId || !addressType) return;
 
@@ -71,11 +70,9 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         ev.stopImmediatePropagation();
         const btn = ev.currentTarget;
 
-        // Store partner id + address type in modal hidden inputs
         this._setVal("edit-modal-partner-id",   btn.dataset.partnerId);
         this._setVal("edit-modal-address-type", btn.dataset.addressType);
 
-        // Pre-fill fields
         this._setVal("edit-modal-name",   btn.dataset.name   || "");
         this._setVal("edit-modal-street", btn.dataset.street || "");
         this._setVal("edit-modal-city",   btn.dataset.city   || "");
@@ -87,7 +84,6 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const stateEl = document.getElementById("edit-modal-state");
         if (stateEl) stateEl.value = btn.dataset.stateId || "";
 
-        // Show modal
         const modal = document.getElementById("addr-edit-modal");
         if (modal) modal.style.display = "flex";
     },
@@ -137,7 +133,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
                     linesEl.textContent = parts.join("\n");
                 }
 
-                // Refresh data attrs on the edit button for accurate re-editing
+                // Refresh data attrs on the edit button for re-editing
                 const editBtn = card.querySelector(".addr_edit_btn");
                 if (editBtn) {
                     editBtn.dataset.name   = result.name;
@@ -157,6 +153,13 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const btn       = ev.currentTarget;
         const partnerId = btn.dataset.partnerId;
         const type      = btn.dataset.addressType;
+        const containerId = `${type}-address-cards`;
+        const container   = document.getElementById(containerId);
+
+        // Default company card — don't archive, just reset order field then return
+        if (container && container.dataset.defaultPartnerId == partnerId) {
+            return;
+        }
 
         const confirmed = window.confirm(
             type === "invoice"
@@ -175,28 +178,23 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         );
 
         if (result && result.success) {
-            const containerId = `${type}-address-cards`;
             const card = document.querySelector(
                 `#${containerId} .addr_card[data-partner-id="${partnerId}"]`
             );
             if (card) card.remove();
 
-            // Close modal if it was open for this partner
             this._onCloseModal();
 
-            const container  = document.getElementById(containerId);
-            const remaining  = container?.querySelectorAll(".addr_card[data-partner-id]").length || 0;
+            const remaining = container?.querySelectorAll(".addr_card[data-partner-id]").length || 0;
 
-            if (result.was_selected) {
-                if (remaining > 0) {
-                    const firstCard = container.querySelector(".addr_card[data-partner-id]");
-                    firstCard?.classList.add("current");
-                    const newId = parseInt(firstCard.dataset.partnerId);
-                    const route = type === "invoice"
-                        ? "/my/orders/" + this.orderDetail.orderId + "/select_invoice_address"
-                        : "/my/orders/" + this.orderDetail.orderId + "/select_delivery_address";
-                    jsonrpc(route, { partner_id: newId, access_token: this.orderDetail.token });
-                }
+            if (result.was_selected && remaining > 0) {
+                const firstCard = container.querySelector(".addr_card[data-partner-id]");
+                firstCard?.classList.add("current");
+                const newId = parseInt(firstCard.dataset.partnerId);
+                const route = type === "invoice"
+                    ? "/my/orders/" + this.orderDetail.orderId + "/select_invoice_address"
+                    : "/my/orders/" + this.orderDetail.orderId + "/select_delivery_address";
+                jsonrpc(route, { partner_id: newId, access_token: this.orderDetail.token });
             }
 
             // If no typed addresses remain, inject the default company card
@@ -218,10 +216,38 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         ].filter(Boolean).join("\n");
 
         const card = document.createElement("div");
-        card.className = "addr_card";
+        card.className = "addr_card current";
         card.dataset.partnerId   = d.defaultPartnerId;
         card.dataset.addressType = addressType;
-        card.style.cursor = "pointer";
+        card.style.cursor     = "pointer";
+        card.style.paddingTop = "36px";
+
+        // Action buttons
+        const actions = document.createElement("div");
+        actions.className = "addr_card_actions";
+        actions.innerHTML = `
+            <button class="addr_action_btn addr_edit_btn"
+                    data-partner-id="${d.defaultPartnerId}"
+                    data-address-type="${addressType}"
+                    data-name="${d.defaultName || ""}"
+                    data-street="${d.defaultStreet || ""}"
+                    data-city="${d.defaultCity || ""}"
+                    data-zip="${d.defaultZip || ""}"
+                    data-state-id="0"
+                    data-country-id="0"
+                    title="Edit">
+                <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="addr_action_btn addr_delete_btn"
+                    data-partner-id="${d.defaultPartnerId}"
+                    data-address-type="${addressType}"
+                    title="Delete">
+                <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>`;
 
         const badge = document.createElement("span");
         badge.className = "addr_badge mb-1";
@@ -235,6 +261,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         linesEl.className = "lines";
         linesEl.textContent = lines;
 
+        card.appendChild(actions);
         card.appendChild(badge);
         card.appendChild(nameEl);
         card.appendChild(linesEl);
@@ -248,12 +275,15 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const stateEl   = document.getElementById(stateId);
         if (!countryEl || !stateEl) return;
         const selected = countryEl.value;
+        // Only filter when a real country is selected (not empty / "0")
+        const active = selected && selected !== "0";
         Array.from(stateEl.options).forEach(opt => {
             if (!opt.value) return;
-            opt.hidden = !!(selected && opt.dataset.countryId != selected);
+            opt.hidden = !!(active && opt.dataset.countryId != selected);
         });
+        // Clear state if it no longer belongs to the selected country
         const sel = stateEl.options[stateEl.selectedIndex];
-        if (sel?.value && selected && sel.dataset.countryId != selected) {
+        if (sel?.value && active && sel.dataset.countryId != selected) {
             stateEl.value = "";
         }
     },

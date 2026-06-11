@@ -2,11 +2,43 @@
    Base card styles from proquotes/static/src/CSS/quoteStyle.css
    (.addr_matrix, .addr_card, .addr_card.current, .addr_card.add_card, .addr_edit, etc.) */
 
+/* ── Card padding & layout ── */
+#rental-address-section .addr_card {
+    padding: 18px 20px 16px;
+    min-height: 110px;
+}
+
+/* ── Name spacing ── */
+#rental-address-section .addr_card .name {
+    font-size: 0.97rem;
+    margin-bottom: 6px;
+}
+
+/* ── Lines: fix QWeb whitespace gaps (pre-line + newlines between <t> tags = blank lines) ── */
+#rental-address-section .addr_card .lines {
+    white-space: normal;
+    line-height: 1.55;
+    font-size: 0.88rem;
+}
+
+/* ── Selected card: solid dark-red background + red border ── */
+#rental-address-section .addr_card.current {
+    background: #1f0b0b;
+    border-color: #db0d0d;
+    outline: 2px solid #db0d0d;
+}
+
+/* ── Hover highlight for non-selected cards ── */
+#rental-address-section .addr_card[data-partner-id]:hover:not(.current) {
+    outline: 1px solid rgba(219, 13, 13, 0.45);
+    background: #160c0c;
+}
+
 /* ── Card action buttons container ── */
 .addr_card_actions {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 10px;
+    right: 10px;
     display: flex;
     gap: 6px;
     z-index: 2;
@@ -14,14 +46,14 @@
 
 /* ── Shared pill button base ── */
 .addr_action_btn {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 999px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    opacity: 0.7;
+    opacity: 0.65;
     transition: opacity 0.15s ease, box-shadow 0.15s ease;
     padding: 0;
     background: none;
@@ -42,7 +74,8 @@
     color: #db0d0d;
 }
 .addr_edit_btn:hover {
-    box-shadow: 0 0 0 2px rgba(219, 13, 13, 0.20) inset;
+    box-shadow: 0 0 0 2px rgba(219, 13, 13, 0.25) inset;
+    opacity: 1;
 }
 
 /* ── Delete button ── */
@@ -52,16 +85,18 @@
     color: #5f8dd3;
 }
 .addr_delete_btn:hover {
-    box-shadow: 0 0 0 2px rgba(95, 141, 211, 0.20) inset;
+    box-shadow: 0 0 0 2px rgba(95, 141, 211, 0.25) inset;
+    opacity: 1;
+}
+
+/* ── addr_badge spacing ── */
+#rental-address-section .addr_card .addr_badge {
+    margin-bottom: 6px;
+    display: inline-block;
 }
 
 /* ── Override quoteStyle.css cursor:default on .addr_edit ── */
 .addr_edit { cursor: pointer !important; }
-
-/* ── Hover highlight for non-selected cards ── */
-#rental-address-section .addr_card[data-partner-id]:hover:not(.current) {
-    outline: 1px solid rgba(219, 13, 13, 0.35);
-}
 
 /* ── Edit modal select option colours ── */
 #addr-edit-modal select option {

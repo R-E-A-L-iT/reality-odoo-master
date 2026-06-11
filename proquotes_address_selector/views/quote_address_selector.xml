@@ -42,7 +42,33 @@
                             <div t-attf-class="addr_card{{ ' current' if sale_order.partner_invoice_id.id == default_partner.id else '' }}"
                                  t-att-data-partner-id="default_partner.id"
                                  data-address-type="invoice"
-                                 style="cursor:pointer;">
+                                 style="cursor:pointer; padding-top:36px;">
+
+                                <div class="addr_card_actions">
+                                    <button class="addr_action_btn addr_edit_btn"
+                                            t-att-data-partner-id="default_partner.id"
+                                            t-att-data-name="default_partner.name or ''"
+                                            t-att-data-street="default_partner.street or ''"
+                                            t-att-data-city="default_partner.city or ''"
+                                            t-att-data-zip="default_partner.zip or ''"
+                                            t-att-data-state-id="default_partner.state_id.id or 0"
+                                            t-att-data-country-id="default_partner.country_id.id or 0"
+                                            data-address-type="invoice"
+                                            title="Edit">
+                                        <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </button>
+                                    <button class="addr_action_btn addr_delete_btn"
+                                            t-att-data-partner-id="default_partner.id"
+                                            data-address-type="invoice"
+                                            title="Delete">
+                                        <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </button>
+                                </div>
+
                                 <span class="addr_badge mb-1">Default</span>
                                 <div class="name" t-esc="default_partner.name"/>
                                 <div class="lines">
@@ -130,7 +156,33 @@
                             <div t-attf-class="addr_card{{ ' current' if sale_order.partner_shipping_id.id == default_partner.id else '' }}"
                                  t-att-data-partner-id="default_partner.id"
                                  data-address-type="delivery"
-                                 style="cursor:pointer;">
+                                 style="cursor:pointer; padding-top:36px;">
+
+                                <div class="addr_card_actions">
+                                    <button class="addr_action_btn addr_edit_btn"
+                                            t-att-data-partner-id="default_partner.id"
+                                            t-att-data-name="default_partner.name or ''"
+                                            t-att-data-street="default_partner.street or ''"
+                                            t-att-data-city="default_partner.city or ''"
+                                            t-att-data-zip="default_partner.zip or ''"
+                                            t-att-data-state-id="default_partner.state_id.id or 0"
+                                            t-att-data-country-id="default_partner.country_id.id or 0"
+                                            data-address-type="delivery"
+                                            title="Edit">
+                                        <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </button>
+                                    <button class="addr_action_btn addr_delete_btn"
+                                            t-att-data-partner-id="default_partner.id"
+                                            data-address-type="delivery"
+                                            title="Delete">
+                                        <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </button>
+                                </div>
+
                                 <span class="addr_badge mb-1">Default</span>
                                 <div class="name" t-esc="default_partner.name"/>
                                 <div class="lines">
