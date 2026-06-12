@@ -84,7 +84,7 @@
             </xpath>
 
             <xpath expr="//control" position="after">
-                <field name="special" invisible="1"/>
+                <field name="special" column_invisible="True"/>
             </xpath>
 
 
