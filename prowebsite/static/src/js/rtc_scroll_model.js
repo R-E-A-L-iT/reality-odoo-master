@@ -256,7 +256,7 @@ whenReady(async () => {
         detailPanel.innerHTML = `
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_attachment">
                 <h3 class="o_three_scroll_feature_title">${_t("detailStubTitle", "RTC Stub &amp; Tripod Attachment")}</h3>
-                <p class="o_three_scroll_feature_body">${_t("detailStubBody", "Mounts in seconds on the 5/8″ stub of a lightweight Leica GST80 tripod, with optional adapters for standard topographic tripods and survey tribrach bases — so the scanner drops straight into your existing survey setup.")}</p>
+                <p class="o_three_scroll_feature_body">${_t("detailStubBody", "Mounts in seconds with the quick release stub that is compatible with the lightweight Leica GST80 tripod, with optional adapters for standard topographic tripods and survey tribrach bases — so the scanner drops straight into your existing survey setup.")}</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_back">
                 <h3 class="o_three_scroll_feature_title">${_t("detailPulseTitle", "Dual-Pulse Technology")}</h3>
@@ -268,7 +268,7 @@ whenReady(async () => {
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_screw">
                 <h3 class="o_three_scroll_feature_title">${_t("detailHandleTitle", "Handle &amp; Antennas")}</h3>
-                <p class="o_three_scroll_feature_body">${_t("detailHandleBody", "An ergonomic top handle keeps the scanner easy to carry and reposition between setups, while the integrated WLAN (2.4 / 5 GHz) and GNSS antennas keep it connected for Livelink cloud workflows and georeferenced data.")}</p>
+                <p class="o_three_scroll_feature_body">${_t("detailHandleBody", "An ergonomic top handle keeps the scanner easy to carry and reposition between setups, while the integrated WLAN (2.4 / 5 GHz) and GNSS antennas built into the handle keep it connected to your device for operating the scanner from a distance with Cyclone FIELD 360 and enables Livelink cloud workflows with your data.")}</p>
             </div>
         `;
         scrollHost.appendChild(detailPanel);
