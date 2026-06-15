@@ -99,6 +99,10 @@ whenReady(async () => {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.setSize(targetHost.clientWidth, targetHost.clientHeight);
         renderer.setClearColor(0x000000, 0);
+        // Filmic tone mapping tames the blown-out highlights on the light-coloured
+        // RTC housing so it no longer looks blinding.
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 0.95;
         renderer.domElement.style.position = "absolute";
         renderer.domElement.style.inset = "0";
         renderer.domElement.style.zIndex = zIndex;
@@ -107,45 +111,44 @@ whenReady(async () => {
         return renderer;
     }
 
-    // Soft, even product lighting matching the OmniGO scroll scene.
+    // Soft, even product lighting. The RTC housing is light/white, so these are
+    // far gentler than the OmniGO adapter setup (which lit a near-black model).
     function addSoftProductLights(scene) {
-        scene.add(new THREE.AmbientLight(0xffffff, 8.5));
+        scene.add(new THREE.AmbientLight(0xffffff, 1.1));
 
-        const hemi = new THREE.HemisphereLight(0xffffff, 0x777777, 6.5);
+        const hemi = new THREE.HemisphereLight(0xffffff, 0x666666, 0.9);
         hemi.position.set(0, 1, 0);
         scene.add(hemi);
 
-        const frontCenter = new THREE.DirectionalLight(0xffffff, 5.5);
+        const frontCenter = new THREE.DirectionalLight(0xffffff, 1.9);
         frontCenter.position.set(0, 2, 7);
         scene.add(frontCenter);
 
-        const frontLeft = new THREE.DirectionalLight(0xffffff, 4.2);
+        const frontLeft = new THREE.DirectionalLight(0xffffff, 1.0);
         frontLeft.position.set(-6, 3, 5);
         scene.add(frontLeft);
 
-        const frontRight = new THREE.DirectionalLight(0xffffff, 4.2);
+        const frontRight = new THREE.DirectionalLight(0xffffff, 1.0);
         frontRight.position.set(6, 3, 5);
         scene.add(frontRight);
 
-        const topLight = new THREE.DirectionalLight(0xffffff, 3.8);
+        const topLight = new THREE.DirectionalLight(0xffffff, 0.8);
         topLight.position.set(0, 8, 2);
         scene.add(topLight);
 
-        const lowerFill = new THREE.DirectionalLight(0xffffff, 3.0);
+        const lowerFill = new THREE.DirectionalLight(0xffffff, 0.5);
         lowerFill.position.set(0, -5, 4);
         scene.add(lowerFill);
 
-        const redLeft = new THREE.DirectionalLight(0xff1a1a, 2.4);
+        // Subtle brand-red rim so the model picks up the red background, kept low
+        // to avoid tinting the whole housing.
+        const redLeft = new THREE.DirectionalLight(0xff1a1a, 0.4);
         redLeft.position.set(-5, 1, 4);
         scene.add(redLeft);
 
-        const redRight = new THREE.DirectionalLight(0xff2b2b, 2.0);
+        const redRight = new THREE.DirectionalLight(0xff2b2b, 0.35);
         redRight.position.set(5, 1, 3);
         scene.add(redRight);
-
-        const redBackGlow = new THREE.PointLight(0xff0000, 3.2, 10);
-        redBackGlow.position.set(0, 1.5, -3);
-        scene.add(redBackGlow);
     }
 
     // Normalise an object the same way OmniGO does: double-sided materials,
