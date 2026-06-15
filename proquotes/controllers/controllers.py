@@ -884,7 +884,7 @@ class WebsiteForm(form.WebsiteForm):
         _logger.info('Created sale_order_result: %s', sale_order_result)
     
         if sale_order_result and model.model == 'sale.order':
-            sale_order = request.env['sale.order'].browse(sale_order_result)
+            sale_order = request.env['sale.order'].sudo().browse(sale_order_result)
     
             # Add individual contact as follower
             if individual_partner and sale_order:
