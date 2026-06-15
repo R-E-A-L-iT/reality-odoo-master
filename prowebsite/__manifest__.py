@@ -23,6 +23,7 @@
             'prowebsite/static/src/js/header_dropdowns.js',
             'prowebsite/static/src/js/three_product.js',
             'prowebsite/static/src/js/rtc_series.js',
+            'prowebsite/static/src/js/rtc_scroll_model.js',
         ],
     }
 }
