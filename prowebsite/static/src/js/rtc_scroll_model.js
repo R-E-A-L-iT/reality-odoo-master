@@ -71,15 +71,17 @@ whenReady(async () => {
         return val === undefined ? fallback : val;
     }
 
-    // ── Three.js + GLTFLoader (loaded from CDN, same as OmniGO) ────────────────
-    let THREE, GLTFLoader, LoopRepeat;
+    // ── Three.js + GLTFLoader + EXRLoader (loaded from CDN, same as OmniGO) ─────
+    let THREE, GLTFLoader, EXRLoader, LoopRepeat;
     try {
-        const [threeModule, gltfModule] = await Promise.all([
+        const [threeModule, gltfModule, exrModule] = await Promise.all([
             import("https://esm.sh/three@0.180.0"),
             import("https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js"),
+            import("https://esm.sh/three@0.180.0/examples/jsm/loaders/EXRLoader.js"),
         ]);
         THREE = threeModule;
         ({ GLTFLoader } = gltfModule);
+        ({ EXRLoader } = exrModule);
         LoopRepeat = THREE.LoopRepeat;
     } catch (err) {
         console.error("[rtc-scroll] Failed to load Three.js:", err);
@@ -87,6 +89,7 @@ whenReady(async () => {
     }
 
     const modelPath = "/prowebsite/static/src/models/New_RTC_series_Animated.glb";
+    const hdriPath  = "/prowebsite/static/src/hdri/studio_kontrast_04_2k.exr";
 
     // ── Maths helpers (identical to three_product.js) ──────────────────────────
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
@@ -99,10 +102,11 @@ whenReady(async () => {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.setSize(targetHost.clientWidth, targetHost.clientHeight);
         renderer.setClearColor(0x000000, 0);
-        // Filmic tone mapping tames the blown-out highlights on the light-coloured
-        // RTC housing so it no longer looks blinding.
+        // Correct colour pipeline + filmic tone mapping so the HDRI-lit, light-
+        // coloured RTC housing reads naturally instead of blown-out.
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 0.95;
+        renderer.toneMappingExposure = 0.9;
         renderer.domElement.style.position = "absolute";
         renderer.domElement.style.inset = "0";
         renderer.domElement.style.zIndex = zIndex;
@@ -111,44 +115,42 @@ whenReady(async () => {
         return renderer;
     }
 
-    // Soft, even product lighting. The RTC housing is light/white, so these are
-    // far gentler than the OmniGO adapter setup (which lit a near-black model).
+    // Load the studio EXR and use it as an image-based-lighting environment map.
+    // We deliberately do NOT set scene.background — the canvas stays transparent
+    // so the red section gradient shows through behind the model. The HDRI only
+    // drives lighting and reflections via scene.environment.
+    function applyEnvironment(renderer, scene) {
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        pmrem.compileEquirectangularShader();
+
+        new EXRLoader().load(
+            hdriPath,
+            (texture) => {
+                const envMap = pmrem.fromEquirectangular(texture).texture;
+                scene.environment = envMap;
+                texture.dispose();
+                pmrem.dispose();
+            },
+            undefined,
+            (err) => {
+                console.error("[rtc-scroll] EXR HDRI failed to load:", err);
+                pmrem.dispose();
+            }
+        );
+    }
+
+    // Minimal lighting — the HDRI environment does the heavy lifting now, so we
+    // only add a soft ambient/key plus a barely-there red rim for brand warmth.
     function addSoftProductLights(scene) {
-        scene.add(new THREE.AmbientLight(0xffffff, 1.1));
+        scene.add(new THREE.AmbientLight(0xffffff, 0.2));
 
-        const hemi = new THREE.HemisphereLight(0xffffff, 0x666666, 0.9);
-        hemi.position.set(0, 1, 0);
-        scene.add(hemi);
+        const key = new THREE.DirectionalLight(0xffffff, 0.8);
+        key.position.set(5, 5, 5);
+        scene.add(key);
 
-        const frontCenter = new THREE.DirectionalLight(0xffffff, 1.9);
-        frontCenter.position.set(0, 2, 7);
-        scene.add(frontCenter);
-
-        const frontLeft = new THREE.DirectionalLight(0xffffff, 1.0);
-        frontLeft.position.set(-6, 3, 5);
-        scene.add(frontLeft);
-
-        const frontRight = new THREE.DirectionalLight(0xffffff, 1.0);
-        frontRight.position.set(6, 3, 5);
-        scene.add(frontRight);
-
-        const topLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        topLight.position.set(0, 8, 2);
-        scene.add(topLight);
-
-        const lowerFill = new THREE.DirectionalLight(0xffffff, 0.5);
-        lowerFill.position.set(0, -5, 4);
-        scene.add(lowerFill);
-
-        // Subtle brand-red rim so the model picks up the red background, kept low
-        // to avoid tinting the whole housing.
-        const redLeft = new THREE.DirectionalLight(0xff1a1a, 0.4);
-        redLeft.position.set(-5, 1, 4);
-        scene.add(redLeft);
-
-        const redRight = new THREE.DirectionalLight(0xff2b2b, 0.35);
-        redRight.position.set(5, 1, 3);
-        scene.add(redRight);
+        const redRim = new THREE.DirectionalLight(0xff2222, 0.08);
+        redRim.position.set(-5, 2, 4);
+        scene.add(redRim);
     }
 
     // Normalise an object the same way OmniGO does: double-sided materials,
@@ -202,6 +204,7 @@ whenReady(async () => {
     scrollCamera.position.set(0, 0, 5);
 
     const scrollRenderer = createRenderer(scrollHost, "1");
+    applyEnvironment(scrollRenderer, scrollScene);
     addSoftProductLights(scrollScene);
 
     const scrollSection = scrollHost.closest(".o_three_scroll_section");
