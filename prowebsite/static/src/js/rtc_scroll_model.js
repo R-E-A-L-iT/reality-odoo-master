@@ -27,40 +27,38 @@ whenReady(async () => {
 
     const _i18n = {
         fr_CA: {
-            calloutImaging:  "Imagerie sphérique HDR",
-            calloutVis:      "Système inertiel visuel (VIS)",
-            calloutTilt:     "Compensation d'inclinaison biaxiale",
-            calloutMount:    "Base à montage rapide",
-            detailImagingTitle: "Imagerie sphérique HDR 72 MP",
-            detailImagingBody:  "Le système à six caméras capture 432 MPx de données HDR brutes pour une image sphérique calibrée de 360° × 300°, avec exposition et balance des blancs automatiques.",
-            detailVisTitle:     "Système inertiel visuel (VIS)",
-            detailVisBody:      "Le système de mesure inertiel assisté par vidéo suit la position et les mouvements du scanner en temps réel pour un pré-enregistrement automatique sur le terrain.",
-            detailTiltTitle:    "Compensation d'inclinaison nouvelle génération",
-            detailTiltBody:     "Maintient une précision de 3″ même incliné jusqu'à ±10°, permettant des installations plus rapides sur des surfaces irrégulières grâce à l'auto-étalonnage automatique.",
-            detailMountTitle:   "Montage rapide 5/8″",
-            detailMountBody:    "Montage rapide sur l'embase 5/8″ d'un trépied léger Leica GST80, avec adaptateurs optionnels pour trépied topographique et embase de tribrach.",
-            mobileImaging:   "Imagerie sphérique HDR",
-            mobileVis:       "Système inertiel visuel",
-            mobileTilt:      "Compensation d'inclinaison",
-            mobileMount:     "Base à montage rapide",
+            calloutStub:    "Embase de trépied",
+            calloutPower:   "Batteries et caméras VIS",
+            calloutHandle:  "Poignée et antennes",
+            detailStubTitle:   "Embase RTC et fixation au trépied",
+            detailStubBody:    "Se monte en quelques secondes sur l'embase 5/8″ d'un trépied léger Leica GST80, avec des adaptateurs optionnels pour trépieds topographiques standard et embases de tribrach — le scanner s'intègre directement à votre configuration d'arpentage existante.",
+            detailPulseTitle:  "Technologie à double impulsion",
+            detailPulseBody:   "La télémétrie à double impulsion en vol émet une seconde impulsion laser avant le retour de la première, maintenant des cadences de numérisation élevées même à longue portée. Associée au temps de vol à numérisation de forme d'onde (WFD) à grande dynamique, elle offre des mesures rapides et à faible bruit.",
+            detailPowerTitle:  "Batteries et caméras VIS",
+            detailPowerBody:   "Deux batteries Li-Ion Leica GEB461 remplaçables à chaud offrent jusqu'à quatre heures de numérisation continue, tandis que les caméras du système inertiel visuel (VIS) situées à proximité suivent la position du scanner en temps réel pour un pré-recalage automatique et sans cible.",
+            detailHandleTitle: "Poignée et antennes",
+            detailHandleBody:  "Une poignée ergonomique sur le dessus facilite le transport et le repositionnement du scanner entre les installations, tandis que les antennes WLAN (2,4 / 5 GHz) et GNSS intégrées assurent la connexion pour les flux de travail infonuagiques Livelink et les données géoréférencées.",
+            mobileStub:    "Embase de trépied",
+            mobilePulse:   "Technologie à double impulsion",
+            mobilePower:   "Batteries et caméras VIS",
+            mobileHandle:  "Poignée et antennes",
         },
         es_ES: {
-            calloutImaging:  "Imagen esférica HDR",
-            calloutVis:      "Sistema inercial visual (VIS)",
-            calloutTilt:     "Compensación de inclinación biaxial",
-            calloutMount:    "Base de montaje rápido",
-            detailImagingTitle: "Imagen esférica HDR de 72 MP",
-            detailImagingBody:  "El sistema de seis cámaras captura 432 MPx de datos HDR sin procesar para una imagen esférica calibrada de 360° × 300°, con exposición y balance de blancos automáticos.",
-            detailVisTitle:     "Sistema inercial visual (VIS)",
-            detailVisBody:      "El sistema de medición inercial mejorado con vídeo rastrea la posición y los movimientos del escáner en tiempo real para el registro previo automático en campo.",
-            detailTiltTitle:    "Compensación de inclinación de nueva generación",
-            detailTiltBody:     "Mantiene una precisión de 3″ incluso inclinado hasta ±10°, permitiendo configuraciones más rápidas en superficies irregulares gracias a la autocalibración automática.",
-            detailMountTitle:   "Montaje rápido de 5/8″",
-            detailMountBody:    "Montaje rápido sobre el stub de 5/8″ de un trípode ligero Leica GST80, con adaptadores opcionales para trípode topográfico y base de tribrach.",
-            mobileImaging:   "Imagen esférica HDR",
-            mobileVis:       "Sistema inercial visual",
-            mobileTilt:      "Compensación de inclinación",
-            mobileMount:     "Base de montaje rápido",
+            calloutStub:    "Montaje en stub",
+            calloutPower:   "Baterías y cámaras VIS",
+            calloutHandle:  "Asa y antenas",
+            detailStubTitle:   "Stub RTC y fijación al trípode",
+            detailStubBody:    "Se monta en segundos sobre el stub de 5/8″ de un trípode ligero Leica GST80, con adaptadores opcionales para trípodes topográficos estándar y bases de tribrach — el escáner se integra directamente en su configuración de topografía existente.",
+            detailPulseTitle:  "Tecnología de doble pulso",
+            detailPulseBody:   "La medición de doble pulso en aire emite un segundo pulso láser antes de que regrese el primero, manteniendo altas velocidades de escaneo incluso a largo alcance. Combinada con el tiempo de vuelo de digitalización de forma de onda (WFD) de alta dinámica, ofrece mediciones rápidas y de bajo ruido.",
+            detailPowerTitle:  "Baterías y cámaras VIS",
+            detailPowerBody:   "Dos baterías de ión-litio Leica GEB461 intercambiables en caliente ofrecen hasta cuatro horas de escaneo continuo, mientras que las cámaras del sistema inercial visual (VIS) situadas junto a ellas rastrean la posición del escáner en tiempo real para un prerregistro automático y sin dianas.",
+            detailHandleTitle: "Asa y antenas",
+            detailHandleBody:  "Un asa ergonómica en la parte superior facilita transportar y reposicionar el escáner entre configuraciones, mientras que las antenas WLAN (2,4 / 5 GHz) y GNSS integradas lo mantienen conectado para los flujos de trabajo en la nube Livelink y los datos georreferenciados.",
+            mobileStub:    "Montaje en stub",
+            mobilePulse:   "Tecnología de doble pulso",
+            mobilePower:   "Baterías y cámaras VIS",
+            mobileHandle:  "Asa y antenas",
         },
     };
 
@@ -215,8 +213,13 @@ whenReady(async () => {
     const clock = new THREE.Clock();
 
     // ── Feature callouts / detail panel / mobile labels (DOM) ──────────────────
-    let _elDetailImaging = null, _elDetailVis = null, _elDetailTilt = null, _elDetailMount = null;
-    let _elMobileImaging = null, _elMobileVis = null, _elMobileTilt = null, _elMobileMount = null;
+    // Four scroll phases reveal four faces of the RTC scanner:
+    //   _attachment → tripod stub mount   (Stub)
+    //   _back       → dual-pulse ranging  (Pulse)
+    //   _hatch      → batteries & VIS cams (Power)
+    //   _screw      → handle & antennas   (Handle)
+    let _elDetailStub = null, _elDetailPulse = null, _elDetailPower = null, _elDetailHandle = null;
+    let _elMobileStub = null, _elMobilePulse = null, _elMobilePower = null, _elMobileHandle = null;
 
     const _mqLarge = window.matchMedia("(min-width: 992px)");
     let _isLargeScreen = _mqLarge.matches;
@@ -231,19 +234,19 @@ whenReady(async () => {
                 <div class="o_three_feature_dot"></div>
                 <div class="o_three_feature_line_diagonal"></div>
                 <div class="o_three_feature_line_under"></div>
-                <div class="o_three_feature_label">${_t("calloutImaging", "HDR Spherical Imaging")}</div>
+                <div class="o_three_feature_label">${_t("calloutStub", "Tripod Stub Mount")}</div>
             </div>
             <div class="o_three_feature_callout o_three_feature_callout_hatch">
                 <div class="o_three_feature_dot"></div>
                 <div class="o_three_feature_line_diagonal"></div>
                 <div class="o_three_feature_line_under"></div>
-                <div class="o_three_feature_label">${_t("calloutTilt", "Dual-Axis Tilt Compensation")}</div>
+                <div class="o_three_feature_label">${_t("calloutPower", "Batteries &amp; VIS Cameras")}</div>
             </div>
             <div class="o_three_feature_callout o_three_feature_callout_screw">
                 <div class="o_three_feature_dot"></div>
                 <div class="o_three_feature_line_diagonal"></div>
                 <div class="o_three_feature_line_under"></div>
-                <div class="o_three_feature_label">${_t("calloutMount", "Quick-Mount Base")}</div>
+                <div class="o_three_feature_label">${_t("calloutHandle", "Handle &amp; Antennas")}</div>
             </div>
         `;
         scrollHost.appendChild(hotspotLayer);
@@ -252,20 +255,20 @@ whenReady(async () => {
         detailPanel.className = "o_three_scroll_detail_panel";
         detailPanel.innerHTML = `
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_attachment">
-                <h3 class="o_three_scroll_feature_title">${_t("detailImagingTitle", "72 MP HDR Spherical Imaging")}</h3>
-                <p class="o_three_scroll_feature_body">${_t("detailImagingBody", "The six-camera system captures 432 MPx of raw HDR data for a calibrated 360° × 300° spherical image, with automatic exposure and white balance.")}</p>
+                <h3 class="o_three_scroll_feature_title">${_t("detailStubTitle", "RTC Stub &amp; Tripod Attachment")}</h3>
+                <p class="o_three_scroll_feature_body">${_t("detailStubBody", "Mounts in seconds on the 5/8″ stub of a lightweight Leica GST80 tripod, with optional adapters for standard topographic tripods and survey tribrach bases — so the scanner drops straight into your existing survey setup.")}</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_back">
-                <h3 class="o_three_scroll_feature_title">${_t("detailVisTitle", "Visual Inertial System (VIS)")}</h3>
-                <p class="o_three_scroll_feature_body">${_t("detailVisBody", "The video-enhanced inertial measuring system tracks scanner position and movements in real time for automatic in-field pre-registration.")}</p>
+                <h3 class="o_three_scroll_feature_title">${_t("detailPulseTitle", "Dual-Pulse Technology")}</h3>
+                <p class="o_three_scroll_feature_body">${_t("detailPulseBody", "Dual-pulse-in-air ranging launches a second laser pulse before the first returns, sustaining high scan rates even at long range. Combined with high-dynamic Waveform Digitising (WFD) time-of-flight, it delivers fast, low-noise measurements.")}</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_hatch">
-                <h3 class="o_three_scroll_feature_title">${_t("detailTiltTitle", "Next-Gen Tilt Compensation")}</h3>
-                <p class="o_three_scroll_feature_body">${_t("detailTiltBody", "Maintains 3″ accuracy even when tilted up to ±10°, allowing faster setups on uneven surfaces thanks to automatic self-calibration.")}</p>
+                <h3 class="o_three_scroll_feature_title">${_t("detailPowerTitle", "Batteries &amp; VIS Cameras")}</h3>
+                <p class="o_three_scroll_feature_body">${_t("detailPowerBody", "Two hot-swappable Leica GEB461 Li-Ion batteries provide up to four hours of continuous scanning, while the Visual Inertial System (VIS) cameras alongside them track the scanner's position in real time for automatic, targetless pre-registration.")}</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_screw">
-                <h3 class="o_three_scroll_feature_title">${_t("detailMountTitle", "5/8″ Quick Mount")}</h3>
-                <p class="o_three_scroll_feature_body">${_t("detailMountBody", "Quick mounting on the 5/8″ stub of a lightweight Leica GST80 tripod, with optional adapters for topographic tripods and survey tribrach bases.")}</p>
+                <h3 class="o_three_scroll_feature_title">${_t("detailHandleTitle", "Handle &amp; Antennas")}</h3>
+                <p class="o_three_scroll_feature_body">${_t("detailHandleBody", "An ergonomic top handle keeps the scanner easy to carry and reposition between setups, while the integrated WLAN (2.4 / 5 GHz) and GNSS antennas keep it connected for Livelink cloud workflows and georeferenced data.")}</p>
             </div>
         `;
         scrollHost.appendChild(detailPanel);
@@ -273,21 +276,21 @@ whenReady(async () => {
         const mobileLabels = document.createElement("div");
         mobileLabels.className = "o_three_scroll_mobile_labels";
         mobileLabels.innerHTML = `
-            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_attachment">${_t("mobileImaging", "HDR Spherical Imaging")}</div>
-            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_back">${_t("mobileVis", "Visual Inertial System")}</div>
-            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_hatch">${_t("mobileTilt", "Tilt Compensation")}</div>
-            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_screw">${_t("mobileMount", "Quick-Mount Base")}</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_attachment">${_t("mobileStub", "Tripod Stub Mount")}</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_back">${_t("mobilePulse", "Dual-Pulse Technology")}</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_hatch">${_t("mobilePower", "Batteries &amp; VIS Cameras")}</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_screw">${_t("mobileHandle", "Handle &amp; Antennas")}</div>
         `;
         scrollHost.appendChild(mobileLabels);
 
-        _elDetailImaging = detailPanel.querySelector(".o_three_scroll_feature_detail_attachment");
-        _elDetailVis     = detailPanel.querySelector(".o_three_scroll_feature_detail_back");
-        _elDetailTilt    = detailPanel.querySelector(".o_three_scroll_feature_detail_hatch");
-        _elDetailMount   = detailPanel.querySelector(".o_three_scroll_feature_detail_screw");
-        _elMobileImaging = mobileLabels.querySelector(".o_three_scroll_mobile_label_attachment");
-        _elMobileVis     = mobileLabels.querySelector(".o_three_scroll_mobile_label_back");
-        _elMobileTilt    = mobileLabels.querySelector(".o_three_scroll_mobile_label_hatch");
-        _elMobileMount   = mobileLabels.querySelector(".o_three_scroll_mobile_label_screw");
+        _elDetailStub   = detailPanel.querySelector(".o_three_scroll_feature_detail_attachment");
+        _elDetailPulse  = detailPanel.querySelector(".o_three_scroll_feature_detail_back");
+        _elDetailPower  = detailPanel.querySelector(".o_three_scroll_feature_detail_hatch");
+        _elDetailHandle = detailPanel.querySelector(".o_three_scroll_feature_detail_screw");
+        _elMobileStub   = mobileLabels.querySelector(".o_three_scroll_mobile_label_attachment");
+        _elMobilePulse  = mobileLabels.querySelector(".o_three_scroll_mobile_label_back");
+        _elMobilePower  = mobileLabels.querySelector(".o_three_scroll_mobile_label_hatch");
+        _elMobileHandle = mobileLabels.querySelector(".o_three_scroll_mobile_label_screw");
     }
 
     // ── Scroll timing constants (identical to three_product.js) ────────────────
@@ -317,10 +320,10 @@ whenReady(async () => {
         const inB = p >= PH + T     && p <= PH * 2;
         const inH = p >= PH * 2 + T && p <= PH * 3;
         const inS = p >= PH * 3 + T && p <= PH * 4;
-        show(_elDetailImaging, inA); show(_elDetailVis,  inB);
-        show(_elDetailTilt,    inH); show(_elDetailMount, inS);
-        show(_elMobileImaging, inA); show(_elMobileVis,  inB);
-        show(_elMobileTilt,    inH); show(_elMobileMount, inS);
+        show(_elDetailStub,  inA); show(_elDetailPulse,  inB);
+        show(_elDetailPower, inH); show(_elDetailHandle, inS);
+        show(_elMobileStub,  inA); show(_elMobilePulse,  inB);
+        show(_elMobilePower, inH); show(_elMobileHandle, inS);
     }
 
     function updateScrollSectionProgress() {

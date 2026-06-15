@@ -237,6 +237,40 @@
     margin-bottom: 0;
 }
 
+/* ── Dimensioned wireframe drawings (bottom of specs section) ── */
+.o_rtc_specs_wireframes {
+    margin-top: 72px;
+    padding-top: 56px;
+    border-top: 1px solid #ececec;
+}
+
+.o_rtc_specs_wireframes_title {
+    text-align: center;
+    margin: 0 0 40px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #888;
+}
+
+.o_rtc_specs_wireframe_grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(16px, 3vw, 40px);
+}
+
+.o_rtc_specs_wireframe_img {
+    flex: 0 1 280px;
+    max-width: 340px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
 /* ── Responsive: tablet ── */
 @media (max-width: 991px) {
     .o_rtc_specs_layout {
@@ -915,39 +949,41 @@
     background: #ffffff;
 }
 
-/* Dark charcoal → white gradient with red glows — matches the OmniGO client
-   reviews section background. Held dark until ~68% so the white-text cards stay
-   readable, then fades to white toward the next (white) section. */
+/* Dark charcoal base with red glows at the top — matches the OmniGO client
+   reviews section background. The charcoal is held across the whole content
+   area so both rows of white-text cards stay readable; the fade to white is
+   handled entirely by ::after, confined to the bottom padding. */
 .o_rtc_tech_section::before {
     content: "";
     position: absolute;
-    inset: 0 0 140px 0;
+    inset: 0;
     z-index: 0;
     pointer-events: none;
     background:
-        radial-gradient(circle at 15% 10%, rgba(255, 0, 0, 0.394), transparent 32%),
-        radial-gradient(circle at 85% 30%, rgba(255, 80, 80, 0.475), transparent 36%),
+        radial-gradient(circle at 15% 8%, rgba(255, 0, 0, 0.394), transparent 30%),
+        radial-gradient(circle at 85% 16%, rgba(255, 80, 80, 0.475), transparent 34%),
         linear-gradient(
             180deg,
             #1f1c1c 0%,
-            #272626 68%,
-            #ffffff 100%
+            #272626 100%
         );
 }
 
+/* White fade only at the very bottom, sitting inside the 220px bottom padding
+   so it never reaches the cards. */
 .o_rtc_tech_section::after {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 260px;
+    height: 200px;
     z-index: 1;
     pointer-events: none;
     background: linear-gradient(
         180deg,
         rgba(255,255,255,0) 0%,
-        #ffffff 55%,
+        #ffffff 78%,
         #ffffff 100%
     );
 }
