@@ -786,6 +786,10 @@
 .o_rtc_compare_section {
     background: #f4f4f4;
     padding: 88px clamp(20px, 5vw, 64px);
+    /* Sit above the fixed scroll-model canvas (z-index 2) so the 3D scanner
+       never bleeds over the comparison content. */
+    position: relative;
+    z-index: 3;
 }
 
 .o_rtc_compare_inner {
@@ -902,39 +906,57 @@
 /* ─── Core technology section ───────────────────────────────────────────────── */
 .o_rtc_tech_section {
     overflow: hidden;
-    padding: 88px clamp(20px, 5vw, 64px);
+    padding: 88px clamp(20px, 5vw, 64px) 220px;
     color: #fff !important;
-
-    background:
-        radial-gradient(circle at 15% 25%, rgba(255, 100, 100, 0.15), transparent 38%),
-        radial-gradient(circle at 80% 70%, rgba(255, 60,  60,  0.10), transparent 42%),
-        radial-gradient(circle at 50% 50%, rgba(100, 0,   0,   0.20), transparent 55%),
-        linear-gradient(135deg, #2b0000 0%, #4d0000 35%, #7a0000 70%, #520000 100%);
-    background-blend-mode: screen, overlay, soft-light, normal;
+    /* Sit above the fixed scroll-model canvas (z-index 2). */
+    position: relative;
+    z-index: 3;
+    /* Base white so the bottom fade lands on white, like the OmniGO reviews section. */
+    background: #ffffff;
 }
 
+/* Dark charcoal → white gradient with red glows — matches the OmniGO client
+   reviews section background. Held dark until ~68% so the white-text cards stay
+   readable, then fades to white toward the next (white) section. */
 .o_rtc_tech_section::before {
     content: "";
     position: absolute;
-    inset: 0;
-    pointer-events: none;
+    inset: 0 0 140px 0;
     z-index: 0;
-    opacity: 0.09;
-    background-image:
-        repeating-linear-gradient(
-            45deg,
-            rgba(255,255,255,0.04) 0px,
-            rgba(255,255,255,0.04) 2px,
-            transparent 2px,
-            transparent 6px
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 15% 10%, rgba(255, 0, 0, 0.394), transparent 32%),
+        radial-gradient(circle at 85% 30%, rgba(255, 80, 80, 0.475), transparent 36%),
+        linear-gradient(
+            180deg,
+            #1f1c1c 0%,
+            #272626 68%,
+            #ffffff 100%
         );
+}
+
+.o_rtc_tech_section::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 260px;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0) 0%,
+        #ffffff 55%,
+        #ffffff 100%
+    );
 }
 
 .o_rtc_tech_inner {
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
-    z-index: 1;
+    z-index: 5;
 }
 
 .o_rtc_tech_header {
