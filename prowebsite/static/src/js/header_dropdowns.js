@@ -73,6 +73,26 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
     // Always append to body — position:fixed handles placement
     document.body.appendChild(bar);
 
+    // ── Couple the flag/language switcher to the store pricelist ──────────
+    // Picking a region flag must also drive the currency/pricelist:
+    //   en_US (US flag) -> USD,  *_CA (CA flag) -> CAD.
+    // We write a `pl_region` cookie *synchronously* before the language
+    // navigation fires, so it rides along on the very next request. The server
+    // (proproduct/models/website.py) reads it and resolves the pricelist; when
+    // the cookie is absent it falls back to geo-IP (the regional default).
+    function regionForLang(code) {
+        if (!code) return null;
+        const upper = code.toUpperCase();
+        if (upper.endsWith('_US')) return 'US';
+        if (upper.endsWith('_CA')) return 'CA';
+        return null;
+    }
+    function setRegionCookie(region) {
+        if (!region) return;
+        // 1 year, site-wide.
+        document.cookie = `pl_region=${region};path=/;max-age=31536000;SameSite=Lax`;
+    }
+
     // ── Delegate language pill clicks to original Odoo anchors ────────────
     // Copying the href alone doesn't work for all languages: the default
     // language (English) often has href="" on its .js_change_lang element,
@@ -80,13 +100,16 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
     // original element ensures Odoo's own click/routing logic runs instead.
     const langAnchorsByCode = new Map(langAnchors.map(a => [a.dataset.url_code || '', a]));
     bar.querySelectorAll('[data-panel="lang"] .o_hdd_pill').forEach(pill => {
-        const orig = langAnchorsByCode.get(pill.dataset.url_code || '');
-        if (orig) {
-            pill.addEventListener('click', e => {
+        const code = pill.dataset.url_code || '';
+        const orig = langAnchorsByCode.get(code);
+        pill.addEventListener('click', e => {
+            // Pin the pricelist region before navigating.
+            setRegionCookie(regionForLang(code));
+            if (orig) {
                 e.preventDefault();
                 orig.click();
-            });
-        }
+            }
+        });
     });
 
     // ── Keep bar pinned to the bottom edge of the header ──────────────────
