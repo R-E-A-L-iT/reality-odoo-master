@@ -98,8 +98,35 @@ class Website(models.Model):
             if request:
                 # Keep the session in sync so cart / checkout logic agrees.
                 request.session['website_sale_current_pl'] = target.id
+            _logger.info(
+                "[proproduct] get_current_pricelist -> %s (%s)",
+                target.display_name, target.currency_id.name,
+            )
             return target
         return super().get_current_pricelist()
+
+    def _get_current_pricelist(self):
+        """Defensive override of the internal Odoo 17 resolver.
+
+        Depending on the exact Odoo 17 minor version, the public
+        `get_current_pricelist()` may delegate to this internal method.  We
+        intercept it too so the resolved pricelist is honoured no matter which
+        entry point core uses.  Falls back to core only when it exists.
+        """
+        self.ensure_one()
+        target = self._proproduct_resolve_pricelist()
+        if target:
+            if request:
+                request.session['website_sale_current_pl'] = target.id
+            _logger.info(
+                "[proproduct] _get_current_pricelist -> %s (%s)",
+                target.display_name, target.currency_id.name,
+            )
+            return target
+        parent = super()
+        if hasattr(parent, '_get_current_pricelist'):
+            return parent._get_current_pricelist()
+        return self.get_current_pricelist()
 
     def sale_get_pricelist(self, partner=False):
         """Backward-compat alias.
