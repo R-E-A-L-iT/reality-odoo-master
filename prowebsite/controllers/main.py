@@ -5,6 +5,10 @@ from odoo.http import request
 import logging
 _logger = logging.getLogger(__name__)
 
+# Customer-facing pricelists are named EXACTLY by these flag emojis.
+CAD_PRICELIST_NAME = '🇨🇦'
+USD_PRICELIST_NAME = '🇺🇸'
+
 
 class ProwebsiteController(http.Controller):
 
@@ -16,53 +20,23 @@ class ProwebsiteController(http.Controller):
         csrf=False,
     )
     def sync_pricelist(self, **kw):
+        """Report the resolved pricelist and align the cart to it.
+
+        The OmniGO page renders its price server-side (QWeb) and updates on a
+        full reload, so the pricelist is resolved entirely by
+        proproduct.get_current_pricelist (region cookie -> geo-IP fallback).
+        This handler must NOT mutate the session; it only reports the resolved
+        pricelist (so the JS can show the currency badge) and aligns any
+        existing cart order before the following /shop/cart/update_json.
         """
-        Sync the website session to the geo-IP-correct pricelist and immediately
-        update any existing cart order to match.
+        pricelist = request.website.get_current_pricelist()
 
-        Why this is needed:
-          Our custom OmniGO product page renders og_pl (and the displayed price)
-          via QWeb but never writes og_pl.id to the session. A stale session
-          pricelist (e.g. from a previous visit or from the /shop pricelist
-          switcher) would cause /shop/cart/update_json to use the wrong price.
-
-        What we do:
-          1. Clear pricelist_selected_manually — the switcher on /shop must not
-             bleed into our dedicated product page.
-          2. Clear website_sale_current_pl — remove any stale session value.
-          3. Call sale_get_pricelist() — proproduct's geo-aware method, now fixed
-             to use request.geoip (real user IP) and search by currency instead
-             of by pricelist name.
-          4. Directly update the existing cart order's pricelist so that the
-             immediately-following /shop/cart/update_json call sees the right one.
-        """
-        request.session.pop('pricelist_selected_manually', None)
-        request.session.pop('website_sale_current_pl', None)
-
-        if not hasattr(request.website, 'sale_get_pricelist'):
-            _logger.warning("[omnigo] sale_get_pricelist() not available")
-            return {'pricelist_id': None}
-
-        try:
-            pricelist = request.website.sale_get_pricelist()
-        except Exception as e:
-            _logger.error("[omnigo] sale_get_pricelist() raised: %s", e)
-            return {'pricelist_id': None}
-
-        # sale_get_pricelist() already writes the session, but be explicit.
-        request.session['website_sale_current_pl'] = pricelist.id
-
-        # Update an existing cart order right now so there is no window between
-        # this call and the subsequent cart_update_json where the old pricelist
-        # could be used.
         try:
             order = request.website.sale_get_order(force_create=False)
             if order and order.pricelist_id.id != pricelist.id:
                 _logger.info(
                     "[omnigo] Updating cart %s pricelist %s → %s",
-                    order.name,
-                    order.pricelist_id.display_name,
-                    pricelist.display_name,
+                    order.name, order.pricelist_id.display_name, pricelist.display_name,
                 )
                 order.sudo().write({'pricelist_id': pricelist.id})
                 try:
@@ -87,73 +61,33 @@ class ProwebsiteController(http.Controller):
         csrf=False,
     )
     def get_pricelists(self, **kw):
-        """Return CA / US pricelists for the header currency switcher.
+        """Return the CA / US pricelists for the header currency switcher.
 
-        Mirrors the logic in proproduct/models/website.py:
-        - identified by currency (CAD / USD), not by name
-        - rental pricelists excluded (name ilike 'rent')
-        - scoped to current website or global
+        Resolved by exact flag-emoji name (matching proproduct/models/website.py)
+        and marked active against the visitor's current region (cookie or geo-IP).
         """
         website = request.website
-
-        current_pl = None
         try:
-            current_pl = website.sale_get_pricelist()
+            current_region = website.proproduct_region()  # 'US' / 'CA'
         except Exception:
-            pass
+            current_region = None
 
         Pricelist = request.env['product.pricelist'].sudo()
         website_domain = ['|', ('website_id', '=', False), ('website_id', '=', website.id)]
 
         result = []
-        for currency_name, label, flag in [('CAD', 'CA', '🇨🇦'), ('USD', 'US', '🇺🇸')]:
-            pl = Pricelist.search(
-                [('currency_id.name', '=', currency_name),
-                 ('name', 'not ilike', 'rent')] + website_domain,
-                limit=1,
-            )
+        for region, name, currency in [
+            ('CA', CAD_PRICELIST_NAME, 'CAD'),
+            ('US', USD_PRICELIST_NAME, 'USD'),
+        ]:
+            pl = Pricelist.search([('name', '=', name)] + website_domain, limit=1)
             if not pl:
                 continue
             result.append({
                 'id':       pl.id,
-                'label':    label,
-                'flag':     flag,
-                'currency': currency_name,
-                'active':   bool(current_pl and pl.id == current_pl.id),
+                'label':    region,        # 'US' / 'CA' — the pl_region cookie value
+                'flag':     name,          # the flag emoji itself
+                'currency': currency,
+                'active':   region == current_region,
             })
         return result
-
-    @http.route(
-        '/omnigo/set_pricelist',
-        type='json',
-        auth='public',
-        website=True,
-        csrf=False,
-    )
-    def set_pricelist(self, pricelist_id=None, **kw):
-        """Manually pin a session pricelist and update the active cart."""
-        if not pricelist_id:
-            return {'success': False}
-
-        pl = request.env['product.pricelist'].sudo().browse(int(pricelist_id))
-        if not pl.exists():
-            return {'success': False}
-
-        request.session['website_sale_current_pl'] = pl.id
-        request.session['pricelist_selected_manually'] = True
-
-        try:
-            order = request.website.sale_get_order(force_create=False)
-            if order and order.pricelist_id.id != pl.id:
-                order.sudo().write({'pricelist_id': pl.id})
-                try:
-                    order.sudo()._recompute_prices()
-                except AttributeError:
-                    order.sudo()._recompute_all_prices()
-        except Exception as e:
-            _logger.warning("[omnigo] set_pricelist cart update failed: %s", e)
-
-        return {
-            'success':  True,
-            'currency': pl.currency_id.name,
-        }

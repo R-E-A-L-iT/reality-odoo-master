@@ -27,6 +27,43 @@ class PricelistSelectionController(http.Controller):
 
 class WebsiteSale(main.WebsiteSale):
 
+    @http.route()
+    def get_combination_info(self, product_template_id, product_id, combination, add_qty,
+                             parent_combination=None, **kw):
+        """Force the AJAX product price to the applicable pricelist rule.
+
+        The product page JS calls this endpoint after load and overwrites the
+        server-rendered price. Odoo's own price engine drops valid rules on very
+        large pricelists (10k+ items -> list_price fallback), and rental (rent_ok)
+        products return the rental price here, so we resolve the matching item
+        ourselves (same proven logic as the template) and set the sales price.
+        """
+        res = super().get_combination_info(
+            product_template_id, product_id, combination, add_qty,
+            parent_combination=parent_combination, **kw,
+        )
+        try:
+            if isinstance(res, dict):
+                tmpl = request.env['product.template'].sudo().browse(int(product_template_id))
+                pricelist = request.website.get_current_pricelist()
+                variant = request.env['product.product'].sudo().browse(res.get('product_id'))
+                if not variant.exists():
+                    variant = tmpl.product_variant_id
+                item = tmpl._proproduct_resolve_pricelist_item(pricelist, variant)
+                if item and item.compute_price == 'fixed':
+                    _logger.info(
+                        "[proproduct] AJAX combination price for %s on %s -> %s (rule %s, was %s)",
+                        variant.display_name, pricelist.display_name, item.fixed_price,
+                        item.id, res.get('price'),
+                    )
+                    res['price'] = item.fixed_price
+                    res['list_price'] = item.fixed_price
+                    res['has_discounted_price'] = False
+                    res['is_rental'] = False
+        except Exception as e:
+            _logger.warning("[proproduct] AJAX price override failed: %s", e)
+        return res
+
     def _checkout_form_save(self, mode, checkout, all_values):
         partner_id = super()._checkout_form_save(mode, checkout, all_values)
 

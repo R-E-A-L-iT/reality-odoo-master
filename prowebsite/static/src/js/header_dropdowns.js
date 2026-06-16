@@ -66,6 +66,13 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
                         `).join('')}
                     </div>
                 </div>
+                <div class="o_hdd_col_divider" data-cur-divider></div>
+                <div class="o_hdd_col" data-cur-col>
+                    <p class="o_hdd_col_label">Currency</p>
+                    <div class="o_hdd_col_items" data-cur-items>
+                        <span class="o_hdd_loading">…</span>
+                    </div>
+                </div>
             </div>
         </div>
     `;
@@ -74,10 +81,11 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
     document.body.appendChild(bar);
 
     // ── Delegate language pill clicks to original Odoo anchors ────────────
-    // Copying the href alone doesn't work for all languages: the default
-    // language (English) often has href="" on its .js_change_lang element,
-    // which our || '#' fallback turns into a no-op anchor. Delegating to the
-    // original element ensures Odoo's own click/routing logic runs instead.
+    // Language is INDEPENDENT of currency (the store's languages are
+    // English / fr_CA / es don't map to a currency). Copying the href alone
+    // doesn't work for all languages: the default language often has href="" on
+    // its .js_change_lang element, which our || '#' fallback turns into a no-op
+    // anchor. Delegating to the original element ensures Odoo's own routing runs.
     const langAnchorsByCode = new Map(langAnchors.map(a => [a.dataset.url_code || '', a]));
     bar.querySelectorAll('[data-panel="lang"] .o_hdd_pill').forEach(pill => {
         const orig = langAnchorsByCode.get(pill.dataset.url_code || '');
@@ -88,6 +96,45 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
             });
         }
     });
+
+    // ── Currency switcher (universal: this runs on every header) ──────────
+    // Writes a `pl_region` cookie (US/CA) and reloads. The server
+    // (proproduct/models/website.py) resolves the matching pricelist by its
+    // exact flag-emoji name; when the cookie is absent it falls back to geo-IP.
+    // A full reload re-renders all server-side prices (product page + OmniGO).
+    function setCurrencyRegion(region) {
+        document.cookie = `pl_region=${region};path=/;max-age=31536000;SameSite=Lax`;
+        console.log("[proproduct] currency switch clicked -> set pl_region cookie:", region,
+            "| document.cookie now:", document.cookie);
+        window.location.reload();
+    }
+
+    const curItems   = bar.querySelector('[data-cur-items]');
+    const curCol      = bar.querySelector('[data-cur-col]');
+    const curDivider  = bar.querySelector('[data-cur-divider]');
+    function hideCurrency() {
+        if (curCol)     curCol.style.display = 'none';
+        if (curDivider) curDivider.style.display = 'none';
+    }
+    jsonrpc('/omnigo/get_pricelists', {}).then(list => {
+        if (!Array.isArray(list) || list.length < 2 || !curItems) {
+            hideCurrency();   // nothing meaningful to switch between
+            return;
+        }
+        curItems.innerHTML = list.map(pl => `
+            <a href="#"
+               class="o_hdd_pill${pl.active ? ' is-active' : ''}"
+               data-region="${pl.label}">
+                ${pl.flag} ${pl.currency}
+            </a>
+        `).join('');
+        curItems.querySelectorAll('.o_hdd_pill').forEach(pill => {
+            pill.addEventListener('click', e => {
+                e.preventDefault();
+                setCurrencyRegion(pill.dataset.region);
+            });
+        });
+    }).catch(hideCurrency);
 
     // ── Keep bar pinned to the bottom edge of the header ──────────────────
     function updateBarTop() {
@@ -125,6 +172,10 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
 
     bar.addEventListener('mouseenter', () => clearTimeout(_hideTimer));
     bar.addEventListener('mouseleave', scheduleHide);
+
+    // Signal that the custom hover bar is live, so CSS can suppress the native
+    // Bootstrap account/language menus (only when the bar actually built).
+    document.body.classList.add('o_hdd_active');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -142,9 +193,13 @@ publicWidget.registry.headerDropdowns = publicWidget.Widget.extend({
         // three_product.js calls initHeaderDropdowns() directly there.
         if (document.querySelector('.o_omnigo_ch_header')) return;
 
-        // Find the icon <ul> — it is the last <ul> direct child of #o_main_nav
-        const allUls = document.querySelectorAll('#o_main_nav > ul');
-        const iconsUl = allUls.length > 0 ? allUls[allUls.length - 1] : null;
+        // Find the right-hand icon <ul>. It is NOT a direct child of #o_main_nav
+        // (it sits inside #o_main_nav > div.container), so locate it by its known
+        // class / by the language selector it contains.
+        const iconsUl =
+            this.el.querySelector('ul.o_header_sales_one_right_col')
+            || this.el.querySelector('.o_header_language_selector')?.closest('ul')
+            || this.el.querySelector('#o_main_nav ul.align-items-center');
         if (!iconsUl || !iconsUl.children.length) return;
 
         initHeaderDropdowns(this.el, iconsUl);

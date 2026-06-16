@@ -2,6 +2,75 @@
 <odoo>
     <template id="website_sale_product_add_section" inherit_id="website_sale.product">
 
+        <!-- Pricelist follows the visitor's cookie/geo selection. The price block
+             below is wrapped in t-cache="pricelist,product,fiscal_position"; force
+             `pricelist` to the resolved pricelist *before* that cache key is built
+             so the cached fragment varies per currency (otherwise a stale CAD
+             render is served even after switching to USD). This t-set runs every
+             request (outside the cache), so website.get_current_pricelist() — and
+             its server-side [proproduct] log — fires live on every product view. -->
+        <xpath expr="//t[@t-cache]" position="before">
+            <t t-set="pricelist" t-value="website.get_current_pricelist()"/>
+        </xpath>
+
+        <!-- Compute combination info against the resolved pricelist via context,
+             so the cached body uses the same pricelist as the cache key (the
+             controller may otherwise seed the product context with the website
+             default pricelist, producing the wrong price). -->
+        <xpath expr="//t[@t-set='combination_info']" position="attributes">
+            <attribute name="t-value">product.with_context(pricelist=pricelist.id)._get_combination_info(combination, add_qty=add_qty)</attribute>
+        </xpath>
+
+        <!-- Force the displayed price to the applicable pricelist rule.
+             Odoo's price engine drops valid rules on this very large pricelist
+             (10k+ items -> _get_product_price returns the list_price fallback),
+             so we resolve the matching item directly (variant rule preferred over
+             product rule) and overwrite combination_info in place. -->
+        <xpath expr="//t[@t-set='combination_info']" position="after">
+            <t t-set="og_items" t-value="pricelist.item_ids.filtered(lambda i: (i.applied_on == '0_product_variant' and i.product_id.id == combination_info['product_id']) or (i.applied_on == '1_product' and i.product_tmpl_id.id == product.id))"/>
+            <t t-set="og_item" t-value="og_items.sorted(key=lambda i: 0 if i.applied_on == '0_product_variant' else 1)[:1]"/>
+            <t t-if="og_item and og_item.compute_price == 'fixed'"
+               t-set="og_price_applied"
+               t-value="combination_info.update({'price': og_item.fixed_price, 'list_price': og_item.fixed_price, 'has_discounted_price': False, 'is_rental': False})"/>
+        </xpath>
+
+        <!-- DEBUG (browser console): logs the price the rendered fragment used.
+             Placed inside the page body (valid HTML) so it always executes. If the
+             server [proproduct] log says USD but this shows the CAD amount, the
+             t-cache served a stale fragment. -->
+        <xpath expr="//section[@id='product_detail']" position="inside">
+            <t t-set="us_pl" t-value="request.env['product.pricelist'].sudo().search([('name', '=', '🇺🇸')], limit=1)"/>
+            <t t-set="ca_pl" t-value="request.env['product.pricelist'].sudo().search([('name', '=', '🇨🇦')], limit=1)"/>
+            <script type="text/javascript">
+                console.log(
+                    "[proproduct] RESOLVED | rendered pricelist:",
+                    <t t-out="json.dumps(pricelist.display_name or '')"/>,
+                    "| id:", <t t-out="json.dumps(pricelist.id)"/>,
+                    "| currency:", <t t-out="json.dumps(pricelist.currency_id.name or '')"/>,
+                    "| combination price:", <t t-out="json.dumps(combination_info.get('price'))"/>,
+                    "| region cookie:", <t t-out="json.dumps(request.httprequest.cookies.get('pl_region') or 'none')"/>
+                );
+                console.log(
+                    "[proproduct] PER-PRICELIST | variant:", <t t-out="json.dumps(product_variant.id)"/>,
+                    "| list_price (CAD base):", <t t-out="json.dumps(product_variant.list_price)"/>
+                );
+                console.log("[proproduct] product.id (template):", <t t-out="json.dumps(product.id)"/>,
+                    "| variant id:", <t t-out="json.dumps(product_variant.id)"/>,
+                    "| variant.product_tmpl_id:", <t t-out="json.dumps(product_variant.product_tmpl_id.id)"/>);
+                console.log("[proproduct]   US 🇺🇸 | id:", <t t-out="json.dumps(us_pl.id)"/>,
+                    "| _get_product_price:", <t t-out="json.dumps(us_pl._get_product_price(product_variant, 1.0) if us_pl else None)"/>,
+                    "| matched (price, rule_id):", JSON.stringify(<t t-out="json.dumps(list(us_pl._get_product_price_rule(product_variant, 1.0)) if us_pl else [])"/>),
+                    "| total items:", <t t-out="json.dumps(len(us_pl.item_ids))"/>,
+                    "| matching items:", JSON.stringify(<t t-out="json.dumps([{'id': r.id, 'applied_on': r.applied_on, 'tmpl': r.product_tmpl_id.id, 'variant': r.product_id.id, 'compute': r.compute_price, 'fixed': r.fixed_price, 'base': r.base, 'min_qty': r.min_quantity, 'date_start': str(r.date_start or ''), 'date_end': str(r.date_end or '')} for r in us_pl.item_ids.filtered(lambda i: (i.product_tmpl_id and i.product_tmpl_id.id == product.id) or (i.product_id and i.product_id.product_tmpl_id.id == product.id))])"/>)
+                );
+                console.log("[proproduct]   CA 🇨🇦 | id:", <t t-out="json.dumps(ca_pl.id)"/>,
+                    "| _get_product_price:", <t t-out="json.dumps(ca_pl._get_product_price(product_variant, 1.0) if ca_pl else None)"/>,
+                    "| total items:", <t t-out="json.dumps(len(ca_pl.item_ids))"/>,
+                    "| matching items:", JSON.stringify(<t t-out="json.dumps([{'id': r.id, 'applied_on': r.applied_on, 'tmpl': r.product_tmpl_id.id, 'variant': r.product_id.id, 'compute': r.compute_price, 'fixed': r.fixed_price, 'base': r.base, 'min_qty': r.min_quantity, 'date_start': str(r.date_start or ''), 'date_end': str(r.date_end or '')} for r in ca_pl.item_ids.filtered(lambda i: (i.product_tmpl_id and i.product_tmpl_id.id == product.id) or (i.product_id and i.product_id.product_tmpl_id.id == product.id))])"/>)
+                );
+            </script>
+        </xpath>
+
         <!-- forcing parsing of html tags in sales description -->
         <xpath expr="//p[@t-field='product.description_sale']" position="replace">
             <t t-if="product.description_sale">
