@@ -66,6 +66,10 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
                         `).join('')}
                     </div>
                 </div>
+                <div class="o_hdd_col" data-cur-col>
+                    <p class="o_hdd_col_label">Currency</p>
+                    <div class="o_hdd_col_items" data-cur-items></div>
+                </div>
             </div>
         </div>
     `;
@@ -73,43 +77,57 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
     // Always append to body — position:fixed handles placement
     document.body.appendChild(bar);
 
-    // ── Couple the flag/language switcher to the store pricelist ──────────
-    // Picking a region flag must also drive the currency/pricelist:
-    //   en_US (US flag) -> USD,  *_CA (CA flag) -> CAD.
-    // We write a `pl_region` cookie *synchronously* before the language
-    // navigation fires, so it rides along on the very next request. The server
-    // (proproduct/models/website.py) reads it and resolves the pricelist; when
-    // the cookie is absent it falls back to geo-IP (the regional default).
-    function regionForLang(code) {
-        if (!code) return null;
-        const upper = code.toUpperCase();
-        if (upper.endsWith('_US')) return 'US';
-        if (upper.endsWith('_CA')) return 'CA';
-        return null;
-    }
-    function setRegionCookie(region) {
-        if (!region) return;
-        // 1 year, site-wide.
-        document.cookie = `pl_region=${region};path=/;max-age=31536000;SameSite=Lax`;
-    }
-
     // ── Delegate language pill clicks to original Odoo anchors ────────────
-    // Copying the href alone doesn't work for all languages: the default
-    // language (English) often has href="" on its .js_change_lang element,
-    // which our || '#' fallback turns into a no-op anchor. Delegating to the
-    // original element ensures Odoo's own click/routing logic runs instead.
+    // Language is INDEPENDENT of currency here (the store's languages are
+    // English / fr_CA / es_ES, which don't map to a currency). Copying the href
+    // alone doesn't work for all languages: the default language often has
+    // href="" on its .js_change_lang element, which our || '#' fallback turns
+    // into a no-op anchor. Delegating to the original element ensures Odoo's own
+    // click/routing logic runs instead.
     const langAnchorsByCode = new Map(langAnchors.map(a => [a.dataset.url_code || '', a]));
     bar.querySelectorAll('[data-panel="lang"] .o_hdd_pill').forEach(pill => {
-        const code = pill.dataset.url_code || '';
-        const orig = langAnchorsByCode.get(code);
-        pill.addEventListener('click', e => {
-            // Pin the pricelist region before navigating.
-            setRegionCookie(regionForLang(code));
-            if (orig) {
+        const orig = langAnchorsByCode.get(pill.dataset.url_code || '');
+        if (orig) {
+            pill.addEventListener('click', e => {
                 e.preventDefault();
                 orig.click();
-            }
+            });
+        }
+    });
+
+    // ── Currency switcher (independent of language) ───────────────────────
+    // Drives the store pricelist via the `pl_region` cookie, which the server
+    // (proproduct/models/website.py) reads to resolve USD/CAD; when the cookie
+    // is absent it falls back to geo-IP (the regional default). Clicking a
+    // currency writes the cookie and reloads so prices re-render server-side.
+    function setCurrencyRegion(region) {
+        document.cookie = `pl_region=${region};path=/;max-age=31536000;SameSite=Lax`;
+        window.location.reload();
+    }
+
+    const curItems = bar.querySelector('[data-cur-items]');
+    const curCol   = bar.querySelector('[data-cur-col]');
+    jsonrpc('/omnigo/get_pricelists', {}).then(list => {
+        if (!Array.isArray(list) || list.length < 2 || !curItems) {
+            // Nothing to switch between — hide the column.
+            if (curCol) curCol.style.display = 'none';
+            return;
+        }
+        curItems.innerHTML = list.map(pl => `
+            <a href="#"
+               class="o_hdd_pill${pl.active ? ' is-active' : ''}"
+               data-region="${pl.label}">
+                ${pl.flag} ${pl.currency}
+            </a>
+        `).join('');
+        curItems.querySelectorAll('.o_hdd_pill').forEach(pill => {
+            pill.addEventListener('click', e => {
+                e.preventDefault();
+                setCurrencyRegion(pill.dataset.region);
+            });
         });
+    }).catch(() => {
+        if (curCol) curCol.style.display = 'none';
     });
 
     // ── Keep bar pinned to the bottom edge of the header ──────────────────
