@@ -38,60 +38,78 @@ def _pricelist_for_currency(env, website, currency_name):
 class Website(models.Model):
     _inherit = 'website'
 
-    def sale_get_pricelist(self, partner=False):
-        self.ensure_one()
+    # ------------------------------------------------------------------
+    # Pricelist resolution
+    # ------------------------------------------------------------------
+    # NOTE (Odoo 17): the customer-facing price (product page, shop, cart) is
+    # resolved through `get_current_pricelist()`.  The old `sale_get_pricelist()`
+    # method from Odoo <=16 no longer exists in core, so overriding it had no
+    # effect on the displayed price — which is why a manually selected USD
+    # pricelist was still rendering CAD prices.  We override the correct method
+    # below and return the chosen pricelist *directly*, bypassing core's
+    # `get_pricelist_available()` filter (which would otherwise discard a
+    # country-restricted pricelist even when the user picked it explicitly).
 
-        # Outside an HTTP request (cron, backend) — use website default safely.
+    def _proproduct_resolve_pricelist(self):
+        """
+        Return the pricelist that should drive frontend prices, or an empty
+        recordset to defer to core.
+
+        Precedence (per business rule):
+          1. The pricelist the user explicitly chose (via the /shop switcher).
+             This ALWAYS wins, regardless of geo or availability filtering.
+          2. The geo-IP region default (US -> USD, everything else -> CAD).
+        """
         if not request:
-            return self.pricelist_id
+            return self.env['product.pricelist']
 
-        # Let Odoo's parent implementation resolve any partner / session logic first.
-        parent = super(Website, self)
-        if hasattr(parent, 'sale_get_pricelist'):
-            pricelist = parent.sale_get_pricelist(partner=partner)
-        else:
-            _logger.warning(
-                "[proproduct] parent.sale_get_pricelist not found. "
-                "Falling back to website.pricelist_id."
-            )
-            pricelist = self.pricelist_id
+        Pricelist = request.env['product.pricelist'].sudo()
 
-        # If the user explicitly chose a pricelist (e.g. via the /shop switcher),
-        # honour that choice and skip geo-detection.
+        # 1. Manual selection always wins.
         if request.session.get('pricelist_selected_manually'):
-            _logger.info("[proproduct] Pricelist manually selected — skipping geo override.")
-            request.session['website_sale_current_pl'] = pricelist.id
-            return pricelist
+            pl_id = request.session.get('website_sale_current_pl')
+            pl = Pricelist.browse(pl_id).exists() if pl_id else Pricelist
+            if pl:
+                _logger.info("[proproduct] Manual pricelist honoured: %s", pl.display_name)
+                return pl
 
-        # --- Geo-IP detection ---
-        # request.geoip is populated from X-Forwarded-For by Odoo's WSGI middleware,
-        # so it reflects the *real* user IP even behind cloud proxies.
-        # visitor_geoinfo() was previously used here but it can resolve to the
-        # server's own IP (which is Canadian for our cloud host), causing every
-        # visitor to be treated as Canadian regardless of their actual location.
+        # 2. Geo-IP region default.
         country_code = _get_country_code()
-        _logger.info("[proproduct] geo country_code=%s", country_code)
+        currency = 'USD' if country_code == 'US' else 'CAD'
+        _logger.info("[proproduct] geo country_code=%s -> %s", country_code, currency)
+        pl = _pricelist_for_currency(request.env, self, currency)
+        if pl:
+            _logger.info("[proproduct] geo -> %s pricelist: %s", currency, pl.display_name)
+            return pl
 
-        env = request.env
+        _logger.warning("[proproduct] No %s pricelist found; deferring to core.", currency)
+        return self.env['product.pricelist']
 
-        if country_code == 'US':
-            usd_pl = _pricelist_for_currency(env, self, 'USD')
-            if usd_pl:
-                pricelist = usd_pl
-                _logger.info("[proproduct] geo → USD pricelist: %s", usd_pl.display_name)
-            else:
-                _logger.warning("[proproduct] No USD pricelist found; keeping default.")
-        else:
-            # Canada + all other countries → CAD (per business rule).
-            cad_pl = _pricelist_for_currency(env, self, 'CAD')
-            if cad_pl:
-                pricelist = cad_pl
-                _logger.info("[proproduct] geo → CAD pricelist: %s", cad_pl.display_name)
-            else:
-                _logger.warning("[proproduct] No CAD pricelist found; keeping default.")
+    def get_current_pricelist(self):
+        """Override the Odoo 17 frontend pricelist resolver.
 
-        request.session['website_sale_current_pl'] = pricelist.id
-        return pricelist
+        Returns the manually selected / geo-detected pricelist directly so it
+        cannot be stripped by core's availability filtering.  Falls back to the
+        standard Odoo behaviour when neither applies.
+        """
+        self.ensure_one()
+        target = self._proproduct_resolve_pricelist()
+        if target:
+            if request:
+                # Keep the session in sync so cart / checkout logic agrees.
+                request.session['website_sale_current_pl'] = target.id
+            return target
+        return super().get_current_pricelist()
+
+    def sale_get_pricelist(self, partner=False):
+        """Backward-compat alias.
+
+        Custom controllers/templates in this code base still call
+        `sale_get_pricelist()` (the Odoo <=16 name).  Route them through the
+        canonical Odoo 17 resolver so every code path agrees.
+        """
+        self.ensure_one()
+        return self.get_current_pricelist()
 
     def sale_get_order(self, force_create=False, **kwargs):
         order = super().sale_get_order(force_create=force_create, **kwargs)
@@ -99,15 +117,11 @@ class Website(models.Model):
         if not order or not request:
             return order
 
-        # Honour explicit user selection.
-        if request.session.get('pricelist_selected_manually'):
-            return order
-
-        # Ensure the cart's pricelist matches the geo-detected one.
-        desired_pl = self.sale_get_pricelist(partner=order.partner_id)
+        # Align the cart with the resolved pricelist (manual selection or geo).
+        desired_pl = self.get_current_pricelist()
         if desired_pl and order.pricelist_id != desired_pl:
             _logger.info(
-                "[proproduct] Updating cart %s pricelist %s → %s",
+                "[proproduct] Updating cart %s pricelist %s -> %s",
                 order.name,
                 order.pricelist_id.display_name,
                 desired_pl.display_name,
