@@ -56,24 +56,30 @@ class Website(models.Model):
         recordset to defer to core.
 
         Precedence (per business rule):
-          1. The pricelist the user explicitly chose (via the /shop switcher).
-             This ALWAYS wins, regardless of geo or availability filtering.
+          1. The pricelist the user explicitly chose.  EVERY switcher route
+             (Odoo core /shop/change_pricelist as well as our /omnigo and /shop
+             set_pricelist routes) writes the chosen id to the session key
+             'website_sale_current_pl'.  We deliberately never persist a geo
+             default into that key, so its mere presence means "the user picked
+             this" — and an explicit pick must always win (requirement 1).
           2. The geo-IP region default (US -> USD, everything else -> CAD).
+             This is NOT written back to the session, so it stays dynamic until
+             the user actually chooses something (requirement 2).
         """
         if not request:
             return self.env['product.pricelist']
 
         Pricelist = request.env['product.pricelist'].sudo()
 
-        # 1. Manual selection always wins.
-        if request.session.get('pricelist_selected_manually'):
-            pl_id = request.session.get('website_sale_current_pl')
-            pl = Pricelist.browse(pl_id).exists() if pl_id else Pricelist
+        # 1. Explicit user choice (any switcher) always wins.
+        pl_id = request.session.get('website_sale_current_pl')
+        if pl_id:
+            pl = Pricelist.browse(pl_id).exists()
             if pl:
-                _logger.info("[proproduct] Manual pricelist honoured: %s", pl.display_name)
+                _logger.info("[proproduct] Honouring selected pricelist: %s", pl.display_name)
                 return pl
 
-        # 2. Geo-IP region default.
+        # 2. Geo-IP region default (not persisted).
         country_code = _get_country_code()
         currency = 'USD' if country_code == 'US' else 'CAD'
         _logger.info("[proproduct] geo country_code=%s -> %s", country_code, currency)
@@ -95,9 +101,9 @@ class Website(models.Model):
         self.ensure_one()
         target = self._proproduct_resolve_pricelist()
         if target:
-            if request:
-                # Keep the session in sync so cart / checkout logic agrees.
-                request.session['website_sale_current_pl'] = target.id
+            # NB: do NOT write target.id back to the session here.  Persisting a
+            # geo default would make it indistinguishable from an explicit user
+            # choice and lock the visitor to that pricelist forever.
             _logger.info(
                 "[proproduct] get_current_pricelist -> %s (%s)",
                 target.display_name, target.currency_id.name,
@@ -116,8 +122,6 @@ class Website(models.Model):
         self.ensure_one()
         target = self._proproduct_resolve_pricelist()
         if target:
-            if request:
-                request.session['website_sale_current_pl'] = target.id
             _logger.info(
                 "[proproduct] _get_current_pricelist -> %s (%s)",
                 target.display_name, target.currency_id.name,
