@@ -14,6 +14,7 @@
         "website",
         "product",
         "website_sale",
+        "website_sale_renting",
         "payment",
         "maintenance",
     ],

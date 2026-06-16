@@ -183,6 +183,23 @@
     font-size: 18px;
 }
 
+/* ── Remove Odoo's default pricelist dropdown near the search bar ──────────
+   Currency switching is handled by the header dropdown (.o_hdd_bar) instead. */
+.o_pricelist_dropdown {
+    display: none !important;
+}
+
+/* ── Replace the native account + language Bootstrap menus with the hover bar.
+   Scoped to the desktop header (≥992px, where it is visible) and to
+   `o_hdd_active` (set by JS only when the bar built), so the mega menus, the
+   mobile offcanvas, and a JS-failure fallback are all untouched. */
+@media (min-width: 992px) {
+    body.o_hdd_active header#top li.o_no_autohide_item .js_usermenu,
+    body.o_hdd_active header#top .o_header_language_selector .dropdown-menu {
+        display: none !important;
+    }
+}
+
 /* ── Mobile: hide entirely ───────────────────────────────────────────────── */
 @media (max-width: 767px) {
     .o_hdd_bar {
