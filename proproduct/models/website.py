@@ -91,74 +91,63 @@ class Website(models.Model):
         _logger.warning("[proproduct] No %s pricelist found; deferring to core.", currency)
         return self.env['product.pricelist']
 
-    def get_current_pricelist(self):
-        """Override the Odoo 17 frontend pricelist resolver.
-
-        Returns the manually selected / geo-detected pricelist directly so it
-        cannot be stripped by core's availability filtering.  Falls back to the
-        standard Odoo behaviour when neither applies.
-        """
-        self.ensure_one()
-        target = self._proproduct_resolve_pricelist()
-        if target:
-            # NB: do NOT write target.id back to the session here.  Persisting a
-            # geo default would make it indistinguishable from an explicit user
-            # choice and lock the visitor to that pricelist forever.
-            _logger.info(
-                "[proproduct] get_current_pricelist -> %s (%s)",
-                target.display_name, target.currency_id.name,
-            )
-            return target
-        return super().get_current_pricelist()
-
-    def _get_current_pricelist(self):
-        """Defensive override of the internal Odoo 17 resolver.
-
-        Depending on the exact Odoo 17 minor version, the public
-        `get_current_pricelist()` may delegate to this internal method.  We
-        intercept it too so the resolved pricelist is honoured no matter which
-        entry point core uses.  Falls back to core only when it exists.
-        """
-        self.ensure_one()
-        target = self._proproduct_resolve_pricelist()
-        if target:
-            _logger.info(
-                "[proproduct] _get_current_pricelist -> %s (%s)",
-                target.display_name, target.currency_id.name,
-            )
-            return target
-        parent = super()
-        if hasattr(parent, '_get_current_pricelist'):
-            return parent._get_current_pricelist()
-        return self.get_current_pricelist()
+    # ==================================================================
+    # TEMPORARILY DISABLED — custom pricelist resolution
+    # ------------------------------------------------------------------
+    # All custom geo / manual pricelist logic is commented out below so we can
+    # observe Odoo's DEFAULT pricelist behaviour.  Only `sale_get_pricelist`
+    # is kept as a thin alias to core's `get_current_pricelist`, because other
+    # custom controllers/templates in this code base still call it and would
+    # otherwise raise (core Odoo 17 has no `sale_get_pricelist`).
+    #
+    # To restore: un-comment the methods below and delete this alias.
+    # ==================================================================
 
     def sale_get_pricelist(self, partner=False):
-        """Backward-compat alias.
-
-        Custom controllers/templates in this code base still call
-        `sale_get_pricelist()` (the Odoo <=16 name).  Route them through the
-        canonical Odoo 17 resolver so every code path agrees.
-        """
+        """Compat alias only — defers entirely to core get_current_pricelist."""
         self.ensure_one()
         return self.get_current_pricelist()
 
-    def sale_get_order(self, force_create=False, **kwargs):
-        order = super().sale_get_order(force_create=force_create, **kwargs)
+    # def get_current_pricelist(self):
+    #     """Override the Odoo 17 frontend pricelist resolver."""
+    #     self.ensure_one()
+    #     target = self._proproduct_resolve_pricelist()
+    #     if target:
+    #         _logger.info(
+    #             "[proproduct] get_current_pricelist -> %s (%s)",
+    #             target.display_name, target.currency_id.name,
+    #         )
+    #         return target
+    #     return super().get_current_pricelist()
 
-        if not order or not request:
-            return order
+    # def _get_current_pricelist(self):
+    #     """Defensive override of the internal Odoo 17 resolver."""
+    #     self.ensure_one()
+    #     target = self._proproduct_resolve_pricelist()
+    #     if target:
+    #         _logger.info(
+    #             "[proproduct] _get_current_pricelist -> %s (%s)",
+    #             target.display_name, target.currency_id.name,
+    #         )
+    #         return target
+    #     parent = super()
+    #     if hasattr(parent, '_get_current_pricelist'):
+    #         return parent._get_current_pricelist()
+    #     return self.get_current_pricelist()
 
-        # Align the cart with the resolved pricelist (manual selection or geo).
-        desired_pl = self.get_current_pricelist()
-        if desired_pl and order.pricelist_id != desired_pl:
-            _logger.info(
-                "[proproduct] Updating cart %s pricelist %s -> %s",
-                order.name,
-                order.pricelist_id.display_name,
-                desired_pl.display_name,
-            )
-            order = order.sudo()
-            order.write({'pricelist_id': desired_pl.id})
-            order._recompute_prices()
-
-        return order
+    # def sale_get_order(self, force_create=False, **kwargs):
+    #     order = super().sale_get_order(force_create=force_create, **kwargs)
+    #     if not order or not request:
+    #         return order
+    #     desired_pl = self.get_current_pricelist()
+    #     if desired_pl and order.pricelist_id != desired_pl:
+    #         _logger.info(
+    #             "[proproduct] Updating cart %s pricelist %s -> %s",
+    #             order.name,
+    #             order.pricelist_id.display_name,
+    #             desired_pl.display_name,
+    #         )
+    #         order = order.sudo()
+    #         order.write({'pricelist_id': desired_pl.id})
+    #         order._recompute_prices()
+    #     return order

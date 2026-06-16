@@ -35,42 +35,55 @@ class ProwebsiteController(http.Controller):
         selection on every page load. We only resolve the pricelist and align
         the existing cart order to it.
         """
-        if not hasattr(request.website, 'sale_get_pricelist'):
-            _logger.warning("[omnigo] sale_get_pricelist() not available")
-            return {'pricelist_id': None}
-
-        try:
-            pricelist = request.website.sale_get_pricelist()
-        except Exception as e:
-            _logger.error("[omnigo] sale_get_pricelist() raised: %s", e)
-            return {'pricelist_id': None}
-
-        # Update an existing cart order right now so there is no window between
-        # this call and the subsequent cart_update_json where the old pricelist
-        # could be used.
-        try:
-            order = request.website.sale_get_order(force_create=False)
-            if order and order.pricelist_id.id != pricelist.id:
-                _logger.info(
-                    "[omnigo] Updating cart %s pricelist %s → %s",
-                    order.name,
-                    order.pricelist_id.display_name,
-                    pricelist.display_name,
-                )
-                order.sudo().write({'pricelist_id': pricelist.id})
-                try:
-                    order.sudo()._recompute_prices()
-                except AttributeError:
-                    order.sudo()._recompute_all_prices()
-        except Exception as e:
-            _logger.warning("[omnigo] Could not update cart pricelist: %s", e)
-
-        pl_sudo = pricelist.sudo()
+        # ==============================================================
+        # TEMPORARILY DISABLED — to observe Odoo's DEFAULT pricelist
+        # behaviour, this handler is now a no-op.  It no longer resolves,
+        # aligns the cart, or touches the session; core handles everything.
+        # To restore: un-comment the block below.
+        # ==============================================================
+        pl = request.website.get_current_pricelist()
         return {
-            'pricelist_id': pricelist.id,
-            'pricelist_name': pl_sudo.display_name,
-            'currency': pl_sudo.currency_id.name,
+            'pricelist_id': pl.id,
+            'pricelist_name': pl.sudo().display_name,
+            'currency': pl.sudo().currency_id.name,
         }
+
+        # if not hasattr(request.website, 'sale_get_pricelist'):
+        #     _logger.warning("[omnigo] sale_get_pricelist() not available")
+        #     return {'pricelist_id': None}
+        #
+        # try:
+        #     pricelist = request.website.sale_get_pricelist()
+        # except Exception as e:
+        #     _logger.error("[omnigo] sale_get_pricelist() raised: %s", e)
+        #     return {'pricelist_id': None}
+        #
+        # # Update an existing cart order right now so there is no window between
+        # # this call and the subsequent cart_update_json where the old pricelist
+        # # could be used.
+        # try:
+        #     order = request.website.sale_get_order(force_create=False)
+        #     if order and order.pricelist_id.id != pricelist.id:
+        #         _logger.info(
+        #             "[omnigo] Updating cart %s pricelist %s → %s",
+        #             order.name,
+        #             order.pricelist_id.display_name,
+        #             pricelist.display_name,
+        #         )
+        #         order.sudo().write({'pricelist_id': pricelist.id})
+        #         try:
+        #             order.sudo()._recompute_prices()
+        #         except AttributeError:
+        #             order.sudo()._recompute_all_prices()
+        # except Exception as e:
+        #     _logger.warning("[omnigo] Could not update cart pricelist: %s", e)
+        #
+        # pl_sudo = pricelist.sudo()
+        # return {
+        #     'pricelist_id': pricelist.id,
+        #     'pricelist_name': pl_sudo.display_name,
+        #     'currency': pl_sudo.currency_id.name,
+        # }
 
     @http.route(
         '/omnigo/get_pricelists',
