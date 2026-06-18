@@ -1,0 +1,408 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   eCommerce product detail page — product_page.css
+   Restyles the stock Odoo website_sale product page (no XML overrides).
+   Everything is scoped under .o_wsale_product_page so the shop grid, cart,
+   checkout, and all non-product pages are left untouched.
+
+   Palette + typography follow the prowebsite design language:
+     red    #e00000 / #c40000   ·   ink #0a0a0a / #111   ·   white surfaces
+     fonts  "Arial Black"/Montserrat for titles, Montserrat for body
+   The store renders on the dark theme, so this page is styled dark-aware:
+   near-black surfaces, white text, red accents.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Root / base ──────────────────────────────────────────────────────────── */
+.o_wsale_product_page {
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+}
+
+.o_wsale_product_page #product_detail {
+    padding-top: clamp(20px, 4vw, 48px) !important;
+    padding-bottom: clamp(32px, 5vw, 72px) !important;
+}
+
+/* ─── Top utility row: search + breadcrumb ─────────────────────────────────── */
+.o_wsale_product_page .o_wsale_products_searchbar_form .input-group {
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.04);
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.o_wsale_product_page .o_wsale_products_searchbar_form .input-group:focus-within {
+    border-color: rgba(224, 0, 0, 0.55);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.o_wsale_product_page .o_wsale_products_searchbar_form .oe_search_box {
+    background: transparent !important;
+    color: #fff !important;
+    border: none !important;
+    padding-left: 20px;
+    font-size: 14px;
+}
+
+.o_wsale_product_page .o_wsale_products_searchbar_form .oe_search_box::placeholder {
+    color: rgba(255, 255, 255, 0.40);
+}
+
+.o_wsale_product_page .o_wsale_products_searchbar_form .oe_search_button {
+    background: transparent !important;
+    border: none !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+    padding-right: 18px;
+    transition: color 0.18s ease;
+}
+
+.o_wsale_product_page .o_wsale_products_searchbar_form .oe_search_button:hover {
+    color: #e00000 !important;
+}
+
+/* Breadcrumb — small uppercase trail */
+.o_wsale_product_page .breadcrumb {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+}
+
+.o_wsale_product_page .breadcrumb-item a {
+    color: #e00000 !important;
+    text-decoration: none;
+    transition: color 0.18s ease;
+}
+
+.o_wsale_product_page .breadcrumb-item a:hover {
+    color: #ff5252 !important;
+}
+
+.o_wsale_product_page .breadcrumb-item.active span {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.o_wsale_product_page .breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.30);
+}
+
+/* ─── Product image gallery ────────────────────────────────────────────────── */
+.o_wsale_product_page #o-carousel-product {
+    background:
+        radial-gradient(circle at 50% 35%, rgba(224, 0, 0, 0.10), transparent 60%),
+        linear-gradient(180deg, #161313 0%, #0d0b0b 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    padding: clamp(20px, 4vw, 48px);
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.25),
+        0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+.o_wsale_product_page .product_detail_img {
+    border-radius: 14px;
+    transition: transform 0.4s ease;
+    will-change: transform;
+}
+
+.o_wsale_product_page #o-carousel-product:hover .product_detail_img {
+    transform: scale(1.03);
+}
+
+/* Carousel indicators (when multiple images exist) */
+.o_wsale_product_page .o_carousel_product_indicators .carousel-indicators [data-bs-target] {
+    border-radius: 999px;
+}
+
+/* ─── Product details column ───────────────────────────────────────────────── */
+.o_wsale_product_page #product_details {
+    padding-left: clamp(0px, 2vw, 24px);
+}
+
+/* Title */
+.o_wsale_product_page #product_details h1[itemprop="name"] {
+    font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(26px, 3vw, 40px);
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    margin: 0 0 12px;
+}
+
+/* Review stars */
+.o_wsale_product_page .o_website_rating_static {
+    margin-bottom: 6px;
+}
+
+.o_wsale_product_page .o_website_rating_static .fa-star,
+.o_wsale_product_page .o_website_rating_static .fa-star-half-o {
+    color: #e00000;
+}
+
+.o_wsale_product_page .o_website_rating_static .fa-star-o {
+    color: rgba(255, 255, 255, 0.28);
+}
+
+.o_wsale_product_page .o_product_page_reviews_link:hover .o_website_rating_static .fa-star-o {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+/* eCommerce description block */
+.o_wsale_product_page #product_details .oe_structure {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+/* ─── Price ────────────────────────────────────────────────────────────────── */
+.o_wsale_product_page .product_price {
+    margin-top: 4px !important;
+    margin-bottom: 24px !important;
+}
+
+/* Red accent bar above the price (matches o_rtc_info_divider) */
+.o_wsale_product_page .product_price::before {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 4px;
+    background: #e00000;
+    border-radius: 999px;
+    margin-bottom: 16px;
+}
+
+.o_wsale_product_page .product_price .oe_price,
+.o_wsale_product_page .product_price .proproduct_locked_price {
+    font-family: "Arial Black", "Montserrat", sans-serif;
+    font-size: clamp(30px, 4vw, 44px) !important;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #ffffff !important;
+    line-height: 1.05;
+}
+
+.o_wsale_product_page .product_price .oe_default_price {
+    color: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* Currency code badge appended by product_page.js (e.g. "USD" / "CAD") */
+.o_wsale_product_page .o_pp_price_currency {
+    display: inline-block;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.50);
+    vertical-align: super;
+    margin-left: 8px;
+}
+
+/* "Taxes Excluded" caption */
+.o_wsale_product_page .product_price .text-muted {
+    display: block;
+    font-size: 11px !important;
+    font-weight: 600;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.40) !important;
+    margin-top: 4px;
+}
+
+/* ─── CTA row: quantity + add-to-cart share one height ─────────────────────── */
+/* A single control height keeps the quantity stepper and the button visually
+   aligned regardless of font/padding differences. */
+.o_wsale_product_page {
+    --o-pp-control-h: 52px;
+}
+
+.o_wsale_product_page #o_wsale_cta_wrapper {
+    align-items: stretch;
+}
+
+/* ─── Quantity selector ────────────────────────────────────────────────────── */
+.o_wsale_product_page .css_quantity {
+    height: var(--o-pp-control-h);
+    margin-bottom: 8px !important;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.o_wsale_product_page .css_quantity .js_add_cart_json {
+    color: rgba(255, 255, 255, 0.70) !important;
+    border: none;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    transition: color 0.18s ease, background 0.18s ease;
+}
+
+.o_wsale_product_page .css_quantity .js_add_cart_json:hover {
+    color: #e00000 !important;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.o_wsale_product_page .css_quantity .quantity {
+    height: 100%;
+    background: transparent !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 15px;
+    width: 48px;
+    box-shadow: none !important;
+}
+
+/* ─── Add to cart button ───────────────────────────────────────────────────── */
+.o_wsale_product_page #add_to_cart_wrap {
+    height: var(--o-pp-control-h);
+    margin-bottom: 8px !important;
+}
+
+.o_wsale_product_page #add_to_cart {
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.o_wsale_product_page #add_to_cart,
+.o_wsale_product_page .btn_cta {
+    background: #e00000 !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em;
+    padding: 0 32px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 22px rgba(224, 0, 0, 0.30);
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.o_wsale_product_page #add_to_cart:hover,
+.o_wsale_product_page .btn_cta:hover {
+    background: #c20000 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(224, 0, 0, 0.42);
+    color: #fff !important;
+}
+
+.o_wsale_product_page #add_to_cart:active,
+.o_wsale_product_page .btn_cta:active {
+    transform: translateY(0);
+}
+
+.o_wsale_product_page #add_to_cart:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* ─── Wishlist button ──────────────────────────────────────────────────────── */
+.o_wsale_product_page .o_add_wishlist_dyn {
+    color: rgba(255, 255, 255, 0.55) !important;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-decoration: none !important;
+    transition: color 0.18s ease;
+}
+
+.o_wsale_product_page .o_add_wishlist_dyn:hover {
+    color: #e00000 !important;
+}
+
+/* ─── Product tags ─────────────────────────────────────────────────────────── */
+.o_wsale_product_page .o_product_tags {
+    margin-top: 18px;
+}
+
+.o_wsale_product_page .o_product_tags > span {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    padding: 5px 14px !important;
+    overflow: hidden;
+}
+
+/* The opacity overlay Odoo paints behind the tag — dim it on the dark theme */
+.o_wsale_product_page .o_product_tags > span > span:first-child {
+    display: none !important;
+}
+
+.o_wsale_product_page .o_product_tags > span .text-nowrap {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+/* ─── Share + terms row ────────────────────────────────────────────────────── */
+.o_wsale_product_page #o_product_terms_and_share {
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+    padding-top: 18px;
+    margin-top: 26px;
+}
+
+.o_wsale_product_page .s_share a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    transition: border-color 0.18s ease, background 0.18s ease, transform 0.15s ease;
+}
+
+.o_wsale_product_page .s_share a i {
+    color: rgba(255, 255, 255, 0.70);
+    transition: color 0.18s ease;
+}
+
+.o_wsale_product_page .s_share a:hover {
+    border-color: #e00000;
+    background: rgba(224, 0, 0, 0.14);
+    transform: translateY(-2px);
+}
+
+.o_wsale_product_page .s_share a:hover i {
+    color: #fff;
+}
+
+/* ─── "Not available" warning ──────────────────────────────────────────────── */
+.o_wsale_product_page .css_not_available_msg {
+    background: rgba(224, 0, 0, 0.10);
+    border: 1px solid rgba(224, 0, 0, 0.30);
+    color: #ffb4b4;
+    border-radius: 10px;
+}
+
+/* ─── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 991px) {
+    .o_wsale_product_page #product_details {
+        padding-left: 0;
+        margin-top: 28px;
+    }
+
+    .o_wsale_product_page #o-carousel-product {
+        position: static !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .o_wsale_product_page #o-carousel-product {
+        border-radius: 16px;
+        padding: 24px;
+    }
+
+    .o_wsale_product_page #o_wsale_cta_wrapper {
+        gap: 12px;
+    }
+
+    .o_wsale_product_page #add_to_cart {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+}
