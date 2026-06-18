@@ -43,6 +43,38 @@ class ProductTemplate(models.Model):
             return self.env['product.pricelist.item']
         return items.sorted(key=lambda i: 0 if i.applied_on == '0_product_variant' else 1)[:1]
 
+    def _get_sales_prices(self, *args, **kwargs):
+        """Fix the shop grid/list tile prices.
+
+        `template_price_vals` (built here) feeds the products_item tile. Odoo's
+        own computation returns the wrong value on huge pricelists, and rentable
+        products show the rental price plus a "from / per <unit>" suffix. For
+        products NOT flagged `rental_behaviour_on_store` we:
+          * set the price to the resolved pricelist rule (regular sales price), and
+          * zero `rental_duration` so the rental "from / per" text (gated on it in
+            the core renting view) is hidden.
+        Products flagged for rental behaviour are left untouched.
+        """
+        res = super()._get_sales_prices(*args, **kwargs)
+        pricelist = args[0] if args else kwargs.get('pricelist')
+        if not pricelist:
+            return res
+        for product in self:
+            vals = res.get(product.id)
+            if not vals or product.rental_behaviour_on_store:
+                continue
+            try:
+                item = product._proproduct_resolve_pricelist_item(pricelist, product.product_variant_id)
+                if item and item.compute_price == 'fixed':
+                    vals['price_reduce'] = item.fixed_price
+                    if 'base_price' in vals:
+                        vals['base_price'] = item.fixed_price
+            except Exception as e:
+                _logger.warning("[proproduct] grid price override failed for %s: %s", product.id, e)
+            if 'rental_duration' in vals:
+                vals['rental_duration'] = 0
+        return res
+
     def _get_combination_info(self, *args, **kwargs):
         """Force the storefront price to the pricelist rule actually applicable to
         the current pricelist (cookie/geo-resolved), computed ourselves.
