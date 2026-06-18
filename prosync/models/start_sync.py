@@ -49,6 +49,39 @@ class ProsyncSync(models.Model):
         doc = client.open_by_key(sheet_id)
         return doc.get_worksheet(sheet_num).get_all_values()
 
+    # - Fetch a worksheet by its tab name (title) rather than by position.
+    #   gspread's get_worksheet(index) is purely positional, so it breaks the
+    #   moment tabs are reordered/inserted/hidden and the actual order drifts
+    #   from the INDEX column. Matching by name is order-independent.
+    #   The expected_index (the config INDEX) is used only to warn about drift.
+    def get_worksheet_by_name(self, pw, sheet_id, sheet_name, expected_index=None):
+        scope = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+
+        creds = sac.from_json_keyfile_dict(pw, scope)
+        client = gspread.authorize(creds)
+
+        doc = client.open_by_key(sheet_id)
+
+        try:
+            worksheet = doc.worksheet(sheet_name)
+        except gspread.exceptions.WorksheetNotFound:
+            titles = [ws.title for ws in doc.worksheets()]
+            _logger.error(
+                f"ProSync: No tab named '{sheet_name}' found in the spreadsheet. "
+                f"Available tabs: {titles!r}"
+            )
+            return None
+
+        actual_index = worksheet.index
+        if expected_index is not None and actual_index != expected_index:
+            _logger.warning(
+                f"ProSync: Tab '{sheet_name}' is at position {actual_index} but the "
+                f"config INDEX says {expected_index}. Fetching by name (position "
+                f"ignored), but the INDEX column is out of date and should be corrected."
+            )
+
+        return worksheet.get_all_values()
+
     # Step 2. Read ODOO_CONFIGURATION tab
     # - For each row, check first if valid
     # - - If not valid, check if continue
@@ -88,29 +121,28 @@ class ProsyncSync(models.Model):
                         line_index += 1
                         continue
 
-                    if sheet_type == "product_template":
-                        _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
-                        
-                        sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
+                    expected_index = int(sheet_index)
+                    sheet_data = self.get_worksheet_by_name(pw, template_id, sheet_name, expected_index)
 
+                    if sheet_data is None:
+                        _logger.error(f"ProSync: Skipping '{sheet_name}' — tab could not be loaded.")
+                        line_index += 1
+                        continue
+
+                    if sheet_type == "product_template":
+                        _logger.info(f"ProSync: Processing sheet '{sheet_name}' of type: {sheet_type}")
                         syncer = product_template_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_product_template()
                     elif sheet_type == "stock_lot":
-                        _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
-
-                        sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
+                        _logger.info(f"ProSync: Processing sheet '{sheet_name}' of type: {sheet_type}")
                         syncer = stock_lot_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_stock_lot()
                     elif sheet_type == "res_partner":
-                        _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
-
-                        sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
+                        _logger.info(f"ProSync: Processing sheet '{sheet_name}' of type: {sheet_type}")
                         syncer = res_partner_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_res_partner()
                     elif sheet_type == "mrp_bom_line":
-                        _logger.info(f"ProSync: Processing sheet of type: {sheet_type}")
-
-                        sheet_data = self.establish_sheets_connection(pw, template_id, int(sheet_index))
+                        _logger.info(f"ProSync: Processing sheet '{sheet_name}' of type: {sheet_type}")
                         syncer = mrp_bom_line_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_mrp_bom_line()
                     else:
