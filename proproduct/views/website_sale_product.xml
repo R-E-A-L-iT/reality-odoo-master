@@ -34,6 +34,63 @@
                t-value="combination_info.update({'price': og_item.fixed_price, 'list_price': og_item.fixed_price, 'has_discounted_price': False, 'is_rental': False})"/>
         </xpath>
 
+        <!-- LOCK THE DISPLAYED PRICE.
+             Some other JS overwrites the product price ~2s after load with the
+             wrong (list_price) value. Rather than chase it, render the correct
+             pricelist-resolved price server-side, then on the client hide Odoo's
+             own price element and show our own copy that nothing else targets.
+             A MutationObserver re-asserts it if the page tries to change it. -->
+        <xpath expr="//section[@id='product_detail']" position="inside">
+            <span id="proproduct_locked_price_src" style="display:none;"
+                  t-esc="(pricelist.currency_id.symbol + ' ' + ('%.2f' % (combination_info.get('price') or 0.0))) if pricelist.currency_id.position == 'before' else (('%.2f' % (combination_info.get('price') or 0.0)) + ' ' + pricelist.currency_id.symbol)"/>
+            <script type="text/javascript">
+                (function () {
+                    function lock() {
+                        var src = document.getElementById('proproduct_locked_price_src');
+                        var detail = document.getElementById('product_detail');
+                        if (!src || !detail) return;
+                        var block = detail.querySelector('.product_price');
+                        if (!block) return;
+                        var orig = block.querySelector('.oe_price');
+                        if (!block.querySelector('.proproduct_locked_price')) {
+                            var el = document.createElement('span');
+                            el.className = 'proproduct_locked_price';
+                            el.textContent = src.textContent.trim();
+                            if (orig) {
+                                var cs = window.getComputedStyle(orig);
+                                el.style.fontSize = cs.fontSize;
+                                el.style.fontWeight = cs.fontWeight;
+                                el.style.color = cs.color;
+                                orig.parentNode.insertBefore(el, orig);
+                            } else {
+                                block.insertBefore(el, block.firstChild);
+                            }
+                        }
+                        block.querySelectorAll('.oe_price, .oe_default_price').forEach(function (e) {
+                            if (e.style.display !== 'none') e.style.setProperty('display', 'none', 'important');
+                        });
+                    }
+                    function start() {
+                        lock();
+                        var detail = document.getElementById('product_detail');
+                        if (detail) {
+                            new MutationObserver(function () { lock(); }).observe(detail, {
+                                childList: true, subtree: true,
+                                attributes: true, attributeFilter: ['style', 'class'],
+                            });
+                        }
+                    }
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', start);
+                    } else {
+                        start();
+                    }
+                    setTimeout(lock, 1500);
+                    setTimeout(lock, 4000);
+                })();
+            </script>
+        </xpath>
+
         <!-- DEBUG (browser console): logs the price the rendered fragment used.
              Placed inside the page body (valid HTML) so it always executes. If the
              server [proproduct] log says USD but this shows the CAD amount, the
