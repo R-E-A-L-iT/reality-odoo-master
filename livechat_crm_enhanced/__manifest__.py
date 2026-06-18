@@ -1,6 +1,6 @@
 {
     'name': 'LiveChat CRM Enhanced',
-    'version': '17.0.1.0.0',
+    'version': '17.0.2.0.0',
     'category': 'Sales/CRM',
     'summary': 'Enhanced LiveChat integration with CRM lead creation',
     'description': """
@@ -24,6 +24,7 @@
         'security/ir.model.access.csv',
         'data/utm_data.xml',
         'views/discuss_channel_views.xml',
+        'views/res_config_settings_views.xml',
     ],
     'assets': {
         'web.assets_backend': [
