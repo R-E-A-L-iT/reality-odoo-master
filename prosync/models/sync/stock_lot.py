@@ -53,7 +53,10 @@ class stock_lot_sync:
         sheet_columns = self.sheet[0] if len(self.sheet) > 0 else []
         column_indices = {col.strip().lower(): idx for idx, col in enumerate(sheet_columns)}
 
-        missing_columns = [header for header in required_fields if header not in sheet_columns]
+        _logger.info(f"ProSync: Sheet contains {len(sheet_columns)} columns (raw): {sheet_columns!r}")
+        _logger.info(f"ProSync: Normalized column names: {list(column_indices.keys())!r}")
+
+        missing_columns = [header for header in required_fields if header not in column_indices]
         if missing_columns:
             _logger.error(f"ProSync: Sheet validation failed. Missing columns for fields: {missing_columns}.")
             self.error_items.append(
