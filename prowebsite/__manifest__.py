@@ -25,7 +25,6 @@
             'prowebsite/static/src/js/three_product.js',
             'prowebsite/static/src/js/rtc_series.js',
             'prowebsite/static/src/js/rtc_scroll_model.js',
-            'prowebsite/static/src/js/product_page.js',
         ],
     }
 }

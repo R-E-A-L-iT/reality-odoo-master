@@ -157,18 +157,7 @@
 /* ─── Price ────────────────────────────────────────────────────────────────── */
 .o_wsale_product_page .product_price {
     margin-top: 4px !important;
-    margin-bottom: 24px !important;
-}
-
-/* Red accent bar above the price (matches o_rtc_info_divider) */
-.o_wsale_product_page .product_price::before {
-    content: "";
-    display: block;
-    width: 48px;
-    height: 4px;
-    background: #e00000;
-    border-radius: 999px;
-    margin-bottom: 16px;
+    margin-bottom: 22px !important;
 }
 
 .o_wsale_product_page .product_price .oe_price,
@@ -185,19 +174,6 @@
     color: rgba(255, 255, 255, 0.45) !important;
 }
 
-/* Currency code badge appended by product_page.js (e.g. "USD" / "CAD") */
-.o_wsale_product_page .o_pp_price_currency {
-    display: inline-block;
-    font-family: "Montserrat", sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.50);
-    vertical-align: super;
-    margin-left: 8px;
-}
-
 /* "Taxes Excluded" caption */
 .o_wsale_product_page .product_price .text-muted {
     display: block;
@@ -209,23 +185,8 @@
     margin-top: 4px;
 }
 
-/* ─── CTA row: quantity + add-to-cart share one height ─────────────────────── */
-/* A single control height keeps the quantity stepper and the button visually
-   aligned regardless of font/padding differences. */
-.o_wsale_product_page {
-    --o-pp-control-h: 52px;
-}
-
-.o_wsale_product_page #o_wsale_cta_wrapper {
-    align-items: stretch;
-}
-
 /* ─── Quantity selector ────────────────────────────────────────────────────── */
 .o_wsale_product_page .css_quantity {
-    height: var(--o-pp-control-h);
-    margin-bottom: 8px !important;
-    flex-wrap: nowrap;
-    align-items: stretch;
     border-radius: 10px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.16);
@@ -247,7 +208,6 @@
 }
 
 .o_wsale_product_page .css_quantity .quantity {
-    height: 100%;
     background: transparent !important;
     border: none !important;
     color: #fff !important;
@@ -258,18 +218,6 @@
 }
 
 /* ─── Add to cart button ───────────────────────────────────────────────────── */
-.o_wsale_product_page #add_to_cart_wrap {
-    height: var(--o-pp-control-h);
-    margin-bottom: 8px !important;
-}
-
-.o_wsale_product_page #add_to_cart {
-    height: 100%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .o_wsale_product_page #add_to_cart,
 .o_wsale_product_page .btn_cta {
     background: #e00000 !important;
@@ -277,7 +225,7 @@
     color: #fff !important;
     font-weight: 700 !important;
     letter-spacing: 0.04em;
-    padding: 0 32px !important;
+    padding: 13px 30px !important;
     border-radius: 10px !important;
     box-shadow: 0 8px 22px rgba(224, 0, 0, 0.30);
     transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
@@ -294,11 +242,6 @@
 .o_wsale_product_page #add_to_cart:active,
 .o_wsale_product_page .btn_cta:active {
     transform: translateY(0);
-}
-
-.o_wsale_product_page #add_to_cart:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: 2px;
 }
 
 /* ─── Wishlist button ──────────────────────────────────────────────────────── */
