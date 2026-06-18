@@ -5,7 +5,7 @@
     'summary': 'Enhanced LiveChat integration with CRM lead creation',
     'description': """
         This module enhances the LiveChat functionality by adding:
-        * Create Lead button in chat header
+        * Create Lead button in chat header   
         * Automatic lead creation from chat conversations
         * Chat history integrated into lead log notes
         * Update Lead functionality for ongoing conversations
