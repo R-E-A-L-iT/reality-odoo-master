@@ -3,28 +3,19 @@
     <record id="res_config_settings_view_livechat_crm" model="ir.ui.view">
         <field name="name">res.config.settings.view.livechat.crm.enhanced</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="im_livechat.res_config_settings_view_form"/>
+        <field name="inherit_id" ref="crm.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[@id='livechat']" position="inside">
-                <div class="col-12 col-lg-6 o_setting_box">
-                    <div class="o_setting_left_pane"/>
-                    <div class="o_setting_right_pane">
-                        <span class="o_form_label">Default Lead Owner (Chatbot)</span>
-                        <div class="text-muted">
-                            Salesperson assigned to CRM leads created by the website chatbot.
-                        </div>
-                        <div class="content-group mt-2">
-                            <div class="row">
-                                <label for="livechat_default_lead_user_id" class="col-lg-4 o_light_label"/>
-                                <field name="livechat_default_lead_user_id" class="col-lg-8"/>
-                            </div>
-                            <div class="row mt-1">
-                                <label for="livechat_default_lead_team_id" string="Default Sales Team" class="col-lg-4 o_light_label"/>
-                                <field name="livechat_default_lead_team_id" class="col-lg-8"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <xpath expr="//app[@name='crm']" position="inside">
+                <block title="LiveChat Lead Assignment">
+                    <setting string="Default Lead Owner (Chatbot)"
+                             help="Salesperson automatically assigned to CRM leads created by the website chatbot. Leave empty to keep the chatbot operator as the owner.">
+                        <field name="livechat_default_lead_user_id"/>
+                    </setting>
+                    <setting string="Default Sales Team (Chatbot)"
+                             help="Sales team automatically assigned to CRM leads created by the website chatbot.">
+                        <field name="livechat_default_lead_team_id"/>
+                    </setting>
+                </block>
             </xpath>
         </field>
     </record>
