@@ -20,10 +20,12 @@
             'prowebsite/static/src/css/header_dropdowns.css',
             'prowebsite/static/src/css/three_product.css',
             'prowebsite/static/src/css/rtc_series.css',
+            'prowebsite/static/src/css/product_page.css',
             'prowebsite/static/src/js/header_dropdowns.js',
             'prowebsite/static/src/js/three_product.js',
             'prowebsite/static/src/js/rtc_series.js',
             'prowebsite/static/src/js/rtc_scroll_model.js',
+            'prowebsite/static/src/js/product_page.js',
         ],
     }
 }
