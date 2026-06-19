@@ -1,0 +1,492 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   eCommerce shop / store listing page — shop_page.css
+   Restyles the stock Odoo website_sale shop grid (no XML overrides).
+   Everything is scoped under .o_wsale_products_page so the product detail page,
+   cart, checkout, and all non-shop pages are left untouched.
+
+   Palette + typography follow the prowebsite design language and match
+   product_page.css:
+     red    #e00000 / #c40000   ·   ink #0a0a0a / #111   ·   white surfaces
+     fonts  "Arial Black"/Montserrat for titles, Montserrat for body
+   The store renders on the dark theme, so this page is styled dark-aware:
+   near-black surfaces, white text, red accents.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Root / base ──────────────────────────────────────────────────────────── */
+.o_wsale_products_page {
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ─── Top toolbar: search + pricelist + layout toggle ──────────────────────── */
+/* Search bar — pill, dark, red focus accent (mirrors the product page search) */
+.o_wsale_products_page .o_wsale_products_searchbar_form .input-group {
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.04);
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.o_wsale_products_page .o_wsale_products_searchbar_form .input-group:focus-within {
+    border-color: rgba(224, 0, 0, 0.55);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.o_wsale_products_page .o_wsale_products_searchbar_form .oe_search_box {
+    background: transparent !important;
+    color: #fff !important;
+    border: none !important;
+    padding-left: 20px;
+    font-size: 14px;
+}
+
+.o_wsale_products_page .o_wsale_products_searchbar_form .oe_search_box::placeholder {
+    color: rgba(255, 255, 255, 0.40);
+}
+
+.o_wsale_products_page .o_wsale_products_searchbar_form .oe_search_button {
+    background: transparent !important;
+    border: none !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+    padding-right: 18px;
+    transition: color 0.18s ease;
+}
+
+.o_wsale_products_page .o_wsale_products_searchbar_form .oe_search_button:hover {
+    color: #e00000 !important;
+}
+
+/* Pricelist dropdown + grid/list layout toggle — shared dark "light button" look.
+   Odoo paints these as .btn-light (near-white); recolour to the dark surface. */
+.o_wsale_products_page .o_pricelist_dropdown .dropdown-toggle,
+.o_wsale_products_page .o_wsale_apply_layout .btn,
+.o_wsale_products_page .products_header > .btn-light {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    border-radius: 10px;
+    transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.o_wsale_products_page .o_pricelist_dropdown .dropdown-toggle:hover,
+.o_wsale_products_page .o_wsale_apply_layout .btn:hover,
+.o_wsale_products_page .products_header > .btn-light:hover {
+    border-color: rgba(224, 0, 0, 0.55) !important;
+    color: #fff !important;
+}
+
+/* Active layout button (grid/list) gets the red accent */
+.o_wsale_products_page .o_wsale_apply_layout .btn.active,
+.o_wsale_products_page .o_wsale_apply_layout .btn-check:checked + .btn {
+    background: #e00000 !important;
+    border-color: #e00000 !important;
+    color: #fff !important;
+}
+
+/* Group the layout toggle as a single rounded segment */
+.o_wsale_products_page .o_wsale_apply_layout {
+    border-radius: 10px;
+    overflow: hidden;
+    gap: 4px;
+}
+
+/* Pricelist dropdown menu (the flag list) */
+.o_wsale_products_page .o_pricelist_dropdown .dropdown-menu {
+    background: #161313;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 12px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+.o_wsale_products_page .o_pricelist_dropdown .dropdown-item {
+    color: rgba(255, 255, 255, 0.80);
+    border-radius: 8px;
+}
+
+.o_wsale_products_page .o_pricelist_dropdown .dropdown-item:hover {
+    background: rgba(224, 0, 0, 0.14);
+    color: #fff;
+}
+
+/* ─── Category filmstrip (ROBOTIC / EFFICIENT / AERIAL …) ───────────────────── */
+.o_wsale_products_page .o_wsale_filmstip_wrapper {
+    /* Thin custom scrollbar so the horizontal strip stays tidy on the dark bg */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(224, 0, 0, 0.5) transparent;
+}
+
+.o_wsale_products_page .o_wsale_filmstip_wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.o_wsale_products_page .o_wsale_filmstip_wrapper::-webkit-scrollbar-thumb {
+    background: rgba(224, 0, 0, 0.5);
+    border-radius: 999px;
+}
+
+/* Each category list item stretches so every chip shares the row height */
+.o_wsale_products_page .o_wsale_filmstip > li {
+    align-items: stretch;
+}
+
+/* The clickable category chip — fixed height so image-less chips
+   (e.g. SUPPLEMENTAL) match the ones that carry a thumbnail */
+.o_wsale_products_page .o_wsale_filmstip .btn-light {
+    --o-pp-cat-h: 56px;
+    height: var(--o-pp-cat-h);
+    min-height: var(--o-pp-cat-h);
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: rgba(255, 255, 255, 0.78) !important;
+    border-radius: 12px !important;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    transition: border-color 0.18s ease, background 0.18s ease,
+        color 0.18s ease, transform 0.15s ease;
+}
+
+.o_wsale_products_page .o_wsale_filmstip .btn-light:hover {
+    border-color: rgba(224, 0, 0, 0.55) !important;
+    background: rgba(224, 0, 0, 0.10) !important;
+    color: #fff !important;
+    transform: translateY(-2px);
+}
+
+/* Selected category */
+.o_wsale_products_page .o_wsale_filmstip .btn-check:checked + .btn {
+    border-color: #e00000 !important;
+    background: rgba(224, 0, 0, 0.16) !important;
+    color: #fff !important;
+}
+
+/* The little category thumbnail tile */
+.o_wsale_products_page .o_wsale_filmstip .o_image_40_cover {
+    border-radius: 10px !important;
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* ─── Sidebar filters (Tags, attributes, Clear Filters) ────────────────────── */
+/* Section headers: bold white with a thin underline divider, echoing the
+   clean accordion-style headers of the Odoo demo. */
+.o_wsale_products_page .products_attributes_filters h6,
+.o_wsale_products_page .products_attributes_filters h6 b {
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    font-size: 14px;
+}
+
+.o_wsale_products_page .products_attributes_filters h6 {
+    padding-bottom: 14px;
+    margin-bottom: 14px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.o_wsale_products_page .products_attributes_filters .form-check-label {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.o_wsale_products_page .products_attributes_filters .form-check-input:hover ~ .form-check-label,
+.o_wsale_products_page .products_attributes_filters .form-check-label:hover {
+    color: #fff;
+}
+
+/* Checkboxes — dark with a red check when active */
+.o_wsale_products_page .products_attributes_filters .form-check-input {
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+}
+
+.o_wsale_products_page .products_attributes_filters .form-check-input:checked {
+    background-color: #e00000;
+    border-color: #e00000;
+}
+
+.o_wsale_products_page .products_attributes_filters .form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(224, 0, 0, 0.25);
+    border-color: rgba(224, 0, 0, 0.55);
+}
+
+/* "Clear Filters" button */
+.o_wsale_products_page .products_attributes_filters .btn-light,
+.o_wsale_products_page #o_wsale_offcanvas .btn-light {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    color: rgba(255, 255, 255, 0.80) !important;
+    border-radius: 10px;
+    transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.o_wsale_products_page .products_attributes_filters .btn-light:hover,
+.o_wsale_products_page #o_wsale_offcanvas .btn-light:hover {
+    border-color: rgba(224, 0, 0, 0.55) !important;
+    background: rgba(224, 0, 0, 0.10) !important;
+    color: #fff !important;
+}
+
+/* ─── Sidebar — clean & borderless (Odoo-demo style) ───────────────────────── */
+/* No panel box: filters sit directly on the page, separated by thin dividers. */
+.o_wsale_products_page #products_grid_before .o_wsale_products_grid_before_rail {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    margin: 0 !important;
+    padding: 0 10px 24px 0 !important;
+    height: auto !important;
+    max-height: calc(100vh - 24px);
+}
+
+/* Tidy scrollbar on the sticky sidebar rail — replaces the default white bar */
+.o_wsale_products_page .o_wsale_products_grid_before_rail {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.20) transparent;
+    overflow-y: auto !important;
+}
+
+.o_wsale_products_page .o_wsale_products_grid_before_rail::-webkit-scrollbar {
+    width: 8px;
+}
+
+.o_wsale_products_page .o_wsale_products_grid_before_rail::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.o_wsale_products_page .o_wsale_products_grid_before_rail::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+.o_wsale_products_page .o_wsale_products_grid_before_rail::-webkit-scrollbar-thumb:hover {
+    background: rgba(224, 0, 0, 0.45);
+    background-clip: padding-box;
+}
+
+/* ─── Product cards — clean & borderless (Odoo-demo style, dark) ────────────── */
+/* No card box: a rounded image tile, then title + price sitting directly on the
+   page background. The whole card is the wishlist's positioning context. */
+.o_wsale_products_page .o_wsale_product_grid_wrapper {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+
+/* Inner form lays out vertically with no padding (the tile + text stack) */
+.o_wsale_products_page .oe_product_cart {
+    flex-direction: column;
+    padding: 0;
+}
+
+/* Make the info block a normal flow element so the wishlist button can be
+   positioned against the whole card (and thus overlay the image).
+   Also strip the card design's background/padding so the name + price sit
+   directly on the page, not on a dark panel. */
+.o_wsale_products_page .o_wsale_product_information {
+    position: static !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 2px !important;
+}
+
+/* Image tile — darkish grey surface (lighter than the page) so products pop */
+.o_wsale_products_page .oe_product_image {
+    border-radius: 14px;
+    overflow: hidden;
+    background: #1d1d1d;
+    aspect-ratio: 1 / 1;
+    height: auto !important;
+    margin-bottom: 14px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.o_wsale_products_page .o_wsale_product_grid_wrapper:hover .oe_product_image {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+}
+
+.o_wsale_products_page .oe_product_image .img {
+    position: relative !important;
+    transition: transform 0.4s ease;
+    will-change: transform;
+}
+
+.o_wsale_products_page .o_wsale_product_grid_wrapper:hover .oe_product_image .img {
+    transform: scale(1.04);
+}
+
+/* Title — white, left-aligned, switches to red on hover */
+.o_wsale_products_page .o_wsale_products_item_title {
+    margin-bottom: 6px !important;
+}
+
+.o_wsale_products_page .o_wsale_products_item_title a {
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    transition: color 0.18s ease;
+}
+
+.o_wsale_products_page .o_wsale_products_item_title a:hover {
+    color: #e00000 !important;
+}
+
+/* Optional product subtitle/description, if the site enables it */
+.o_wsale_products_page .o_wsale_product_information_text p,
+.o_wsale_products_page .o_wsale_products_item_subtitle {
+    color: rgba(255, 255, 255, 0.55) !important;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Bottom row: price hard-left. The wishlist is pulled out of flow (below), so
+   the row collapses to just the left-aligned price. */
+.o_wsale_products_page .o_wsale_product_sub {
+    justify-content: flex-start !important;
+    align-items: center;
+    text-align: left !important;
+}
+
+.o_wsale_products_page .product_price {
+    text-align: left !important;
+    width: 100%;
+}
+
+/* Price — bold white, with a muted struck-through original price for discounts */
+.o_wsale_products_page .product_price .h6,
+.o_wsale_products_page .product_price .oe_currency_value {
+    color: #ffffff !important;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+.o_wsale_products_page .product_price .h6 {
+    font-size: 19px !important;
+}
+
+.o_wsale_products_page .product_price .oe_default_price,
+.o_wsale_products_page .product_price del,
+.o_wsale_products_page .product_price s {
+    color: rgba(255, 255, 255, 0.40) !important;
+    font-weight: 600;
+    text-decoration: line-through;
+}
+
+/* Wishlist heart — circular, overlaid on the top-right of the image tile */
+.o_wsale_products_page .o_wsale_product_btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 3;
+}
+
+.o_wsale_products_page .o_add_wishlist,
+.o_wsale_products_page .o_add_wishlist_dyn {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.92) !important;
+    border: none !important;
+    color: #111 !important;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    transition: background 0.18s ease, color 0.18s ease, transform 0.15s ease;
+}
+
+.o_wsale_products_page .o_add_wishlist:hover,
+.o_wsale_products_page .o_add_wishlist_dyn:hover {
+    background: #ffffff !important;
+    color: #e00000 !important;
+    transform: scale(1.08);
+}
+
+/* "Unpublished" admin badge — legible chip on the light image area */
+.o_wsale_products_page .o_wsale_products_item_title .btn-danger {
+    background: #e00000 !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-radius: 6px;
+}
+
+/* Sale / custom ribbon kept above the image */
+.o_wsale_products_page .o_ribbon {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+/* Grid spacing — borderless cards need breathing room between rows/cols */
+.o_wsale_products_page .o_wsale_products_grid_table_wrapper table.o_wsale_design_cards {
+    border-spacing: 0;
+}
+
+.o_wsale_products_page .o_wsale_products_grid_table_wrapper td.oe_product {
+    padding: 0 14px 32px;
+    vertical-align: top;
+}
+
+/* ─── Mobile filter offcanvas ──────────────────────────────────────────────── */
+.o_wsale_products_page #o_wsale_offcanvas,
+#o_wsale_offcanvas {
+    background: #0d0b0b;
+    color: #fff;
+}
+
+#o_wsale_offcanvas .accordion-button {
+    background: transparent;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+#o_wsale_offcanvas .accordion-button::after {
+    filter: invert(1) grayscale(1) brightness(1.6);
+}
+
+#o_wsale_offcanvas .accordion-item,
+#o_wsale_offcanvas .accordion-body {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+#o_wsale_offcanvas .form-check-label {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+#o_wsale_offcanvas .form-check-input:checked {
+    background-color: #e00000;
+    border-color: #e00000;
+}
+
+/* ─── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+    .o_wsale_products_page .o_wsale_products_grid_table_wrapper td.oe_product {
+        padding: 0 8px 24px;
+    }
+}
+
+
+.oe_product_cart {
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
+
+div > form > div.o_wsale_product_information.position-relative.d-flex.flex-column.flex-grow-1.flex-shrink-1 {
+    align-items: initial !important;
+}
