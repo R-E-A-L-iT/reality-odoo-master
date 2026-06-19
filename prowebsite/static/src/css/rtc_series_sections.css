@@ -1,0 +1,498 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   Leica RTC Series page — additional content sections (rtc_series_sections.css)
+   New launch-content blocks layered on top of rtc_series.css. Scoped under
+   .o_rtc_page and reusing the same tokens:
+     kicker  11px / 700 / .16em / uppercase / #e00000
+     title   "Arial Black", clamp(30px,4vw,52px), 900
+     section full-bleed: width 100vw; margin-left calc(50% - 50vw)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Shared section scaffold ──────────────────────────────────────────────── */
+.o_rtc_page .o_rtc_sec {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    padding: 84px clamp(24px, 5vw, 80px) 96px;
+    background: #ffffff;
+}
+
+.o_rtc_page .o_rtc_sec--alt {
+    background: #f4f4f4;
+}
+
+.o_rtc_page .o_rtc_sec_inner {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.o_rtc_page .o_rtc_sec_header {
+    text-align: center;
+    margin-bottom: 56px;
+}
+
+.o_rtc_page .o_rtc_sec_kicker {
+    display: block;
+    font-family: "Montserrat", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #e00000;
+    margin: 0 0 12px;
+}
+
+.o_rtc_page .o_rtc_sec_title {
+    margin: 0;
+    font-family: "Arial Black", "Montserrat", sans-serif;
+    font-size: clamp(28px, 3.6vw, 46px);
+    font-weight: 900;
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    color: #0a0a0a;
+}
+
+.o_rtc_page .o_rtc_sec_intro {
+    max-width: 720px;
+    margin: 18px auto 0;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #555;
+}
+
+/* ─── Capabilities (Intended Use) ──────────────────────────────────────────── */
+.o_rtc_cap_grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.o_rtc_cap_item {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 26px 24px;
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 16px;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.o_rtc_cap_item:hover {
+    border-color: rgba(224, 0, 0, 0.35);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+}
+
+.o_rtc_cap_icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(224, 0, 0, 0.08);
+    color: #e00000;
+}
+
+.o_rtc_cap_label {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: #111;
+}
+
+/* ─── Anatomy (Instrument Components) ──────────────────────────────────────── */
+.o_rtc_anatomy_layout {
+    display: flex;
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+}
+
+.o_rtc_anatomy_visual {
+    flex: 0 0 46%;
+    background: linear-gradient(180deg, #f7f7f8 0%, #ededee 100%);
+    border: 1px solid #e6e6e6;
+    border-radius: 24px;
+    padding: clamp(24px, 4vw, 56px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.o_rtc_anatomy_img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.o_rtc_anatomy_lists {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 36px;
+}
+
+.o_rtc_anatomy_item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid #ececec;
+}
+
+.o_rtc_anatomy_num {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #0a0a0a;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+
+.o_rtc_anatomy_text {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #222;
+}
+
+/* ─── What's in the Box (Scanner Packages) — dark section ──────────────────── */
+.o_rtc_box_section {
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+}
+
+.o_rtc_box_section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 16% 8%, rgba(255, 0, 0, 0.32), transparent 30%),
+        radial-gradient(circle at 84% 14%, rgba(255, 80, 80, 0.30), transparent 32%),
+        linear-gradient(180deg, #1f1c1c 0%, #272626 100%);
+}
+
+.o_rtc_box_section .o_rtc_sec_inner {
+    position: relative;
+    z-index: 2;
+}
+
+.o_rtc_box_section .o_rtc_sec_title {
+    color: #fff;
+}
+
+.o_rtc_box_section .o_rtc_sec_intro {
+    color: rgba(255, 255, 255, 0.66);
+}
+
+.o_rtc_box_grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.o_rtc_box_card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 30px 28px;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.o_rtc_box_card:hover {
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+/* Surveyor package spans full width as a highlighted strip */
+.o_rtc_box_card--wide {
+    grid-column: 1 / -1;
+    border-color: rgba(224, 0, 0, 0.5);
+    background:
+        radial-gradient(circle at 0% 0%, rgba(224, 0, 0, 0.16), transparent 40%),
+        rgba(255, 255, 255, 0.05);
+}
+
+.o_rtc_box_card--wide .o_rtc_box_items {
+    columns: 2;
+    column-gap: 40px;
+}
+
+.o_rtc_box_sku {
+    font-family: "Montserrat", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #ff8a8a;
+    margin: 0 0 6px;
+}
+
+.o_rtc_box_name {
+    margin: 0 0 4px;
+    font-family: "Arial Black", "Montserrat", sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    color: #fff;
+}
+
+.o_rtc_box_sub {
+    margin: 0 0 20px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.o_rtc_box_items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.o_rtc_box_items li {
+    position: relative;
+    padding: 8px 0 8px 26px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.82);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    break-inside: avoid;
+}
+
+.o_rtc_box_items li:first-child {
+    border-top: none;
+}
+
+.o_rtc_box_items li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 14px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e00000;
+}
+
+/* ─── Accessories & Compatible Equipment ───────────────────────────────────── */
+.o_rtc_acc_grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.o_rtc_acc_card {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.o_rtc_acc_card:hover {
+    border-color: rgba(224, 0, 0, 0.3);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+}
+
+.o_rtc_acc_thumb {
+    aspect-ratio: 16 / 10;
+    background: #f3f3f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.o_rtc_acc_thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 18px;
+}
+
+.o_rtc_acc_body {
+    padding: 22px 24px 26px;
+}
+
+.o_rtc_acc_cat {
+    font-family: "Montserrat", sans-serif;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #e00000;
+    margin: 0 0 8px;
+}
+
+.o_rtc_acc_name {
+    margin: 0 0 12px;
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: #111;
+}
+
+.o_rtc_acc_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.o_rtc_acc_list li {
+    padding: 7px 0 7px 18px;
+    position: relative;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #555;
+    border-top: 1px solid #f0f0f0;
+}
+
+.o_rtc_acc_list li:first-child {
+    border-top: none;
+}
+
+.o_rtc_acc_list li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 14px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #d0d0d0;
+}
+
+/* ─── Customer Care Packages (CCP) ─────────────────────────────────────────── */
+.o_rtc_ccp_note {
+    max-width: 880px;
+    margin: 0 auto 44px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #555;
+}
+
+/* Tier chips (Basic / Blue / Bronze / Silver / Gold) */
+.o_rtc_ccp_tiers {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: 0 auto 48px;
+}
+
+.o_rtc_ccp_tier {
+    padding: 10px 26px;
+    border-radius: 999px;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: #111;
+}
+
+/* Coverage dimensions reuse the capabilities grid; this just constrains width */
+.o_rtc_ccp_coverage {
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+/* ─── Scan-time table (inside the existing Technical Specifications) ────────── */
+.o_rtc_scantime_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 4px;
+}
+
+.o_rtc_scantime_table th,
+.o_rtc_scantime_table td {
+    padding: 12px 14px;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+.o_rtc_scantime_table thead th {
+    font-weight: 800;
+    color: #0a0a0a;
+    border-bottom: 2px solid #e6e6e6;
+    background: #f8f8f8;
+}
+
+.o_rtc_scantime_table thead th:first-child,
+.o_rtc_scantime_table thead th:nth-child(2),
+.o_rtc_scantime_table tbody td:first-child,
+.o_rtc_scantime_table tbody td:nth-child(2) {
+    text-align: left;
+}
+
+.o_rtc_scantime_table tbody td:first-child {
+    font-weight: 700;
+    color: #111;
+}
+
+.o_rtc_scantime_table tbody tr:hover td {
+    background: #fafafa;
+}
+
+.o_rtc_scantime_na {
+    color: #c8c8c8;
+}
+
+/* ─── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .o_rtc_cap_grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .o_rtc_box_grid,
+    .o_rtc_acc_grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 860px) {
+    .o_rtc_anatomy_layout {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .o_rtc_anatomy_visual {
+        flex: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .o_rtc_page .o_rtc_sec {
+        padding: 60px clamp(16px, 4vw, 28px) 64px;
+    }
+
+    .o_rtc_cap_grid,
+    .o_rtc_box_grid,
+    .o_rtc_acc_grid,
+    .o_rtc_anatomy_lists {
+        grid-template-columns: 1fr;
+    }
+
+    .o_rtc_box_card--wide .o_rtc_box_items {
+        columns: 1;
+    }
+}
