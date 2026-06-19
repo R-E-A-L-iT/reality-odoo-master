@@ -10,6 +10,11 @@
 (function () {
     "use strict";
 
+    // The single observer instance, so the injection routine can pause it while
+    // it edits the DOM (otherwise its own edits re-trigger it — an infinite loop
+    // that freezes the page).
+    var observer = null;
+
     function injectCurrency() {
         var detail = document.querySelector(".o_wsale_product_page #product_detail");
         if (!detail) {
@@ -35,22 +40,37 @@
             return;
         }
 
-        // Idempotent: reuse the badge if it already exists (keeps it correct
-        // across re-renders / pricelist switches).
         var badge = block.querySelector(".o_pp_price_currency");
-        if (badge) {
-            badge.textContent = code;
-            // Keep it sitting right after the current visible price element.
-            if (badge.previousElementSibling !== price) {
-                price.insertAdjacentElement("afterend", badge);
-            }
+
+        // Decide whether anything actually needs to change before touching the
+        // DOM — writing unconditionally (even an identical textContent) is a
+        // mutation that would wake the observer again.
+        var needsText = !badge || badge.textContent !== code;
+        var needsMove = !badge || badge.previousElementSibling !== price;
+        if (!needsText && !needsMove) {
             return;
         }
 
-        badge = document.createElement("span");
-        badge.className = "o_pp_price_currency";
-        badge.textContent = code;
-        price.insertAdjacentElement("afterend", badge);
+        // Pause the observer around our own edits so they don't re-trigger it.
+        if (observer) {
+            observer.disconnect();
+        }
+
+        if (!badge) {
+            badge = document.createElement("span");
+            badge.className = "o_pp_price_currency";
+        }
+        if (needsText) {
+            badge.textContent = code;
+        }
+        if (needsMove) {
+            // insertAdjacentElement moves the node if it's already in the DOM.
+            price.insertAdjacentElement("afterend", badge);
+        }
+
+        if (observer) {
+            observer.observe(detail, { childList: true, subtree: true });
+        }
     }
 
     function start() {
@@ -60,7 +80,8 @@
         // re-renders on pricelist changes; re-run so the badge follows it.
         var detail = document.querySelector(".o_wsale_product_page #product_detail");
         if (detail) {
-            new MutationObserver(injectCurrency).observe(detail, {
+            observer = new MutationObserver(injectCurrency);
+            observer.observe(detail, {
                 childList: true,
                 subtree: true,
             });
