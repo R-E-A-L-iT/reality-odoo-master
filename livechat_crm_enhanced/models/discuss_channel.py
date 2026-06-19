@@ -304,17 +304,6 @@ class DiscussChannel(models.Model):
         
         return Lead  # Empty recordset
 
-    def _create_lead_from_chatbot_fallback(self):
-        """
-        Fallback: directly create a CRM lead when the chatbot 'create_lead'
-        step failed to produce one. Uses the same logic as the manual flow.
-        """
-        self.ensure_one()
-        operator_partner = self.env.ref('base.partner_root', raise_if_not_found=False)
-        if self.livechat_operator_id:
-            operator_partner = self.livechat_operator_id
-        return self._create_lead_from_livechat(operator_partner)
-
     def get_livechat_lead_status(self):
         """
         Return status information about lead creation for this channel

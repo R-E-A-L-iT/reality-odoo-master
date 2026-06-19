@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, api, _
+from odoo import models, _
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -10,207 +10,215 @@ class ChatbotScriptStep(models.Model):
     _inherit = 'chatbot.script.step'
 
     def _process_step_create_lead(self, discuss_channel):
+        """
+        Override crm_livechat's _process_step_create_lead.
+
+        The core Odoo method creates a lead but does NOT return it, so we
+        replicate the creation logic here to keep a reference, then enrich
+        the lead with the full Q&A summary, transcript, and configured
+        default salesperson.
+        """
         _logger.info(
-            "[LiveChat CRM] _process_step_create_lead CALLED — channel id=%s name=%s step id=%s",
-            discuss_channel.id, discuss_channel.name, self.id,
+            "[LiveChat CRM] _process_step_create_lead — channel id=%s name=%s step_type=%s",
+            discuss_channel.id, discuss_channel.name, self.step_type,
         )
 
-        # --- Call original Odoo lead creation ---
+        # --- Replicate crm_livechat lead-creation logic (without calling super)
+        # so we hold a reference to the created record.
         try:
-            lead = super()._process_step_create_lead(discuss_channel)
+            customer_values = self._chatbot_prepare_customer_values(
+                discuss_channel, create_partner=False, update_partner=True,
+            )
             _logger.info(
-                "[LiveChat CRM] super()._process_step_create_lead returned: %s (id=%s)",
-                lead, lead.id if lead else None,
+                "[LiveChat CRM] customer_values — email=%s phone=%s",
+                customer_values.get('email'), customer_values.get('phone'),
             )
         except Exception as e:
             _logger.error(
-                "[LiveChat CRM] super()._process_step_create_lead raised exception for channel %s: %s",
+                "[LiveChat CRM] _chatbot_prepare_customer_values failed for channel %s: %s",
                 discuss_channel.id, e,
             )
-            lead = None
+            return False
 
-        # --- Verify lead was created; retry if not ---
-        if not lead:
-            _logger.warning(
-                "[LiveChat CRM] No lead returned by super() for channel %s — attempting fallback creation.",
-                discuss_channel.id,
+        if self.env.user._is_public():
+            create_values = {
+                'email_from': customer_values.get('email'),
+                'phone': customer_values.get('phone'),
+            }
+            _logger.info("[LiveChat CRM] Public user — using email/phone as lead contact.")
+        else:
+            partner = self.env.user.partner_id
+            create_values = {
+                'partner_id': partner.id,
+                'company_id': partner.company_id.id,
+            }
+            _logger.info(
+                "[LiveChat CRM] Logged-in user — partner=%s id=%s",
+                partner.name, partner.id,
             )
-            try:
-                lead = discuss_channel._create_lead_from_chatbot_fallback()
-                _logger.info(
-                    "[LiveChat CRM] Fallback lead creation result: %s (id=%s)",
-                    lead, lead.id if lead else None,
-                )
-            except Exception as e:
-                _logger.error(
-                    "[LiveChat CRM] Fallback lead creation FAILED for channel %s: %s",
-                    discuss_channel.id, e,
-                )
-                return lead
 
-        if not lead:
+        # Base lead values from crm_livechat (includes channel history in description)
+        try:
+            lead_vals = self._chatbot_crm_prepare_lead_values(
+                discuss_channel, customer_values.get('description', ''),
+            )
+            _logger.info(
+                "[LiveChat CRM] Base lead values: name=%s team_id=%s type=%s",
+                lead_vals.get('name'), lead_vals.get('team_id'), lead_vals.get('type'),
+            )
+        except Exception as e:
             _logger.error(
-                "[LiveChat CRM] Lead could NOT be created for channel %s after both attempts. "
-                "Channel type=%s, partners=%s",
-                discuss_channel.id,
-                discuss_channel.channel_type,
-                discuss_channel.channel_partner_ids.mapped('name'),
+                "[LiveChat CRM] _chatbot_crm_prepare_lead_values failed for channel %s: %s",
+                discuss_channel.id, e,
             )
-            return lead
+            return False
 
-        _logger.info(
-            "[LiveChat CRM] Lead successfully obtained — id=%s name='%s' user_id=%s",
-            lead.id, lead.name, lead.user_id.name if lead.user_id else 'None',
-        )
+        create_values.update(lead_vals)
 
-        # --- Link channel to lead if not already linked ---
-        if not discuss_channel.livechat_lead_id:
+        # --- Apply configured default salesperson (overrides the False set by crm_livechat)
+        default_user_id = self._get_default_lead_user_id()
+        default_team_id = self._get_default_lead_team_id()
+        if default_user_id:
+            create_values['user_id'] = default_user_id
+            _logger.info("[LiveChat CRM] Applying default user_id=%s", default_user_id)
+        if default_team_id:
+            create_values['team_id'] = default_team_id
+            _logger.info("[LiveChat CRM] Applying default team_id=%s", default_team_id)
+
+        # --- Create the lead
+        try:
+            lead = self.env['crm.lead'].create(create_values)
+            _logger.info(
+                "[LiveChat CRM] Lead created — id=%s name='%s' user_id=%s",
+                lead.id, lead.name, lead.user_id.name if lead.user_id else 'None',
+            )
+        except Exception as e:
+            _logger.error(
+                "[LiveChat CRM] crm.lead.create failed for channel %s: %s",
+                discuss_channel.id, e,
+            )
+            return False
+
+        # --- Link channel to lead
+        try:
             discuss_channel.livechat_lead_id = lead.id
             _logger.info(
-                "[LiveChat CRM] Linked channel %s to lead %s", discuss_channel.id, lead.id
+                "[LiveChat CRM] Linked channel %s → lead %s", discuss_channel.id, lead.id,
+            )
+        except Exception as e:
+            _logger.warning(
+                "[LiveChat CRM] Could not link channel to lead: %s", e,
             )
 
-        # --- Build structured Q&A summary ---
-        _logger.info("[LiveChat CRM] Building Q&A summary for channel %s", discuss_channel.id)
-        qa_summary = self._get_chatbot_qa_summary(discuss_channel)
-        _logger.info(
-            "[LiveChat CRM] Q&A summary built (%d chars): %s",
-            len(qa_summary), qa_summary[:200] if qa_summary else '(empty)',
-        )
+        # --- Build Q&A summary from chatbot messages and append to description
+        try:
+            qa_summary = self._get_chatbot_qa_summary(discuss_channel)
+            _logger.info(
+                "[LiveChat CRM] Q&A summary (%d chars): %s",
+                len(qa_summary), qa_summary[:300] if qa_summary else '(empty)',
+            )
+            if qa_summary:
+                existing_desc = lead.description or ''
+                separator = '\n\n' if existing_desc else ''
+                lead.description = existing_desc + separator + '\n\n--- Chatbot Answers ---\n' + qa_summary
+        except Exception as e:
+            _logger.warning(
+                "[LiveChat CRM] Could not build Q&A summary for lead %s: %s", lead.id, e,
+            )
 
-        # --- Update lead description with Q&A summary ---
-        if qa_summary:
-            existing_desc = lead.description or ''
-            separator = '\n\n' if existing_desc else ''
-            lead.description = existing_desc + separator + qa_summary
-            _logger.info("[LiveChat CRM] Updated lead %s description with Q&A summary.", lead.id)
-
-        # --- Post full transcript as internal chatter note ---
+        # --- Post full transcript as internal chatter note
         try:
             transcript = self._get_chatbot_transcript(discuss_channel)
-            _logger.info(
-                "[LiveChat CRM] Transcript built (%d chars) for channel %s",
-                len(transcript), discuss_channel.id,
-            )
             if transcript:
                 lead.message_post(
                     body=_(
                         '<strong>Chatbot Conversation Summary</strong><br/><br/>'
                         '%s'
                         '<br/><br/><strong>Full Conversation Transcript:</strong><br/>%s'
-                    ) % (qa_summary.replace('\n', '<br/>'), transcript),
+                    ) % (
+                        (qa_summary or '').replace('\n', '<br/>'),
+                        transcript,
+                    ),
                     message_type='comment',
                     subtype_xmlid='mail.mt_note',
                 )
                 _logger.info(
-                    "[LiveChat CRM] Posted transcript note to lead %s chatter.", lead.id
+                    "[LiveChat CRM] Posted transcript note to lead %s chatter.", lead.id,
                 )
         except Exception as e:
             _logger.warning(
-                "[LiveChat CRM] Could not post transcript to lead %s: %s", lead.id, e
-            )
-
-        # --- Assign configured default salesperson ---
-        try:
-            default_user_param = self.env['ir.config_parameter'].sudo().get_param(
-                'livechat_crm_enhanced.default_lead_user_id'
-            )
-            _logger.info(
-                "[LiveChat CRM] Config param default_lead_user_id = %s", default_user_param
-            )
-            if default_user_param:
-                default_user_id = int(default_user_param)
-                if default_user_id:
-                    lead.write({'user_id': default_user_id})
-                    _logger.info(
-                        "[LiveChat CRM] Assigned user_id=%s to lead %s", default_user_id, lead.id
-                    )
-
-            default_team_param = self.env['ir.config_parameter'].sudo().get_param(
-                'livechat_crm_enhanced.default_lead_team_id'
-            )
-            _logger.info(
-                "[LiveChat CRM] Config param default_lead_team_id = %s", default_team_param
-            )
-            if default_team_param:
-                default_team_id = int(default_team_param)
-                if default_team_id:
-                    lead.write({'team_id': default_team_id})
-                    _logger.info(
-                        "[LiveChat CRM] Assigned team_id=%s to lead %s", default_team_id, lead.id
-                    )
-        except Exception as e:
-            _logger.warning(
-                "[LiveChat CRM] Could not assign default salesperson to lead %s: %s", lead.id, e
+                "[LiveChat CRM] Could not post transcript to lead %s: %s", lead.id, e,
             )
 
         _logger.info(
-            "[LiveChat CRM] _process_step_create_lead COMPLETE for channel %s — lead id=%s",
-            discuss_channel.id, lead.id,
+            "[LiveChat CRM] _process_step_create_lead COMPLETE — lead id=%s", lead.id,
         )
         return lead
 
+    # ------------------------------------------------------------------
+    # Helpers
+    # ------------------------------------------------------------------
+
+    def _get_default_lead_user_id(self):
+        try:
+            val = self.env['ir.config_parameter'].sudo().get_param(
+                'livechat_crm_enhanced.default_lead_user_id'
+            )
+            return int(val) if val else False
+        except Exception:
+            return False
+
+    def _get_default_lead_team_id(self):
+        try:
+            val = self.env['ir.config_parameter'].sudo().get_param(
+                'livechat_crm_enhanced.default_lead_team_id'
+            )
+            return int(val) if val else False
+        except Exception:
+            return False
+
     def _get_chatbot_qa_summary(self, discuss_channel):
         """
-        Build a structured key-value summary from chatbot Q&A messages.
-        Pairs each chatbot question with the customer's answer.
+        Pair each chatbot question with the customer's typed answer.
+        Uses chatbot.message records which store the step + user raw answer.
         """
         try:
             from odoo.tools import html2plaintext
-            messages = discuss_channel.message_ids.sorted('id')
-            _logger.info(
-                "[LiveChat CRM] _get_chatbot_qa_summary — %d messages in channel %s",
-                len(messages), discuss_channel.id,
-            )
             lines = []
-            last_question = None
-
-            for msg in messages:
-                if not msg.body:
+            # chatbot.message links each step's message to the user's raw answer
+            chatbot_messages = discuss_channel.chatbot_message_ids.sorted('id')
+            _logger.info(
+                "[LiveChat CRM] chatbot_message_ids count=%d for channel %s",
+                len(chatbot_messages), discuss_channel.id,
+            )
+            for cm in chatbot_messages:
+                step = cm.script_step_id
+                if not step:
                     continue
-                plain = html2plaintext(msg.body).strip()
-                if not plain:
+                question = html2plaintext(step.message or '').strip()
+                if not question:
                     continue
-
-                # Determine chatbot operator partner
-                bot_partner = None
-                if hasattr(discuss_channel, 'chatbot_current_step_id') and \
-                        discuss_channel.chatbot_current_step_id and \
-                        discuss_channel.chatbot_current_step_id.chatbot_script_id:
-                    bot_partner = discuss_channel.chatbot_current_step_id.chatbot_script_id.operator_partner_id
-
-                is_bot = bot_partner and msg.author_id == bot_partner
-
-                # Fallback: system/no-author messages treated as bot
-                if not is_bot and not msg.author_id:
-                    is_bot = True
-
-                if is_bot:
-                    last_question = plain
-                else:
-                    if last_question:
-                        lines.append('%s: %s' % (last_question, plain))
-                        last_question = None
-                    else:
-                        lines.append(plain)
+                # user_raw_answer is set for question_email / question_phone steps
+                if cm.user_raw_answer:
+                    answer = html2plaintext(cm.user_raw_answer).strip()
+                    lines.append('%s: %s' % (question, answer))
+                elif step.step_type == 'question_selection' and cm.user_script_answer_id:
+                    lines.append('%s: %s' % (question, cm.user_script_answer_id.name))
 
             return '\n'.join(lines)
         except Exception as e:
             _logger.warning(
-                "[LiveChat CRM] _get_chatbot_qa_summary failed for channel %s: %s",
+                "[LiveChat CRM] _get_chatbot_qa_summary error for channel %s: %s",
                 discuss_channel.id, e,
             )
             return ''
 
     def _get_chatbot_transcript(self, discuss_channel):
-        """
-        Return an HTML transcript of the full conversation, oldest first.
-        """
+        """Full plain-text transcript, oldest message first."""
         try:
             from odoo.tools import html2plaintext
-            messages = discuss_channel.message_ids.sorted('id')
             lines = []
-            for msg in messages:
+            for msg in discuss_channel.message_ids.sorted('id'):
                 if not msg.body:
                     continue
                 plain = html2plaintext(msg.body).strip()
@@ -222,7 +230,7 @@ class ChatbotScriptStep(models.Model):
             return '<br/>'.join(lines)
         except Exception as e:
             _logger.warning(
-                "[LiveChat CRM] _get_chatbot_transcript failed for channel %s: %s",
+                "[LiveChat CRM] _get_chatbot_transcript error for channel %s: %s",
                 discuss_channel.id, e,
             )
             return ''
