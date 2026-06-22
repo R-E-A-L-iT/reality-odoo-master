@@ -14,6 +14,10 @@
     margin-left: calc(50% - 50vw);
     padding: 84px clamp(24px, 5vw, 80px) 96px;
     background: #ffffff;
+    /* Sit above the fixed 3D scroll-model canvas (z-index 2) so the scanner
+       model never bleeds in front of these sections. */
+    position: relative;
+    z-index: 3;
 }
 
 .o_rtc_page .o_rtc_sec--alt {
