@@ -940,7 +940,7 @@
 /* ─── Core technology section ───────────────────────────────────────────────── */
 .o_rtc_tech_section {
     overflow: hidden;
-    padding: 88px clamp(20px, 5vw, 64px) 220px;
+    padding: 88px clamp(20px, 5vw, 64px) 150px;
     color: #fff !important;
     /* Sit above the fixed scroll-model canvas (z-index 2). */
     position: relative;
@@ -969,21 +969,21 @@
         );
 }
 
-/* White fade only at the very bottom, sitting inside the 220px bottom padding
-   so it never reaches the cards. */
+/* White fade at the bottom, sitting inside the 150px bottom padding so it never
+   reaches the (translucent) cards. A single smooth two-stop gradient avoids the
+   visible band the old multi-stop version produced. */
 .o_rtc_tech_section::after {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 200px;
+    height: 130px;
     z-index: 1;
     pointer-events: none;
     background: linear-gradient(
         180deg,
-        rgba(255,255,255,0) 0%,
-        #ffffff 78%,
+        rgba(255, 255, 255, 0) 0%,
         #ffffff 100%
     );
 }
