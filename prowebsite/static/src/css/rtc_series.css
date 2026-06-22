@@ -271,6 +271,12 @@
     object-fit: contain;
 }
 
+/* When only a single drawing remains, let it grow so it doesn't look stranded */
+.o_rtc_specs_wireframe_img:only-child {
+    flex: 0 1 560px;
+    max-width: 560px;
+}
+
 /* ── Responsive: tablet ── */
 @media (max-width: 991px) {
     .o_rtc_specs_layout {
@@ -940,7 +946,7 @@
 /* ─── Core technology section ───────────────────────────────────────────────── */
 .o_rtc_tech_section {
     overflow: hidden;
-    padding: 88px clamp(20px, 5vw, 64px) 150px;
+    padding: 88px clamp(20px, 5vw, 64px) 190px;
     color: #fff !important;
     /* Sit above the fixed scroll-model canvas (z-index 2). */
     position: relative;
@@ -969,23 +975,33 @@
         );
 }
 
-/* White fade at the bottom, sitting inside the 150px bottom padding so it never
-   reaches the (translucent) cards. A single smooth two-stop gradient avoids the
-   visible band the old multi-stop version produced. */
+/* Bottom transition to the white section. Two layers, kept inside the 190px
+   bottom padding so it never reaches the (translucent) cards:
+     • a wide radial "dome" so white rises higher in the centre — a soft curve
+       instead of a hard horizontal line;
+     • a gentle linear base that guarantees the very bottom (incl. corners) is
+       solid white so it meets the next white section seamlessly. */
 .o_rtc_tech_section::after {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 130px;
+    height: 170px;
     z-index: 1;
     pointer-events: none;
-    background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0) 0%,
-        #ffffff 100%
-    );
+    background:
+        radial-gradient(
+            135% 170px at 50% 118%,
+            #ffffff 0%,
+            #ffffff 40%,
+            rgba(255, 255, 255, 0) 74%
+        ),
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0) 48%,
+            #ffffff 100%
+        );
 }
 
 .o_rtc_tech_inner {
