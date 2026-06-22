@@ -75,6 +75,9 @@ class ChatbotScriptStep(models.Model):
 
         create_values.update(lead_vals)
 
+        # Always create as opportunity (not a lead requiring qualification)
+        create_values['type'] = 'opportunity'
+
         # --- Apply configured default salesperson (overrides the False set by crm_livechat)
         default_user_id = self._get_default_lead_user_id()
         default_team_id = self._get_default_lead_team_id()
