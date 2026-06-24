@@ -130,6 +130,17 @@
                             </div>
                         </t>
 
+                        <!-- Add New Address trigger -->
+                        <div class="addr_card add_card" id="new-address-trigger-invoice"
+                             style="cursor:pointer; min-height:110px;">
+                            <div class="add_inner">
+                                <i class="fa fa-plus" style="font-size:1.3rem; opacity:0.75;"/>
+                                <span class="add_label" t-if="language == 'fr_CA'">Ajouter une adresse</span>
+                                <span class="add_label" t-elif="language == 'es_ES'">Agregar dirección</span>
+                                <span class="add_label" t-else="">Add Address</span>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
@@ -244,9 +255,99 @@
                             </div>
                         </t>
 
+                        <!-- Add New Address trigger -->
+                        <div class="addr_card add_card" id="new-address-trigger-delivery"
+                             style="cursor:pointer; min-height:110px;">
+                            <div class="add_inner">
+                                <i class="fa fa-plus" style="font-size:1.3rem; opacity:0.75;"/>
+                                <span class="add_label" t-if="language == 'fr_CA'">Ajouter une adresse</span>
+                                <span class="add_label" t-elif="language == 'es_ES'">Agregar dirección</span>
+                                <span class="add_label" t-else="">Add Address</span>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
+
+                <!-- ===== ADD NEW ADDRESS MODAL ===== -->
+                <div id="addr-new-modal" style="display:none;">
+                    <div id="addr-new-modal-backdrop"/>
+                    <div id="addr-new-modal-box">
+                        <div class="addr_editor" style="margin:0; border:none; padding:0; background:transparent;">
+                            <div class="cols">
+                                <fieldset style="min-width:100%; flex:1 1 100%;">
+                                    <legend t-if="language == 'fr_CA'">Nouvelle adresse</legend>
+                                    <legend t-elif="language == 'es_ES'">Nueva dirección</legend>
+                                    <legend t-else="">Add New Address</legend>
+
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Nom</label>
+                                        <label t-elif="language == 'es_ES'">Nombre</label>
+                                        <label t-else="">Name</label>
+                                        <input type="text" id="new-modal-name" placeholder=""/>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Rue</label>
+                                        <label t-elif="language == 'es_ES'">Calle</label>
+                                        <label t-else="">Street</label>
+                                        <input type="text" id="new-modal-street" placeholder=""/>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Ville</label>
+                                        <label t-elif="language == 'es_ES'">Ciudad</label>
+                                        <label t-else="">City</label>
+                                        <input type="text" id="new-modal-city" placeholder=""/>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Pays</label>
+                                        <label t-elif="language == 'es_ES'">País</label>
+                                        <label t-else="">Country</label>
+                                        <select id="new-modal-country" class="form-select form-select-sm">
+                                            <option value="">— Select —</option>
+                                            <t t-foreach="all_countries" t-as="c">
+                                                <option t-att-value="c.id" t-esc="c.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">État/Province</label>
+                                        <label t-elif="language == 'es_ES'">Estado</label>
+                                        <label t-else="">State/Province</label>
+                                        <select id="new-modal-state" class="form-select form-select-sm">
+                                            <option value="">— Select —</option>
+                                            <t t-foreach="all_states" t-as="s">
+                                                <option t-att-value="s.id"
+                                                        t-att-data-country-id="s.country_id.id"
+                                                        t-esc="s.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Code postal</label>
+                                        <label t-elif="language == 'es_ES'">Código postal</label>
+                                        <label t-else="">Zip/Postal Code</label>
+                                        <input type="text" id="new-modal-zip" placeholder=""/>
+                                    </div>
+
+                                    <div class="actions">
+                                        <button type="button" id="save-new-modal" class="btn btn-primary btn-sm">
+                                            <t t-if="language == 'fr_CA'">Enregistrer</t>
+                                            <t t-elif="language == 'es_ES'">Guardar</t>
+                                            <t t-else="">Save</t>
+                                        </button>
+                                        <button type="button" id="cancel-new-modal" class="btn btn-secondary btn-sm ms-2">
+                                            <t t-if="language == 'fr_CA'">Annuler</t>
+                                            <t t-elif="language == 'es_ES'">Cancelar</t>
+                                            <t t-else="">Cancel</t>
+                                        </button>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ===== END ADD NEW ADDRESS MODAL ===== -->
 
                 <!-- ===== SHARED EDIT MODAL ===== -->
                 <div id="addr-edit-modal" style="display:none;">

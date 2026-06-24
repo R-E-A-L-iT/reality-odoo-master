@@ -53,6 +53,52 @@ class AddressSelectorPortal(http.Controller):
         return {"success": True}
 
     @http.route(
+        ["/my/orders/<int:order_id>/create_address"],
+        type="json",
+        auth="public",
+        website=True,
+    )
+    def create_address(
+        self, order_id, name=None, street=None, city=None,
+        state=None, zip=None, country=None, access_token=None, **post
+    ):
+        order = self._get_order(order_id, access_token)
+        if not order:
+            return {"error": "Access denied"}
+
+        base_vals = {
+            "parent_id": order.partner_id.id,
+            "name": name or order.partner_id.name,
+            "street": street,
+            "city": city,
+            "zip": zip,
+        }
+        if country:
+            base_vals["country_id"] = int(country)
+        if state:
+            base_vals["state_id"] = int(state)
+
+        inv_partner = request.env["res.partner"].sudo().create({**base_vals, "type": "invoice"})
+        del_partner = request.env["res.partner"].sudo().create({**base_vals, "type": "delivery"})
+        order.sudo().write({
+            "partner_invoice_id":  inv_partner.id,
+            "partner_shipping_id": del_partner.id,
+        })
+
+        def _fmt(p):
+            return {
+                "partner_id": p.id,
+                "name":    p.name or "",
+                "street":  p.street or "",
+                "city":    p.city or "",
+                "state":   p.state_id.name or "",
+                "zip":     p.zip or "",
+                "country": p.country_id.name or "",
+            }
+
+        return {"success": True, "invoice": _fmt(inv_partner), "delivery": _fmt(del_partner)}
+
+    @http.route(
         ["/my/orders/<int:order_id>/create_invoice_address"],
         type="json",
         auth="public",
