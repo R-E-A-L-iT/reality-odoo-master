@@ -53,6 +53,52 @@ class AddressSelectorPortal(http.Controller):
         return {"success": True}
 
     @http.route(
+        ["/my/orders/<int:order_id>/create_typed_address"],
+        type="json",
+        auth="public",
+        website=True,
+    )
+    def create_typed_address(
+        self, order_id, address_type=None, name=None, street=None, city=None,
+        state=None, zip=None, country=None, access_token=None, **post
+    ):
+        order = self._get_order(order_id, access_token)
+        if not order:
+            return {"error": "Access denied"}
+        if address_type not in ("invoice", "delivery"):
+            return {"error": "Invalid address_type"}
+
+        vals = {
+            "type": address_type,
+            "parent_id": order.partner_id.id,
+            "name": name or order.partner_id.name,
+            "street": street,
+            "city": city,
+            "zip": zip,
+        }
+        if country:
+            vals["country_id"] = int(country)
+        if state:
+            vals["state_id"] = int(state)
+
+        partner = request.env["res.partner"].sudo().create(vals)
+        if address_type == "invoice":
+            order.sudo().partner_invoice_id = partner.id
+        else:
+            order.sudo().partner_shipping_id = partner.id
+
+        return {
+            "success": True,
+            "partner_id": partner.id,
+            "name":    partner.name or "",
+            "street":  partner.street or "",
+            "city":    partner.city or "",
+            "state":   partner.state_id.name or "",
+            "zip":     partner.zip or "",
+            "country": partner.country_id.name or "",
+        }
+
+    @http.route(
         ["/my/orders/<int:order_id>/create_address"],
         type="json",
         auth="public",

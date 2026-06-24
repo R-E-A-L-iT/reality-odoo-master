@@ -77,11 +77,21 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
 
     _onNewAddressTrigger(ev) {
         ev.stopImmediatePropagation();
+        const type = ev.currentTarget.id === "new-address-trigger-invoice" ? "invoice" : "delivery";
+        this._setVal("new-modal-type", type);
+
+        // Update modal legend to reflect which section
+        const legend = document.getElementById("new-modal-legend");
+        if (legend) {
+            legend.textContent = type === "invoice" ? "New Invoice Address" : "New Delivery Address";
+        }
+
         // Clear all fields
         ["name", "street", "city", "zip"].forEach(f => this._setVal(`new-modal-${f}`, ""));
         this._setVal("new-modal-country", "");
         this._setVal("new-modal-state",   "");
         this._filterStatesByCountry("new-modal-country", "new-modal-state");
+
         const modal = document.getElementById("addr-new-modal");
         if (modal) modal.style.display = "flex";
     },
@@ -92,10 +102,14 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     },
 
     async _onSaveNewModal() {
+        const type = document.getElementById("new-modal-type")?.value;
+        if (!type) return;
+
         const result = await jsonrpc(
-            "/my/orders/" + this.orderDetail.orderId + "/create_address",
+            "/my/orders/" + this.orderDetail.orderId + "/create_typed_address",
             {
                 access_token: this.orderDetail.token,
+                address_type: type,
                 name:    document.getElementById("new-modal-name")?.value    || "",
                 street:  document.getElementById("new-modal-street")?.value  || "",
                 city:    document.getElementById("new-modal-city")?.value    || "",
@@ -106,32 +120,24 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         );
 
         if (result && result.success) {
-            const invContainer = document.getElementById("invoice-address-cards");
-            const delContainer = document.getElementById("delivery-address-cards");
+            const containerId = type === "invoice" ? "invoice-address-cards" : "delivery-address-cards";
+            const triggerId   = type === "invoice" ? "new-address-trigger-invoice" : "new-address-trigger-delivery";
+            const container   = document.getElementById(containerId);
+            const trigger     = document.getElementById(triggerId);
 
-            // Remove default card from each container (partner-id matches data-default-partner-id)
-            [invContainer, delContainer].forEach(container => {
-                if (!container) return;
+            if (container) {
+                // Remove default card if it's showing
                 const defaultId = container.dataset.defaultPartnerId;
                 container.querySelectorAll(".addr_card[data-partner-id]").forEach(c => {
                     if (c.dataset.partnerId == defaultId) c.remove();
                 });
-                // Clear current highlight
+                // Clear current highlight from existing cards
                 container.querySelectorAll(".addr_card").forEach(c => c.classList.remove("current"));
-            });
+            }
 
-            // Insert new cards before the trigger cards
-            const invTrigger = document.getElementById("new-address-trigger-invoice");
-            const delTrigger = document.getElementById("new-address-trigger-delivery");
-
-            const invCard = this._buildAddressCard(result.invoice, "invoice");
-            const delCard = this._buildAddressCard(result.delivery, "delivery");
-
-            if (invContainer && invTrigger) invContainer.insertBefore(invCard, invTrigger);
-            else if (invContainer) invContainer.appendChild(invCard);
-
-            if (delContainer && delTrigger) delContainer.insertBefore(delCard, delTrigger);
-            else if (delContainer) delContainer.appendChild(delCard);
+            const newCard = this._buildAddressCard(result, type);
+            if (container && trigger) container.insertBefore(newCard, trigger);
+            else if (container) container.appendChild(newCard);
 
             this._onCloseNewModal();
         }

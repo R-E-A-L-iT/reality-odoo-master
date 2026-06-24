@@ -274,12 +274,11 @@
                 <div id="addr-new-modal" style="display:none;">
                     <div id="addr-new-modal-backdrop"/>
                     <div id="addr-new-modal-box">
+                        <input type="hidden" id="new-modal-type"/>
                         <div class="addr_editor" style="margin:0; border:none; padding:0; background:transparent;">
                             <div class="cols">
                                 <fieldset style="min-width:100%; flex:1 1 100%;">
-                                    <legend t-if="language == 'fr_CA'">Nouvelle adresse</legend>
-                                    <legend t-elif="language == 'es_ES'">Nueva dirección</legend>
-                                    <legend t-else="">Add New Address</legend>
+                                    <legend id="new-modal-legend">Add New Address</legend>
 
                                     <div class="row">
                                         <label t-if="language == 'fr_CA'">Nom</label>
