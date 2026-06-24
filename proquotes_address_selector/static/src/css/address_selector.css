@@ -9,21 +9,31 @@
     overflow-x: auto;
     padding-bottom: 8px;
     scroll-snap-type: x mandatory;
-    scrollbar-width: thin;
-    scrollbar-color: #3a4352 transparent;
+    scrollbar-width: auto;
+    scrollbar-color: #db0d0d #1a1e25;
 }
 #invoice-address-cards::-webkit-scrollbar,
 #delivery-address-cards::-webkit-scrollbar {
-    height: 5px;
+    height: 6px;
 }
 #invoice-address-cards::-webkit-scrollbar-track,
 #delivery-address-cards::-webkit-scrollbar-track {
-    background: transparent;
+    background: #1a1e25;
+    border-radius: 999px;
 }
 #invoice-address-cards::-webkit-scrollbar-thumb,
 #delivery-address-cards::-webkit-scrollbar-thumb {
-    background: #3a4352;
+    background: #db0d0d;
     border-radius: 999px;
+}
+
+/* ── Explicit fixed width for Add Address card (prevents it sticking) ── */
+#invoice-address-cards .addr_card.add_card,
+#delivery-address-cards .addr_card.add_card {
+    flex: 0 0 270px;
+    min-width: 270px;
+    max-width: 270px;
+    scroll-snap-align: start;
 }
 
 /* ── Card padding & layout ── */

@@ -30,6 +30,14 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     async start() {
         await this._super(...arguments);
         this.orderDetail = this.$el.find("table#sales_order_table").data();
+
+        // Move modals to <body> so position:fixed is always viewport-relative.
+        // Odoo portal applies CSS transform on hover which breaks fixed positioning
+        // for elements inside the portal content tree.
+        ["addr-edit-modal", "addr-new-modal"].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) document.body.appendChild(el);
+        });
     },
 
     // ── Unified section click → card selection ────────────────────────────────
