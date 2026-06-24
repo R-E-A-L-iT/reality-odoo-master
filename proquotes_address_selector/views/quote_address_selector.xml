@@ -348,88 +348,83 @@
                 </div>
                 <!-- ===== END ADD NEW ADDRESS MODAL ===== -->
 
-                <!-- ===== SHARED EDIT MODAL ===== -->
-                <div id="addr-edit-modal" style="display:none;">
-                    <div id="addr-edit-modal-backdrop"/>
-                    <div id="addr-edit-modal-box">
-                        <input type="hidden" id="edit-modal-partner-id"/>
-                        <input type="hidden" id="edit-modal-address-type"/>
+                <!-- ===== SHARED INLINE EDIT FORM (JS moves this into the correct section) ===== -->
+                <div class="addresses" id="addr-inline-editor" style="display:none;">
+                    <div class="addr_editor">
+                        <input type="hidden" id="inline-edit-partner-id"/>
+                        <input type="hidden" id="inline-edit-address-type"/>
+                        <div class="cols">
+                            <fieldset>
+                                <legend id="inline-edit-legend" t-if="language == 'fr_CA'">Modifier l'adresse</legend>
+                                <legend id="inline-edit-legend" t-elif="language == 'es_ES'">Editar dirección</legend>
+                                <legend id="inline-edit-legend" t-else="">Edit Address</legend>
 
-                        <div class="addr_editor" style="margin:0; border:none; padding:0; background:transparent;">
-                            <div class="cols">
-                                <fieldset style="min-width:100%; flex:1 1 100%;">
-                                    <legend id="edit-modal-legend" t-if="language == 'fr_CA'">Modifier l'adresse</legend>
-                                    <legend id="edit-modal-legend" t-elif="language == 'es_ES'">Editar dirección</legend>
-                                    <legend id="edit-modal-legend" t-else="">Edit Address</legend>
+                                <div class="row">
+                                    <label t-if="language == 'fr_CA'">Nom</label>
+                                    <label t-elif="language == 'es_ES'">Nombre</label>
+                                    <label t-else="">Name</label>
+                                    <input type="text" id="inline-edit-name" placeholder=""/>
+                                </div>
+                                <div class="row">
+                                    <label t-if="language == 'fr_CA'">Rue</label>
+                                    <label t-elif="language == 'es_ES'">Calle</label>
+                                    <label t-else="">Street</label>
+                                    <input type="text" id="inline-edit-street" placeholder=""/>
+                                </div>
+                                <div class="row">
+                                    <label t-if="language == 'fr_CA'">Ville</label>
+                                    <label t-elif="language == 'es_ES'">Ciudad</label>
+                                    <label t-else="">City</label>
+                                    <input type="text" id="inline-edit-city" placeholder=""/>
+                                </div>
+                                <div class="row">
+                                    <label t-if="language == 'fr_CA'">Pays</label>
+                                    <label t-elif="language == 'es_ES'">País</label>
+                                    <label t-else="">Country</label>
+                                    <select id="inline-edit-country" class="form-select form-select-sm">
+                                        <option value="">— Select —</option>
+                                        <t t-foreach="all_countries" t-as="c">
+                                            <option t-att-value="c.id" t-esc="c.name"/>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <label t-if="language == 'fr_CA'">État/Province</label>
+                                    <label t-elif="language == 'es_ES'">Estado</label>
+                                    <label t-else="">State/Province</label>
+                                    <select id="inline-edit-state" class="form-select form-select-sm">
+                                        <option value="">— Select —</option>
+                                        <t t-foreach="all_states" t-as="s">
+                                            <option t-att-value="s.id"
+                                                    t-att-data-country-id="s.country_id.id"
+                                                    t-esc="s.name"/>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <label t-if="language == 'fr_CA'">Code postal</label>
+                                    <label t-elif="language == 'es_ES'">Código postal</label>
+                                    <label t-else="">Zip/Postal Code</label>
+                                    <input type="text" id="inline-edit-zip" placeholder=""/>
+                                </div>
 
-                                    <div class="row">
-                                        <label t-if="language == 'fr_CA'">Nom</label>
-                                        <label t-elif="language == 'es_ES'">Nombre</label>
-                                        <label t-else="">Name</label>
-                                        <input type="text" id="edit-modal-name" placeholder=""/>
-                                    </div>
-                                    <div class="row">
-                                        <label t-if="language == 'fr_CA'">Rue</label>
-                                        <label t-elif="language == 'es_ES'">Calle</label>
-                                        <label t-else="">Street</label>
-                                        <input type="text" id="edit-modal-street" placeholder=""/>
-                                    </div>
-                                    <div class="row">
-                                        <label t-if="language == 'fr_CA'">Ville</label>
-                                        <label t-elif="language == 'es_ES'">Ciudad</label>
-                                        <label t-else="">City</label>
-                                        <input type="text" id="edit-modal-city" placeholder=""/>
-                                    </div>
-                                    <div class="row">
-                                        <label t-if="language == 'fr_CA'">Pays</label>
-                                        <label t-elif="language == 'es_ES'">País</label>
-                                        <label t-else="">Country</label>
-                                        <select id="edit-modal-country" class="form-select form-select-sm">
-                                            <option value="">— Select —</option>
-                                            <t t-foreach="all_countries" t-as="c">
-                                                <option t-att-value="c.id" t-esc="c.name"/>
-                                            </t>
-                                        </select>
-                                    </div>
-                                    <div class="row">
-                                        <label t-if="language == 'fr_CA'">État/Province</label>
-                                        <label t-elif="language == 'es_ES'">Estado</label>
-                                        <label t-else="">State/Province</label>
-                                        <select id="edit-modal-state" class="form-select form-select-sm">
-                                            <option value="">— Select —</option>
-                                            <t t-foreach="all_states" t-as="s">
-                                                <option t-att-value="s.id"
-                                                        t-att-data-country-id="s.country_id.id"
-                                                        t-esc="s.name"/>
-                                            </t>
-                                        </select>
-                                    </div>
-                                    <div class="row">
-                                        <label t-if="language == 'fr_CA'">Code postal</label>
-                                        <label t-elif="language == 'es_ES'">Código postal</label>
-                                        <label t-else="">Zip/Postal Code</label>
-                                        <input type="text" id="edit-modal-zip" placeholder=""/>
-                                    </div>
-
-                                    <div class="actions">
-                                        <button type="button" id="save-edit-modal" class="btn btn-primary btn-sm">
-                                            <t t-if="language == 'fr_CA'">Enregistrer</t>
-                                            <t t-elif="language == 'es_ES'">Guardar</t>
-                                            <t t-else="">Save</t>
-                                        </button>
-                                        <button type="button" id="cancel-edit-modal" class="btn btn-secondary btn-sm ms-2">
-                                            <t t-if="language == 'fr_CA'">Annuler</t>
-                                            <t t-elif="language == 'es_ES'">Cancelar</t>
-                                            <t t-else="">Cancel</t>
-                                        </button>
-                                    </div>
-                                </fieldset>
-                            </div>
+                                <div class="actions">
+                                    <button type="button" id="save-inline-edit" class="btn btn-primary btn-sm">
+                                        <t t-if="language == 'fr_CA'">Enregistrer</t>
+                                        <t t-elif="language == 'es_ES'">Guardar</t>
+                                        <t t-else="">Save</t>
+                                    </button>
+                                    <button type="button" id="cancel-inline-edit" class="btn btn-secondary btn-sm ms-2">
+                                        <t t-if="language == 'fr_CA'">Annuler</t>
+                                        <t t-elif="language == 'es_ES'">Cancelar</t>
+                                        <t t-else="">Cancel</t>
+                                    </button>
+                                </div>
+                            </fieldset>
                         </div>
-
                     </div>
                 </div>
-                <!-- ===== END SHARED EDIT MODAL ===== -->
+                <!-- ===== END INLINE EDIT FORM ===== -->
 
             </div>
             <!-- ===== END ADDRESS SELECTOR SECTION ===== -->

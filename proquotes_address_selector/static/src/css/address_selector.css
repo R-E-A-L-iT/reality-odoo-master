@@ -137,8 +137,8 @@
 /* ── Override quoteStyle.css cursor:default on .addr_edit ── */
 .addr_edit { cursor: pointer !important; }
 
-/* ── Edit modal select option colours ── */
-#addr-edit-modal select option {
+/* ── Inline edit select option colours ── */
+#addr-inline-editor select option {
     background: #0a0d11;
     color: #e6edf3;
 }
@@ -252,41 +252,14 @@
 }
 
 /* ══════════════════════════════════════════════
-   EDIT MODAL
+   INLINE EDIT FORM (appears below the card row in the correct section)
 ══════════════════════════════════════════════ */
 
-#addr-edit-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 9000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+#addr-inline-editor {
+    margin-top: 14px;
 }
 
-#addr-edit-modal-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.72);
-    cursor: pointer;
-}
-
-#addr-edit-modal-box {
-    position: relative;
-    z-index: 1;
-    width: min(500px, 92vw);
-    background: #14171c;
-    border: 1px solid #23272f;
-    border-radius: 14px;
-    padding: 24px;
-    color: #e6edf3;
-    max-height: 85vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-}
-
-/* ── Select fields: suppress native browser styling, match text inputs ── */
-#addr-edit-modal-box select {
+#addr-inline-editor select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -304,54 +277,13 @@
     font-size: 0.875rem;
     line-height: 1.5;
 }
-#addr-edit-modal-box select:focus {
+#addr-inline-editor select:focus {
     border-color: #3f8cff;
     box-shadow: 0 0 0 3px rgba(63, 140, 255, 0.20);
     outline: none;
 }
 
-/* Make the addr_editor inside the modal clean (no extra margins/borders) */
-#addr-edit-modal-box .addr_editor {
-    margin: 0;
-    padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    color: #e6edf3;
-}
-
-#addr-edit-modal-box .addr_editor fieldset {
-    min-width: 100%;
-    flex: 1 1 100%;
-    border: none;
-    background: transparent;
-    padding: 0;
-}
-
-#addr-edit-modal-box .addr_editor legend {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #e6edf3;
-    padding: 0;
-    margin-bottom: 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.10);
-    padding-bottom: 10px;
-    width: 100%;
-}
-
-#addr-edit-modal-box .addr_editor input[type="text"] {
-    background: #0a0d11;
-    color: #e6edf3;
-    border: 1px solid #2b3139;
-    border-radius: 8px;
-}
-#addr-edit-modal-box .addr_editor input[type="text"]:focus {
-    border-color: #3f8cff;
-    box-shadow: 0 0 0 3px rgba(63, 140, 255, 0.20);
-    outline: none;
-}
-
-#addr-edit-modal-box .actions {
+#addr-inline-editor .actions {
     margin-top: 16px;
     text-align: right;
 }

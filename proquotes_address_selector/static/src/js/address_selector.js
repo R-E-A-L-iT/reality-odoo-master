@@ -12,7 +12,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         // Edit / Delete action buttons
         "click .addr_edit_btn":   "_onEditAddress",
         "click .addr_delete_btn": "_onDeleteAddress",
-        // Add new address triggers (both sections open the same modal)
+        // Add new address triggers
         "click #new-address-trigger-invoice":  "_onNewAddressTrigger",
         "click #new-address-trigger-delivery": "_onNewAddressTrigger",
         // Add new modal
@@ -20,24 +20,19 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         "click #cancel-new-modal":        "_onCloseNewModal",
         "click #addr-new-modal-backdrop": "_onCloseNewModal",
         "change #new-modal-country":      "_onNewModalCountryChange",
-        // Edit modal
-        "click #save-edit-modal":          "_onSaveEditModal",
-        "click #cancel-edit-modal":        "_onCloseEditModal",
-        "click #addr-edit-modal-backdrop": "_onCloseEditModal",
-        "change #edit-modal-country":      "_onModalCountryChange",
+        // Inline edit form
+        "click #save-inline-edit":    "_onSaveInlineEdit",
+        "click #cancel-inline-edit":  "_onCloseInlineEdit",
+        "change #inline-edit-country": "_onInlineEditCountryChange",
     },
 
     async start() {
         await this._super(...arguments);
         this.orderDetail = this.$el.find("table#sales_order_table").data();
 
-        // Move modals to <body> so position:fixed is always viewport-relative.
-        // Odoo portal applies CSS transform on hover which breaks fixed positioning
-        // for elements inside the portal content tree.
-        ["addr-edit-modal", "addr-new-modal"].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) document.body.appendChild(el);
-        });
+        // Move the add-new popup to <body> so position:fixed is viewport-relative.
+        const newModal = document.getElementById("addr-new-modal");
+        if (newModal) document.body.appendChild(newModal);
     },
 
     // ── Unified section click → card selection ────────────────────────────────
@@ -46,7 +41,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         if (ev.target.closest(".addr_action_btn"))  return;
         if (ev.target.closest(".addr_card.add_card")) return;
         if (ev.target.closest(".addresses"))         return;
-        if (ev.target.closest("#addr-edit-modal"))   return;
+        if (ev.target.closest("#addr-inline-editor")) return;
         if (ev.target.closest("#addr-new-modal"))    return;
 
         const card = ev.target.closest(".addr_card[data-partner-id]");
@@ -155,38 +150,49 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         this._filterStatesByCountry("new-modal-country", "new-modal-state");
     },
 
-    // ── Edit address → modal popup ────────────────────────────────────────────
+    // ── Edit address → inline form in section ────────────────────────────────
 
     _onEditAddress(ev) {
         ev.stopImmediatePropagation();
-        const btn = ev.currentTarget;
+        const btn  = ev.currentTarget;
+        const type = btn.dataset.addressType;
 
-        this._setVal("edit-modal-partner-id",   btn.dataset.partnerId);
-        this._setVal("edit-modal-address-type", btn.dataset.addressType);
+        // Move inline editor into the correct section (after its addr_cards row)
+        const containerId = type === "invoice" ? "invoice-address-cards" : "delivery-address-cards";
+        const container   = document.getElementById(containerId);
+        const editor      = document.getElementById("addr-inline-editor");
+        if (container && editor) {
+            container.parentNode.insertBefore(editor, container.nextSibling);
+        }
 
-        this._setVal("edit-modal-name",   btn.dataset.name   || "");
-        this._setVal("edit-modal-street", btn.dataset.street || "");
-        this._setVal("edit-modal-city",   btn.dataset.city   || "");
-        this._setVal("edit-modal-zip",    btn.dataset.zip    || "");
+        // Populate hidden meta fields
+        this._setVal("inline-edit-partner-id",   btn.dataset.partnerId);
+        this._setVal("inline-edit-address-type", type);
 
-        const countryEl = document.getElementById("edit-modal-country");
+        // Populate text fields
+        this._setVal("inline-edit-name",   btn.dataset.name   || "");
+        this._setVal("inline-edit-street", btn.dataset.street || "");
+        this._setVal("inline-edit-city",   btn.dataset.city   || "");
+        this._setVal("inline-edit-zip",    btn.dataset.zip    || "");
+
+        const countryEl = document.getElementById("inline-edit-country");
         if (countryEl) countryEl.value = btn.dataset.countryId || "";
-        this._filterStatesByCountry("edit-modal-country", "edit-modal-state");
-        const stateEl = document.getElementById("edit-modal-state");
+        this._filterStatesByCountry("inline-edit-country", "inline-edit-state");
+        const stateEl = document.getElementById("inline-edit-state");
         if (stateEl) stateEl.value = btn.dataset.stateId || "";
 
-        const modal = document.getElementById("addr-edit-modal");
-        if (modal) modal.style.display = "flex";
+        if (editor) editor.style.display = "";
+        editor?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     },
 
-    _onCloseEditModal() {
-        const modal = document.getElementById("addr-edit-modal");
-        if (modal) modal.style.display = "none";
+    _onCloseInlineEdit() {
+        const editor = document.getElementById("addr-inline-editor");
+        if (editor) editor.style.display = "none";
     },
 
-    async _onSaveEditModal() {
-        const partnerId   = document.getElementById("edit-modal-partner-id")?.value;
-        const addressType = document.getElementById("edit-modal-address-type")?.value;
+    async _onSaveInlineEdit() {
+        const partnerId   = document.getElementById("inline-edit-partner-id")?.value;
+        const addressType = document.getElementById("inline-edit-address-type")?.value;
         if (!partnerId) return;
 
         const result = await jsonrpc(
@@ -194,12 +200,12 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             {
                 access_token: this.orderDetail.token,
                 partner_id: parseInt(partnerId),
-                name:    document.getElementById("edit-modal-name")?.value    || "",
-                street:  document.getElementById("edit-modal-street")?.value  || "",
-                city:    document.getElementById("edit-modal-city")?.value    || "",
-                state:   document.getElementById("edit-modal-state")?.value   || "",
-                zip:     document.getElementById("edit-modal-zip")?.value     || "",
-                country: document.getElementById("edit-modal-country")?.value || "",
+                name:    document.getElementById("inline-edit-name")?.value    || "",
+                street:  document.getElementById("inline-edit-street")?.value  || "",
+                city:    document.getElementById("inline-edit-city")?.value    || "",
+                state:   document.getElementById("inline-edit-state")?.value   || "",
+                zip:     document.getElementById("inline-edit-zip")?.value     || "",
+                country: document.getElementById("inline-edit-country")?.value || "",
             }
         );
 
@@ -232,7 +238,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
                     editBtn.dataset.zip    = result.zip;
                 }
             }
-            this._onCloseEditModal();
+            this._onCloseInlineEdit();
         }
     },
 
@@ -428,7 +434,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         }
     },
 
-    _onModalCountryChange()    { this._filterStatesByCountry("edit-modal-country",  "edit-modal-state"); },
+    _onInlineEditCountryChange() { this._filterStatesByCountry("inline-edit-country", "inline-edit-state"); },
     _onNewModalCountryChange() { this._filterStatesByCountry("new-modal-country",   "new-modal-state");  },
 
     // ── DOM helpers ───────────────────────────────────────────────────────────
