@@ -130,9 +130,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
 
         if (result && result.success) {
             const containerId = type === "invoice" ? "invoice-address-cards" : "delivery-address-cards";
-            const triggerId   = type === "invoice" ? "new-address-trigger-invoice" : "new-address-trigger-delivery";
             const container   = document.getElementById(containerId);
-            const trigger     = document.getElementById(triggerId);
 
             if (container) {
                 // Remove default card if it's showing
@@ -145,8 +143,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             }
 
             const newCard = this._buildAddressCard(result, type);
-            if (container && trigger) container.insertBefore(newCard, trigger);
-            else if (container) container.appendChild(newCard);
+            if (container) container.appendChild(newCard);
 
             this._onCloseNewModal();
         }
@@ -283,7 +280,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             );
             if (card) card.remove();
 
-            this._onCloseEditModal();
+            this._onCloseInlineEdit();
 
             const remaining = container?.querySelectorAll(".addr_card[data-partner-id]").length || 0;
 
@@ -426,29 +423,43 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
 
     _initDragScroll(el) {
         let active = false;
+        let moved  = false;
         let startX = 0;
         let startScrollLeft = 0;
 
         el.addEventListener("mousedown", e => {
+            if (e.target.closest(".addr_action_btn")) return;
             active = true;
-            startX = e.pageX - el.getBoundingClientRect().left;
+            moved  = false;
+            startX = e.pageX;
             startScrollLeft = el.scrollLeft;
             el.classList.add("is-dragging");
         });
-        el.addEventListener("mouseleave", () => {
-            active = false;
-            el.classList.remove("is-dragging");
-        });
-        el.addEventListener("mouseup", () => {
-            active = false;
-            el.classList.remove("is-dragging");
-        });
-        el.addEventListener("mousemove", e => {
+
+        // Listen on document so fast mouse moves outside el don't break the drag
+        document.addEventListener("mousemove", e => {
             if (!active) return;
-            e.preventDefault();
-            const x = e.pageX - el.getBoundingClientRect().left;
-            el.scrollLeft = startScrollLeft - (x - startX);
+            const dx = e.pageX - startX;
+            if (Math.abs(dx) > 3) {
+                moved = true;
+                e.preventDefault();
+                el.scrollLeft = startScrollLeft - dx;
+            }
         });
+
+        document.addEventListener("mouseup", () => {
+            if (!active) return;
+            active = false;
+            el.classList.remove("is-dragging");
+        });
+
+        // Cancel the card-selection click that fires after a real drag
+        el.addEventListener("click", e => {
+            if (moved) {
+                e.stopImmediatePropagation();
+                moved = false;
+            }
+        }, true);
     },
 
     _filterStatesByCountry(countryId, stateId) {
