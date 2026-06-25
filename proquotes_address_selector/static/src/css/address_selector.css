@@ -17,10 +17,10 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     padding-bottom: 0;
-    scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
     cursor: grab;
+    touch-action: pan-y;
 }
 #invoice-address-cards::-webkit-scrollbar,
 #delivery-address-cards::-webkit-scrollbar {
@@ -30,6 +30,25 @@
 #delivery-address-cards.is-dragging {
     cursor: grabbing;
     user-select: none;
+}
+
+/* ── Card expands when inline edit form is placed inside it ── */
+#rental-address-section .addr_card.editing {
+    flex: 0 0 380px;
+    min-width: 380px;
+    max-width: 380px;
+    height: auto;
+    min-height: unset;
+    cursor: default;
+}
+.addr_card.editing #addr-inline-editor {
+    margin-top: 0;
+    display: block !important;
+}
+.addr_card.editing #addr-inline-editor .addr_editor {
+    padding: 0;
+    border: none;
+    background: transparent;
 }
 
 /* ── Add card: pinned outside scroll, always visible ── */

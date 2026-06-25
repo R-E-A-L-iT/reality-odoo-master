@@ -158,19 +158,30 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     _onEditAddress(ev) {
         ev.stopImmediatePropagation();
         const btn  = ev.currentTarget;
-        const type = btn.dataset.addressType;
+        const card = btn.closest(".addr_card");
+        if (!card) return;
 
-        // Move inline editor into the correct section (after its addr_cards row)
-        const containerId = type === "invoice" ? "invoice-address-cards" : "delivery-address-cards";
-        const container   = document.getElementById(containerId);
-        const editor      = document.getElementById("addr-inline-editor");
-        if (container && editor) {
-            container.parentNode.insertBefore(editor, container.nextSibling);
-        }
+        // Close any previously open inline editor first
+        this._onCloseInlineEdit();
+
+        const editor = document.getElementById("addr-inline-editor");
+        if (!editor) return;
+
+        // Track which card is being edited so we can restore it on close
+        this._editingCard = card;
+
+        // Hide the card's normal content
+        card.querySelectorAll(".addr_card_actions, .addr_badge, .name, .lines").forEach(el => {
+            el.style.display = "none";
+        });
+
+        // Move editor inside the card and expand the card
+        card.appendChild(editor);
+        card.classList.add("editing");
 
         // Populate hidden meta fields
         this._setVal("inline-edit-partner-id",   btn.dataset.partnerId);
-        this._setVal("inline-edit-address-type", type);
+        this._setVal("inline-edit-address-type", btn.dataset.addressType);
 
         // Populate text fields
         this._setVal("inline-edit-name",   btn.dataset.name   || "");
@@ -184,13 +195,27 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const stateEl = document.getElementById("inline-edit-state");
         if (stateEl) stateEl.value = btn.dataset.stateId || "";
 
-        if (editor) editor.style.display = "";
-        editor?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        editor.style.display = "";
+        card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     },
 
     _onCloseInlineEdit() {
         const editor = document.getElementById("addr-inline-editor");
-        if (editor) editor.style.display = "none";
+        if (!editor) return;
+
+        // Restore the card's normal content
+        if (this._editingCard) {
+            this._editingCard.querySelectorAll(".addr_card_actions, .addr_badge, .name, .lines").forEach(el => {
+                el.style.display = "";
+            });
+            this._editingCard.classList.remove("editing");
+            this._editingCard = null;
+        }
+
+        // Send editor back to its resting place in the section
+        editor.style.display = "none";
+        const section = document.getElementById("rental-address-section");
+        if (section) section.appendChild(editor);
     },
 
     async _onSaveInlineEdit() {
@@ -230,7 +255,11 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
                         [result.city, result.state, result.zip].filter(Boolean).join(", "),
                         result.country,
                     ].filter(Boolean);
-                    linesEl.textContent = parts.join("\n");
+                    linesEl.innerHTML = parts.map(p => {
+                        const d = document.createElement("div");
+                        d.textContent = p;
+                        return d.innerHTML;
+                    }).join("<br>");
                 }
 
                 const editBtn = card.querySelector(".addr_edit_btn");
@@ -422,38 +451,42 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     // ── Country/state filtering ───────────────────────────────────────────────
 
     _initDragScroll(el) {
-        let active = false;
-        let moved  = false;
-        let startX = 0;
+        let dragging = false;
+        let moved    = false;
+        let startX   = 0;
         let startScrollLeft = 0;
 
-        el.addEventListener("mousedown", e => {
+        el.addEventListener("pointerdown", e => {
             if (e.target.closest(".addr_action_btn")) return;
-            active = true;
-            moved  = false;
-            startX = e.pageX;
+            if (e.target.closest(".addr_card.editing")) return;
+            dragging = true;
+            moved    = false;
+            startX   = e.clientX;
             startScrollLeft = el.scrollLeft;
+            el.setPointerCapture(e.pointerId);
             el.classList.add("is-dragging");
         });
 
-        // Listen on document so fast mouse moves outside el don't break the drag
-        document.addEventListener("mousemove", e => {
-            if (!active) return;
-            const dx = e.pageX - startX;
-            if (Math.abs(dx) > 3) {
+        el.addEventListener("pointermove", e => {
+            if (!dragging) return;
+            const dx = e.clientX - startX;
+            if (Math.abs(dx) > 4) {
                 moved = true;
-                e.preventDefault();
                 el.scrollLeft = startScrollLeft - dx;
             }
         });
 
-        document.addEventListener("mouseup", () => {
-            if (!active) return;
-            active = false;
+        el.addEventListener("pointerup", () => {
+            dragging = false;
             el.classList.remove("is-dragging");
         });
 
-        // Cancel the card-selection click that fires after a real drag
+        el.addEventListener("pointercancel", () => {
+            dragging = false;
+            el.classList.remove("is-dragging");
+        });
+
+        // Suppress card-selection click that fires after a real drag
         el.addEventListener("click", e => {
             if (moved) {
                 e.stopImmediatePropagation();
