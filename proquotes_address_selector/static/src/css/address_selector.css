@@ -33,32 +33,6 @@
     user-select: none;
 }
 
-/* ── Card in edit mode: grows in height to show the inline form ── */
-#rental-address-section .addr_card.editing {
-    flex: 0 0 300px;
-    min-width: 300px;
-    max-width: 300px;
-    height: auto !important;
-    min-height: unset !important;
-    cursor: default;
-    padding: 14px 14px 14px;
-}
-#rental-address-section .addr_card.editing #addr-inline-editor {
-    position: static !important;
-    margin: 0;
-    padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    display: block !important;
-    width: 100%;
-}
-#rental-address-section .addr_card.editing #addr-inline-editor .addr_editor {
-    padding: 0;
-    border: none;
-    background: transparent;
-}
 
 /* ── Add card: pinned outside scroll, always visible ── */
 .addr_scroll_wrap > .addr_card.add_card {
