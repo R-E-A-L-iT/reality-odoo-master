@@ -21,6 +21,7 @@
     -ms-overflow-style: none;
     cursor: grab;
     touch-action: pan-y;
+    align-items: flex-start;
 }
 #invoice-address-cards::-webkit-scrollbar,
 #delivery-address-cards::-webkit-scrollbar {
@@ -32,20 +33,28 @@
     user-select: none;
 }
 
-/* ── Card expands when inline edit form is placed inside it ── */
+/* ── Card in edit mode: grows in height to show the inline form ── */
 #rental-address-section .addr_card.editing {
-    flex: 0 0 380px;
-    min-width: 380px;
-    max-width: 380px;
-    height: auto;
-    min-height: unset;
+    flex: 0 0 300px;
+    min-width: 300px;
+    max-width: 300px;
+    height: auto !important;
+    min-height: unset !important;
     cursor: default;
+    padding: 14px 14px 14px;
 }
-.addr_card.editing #addr-inline-editor {
-    margin-top: 0;
+#rental-address-section .addr_card.editing #addr-inline-editor {
+    position: static !important;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
     display: block !important;
+    width: 100%;
 }
-.addr_card.editing #addr-inline-editor .addr_editor {
+#rental-address-section .addr_card.editing #addr-inline-editor .addr_editor {
     padding: 0;
     border: none;
     background: transparent;
