@@ -33,6 +33,12 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         // Move the add-new popup to <body> so position:fixed is viewport-relative.
         const newModal = document.getElementById("addr-new-modal");
         if (newModal) document.body.appendChild(newModal);
+
+        // Enable mouse click-drag scroll on both card containers.
+        ["invoice-address-cards", "delivery-address-cards"].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) this._initDragScroll(el);
+        });
     },
 
     // ── Unified section click → card selection ────────────────────────────────
@@ -417,6 +423,33 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     },
 
     // ── Country/state filtering ───────────────────────────────────────────────
+
+    _initDragScroll(el) {
+        let active = false;
+        let startX = 0;
+        let startScrollLeft = 0;
+
+        el.addEventListener("mousedown", e => {
+            active = true;
+            startX = e.pageX - el.getBoundingClientRect().left;
+            startScrollLeft = el.scrollLeft;
+            el.classList.add("is-dragging");
+        });
+        el.addEventListener("mouseleave", () => {
+            active = false;
+            el.classList.remove("is-dragging");
+        });
+        el.addEventListener("mouseup", () => {
+            active = false;
+            el.classList.remove("is-dragging");
+        });
+        el.addEventListener("mousemove", e => {
+            if (!active) return;
+            e.preventDefault();
+            const x = e.pageX - el.getBoundingClientRect().left;
+            el.scrollLeft = startScrollLeft - (x - startX);
+        });
+    },
 
     _filterStatesByCountry(countryId, stateId) {
         const countryEl = document.getElementById(countryId);

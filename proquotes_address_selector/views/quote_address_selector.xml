@@ -28,6 +28,7 @@
                         <h4 t-else="">Invoice Address</h4>
                     </div>
 
+                    <div class="addr_scroll_wrap">
                     <div class="addr_cards" id="invoice-address-cards"
                          t-att-data-default-partner-id="default_partner.id"
                          t-att-data-default-name="default_partner.name or ''"
@@ -130,9 +131,11 @@
                             </div>
                         </t>
 
-                        <!-- Add New Address trigger -->
+                    </div><!-- /addr_cards -->
+
+                        <!-- Add New Address trigger — outside scroll container, always visible -->
                         <div class="addr_card add_card" id="new-address-trigger-invoice"
-                             style="cursor:pointer; min-height:110px;">
+                             style="cursor:pointer; min-height:110px; flex-shrink:0;">
                             <div class="add_inner">
                                 <i class="fa fa-plus" style="font-size:1.3rem; opacity:0.75;"/>
                                 <span class="add_label" t-if="language == 'fr_CA'">Ajouter une adresse</span>
@@ -140,8 +143,7 @@
                                 <span class="add_label" t-else="">Add Address</span>
                             </div>
                         </div>
-
-                    </div>
+                    </div><!-- /addr_scroll_wrap -->
 
                 </div>
 
@@ -153,6 +155,7 @@
                         <h4 t-else="">Delivery Address</h4>
                     </div>
 
+                    <div class="addr_scroll_wrap">
                     <div class="addr_cards" id="delivery-address-cards"
                          t-att-data-default-partner-id="default_partner.id"
                          t-att-data-default-name="default_partner.name or ''"
@@ -255,9 +258,11 @@
                             </div>
                         </t>
 
-                        <!-- Add New Address trigger -->
+                    </div><!-- /addr_cards -->
+
+                        <!-- Add New Address trigger — outside scroll container, always visible -->
                         <div class="addr_card add_card" id="new-address-trigger-delivery"
-                             style="cursor:pointer; min-height:110px;">
+                             style="cursor:pointer; min-height:110px; flex-shrink:0;">
                             <div class="add_inner">
                                 <i class="fa fa-plus" style="font-size:1.3rem; opacity:0.75;"/>
                                 <span class="add_label" t-if="language == 'fr_CA'">Ajouter une adresse</span>
@@ -265,8 +270,7 @@
                                 <span class="add_label" t-else="">Add Address</span>
                             </div>
                         </div>
-
-                    </div>
+                    </div><!-- /addr_scroll_wrap -->
 
                 </div>
 

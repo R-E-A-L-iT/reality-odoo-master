@@ -2,28 +2,41 @@
    Base card styles from proquotes/static/src/CSS/quoteStyle.css
    (.addr_matrix, .addr_card, .addr_card.current, .addr_card.add_card, .addr_edit, etc.) */
 
-/* ── Card containers: horizontal scroll, show 3 at a time ── */
+/* ── Scroll wrap: card row + pinned add button side by side ── */
+.addr_scroll_wrap {
+    display: flex;
+    gap: 14px;
+    align-items: stretch;
+}
+
+/* ── Card containers: take remaining width, scroll horizontally ── */
 #invoice-address-cards,
 #delivery-address-cards {
+    flex: 1;
+    min-width: 0;
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding-bottom: 8px;
+    padding-bottom: 0;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    cursor: grab;
 }
 #invoice-address-cards::-webkit-scrollbar,
 #delivery-address-cards::-webkit-scrollbar {
     display: none;
 }
+#invoice-address-cards.is-dragging,
+#delivery-address-cards.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+}
 
-/* ── Explicit fixed width for Add Address card (prevents it sticking) ── */
-#invoice-address-cards .addr_card.add_card,
-#delivery-address-cards .addr_card.add_card {
+/* ── Add card: pinned outside scroll, always visible ── */
+.addr_scroll_wrap > .addr_card.add_card {
     flex: 0 0 270px;
     min-width: 270px;
     max-width: 270px;
-    scroll-snap-align: start;
 }
 
 /* ── Card padding & layout ── */
