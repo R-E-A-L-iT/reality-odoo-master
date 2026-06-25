@@ -432,42 +432,41 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     // ── Country/state filtering ───────────────────────────────────────────────
 
     _initDragScroll(el) {
-        let dragging = false;
+        let isDown   = false;
         let moved    = false;
         let startX   = 0;
-        let startScrollLeft = 0;
+        let scrollLeft = 0;
 
-        el.addEventListener("pointerdown", e => {
+        el.addEventListener("mousedown", e => {
             if (e.target.closest(".addr_action_btn")) return;
             if (e.target.closest("#addr-inline-editor")) return;
-            dragging = true;
-            moved    = false;
-            startX   = e.clientX;
-            startScrollLeft = el.scrollLeft;
-            el.setPointerCapture(e.pointerId);
+            isDown = true;
+            moved  = false;
+            startX = e.pageX - el.offsetLeft;
+            scrollLeft = el.scrollLeft;
             el.classList.add("is-dragging");
         });
 
-        el.addEventListener("pointermove", e => {
-            if (!dragging) return;
-            const dx = e.clientX - startX;
-            if (Math.abs(dx) > 4) {
-                moved = true;
-                el.scrollLeft = startScrollLeft - dx;
-            }
-        });
-
-        el.addEventListener("pointerup", () => {
-            dragging = false;
+        el.addEventListener("mouseleave", () => {
+            isDown = false;
             el.classList.remove("is-dragging");
         });
 
-        el.addEventListener("pointercancel", () => {
-            dragging = false;
+        el.addEventListener("mouseup", () => {
+            isDown = false;
             el.classList.remove("is-dragging");
         });
 
-        // Suppress card-selection click that fires after a real drag
+        el.addEventListener("mousemove", e => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x    = e.pageX - el.offsetLeft;
+            const walk = (x - startX) * 2;
+            if (Math.abs(walk) > 5) moved = true;
+            el.scrollLeft = scrollLeft - walk;
+        });
+
+        // Prevent card click from firing after a real drag
         el.addEventListener("click", e => {
             if (moved) {
                 e.stopImmediatePropagation();
