@@ -34,11 +34,6 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const newModal = document.getElementById("addr-new-modal");
         if (newModal) document.body.appendChild(newModal);
 
-        // Enable mouse click-drag scroll on both card containers.
-        ["invoice-address-cards", "delivery-address-cards"].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) this._initDragScroll(el);
-        });
     },
 
     // ── Unified section click → card selection ────────────────────────────────
@@ -431,49 +426,6 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
 
     // ── Country/state filtering ───────────────────────────────────────────────
 
-    _initDragScroll(el) {
-        let isDown   = false;
-        let moved    = false;
-        let startX   = 0;
-        let scrollLeft = 0;
-
-        el.addEventListener("mousedown", e => {
-            if (e.target.closest(".addr_action_btn")) return;
-            if (e.target.closest("#addr-inline-editor")) return;
-            isDown = true;
-            moved  = false;
-            startX = e.pageX - el.offsetLeft;
-            scrollLeft = el.scrollLeft;
-            el.classList.add("is-dragging");
-        });
-
-        el.addEventListener("mouseleave", () => {
-            isDown = false;
-            el.classList.remove("is-dragging");
-        });
-
-        el.addEventListener("mouseup", () => {
-            isDown = false;
-            el.classList.remove("is-dragging");
-        });
-
-        el.addEventListener("mousemove", e => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x    = e.pageX - el.offsetLeft;
-            const walk = (x - startX) * 2;
-            if (Math.abs(walk) > 5) moved = true;
-            el.scrollLeft = scrollLeft - walk;
-        });
-
-        // Prevent card click from firing after a real drag
-        el.addEventListener("click", e => {
-            if (moved) {
-                e.stopImmediatePropagation();
-                moved = false;
-            }
-        }, true);
-    },
 
     _filterStatesByCountry(countryId, stateId) {
         const countryEl = document.getElementById(countryId);

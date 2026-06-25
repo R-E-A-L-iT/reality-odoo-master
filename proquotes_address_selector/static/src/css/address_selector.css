@@ -17,20 +17,22 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     padding-bottom: 0;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    cursor: grab;
-    touch-action: pan-y;
-    align-items: flex-start;
+    scrollbar-width: thin;
+    scrollbar-color: #db0d0d #1a1e25;
 }
 #invoice-address-cards::-webkit-scrollbar,
 #delivery-address-cards::-webkit-scrollbar {
-    display: none;
+    height: 6px;
 }
-#invoice-address-cards.is-dragging,
-#delivery-address-cards.is-dragging {
-    cursor: grabbing;
-    user-select: none;
+#invoice-address-cards::-webkit-scrollbar-track,
+#delivery-address-cards::-webkit-scrollbar-track {
+    background: #1a1e25;
+    border-radius: 999px;
+}
+#invoice-address-cards::-webkit-scrollbar-thumb,
+#delivery-address-cards::-webkit-scrollbar-thumb {
+    background: #db0d0d;
+    border-radius: 999px;
 }
 
 
