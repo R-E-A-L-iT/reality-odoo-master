@@ -3,6 +3,7 @@
 import logging
 from odoo import api, models, fields
 from odoo.http import request
+from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
@@ -80,3 +81,26 @@ class CrmLead(models.Model):
         if company_to_assign:
             lead.company_id = company_to_assign.id
             _logger.info('>>>>>>>Successfully assigned company %s to lead %s', company_to_assign.name, lead.id)
+
+    def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
+        groups = super()._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
+
+        if not self:
+            return groups
+
+        self.ensure_one()
+
+        base_url = self.get_base_url()
+        lead_url = f'{base_url}/odoo/crm/{self.id}'
+        button_title = _('View Opportunity') if self.type == 'opportunity' else _('View Lead')
+
+        for group in groups:
+            group_name, match_func, options = group
+            if group_name in ('user', 'follower', 'portal_customer', 'portal'):
+                options['has_button_access'] = True
+                options['button_access'] = {
+                    'url': lead_url,
+                    'title': button_title,
+                }
+
+        return groups
