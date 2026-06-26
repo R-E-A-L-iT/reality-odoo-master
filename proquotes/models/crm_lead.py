@@ -96,10 +96,11 @@ class CrmLead(models.Model):
 
         for group in groups:
             group_name, match_func, options = group
-            options['has_button_access'] = True
-            options['button_access'] = {
-                'url': lead_url,
-                'title': button_title,
-            }
+            if group_name == 'user':
+                options['has_button_access'] = True
+                options['button_access'] = {
+                    'url': lead_url,
+                    'title': button_title,
+                }
 
         return groups
