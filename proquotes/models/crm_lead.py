@@ -3,6 +3,7 @@
 import logging
 from odoo import api, models, fields
 from odoo.http import request
+from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
@@ -80,3 +81,16 @@ class CrmLead(models.Model):
         if company_to_assign:
             lead.company_id = company_to_assign.id
             _logger.info('>>>>>>>Successfully assigned company %s to lead %s', company_to_assign.name, lead.id)
+
+    def _notify_by_email_render_layout(self, message, recipients_group, msg_vals=False, render_values=None):
+        if self and recipients_group.get('notification_group_name') in ('user', 'group_sale_salesman'):
+            self.ensure_one()
+            recipients_group = dict(recipients_group)
+            recipients_group['has_button_access'] = True
+            recipients_group['button_access'] = {
+                'url': f'{self.get_base_url()}/web#model=crm.lead&id={self.id}&view_type=form',
+                'title': _('View Opportunity') if self.type == 'opportunity' else _('View Lead'),
+            }
+        return super()._notify_by_email_render_layout(
+            message, recipients_group, msg_vals=msg_vals, render_values=render_values
+        )
