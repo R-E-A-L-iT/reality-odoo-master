@@ -82,15 +82,25 @@ class CrmLead(models.Model):
             lead.company_id = company_to_assign.id
             _logger.info('>>>>>>>Successfully assigned company %s to lead %s', company_to_assign.name, lead.id)
 
-    def _notify_by_email_render_layout(self, message, recipients_group, msg_vals=False, render_values=None):
-        if self and recipients_group.get('notification_group_name') not in ('group_portal', 'group_public'):
-            self.ensure_one()
-            recipients_group = dict(recipients_group)
-            recipients_group['has_button_access'] = True
-            recipients_group['button_access'] = {
-                'url': f'{self.get_base_url()}/odoo/crm/{self.id}',
-                'title': _('View Opportunity') if self.type == 'opportunity' else _('View Lead'),
-            }
-        return super()._notify_by_email_render_layout(
-            message, recipients_group, msg_vals=msg_vals, render_values=render_values
-        )
+    def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
+        groups = super()._notify_get_recipients_groups(message, model_description, msg_vals=msg_vals)
+
+        if not self:
+            return groups
+
+        self.ensure_one()
+
+        base_url = self.get_base_url()
+        lead_url = f'{base_url}/odoo/crm/{self.id}'
+        button_title = _('View Opportunity') if self.type == 'opportunity' else _('View Lead')
+
+        for group in groups:
+            group_name, match_func, options = group
+            if group_name in ('user', 'follower', 'portal_customer', 'portal'):
+                options['has_button_access'] = True
+                options['button_access'] = {
+                    'url': lead_url,
+                    'title': button_title,
+                }
+
+        return groups
