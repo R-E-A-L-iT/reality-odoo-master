@@ -14,6 +14,7 @@
     "depends": [
         "base",
         "website_sale",
+        "crm",
     ],
     'assets': {
         'web.assets_frontend': [

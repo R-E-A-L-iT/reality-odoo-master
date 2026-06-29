@@ -53,6 +53,115 @@ class ProwebsiteController(http.Controller):
             'currency': pl_sudo.currency_id.name,
         }
 
+    # ------------------------------------------------------------------
+    #  Derek's Red Book — capture a valuation request as a CRM opportunity
+    # ------------------------------------------------------------------
+    def _drb_resolve_team(self):
+        """The website sales team (its members get the round-robin lead)."""
+        website = request.website.sudo()
+        team = False
+        # Preferred: the website's configured default sales team (website_crm).
+        if 'crm_default_team_id' in website._fields and website.crm_default_team_id:
+            team = website.crm_default_team_id
+        Team = request.env['crm.team'].sudo()
+        if not team:
+            team = Team.search([('name', 'ilike', 'website')], limit=1)
+        if not team:
+            team = Team.search([], order='id', limit=1)
+        return team
+
+    def _drb_pick_salesperson(self, team):
+        """Round-robin: the team member currently carrying the fewest leads."""
+        website = request.website.sudo()
+        members = team.member_ids if team else request.env['res.users']
+        if members:
+            Lead = request.env['crm.lead'].sudo()
+            return min(members, key=lambda u: Lead.search_count([('user_id', '=', u.id)]))
+        if 'crm_default_user_id' in website._fields and website.crm_default_user_id:
+            return website.crm_default_user_id
+        return team.user_id if team and team.user_id else request.env['res.users']
+
+    @http.route(
+        '/dereks_red_book/submit',
+        type='json',
+        auth='public',
+        website=True,
+        csrf=False,
+    )
+    def dereks_red_book_submit(self, **kw):
+        """Create a CRM opportunity from a Derek's Red Book valuation."""
+        def yesno(v):
+            return ('Oui' if v else 'Non') if kw.get('lang', '').startswith('fr') else ('Yes' if v else 'No')
+
+        email = (kw.get('email') or '').strip()
+        if not email:
+            return {'success': False, 'error': 'missing_email'}
+
+        model_label = (kw.get('model_label') or kw.get('model_key') or 'Scanner').strip()
+        serial = (kw.get('serial') or '').strip()
+        currency = (kw.get('currency') or '').strip()
+
+        def money(v):
+            try:
+                return '{} {:,.0f}'.format(currency, float(v))
+            except (TypeError, ValueError):
+                return str(v or '')
+
+        description = (
+            "<p><b>Derek's Red Book valuation request</b></p>"
+            "<ul>"
+            "<li>Scanner: %s</li>"
+            "<li>Serial #: %s</li>"
+            "<li>Original purchase date: %s</li>"
+            "<li>Age: %s</li>"
+            "<li>Currency: %s</li>"
+            "<li>Estimated current market value: %s</li>"
+            "<li>Trade-in value: %s</li>"
+            "<li>Buyback (store credit): %s</li>"
+            "<li>Cash offer: %s</li>"
+            "<li>Active warranty/CCP: %s &nbsp; Calibration cert: %s &nbsp; Accessories intact: %s</li>"
+            "</ul>"
+        ) % (
+            model_label, serial or '-', kw.get('purchase_date') or '-', kw.get('age') or '-',
+            currency or '-', money(kw.get('market_value')), money(kw.get('trade_in')),
+            money(kw.get('store_credit')), money(kw.get('cash')),
+            yesno(kw.get('warranty')), yesno(kw.get('calibration')), yesno(kw.get('accessories')),
+        )
+
+        try:
+            team = self._drb_resolve_team()
+            user = self._drb_pick_salesperson(team)
+        except Exception as e:
+            _logger.warning("[dereks_red_book] team/salesperson resolution failed: %s", e)
+            team = request.env['crm.team']
+            user = request.env['res.users']
+
+        vals = {
+            'name': "Derek's Red Book — %s%s" % (model_label, ' (S/N %s)' % serial if serial else ''),
+            'type': 'opportunity',
+            'contact_name': (kw.get('full_name') or '').strip() or False,
+            'partner_name': (kw.get('company') or '').strip() or False,
+            'email_from': email,
+            'phone': (kw.get('phone') or '').strip() or False,
+            'description': description,
+            'team_id': team.id if team else False,
+            'user_id': user.id if user else False,
+        }
+        try:
+            vals['expected_revenue'] = float(kw.get('cash'))
+        except (TypeError, ValueError):
+            pass
+
+        try:
+            lead = request.env['crm.lead'].sudo().create(vals)
+        except Exception as e:
+            _logger.exception("[dereks_red_book] lead creation failed: %s", e)
+            return {'success': False, 'error': 'create_failed'}
+
+        if not team:
+            _logger.warning("[dereks_red_book] lead %s created with no sales team resolved", lead.id)
+        return {'success': True, 'lead_id': lead.id}
+
     @http.route(
         '/omnigo/get_pricelists',
         type='json',
