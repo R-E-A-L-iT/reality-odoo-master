@@ -83,7 +83,7 @@ class CrmLead(models.Model):
             _logger.info('>>>>>>>Successfully assigned company %s to lead %s', company_to_assign.name, lead.id)
 
     def _notify_by_email_render_layout(self, message, recipients_group, msg_vals=False, render_values=None):
-        if self and recipients_group.get('notification_group_name') not in ('group_portal', 'group_public', None, False):
+        if self and recipients_group.get('notification_group_name') not in ('group_portal', 'group_public'):
             self.ensure_one()
             recipients_group = dict(recipients_group)
             recipients_group['has_button_access'] = True
