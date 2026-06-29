@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import base64
+
 from odoo import http
 from odoo.http import request
 
@@ -160,7 +162,66 @@ class ProwebsiteController(http.Controller):
 
         if not team:
             _logger.warning("[dereks_red_book] lead %s created with no sales team resolved", lead.id)
+
+        # Remember which leads this visitor created, so the follow-up PDF upload can
+        # only attach to its own lead (not an arbitrary guessed id).
+        created = list(request.session.get('drb_created_leads') or [])
+        created.append(lead.id)
+        request.session['drb_created_leads'] = created
+
         return {'success': True, 'lead_id': lead.id}
+
+    @http.route(
+        '/dereks_red_book/attach',
+        type='json',
+        auth='public',
+        website=True,
+        csrf=False,
+    )
+    def dereks_red_book_attach(self, **kw):
+        """Attach the client-rendered PDF report to its CRM opportunity."""
+        try:
+            lead_id = int(kw.get('lead_id') or 0)
+        except (TypeError, ValueError):
+            return {'success': False, 'error': 'bad_lead_id'}
+        pdf_b64 = kw.get('pdf_base64') or ''
+        filename = (kw.get('filename') or "Dereks-Red-Book.pdf").strip()
+        if not lead_id or not pdf_b64:
+            return {'success': False, 'error': 'missing_data'}
+
+        # Only allow attaching to a lead created by this same browser session.
+        if lead_id not in (request.session.get('drb_created_leads') or []):
+            return {'success': False, 'error': 'not_authorized'}
+
+        try:
+            data = base64.b64decode(pdf_b64)
+        except Exception:
+            return {'success': False, 'error': 'bad_pdf'}
+        if not data[:5].startswith(b'%PDF'):
+            return {'success': False, 'error': 'not_a_pdf'}
+        if len(data) > 15 * 1024 * 1024:      # 15 MB guard
+            return {'success': False, 'error': 'too_large'}
+
+        lead = request.env['crm.lead'].sudo().browse(lead_id)
+        if not lead.exists():
+            return {'success': False, 'error': 'no_lead'}
+
+        attachment = request.env['ir.attachment'].sudo().create({
+            'name': filename,
+            'datas': pdf_b64,
+            'type': 'binary',
+            'mimetype': 'application/pdf',
+            'res_model': 'crm.lead',
+            'res_id': lead.id,
+        })
+        try:
+            lead.message_post(
+                body="Derek's Red Book evaluation report attached.",
+                attachment_ids=[attachment.id],
+            )
+        except Exception as e:
+            _logger.warning("[dereks_red_book] could not post PDF to chatter: %s", e)
+        return {'success': True, 'attachment_id': attachment.id}
 
     @http.route(
         '/omnigo/get_pricelists',
