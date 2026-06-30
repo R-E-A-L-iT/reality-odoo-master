@@ -88,7 +88,7 @@ class CrmLead(models.Model):
             recipients_group = dict(recipients_group)
             recipients_group['has_button_access'] = True
             recipients_group['button_access'] = {
-                'url': f'{self.get_base_url()}/odoo/crm/{self.id}',
+                'url': f'{self.get_base_url()}/web#model=crm.lead&id={self.id}&view_type=form',
                 'title': _('View Opportunity') if self.type == 'opportunity' else _('View Lead'),
             }
         return super()._notify_by_email_render_layout(
