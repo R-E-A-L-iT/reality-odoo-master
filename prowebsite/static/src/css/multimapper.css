@@ -1,0 +1,1264 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   Leica MultiMapper product page — multimapper.css
+   Scoped under .o_mm_page to avoid collisions with other pages.
+   Colour palette and typography match rtc_series.css / rtc_series_sections.css
+   so this page stays visually consistent with the rest of the site:
+     kicker  11px / 700 / .16em / uppercase / #e00000
+     title   "Arial Black", clamp(...), 900
+     section full-bleed: width 100vw; margin-left calc(50% - 50vw)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Reset / base ─────────────────────────────────────────────────────────── */
+.o_mm_page {
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    color: #0a0a0a;
+}
+
+.o_mm_page *,
+.o_mm_page *::before,
+.o_mm_page *::after {
+    box-sizing: border-box;
+}
+
+/* ─── Viewport escape helper — full-bleed sections punch out of Odoo's
+   centered container and span the full browser viewport width. ─────────── */
+.o_mm_hero,
+.o_mm_sec,
+.o_mm_panel,
+.o_mm_eco_section {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    position: relative;
+}
+
+/* ─── Hero ──────────────────────────────────────────────────────────────────── */
+.o_mm_hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px clamp(24px, 6vw, 80px);
+    text-align: center;
+    color: #fff !important;
+    overflow: hidden;
+    background: #000; /* fallback while the looping video loads */
+}
+
+/* ── Video looper background ──────────────────────────────────────────────
+   Drop either an <iframe> (Vimeo/YouTube, autoplay+loop+muted+background)
+   or a local <video autoplay muted loop playsinline> inside
+   .o_mm_hero_video_bg — both are scaled to cover via the rules below. ───── */
+.o_mm_hero_video_bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Scale-to-cover: always fill the hero, centred, assuming a 16:9 source */
+.o_mm_hero_video_bg iframe,
+.o_mm_hero_video_bg video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 177.78vh;   /* = 100vh × (16/9) */
+    height: 56.25vw;   /* = 100vw × (9/16) */
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    border: none;
+    pointer-events: none;
+    object-fit: cover;
+}
+
+/* Placeholder shown until a real video/iframe is dropped in — remove the
+   .o_mm_hero_video_placeholder element once real footage is in place. */
+.o_mm_hero_video_placeholder {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(224, 0, 0, 0.22), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(224, 0, 0, 0.16), transparent 45%),
+        linear-gradient(180deg, #1a1a1a 0%, #050505 100%);
+}
+
+/* Gradient overlay + vignette layered above the video */
+.o_mm_hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,0.52) 0%,
+            rgba(10,0,0,0.38) 45%,
+            rgba(30,0,0,0.72) 100%
+        ),
+        radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(0,0,0,0.35) 100%);
+}
+
+.o_mm_hero_inner {
+    position: relative;
+    z-index: 2;
+    max-width: 880px;
+    margin: 0 auto;
+}
+
+.o_mm_hero_kicker {
+    margin: 0 0 18px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 180, 180, 0.88) !important;
+}
+
+.o_mm_hero_title {
+    font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(48px, 10vw, 110px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #fff !important;
+    margin: 0 0 24px;
+    line-height: 1;
+}
+
+.o_mm_hero_divider {
+    width: 64px;
+    height: 4px;
+    background: #e00000;
+    border-radius: 999px;
+    margin: 0 auto 24px;
+}
+
+.o_mm_hero_sub {
+    font-size: clamp(15px, 1.8vw, 21px);
+    color: rgba(255, 255, 255, 0.70) !important;
+    margin: 0 0 32px;
+    line-height: 1.65;
+    max-width: 620px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.o_mm_hero_badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #fff !important;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+}
+
+.o_mm_hero_badge_dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #e00000;
+    box-shadow: 0 0 0 3px rgba(224, 0, 0, 0.25);
+    flex-shrink: 0;
+}
+
+/* ─── Shared section scaffold ──────────────────────────────────────────────── */
+.o_mm_sec {
+    padding: 84px clamp(24px, 5vw, 80px) 96px;
+    background: #ffffff;
+}
+
+.o_mm_sec--alt {
+    background: #f4f4f4;
+}
+
+.o_mm_sec_inner {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.o_mm_sec_header {
+    text-align: center;
+    margin-bottom: 56px;
+}
+
+.o_mm_sec_header--left {
+    text-align: left;
+    margin-bottom: 40px;
+}
+
+.o_mm_sec_kicker {
+    display: block;
+    font-family: "Montserrat", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #e00000;
+    margin: 0 0 12px;
+}
+
+.o_mm_sec_title {
+    margin: 0;
+    font-family: "Arial Black", "Montserrat", sans-serif;
+    font-size: clamp(28px, 3.6vw, 46px);
+    font-weight: 900;
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    color: #0a0a0a;
+}
+
+.o_mm_sec_intro {
+    max-width: 760px;
+    margin: 18px auto 0;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #555;
+}
+
+.o_mm_sec_header--left .o_mm_sec_intro {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* ─── Positioning section: text + image placeholder ────────────────────────── */
+.o_mm_position_layout {
+    display: flex;
+    gap: clamp(40px, 6vw, 80px);
+    align-items: center;
+}
+
+.o_mm_position_text {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.o_mm_position_text p {
+    font-size: 15.5px;
+    line-height: 1.8;
+    color: #444;
+    margin: 0 0 18px;
+}
+
+.o_mm_position_list {
+    list-style: none;
+    margin: 24px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.o_mm_position_list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14.5px;
+    color: #333;
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+.o_mm_position_list li::before {
+    content: "";
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    background: #e00000;
+    border-radius: 50%;
+    margin-top: 8px;
+}
+
+.o_mm_position_visual {
+    flex: 0 0 44%;
+}
+
+/* Generic image placeholder — swap the inner <img> for real artwork any time;
+   this frame keeps its aspect ratio and soft styling either way. */
+.o_mm_img_frame {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(180deg, #f7f7f8 0%, #ededee 100%);
+    border: 1px solid #e6e6e6;
+    border-radius: 24px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.o_mm_img_frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.o_mm_img_frame_label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #bbb;
+    text-align: center;
+    padding: 0 24px;
+}
+
+.o_mm_img_frame--wide {
+    aspect-ratio: 16 / 9;
+}
+
+.o_mm_img_frame--square {
+    aspect-ratio: 1;
+}
+
+/* ─── Capabilities grid ─────────────────────────────────────────────────────── */
+.o_mm_cap_grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.o_mm_cap_item {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 26px 24px;
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 16px;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.o_mm_cap_item:hover {
+    border-color: rgba(224, 0, 0, 0.35);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+}
+
+.o_mm_cap_icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(224, 0, 0, 0.08);
+    color: #e00000;
+    flex-shrink: 0;
+}
+
+.o_mm_cap_label {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: #111;
+}
+
+.o_mm_cap_body {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #666;
+}
+
+/* ─── Imaging concept / anatomy section ─────────────────────────────────────── */
+.o_mm_anatomy_layout {
+    display: flex;
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+}
+
+.o_mm_anatomy_visual {
+    flex: 0 0 46%;
+}
+
+.o_mm_anatomy_lists {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 36px;
+}
+
+.o_mm_anatomy_item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid #ececec;
+}
+
+.o_mm_anatomy_num {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #0a0a0a;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+
+.o_mm_anatomy_text {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #222;
+}
+
+/* ─── Panel: gallery + info column (deployment / portability) ──────────────── */
+.o_mm_panel {
+    background: #fff;
+}
+
+.o_mm_panel_inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 84px clamp(20px, 5vw, 64px) 96px;
+    display: flex;
+    gap: clamp(40px, 6vw, 88px);
+    align-items: flex-start;
+}
+
+/* ── Image gallery ── */
+.o_mm_gallery {
+    flex: 0 0 48%;
+    min-width: 0;
+}
+
+.o_mm_main_img_wrap {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #f5f5f5;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    position: relative;
+}
+
+.o_mm_main_img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: opacity 0.25s ease;
+}
+
+.o_mm_main_img.is-fading {
+    opacity: 0;
+}
+
+.o_mm_main_img_empty {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #bbb;
+}
+
+/* Thumbnail strip */
+.o_mm_thumbs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+}
+
+.o_mm_thumbs::-webkit-scrollbar { display: none; }
+
+.o_mm_thumb {
+    flex: 0 0 calc((100% - 32px) / 5);
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    background: #f0f0f0;
+    transition: border-color 0.18s ease, transform 0.15s ease;
+    outline: none;
+}
+
+.o_mm_thumb:hover {
+    transform: translateY(-2px);
+    border-color: #ccc;
+}
+
+.o_mm_thumb.is-active {
+    border-color: #e00000;
+}
+
+.o_mm_thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* ── Info column ── */
+.o_mm_info {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: left;
+}
+
+.o_mm_badge {
+    display: inline-block;
+    background: rgba(196, 0, 0, 0.07);
+    border: 1px solid rgba(196, 0, 0, 0.22);
+    color: #c40000;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.o_mm_info_title {
+    font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(30px, 3.6vw, 44px);
+    font-weight: 900;
+    color: #0a0a0a;
+    margin: 0 0 10px;
+    letter-spacing: -0.02em;
+    line-height: 1.06;
+}
+
+.o_mm_info_tagline {
+    font-size: clamp(14px, 1.3vw, 17px);
+    color: #555;
+    margin: 0 0 28px;
+    line-height: 1.6;
+    font-weight: 500;
+    max-width: 480px;
+}
+
+.o_mm_info_divider {
+    width: 52px;
+    height: 4px;
+    background: #c40000;
+    border-radius: 999px;
+    margin-bottom: 32px;
+}
+
+/* Quick spec cards */
+.o_mm_specs_quick {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 36px;
+}
+
+.o_mm_spec_quick {
+    background: #f7f7f7;
+    border-radius: 10px;
+    padding: 16px 20px;
+}
+
+.o_mm_spec_quick_label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #999;
+    margin: 0 0 6px;
+}
+
+.o_mm_spec_quick_val {
+    font-size: 19px;
+    font-weight: 800;
+    color: #0a0a0a;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.o_mm_spec_quick_val small {
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    letter-spacing: 0;
+}
+
+/* Feature bullets */
+.o_mm_features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.o_mm_features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    color: #444;
+    line-height: 1.65;
+}
+
+.o_mm_features li::before {
+    content: "";
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    background: #e00000;
+    border-radius: 50%;
+    margin-top: 8px;
+}
+
+/* CTA row */
+.o_mm_cta_row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 28px;
+    border-top: 1px solid #ebebeb;
+    margin-top: 4px;
+}
+
+.o_mm_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #e00000;
+    color: #fff !important;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 14px 30px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    transition: background 0.2s ease, transform 0.15s ease;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.o_mm_btn:hover {
+    background: #c20000;
+    transform: translateY(-1px);
+    color: #fff !important;
+}
+
+.o_mm_btn svg {
+    transition: transform 0.15s ease;
+}
+
+.o_mm_btn:hover svg {
+    transform: translateX(3px);
+}
+
+.o_mm_btn--ghost {
+    background: transparent;
+    color: #0a0a0a !important;
+    border: 1px solid #d8d8d8;
+}
+
+.o_mm_btn--ghost:hover {
+    background: #f5f5f5;
+    color: #0a0a0a !important;
+}
+
+/* ─── Technical specifications section ──────────────────────────────────────── */
+.o_mm_specs_section {
+    background: #ffffff;
+}
+
+.o_mm_specs_layout {
+    display: flex;
+    gap: 56px;
+    align-items: flex-start;
+}
+
+/* ── Left nav ── */
+.o_mm_specs_nav {
+    width: 190px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 110px;
+}
+
+.o_mm_specs_nav_label {
+    font-family: "Montserrat", sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c0c0c0;
+    display: block;
+    margin: 0 0 10px 14px;
+}
+
+.o_mm_specs_nav_link {
+    display: block;
+    padding: 8px 14px;
+    color: #aaa !important;
+    text-decoration: none !important;
+    font-family: "Montserrat", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    border-left: 2px solid transparent;
+    border-radius: 0 6px 6px 0;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    letter-spacing: 0.01em;
+}
+
+.o_mm_specs_nav_link:hover {
+    color: #333 !important;
+    border-left-color: #ddd;
+    background: #f5f5f5;
+    text-decoration: none !important;
+}
+
+.o_mm_specs_nav_link.is-active {
+    color: #0a0a0a !important;
+    border-left-color: #e00000;
+    background: transparent;
+    font-weight: 700;
+    text-decoration: none !important;
+}
+
+/* ── Content area ── */
+.o_mm_specs_content {
+    flex: 1;
+    min-width: 0;
+}
+
+.o_mm_spec_group {
+    margin-bottom: 52px;
+    scroll-margin-top: 120px;
+}
+
+.o_mm_spec_group_heading {
+    padding-bottom: 16px;
+    margin-bottom: 0;
+}
+
+.o_mm_spec_group_heading h3 {
+    margin: 0;
+    font-family: "Montserrat", sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #999;
+}
+
+.o_mm_spec_table {
+    border-top: 1px solid #ebebeb;
+}
+
+.o_mm_spec_row {
+    display: grid;
+    grid-template-columns: 210px 1fr;
+    border-bottom: 1px solid #f2f2f2;
+    min-height: 52px;
+    transition: background 0.12s ease;
+}
+
+.o_mm_spec_row:hover { background: #fafafa; }
+.o_mm_spec_row:last-child { border-bottom: none; }
+
+.o_mm_spec_row_label {
+    padding: 15px 18px 15px 0;
+    font-family: "Montserrat", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    line-height: 1.45;
+    display: flex;
+    align-items: flex-start;
+}
+
+.o_mm_spec_row_value {
+    padding: 15px 0 15px 18px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13px;
+    color: #111;
+    line-height: 1.65;
+    border-left: 1px solid #f2f2f2;
+}
+
+/* Two-column mode comparison rows (City Mode / Wide Area Mode) */
+.o_mm_spec_row--modes .o_mm_spec_row_value {
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.o_mm_spec_mode_col {
+    padding: 15px 16px;
+    border-right: 1px solid #f2f2f2;
+}
+.o_mm_spec_mode_col:last-child { border-right: none; }
+
+.o_mm_spec_mode_name {
+    font-family: "Montserrat", sans-serif;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #c8c8c8;
+    margin-bottom: 5px;
+}
+
+.o_mm_spec_mode_value {
+    font-family: "Montserrat", sans-serif;
+    font-size: 12.5px;
+    color: #111;
+    line-height: 1.55;
+}
+
+.o_mm_spec_row--colheader {
+    background: #f8f8f8 !important;
+    min-height: 34px;
+    border-bottom: 1px solid #ebebeb !important;
+}
+
+.o_mm_spec_row--colheader:hover { background: #f8f8f8 !important; }
+
+.o_mm_spec_row--colheader .o_mm_spec_row_label {
+    color: transparent;
+    font-size: 10px;
+}
+
+.o_mm_spec_row--colheader .o_mm_spec_row_value {
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.o_mm_spec_row--colheader .o_mm_spec_mode_col {
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+}
+
+.o_mm_spec_row--colheader .o_mm_spec_mode_name {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #555;
+    margin-bottom: 0;
+}
+
+/* ─── Ecosystem / complete-solution section — dark ──────────────────────────── */
+.o_mm_eco_section {
+    overflow: hidden;
+    padding: 88px clamp(20px, 5vw, 64px) 96px;
+    color: #fff !important;
+    position: relative;
+}
+
+.o_mm_eco_section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 15% 8%, rgba(255, 0, 0, 0.394), transparent 30%),
+        radial-gradient(circle at 85% 16%, rgba(255, 80, 80, 0.475), transparent 34%),
+        linear-gradient(180deg, #1f1c1c 0%, #272626 100%);
+}
+
+.o_mm_eco_inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.o_mm_eco_header {
+    text-align: center;
+    margin-bottom: 56px;
+}
+
+.o_mm_eco_kicker {
+    margin: 0 0 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 180, 180, 0.88) !important;
+}
+
+.o_mm_eco_title {
+    font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 900;
+    color: #fff !important;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.o_mm_eco_title::after {
+    content: "";
+    display: block;
+    width: 52px;
+    height: 4px;
+    background: #e00000;
+    border-radius: 999px;
+    margin: 22px auto 0;
+}
+
+.o_mm_eco_intro {
+    max-width: 720px;
+    margin: 18px auto 0;
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.66) !important;
+}
+
+.o_mm_eco_grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 48px;
+}
+
+.o_mm_eco_card {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 36px 32px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.o_mm_eco_card:hover {
+    background: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.o_mm_eco_icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(224, 0, 0, 0.22);
+    border: 1px solid rgba(224, 0, 0, 0.38);
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 22px;
+    color: #ff7070;
+}
+
+.o_mm_eco_card_kicker {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #ff8a8a;
+    margin: 0 0 8px;
+}
+
+.o_mm_eco_card_title {
+    font-size: 19px;
+    font-weight: 800;
+    color: #fff !important;
+    margin: 0 0 12px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+}
+
+.o_mm_eco_card_body {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.65) !important;
+    line-height: 1.75;
+    margin: 0 0 16px;
+}
+
+.o_mm_eco_card_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.o_mm_eco_card_list li {
+    position: relative;
+    padding: 6px 0 6px 18px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.o_mm_eco_card_list li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 13px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #e00000;
+}
+
+/* Output chips row: Elevation / Image / 3D Information */
+.o_mm_eco_outputs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.o_mm_eco_output_chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #fff !important;
+}
+
+.o_mm_eco_output_chip svg {
+    color: #ff7070;
+    flex-shrink: 0;
+}
+
+/* ─── Closing CTA banner ────────────────────────────────────────────────────── */
+.o_mm_cta_banner {
+    background: #f4f4f4;
+    padding: 72px clamp(24px, 5vw, 80px);
+    text-align: center;
+}
+
+.o_mm_cta_banner_inner {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.o_mm_cta_banner_title {
+    font-family: "Arial Black", "Montserrat", sans-serif;
+    font-size: clamp(24px, 2.8vw, 34px);
+    font-weight: 900;
+    color: #0a0a0a;
+    margin: 0 0 14px;
+    letter-spacing: -0.02em;
+}
+
+.o_mm_cta_banner_body {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #555;
+    margin: 0 0 28px;
+}
+
+.o_mm_cta_banner .o_mm_cta_row {
+    justify-content: center;
+    border-top: none;
+    padding-top: 0;
+}
+
+.o_mm_cta_banner_note {
+    margin: 24px 0 0;
+    font-size: 11.5px;
+    color: #999;
+    line-height: 1.5;
+}
+
+/* ─── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .o_mm_panel_inner {
+        gap: clamp(28px, 4vw, 56px);
+    }
+
+    .o_mm_gallery {
+        flex: 0 0 44%;
+    }
+
+    .o_mm_cap_grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 991px) {
+    .o_mm_panel_inner {
+        flex-direction: column;
+        gap: 40px;
+        padding: 56px clamp(20px, 4vw, 40px);
+    }
+
+    .o_mm_gallery {
+        flex: none;
+        width: 100%;
+        max-width: 520px;
+        margin: 0 auto;
+    }
+
+    .o_mm_position_layout {
+        flex-direction: column;
+    }
+
+    .o_mm_position_visual {
+        flex: none;
+        width: 100%;
+        max-width: 480px;
+        margin: 0 auto;
+        order: -1;
+    }
+
+    .o_mm_anatomy_layout {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .o_mm_anatomy_visual {
+        flex: none;
+    }
+
+    .o_mm_eco_grid {
+        grid-template-columns: 1fr;
+    }
+
+    .o_mm_specs {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .o_mm_specs_layout {
+        flex-direction: column;
+        gap: 28px;
+    }
+
+    .o_mm_specs_nav {
+        width: 100%;
+        position: static;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 14px;
+        background: #f5f5f5;
+        border-radius: 10px;
+    }
+
+    .o_mm_specs_nav_label {
+        width: 100%;
+        margin: 0 0 4px 0;
+    }
+
+    .o_mm_specs_nav_link {
+        border-left: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        background: #ffffff;
+        font-size: 11px;
+    }
+
+    .o_mm_specs_nav_link:hover {
+        border-left-color: transparent;
+        background: #ececec;
+    }
+
+    .o_mm_specs_nav_link.is-active {
+        border-left-color: transparent;
+        background: rgba(224, 0, 0, 0.07);
+        color: #e00000 !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .o_mm_hero {
+        padding: 80px clamp(20px, 5vw, 40px) 64px;
+    }
+
+    .o_mm_sec,
+    .o_mm_specs_section {
+        padding: 60px clamp(16px, 4vw, 28px) 64px;
+    }
+
+    .o_mm_cap_grid {
+        grid-template-columns: 1fr;
+    }
+
+    .o_mm_specs_quick {
+        grid-template-columns: 1fr;
+    }
+
+    .o_mm_anatomy_lists {
+        grid-template-columns: 1fr;
+    }
+
+    .o_mm_eco_section {
+        padding: 64px clamp(16px, 4vw, 32px);
+    }
+
+    .o_mm_spec_row {
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+
+    .o_mm_spec_row_label {
+        padding: 12px 0 4px;
+        font-size: 10.5px;
+        color: #aaa;
+        border-left: none;
+    }
+
+    .o_mm_spec_row_value {
+        padding: 0 0 12px;
+        border-left: none;
+    }
+
+    .o_mm_spec_row--modes .o_mm_spec_row_value {
+        grid-template-columns: 1fr;
+    }
+
+    .o_mm_spec_mode_col {
+        border-right: none;
+        border-bottom: 1px solid #f2f2f2;
+        padding: 10px 0;
+    }
+    .o_mm_spec_mode_col:last-child { border-bottom: none; }
+
+    .o_mm_spec_row--colheader { display: none; }
+
+    .o_mm_cta_row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .o_mm_btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 520px) {
+    .o_mm_thumb {
+        flex: 0 0 calc((100% - 16px) / 3);
+    }
+}
