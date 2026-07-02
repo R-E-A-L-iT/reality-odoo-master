@@ -69,7 +69,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2020-04-24,RTC360,RTC360 Scanner Package,101002.1,77978.97,Extrapolated,2020-04-24 HDS pricelist EN.xlsx
 2020-04-24,RTC360 LT,RTC360 LT Scanner Package,85748.0,66202.0,Extrapolated,2020-04-24 HDS pricelist EN.xlsx
 2020-07-01,BLK2GO,BLK2GO System Package,78500.0,60606.16,Extrapolated,2020-07-01 HDS pricelist EN.xlsx
-2020-07-01,P30,Leica ScanStation P30 Standard Package,148936.8,114987.1,Extrapolated,2020-07-01 HDS pricelist EN.xlsx
 2020-07-01,P40,Leica ScanStation P40 Standard Package,130936.8,101090.15,Extrapolated,2020-07-01 HDS pricelist EN.xlsx
 2020-07-01,P50,Leica ScanStation P50 Standard Package,148936.8,114987.1,Extrapolated,2020-07-01 HDS pricelist EN.xlsx
 2020-07-01,RTC360,RTC360 Scanner Package,101232.1,78156.55,Extrapolated,2020-07-01 HDS pricelist EN.xlsx
@@ -228,7 +227,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2026-01-01,RTC360 LT,RTC360 LT Package with RCS,109397.1,86796.7,Actual,2026-01-01/CAD/2026-01-01-CAN_LA2.xlsx
 2026-01-05,BLK ARC,Leica BLK ARC on Spot with RCS System Package,74850.0,59825.0,Actual,2026-01-05/CAD/NL_CAN_LR1_0000389876_2026-01-05_15-02-35_CAD_EN.xlsx
 2026-01-05,BLK2FLY,Leica BLK2FLY Hardware Package with RCS,89140.0,70970.0,Actual,2026-01-05/CAD/NL_CAN_LR1_0000389876_2026-01-05_15-02-35_CAD_EN.xlsx
-2026-01-05,BLK2GO,Leica BLK2GO with RCS Starter Package,78625.0,63140.0,Actual,2026-01-05/CAD/NL_CAN_LR1_0000389876_2026-01-05_15-02-35_CAD_EN.xlsx
 2026-01-05,BLK2GO PULSE,Leica BLK2GO PULSE Hardware Package with RCS,58900.0,47200.0,Actual,2026-01-05/CAD/NL_CAN_LR1_0000389876_2026-01-05_15-02-35_CAD_EN.xlsx
 2026-01-05,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,41445.0,33065.0,Actual,2026-01-05/CAD/NL_CAN_LA2_0000389876_2026-01-05_15-02-06_CAD_EN.xlsx
 2026-01-05,P40,Leica ScanStation P40 Scanning System with RCS Package,126991.85,101125.0,Actual,2026-01-05/CAD/NL_CAN_LA2_0000389876_2026-01-05_15-02-06_CAD_EN.xlsx
