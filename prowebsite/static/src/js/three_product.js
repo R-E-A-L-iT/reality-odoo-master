@@ -9,6 +9,17 @@ whenReady(async () => {
     const scrollHost = document.getElementById("three-product-canvas-scroll");
 
     // ----------------------------
+    // Active product (which GLB set to load)
+    // ----------------------------
+    // This file is shared by every product page built on the "OmniGO template"
+    // (split-section model + scroll-section hotspot model). Pages opt into a
+    // different GLB by setting data-product on their #wrap element, e.g.
+    //   <div id="wrap" class="oe_structure oe_empty" data-product="omni360">
+    // No attribute (or an unrecognised value) falls back to the original
+    // OmniGO models, so the OmniGO page's behaviour is untouched.
+    const activeProduct = document.getElementById("wrap")?.dataset.product || "omnigo";
+
+    // ----------------------------
     // Custom Omni cursor
     // ----------------------------
     const omniPage = document.querySelector(".o_three_hero, .o_omnigo_buy_section, #omnigo-page-loader")?.closest("#wrap");
@@ -463,8 +474,23 @@ whenReady(async () => {
     }
 
     // note so I can push a new commit
-    const adapterModelPath = "/prowebsite/static/src/models/BLK2GO_Adapter_V02B.glb";
-    const splitModelPath   = "/prowebsite/static/src/models/BLK2GO_with_Scanner.glb";
+    // Per-product GLB sets — keyed by the data-product value read above.
+    // Add a new entry here (and set data-product on that page's #wrap) to
+    // wire up another product without touching any other page's models.
+    const PRODUCT_MODELS = {
+        omnigo: {
+            adapter: "/prowebsite/static/src/models/BLK2GO_Adapter_V02B.glb",
+            split:   "/prowebsite/static/src/models/BLK2GO_with_Scanner.glb",
+        },
+        omni360: {
+            adapter: "/prowebsite/static/src/models/Omni_360_Model.glb",
+            split:   "/prowebsite/static/src/models/Omni_360_Model.glb",
+        },
+    };
+    const activeModels = PRODUCT_MODELS[activeProduct] || PRODUCT_MODELS.omnigo;
+
+    const adapterModelPath = activeModels.adapter;
+    const splitModelPath   = activeModels.split;
 
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
