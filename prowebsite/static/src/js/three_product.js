@@ -9,15 +9,33 @@ whenReady(async () => {
     const scrollHost = document.getElementById("three-product-canvas-scroll");
 
     // ----------------------------
-    // Active product (which GLB set to load)
+    // Active product (which GLB set + header branding to use)
     // ----------------------------
     // This file is shared by every product page built on the "OmniGO template"
-    // (split-section model + scroll-section hotspot model). Pages opt into a
-    // different GLB by setting data-product on their #wrap element, e.g.
+    // (split-section model, scroll-section hotspot model, injected header).
+    // Pages opt into a different product by setting data-product on their
+    // #wrap element, e.g.
     //   <div id="wrap" class="oe_structure oe_empty" data-product="omni360">
-    // No attribute (or an unrecognised value) falls back to the original
-    // OmniGO models, so the OmniGO page's behaviour is untouched.
+    // Add one entry to PRODUCT_CONFIG below per new product line — everything
+    // else in this file reads from activeConfig, so no other page is touched.
+    const PRODUCT_CONFIG = {
+        omnigo: {
+            logoSrc: "https://cdn.r-e-a-l.it/images/header/Omni_GO.png",
+            logoAlt: "OmniGO",
+            modelAdapter: "/prowebsite/static/src/models/BLK2GO_Adapter_V02B.glb",
+            modelSplit:   "/prowebsite/static/src/models/BLK2GO_with_Scanner.glb",
+        },
+        omni360: {
+            logoSrc: "https://cdn.r-e-a-l.it/images/ecommerce/Omni360.png",
+            logoAlt: "Omni360",
+            modelAdapter: "/prowebsite/static/src/models/Omni_360_Model.glb",
+            modelSplit:   "/prowebsite/static/src/models/Omni_360_Model.glb",
+        },
+    };
+    // No attribute (or an unrecognised value) falls back to "omnigo", so the
+    // OmniGO page's behaviour is unchanged if it's ever left unset.
     const activeProduct = document.getElementById("wrap")?.dataset.product || "omnigo";
+    const activeConfig = PRODUCT_CONFIG[activeProduct] || PRODUCT_CONFIG.omnigo;
 
     // ----------------------------
     // Custom Omni cursor
@@ -216,8 +234,8 @@ whenReady(async () => {
                         <img src="https://cdn.r-e-a-l.it/images/header/r_circle.png" alt="R logo" class="o_omnigo_ch_r_img" />
                     </a>
                     <div class="o_omnigo_ch_divider"></div>
-                    <a href="#" class="o_omnigo_ch_logo_omnigo" aria-label="OmniGO">
-                        <img src="https://cdn.r-e-a-l.it/images/header/Omni_GO.png" alt="OmniGO" class="o_omnigo_ch_omnigo_img" />
+                    <a href="#" class="o_omnigo_ch_logo_omnigo" aria-label="${activeConfig.logoAlt}">
+                        <img src="${activeConfig.logoSrc}" alt="${activeConfig.logoAlt}" class="o_omnigo_ch_omnigo_img" />
                     </a>
                 </div>
                 <nav class="o_omnigo_ch_nav" aria-label="${_t('ariaNav', 'OmniGO navigation')}">
@@ -474,23 +492,8 @@ whenReady(async () => {
     }
 
     // note so I can push a new commit
-    // Per-product GLB sets — keyed by the data-product value read above.
-    // Add a new entry here (and set data-product on that page's #wrap) to
-    // wire up another product without touching any other page's models.
-    const PRODUCT_MODELS = {
-        omnigo: {
-            adapter: "/prowebsite/static/src/models/BLK2GO_Adapter_V02B.glb",
-            split:   "/prowebsite/static/src/models/BLK2GO_with_Scanner.glb",
-        },
-        omni360: {
-            adapter: "/prowebsite/static/src/models/Omni_360_Model.glb",
-            split:   "/prowebsite/static/src/models/Omni_360_Model.glb",
-        },
-    };
-    const activeModels = PRODUCT_MODELS[activeProduct] || PRODUCT_MODELS.omnigo;
-
-    const adapterModelPath = activeModels.adapter;
-    const splitModelPath   = activeModels.split;
+    const adapterModelPath = activeConfig.modelAdapter;
+    const splitModelPath   = activeConfig.modelSplit;
 
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
