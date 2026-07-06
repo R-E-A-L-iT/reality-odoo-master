@@ -2017,6 +2017,118 @@ body {
     color: #c20000;
 }
 
+/* ─── Pre-launch "notify me" signup form (replaces qty + cart + preorder) ──── */
+.o_omnigo_notify_form {
+    padding-top: 4px;
+    border-top: 1px solid #ebebeb;
+    margin-top: 4px;
+}
+
+.o_omnigo_notify_fields {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.o_omnigo_notify_fields.is-hidden {
+    display: none;
+}
+
+.o_omnigo_notify_field {
+    flex: 1 1 160px;
+    min-width: 140px;
+}
+
+.o_omnigo_notify_field--email {
+    flex: 1 1 220px;
+}
+
+.o_omnigo_notify_input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    color: #111;
+    background: #fff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.o_omnigo_notify_input::placeholder {
+    color: #999;
+}
+
+.o_omnigo_notify_input:focus {
+    outline: none;
+    border-color: #e00000;
+    box-shadow: 0 0 0 3px rgba(224, 0, 0, 0.12);
+}
+
+.o_omnigo_notify_submit {
+    flex: 0 0 auto;
+    background: #e00000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 13px 28px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.o_omnigo_notify_submit:hover:not(:disabled) {
+    background: #c20000;
+    transform: translateY(-1px);
+}
+
+.o_omnigo_notify_submit:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+
+.o_omnigo_notify_submit.is-loading::after {
+    content: " …";
+}
+
+.o_omnigo_notify_error {
+    display: none;
+    margin-top: 10px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 12.5px;
+    color: #c0392b;
+}
+
+.o_omnigo_notify_error.is-visible {
+    display: block;
+}
+
+.o_omnigo_notify_success {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    background: rgba(30, 158, 74, 0.08);
+    border: 1px solid rgba(30, 158, 74, 0.25);
+    border-radius: 8px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    color: #157a3a;
+}
+
+.o_omnigo_notify_success.is-visible {
+    display: flex;
+}
+
+.o_omnigo_notify_success svg {
+    flex-shrink: 0;
+    color: #1e9e4a;
+}
 
 /* Mobile */
 @media (max-width: 768px) {
@@ -2044,6 +2156,15 @@ body {
     .o_omnigo_buy_now_btn {
         width: 100%;
         max-width: 100%;
+    }
+
+    .o_omnigo_notify_fields {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .o_omnigo_notify_submit {
+        width: 100%;
     }
 }
 

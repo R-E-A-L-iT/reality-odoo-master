@@ -62,6 +62,9 @@ whenReady(async () => {
             dragToRotate:      'Faites glisser pour faire pivoter',
             intlNote:          'Vous achetez depuis l\'extérieur des États-Unis ou du Canada ? Contactez-nous directement <a href="/contact">ici</a> pour passer une commande.',
             goToVideo:         (n) => `Aller à la vidéo ${n}`,
+            notifyMissingName: 'Veuillez entrer votre prénom et votre nom.',
+            notifyInvalidEmail:'Veuillez entrer une adresse courriel valide.',
+            notifyGenericError:'Une erreur est survenue — veuillez réessayer.',
         },
         es_ES: {
             navAdapt:          'Adaptar',
@@ -75,6 +78,9 @@ whenReady(async () => {
             dragToRotate:      'Arrastra para rotar',
             intlNote:          '¿Está comprando desde fuera de EE.UU. o Canadá? Contáctenos directamente <a href="/contact">aquí</a> para realizar un pedido.',
             goToVideo:         (n) => `Ir al video ${n}`,
+            notifyMissingName: 'Por favor ingrese su nombre y apellido.',
+            notifyInvalidEmail:'Por favor ingrese un correo electrónico válido.',
+            notifyGenericError:'Algo salió mal — por favor intente de nuevo.',
         },
     };
 
@@ -509,6 +515,7 @@ whenReady(async () => {
         // Still wire up lightweight features that don't need the 3D canvas
         initVideoGallery();
         initOmnigoBuySection();
+        initNotifySignupForm();
         const _faqListEarly = document.querySelector(".o_omnigo_faq_list");
         if (_faqListEarly) {
             _faqListEarly.addEventListener("click", e => {
@@ -1641,7 +1648,96 @@ whenReady(async () => {
         });
     }
 
+    // ----------------------------
+    // Pre-launch "notify me" signup form
+    // ----------------------------
+    // Feature-detected, not product-gated: this only runs if a page actually
+    // contains .o_omnigo_notify_form (e.g. Omni360's buy section with shop
+    // controls switched off), so it's a no-op everywhere else, including the
+    // OmniGO page.
+    function initNotifySignupForm() {
+        const form = document.querySelector(".o_omnigo_notify_form");
+        if (!form) return;
+
+        const listKey   = form.dataset.listKey || '';
+        const fieldsEl  = form.querySelector(".o_omnigo_notify_fields");
+        const successEl = form.querySelector(".o_omnigo_notify_success");
+        const errorEl   = form.querySelector(".o_omnigo_notify_error");
+        const firstIn   = form.querySelector(".o_omnigo_notify_first");
+        const lastIn    = form.querySelector(".o_omnigo_notify_last");
+        const emailIn   = form.querySelector(".o_omnigo_notify_email");
+        const submitBtn = form.querySelector(".o_omnigo_notify_submit");
+
+        const jq = window.$ || window.jQuery;
+        const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+        function showError(msg) {
+            if (!errorEl) return;
+            errorEl.textContent = msg;
+            errorEl.classList.add("is-visible");
+        }
+
+        function clearError() {
+            errorEl?.classList.remove("is-visible");
+        }
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            clearError();
+
+            const first_name = (firstIn?.value || '').trim();
+            const last_name  = (lastIn?.value || '').trim();
+            const email      = (emailIn?.value || '').trim();
+
+            if (!first_name || !last_name) {
+                showError(_t('notifyMissingName', 'Please enter your first and last name.'));
+                return;
+            }
+            if (!emailRe.test(email)) {
+                showError(_t('notifyInvalidEmail', 'Please enter a valid email address.'));
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.classList.add("is-loading");
+
+            jq.ajax({
+                url: "/prowebsite/notify_signup",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    jsonrpc: "2.0",
+                    method: "call",
+                    id: 1,
+                    params: { first_name, last_name, email, list_key: listKey },
+                }),
+                success(resp) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove("is-loading");
+                    const result = resp?.result;
+                    if (result?.success) {
+                        fieldsEl?.classList.add("is-hidden");
+                        successEl?.classList.add("is-visible");
+                    } else {
+                        const err = result?.error;
+                        const msg = err === 'invalid_email'
+                            ? _t('notifyInvalidEmail', 'Please enter a valid email address.')
+                            : _t('notifyGenericError', 'Something went wrong — please try again.');
+                        showError(msg);
+                    }
+                },
+                error(xhr) {
+                    console.error("[notify_signup] HTTP error:", xhr.status);
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove("is-loading");
+                    showError(_t('notifyGenericError', 'Something went wrong — please try again.'));
+                },
+            });
+        });
+    }
+
     initOmnigoBuySection();
+    initNotifySignupForm();
 
     // ----------------------------
     // Video Gallery carousel — infinite loop with peek
