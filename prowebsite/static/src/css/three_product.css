@@ -364,6 +364,25 @@ body {
     }
 }
 
+/* ─── Collapsed split section (e.g. Omni360 — no split-model intro) ─────────
+   Moves the whole section off-screen with `position: fixed` instead of
+   shrinking it. Keeping its normal width/height means every absolutely
+   positioned child inside it (.o_three_bottom_model_host in particular)
+   still computes valid, non-zero dimensions — the Three.js pipeline that
+   depends on #three-product-canvas-bottom-model existing keeps working
+   exactly as before (so the later scroll-callout section still initializes),
+   it just never becomes visible and the IntersectionObserver-gated render
+   loop (_bottomInView) skips it every frame since it's permanently
+   off-screen — zero wasted GPU work, zero layout space on the real page. */
+.o_three_split_section--collapsed {
+    position: fixed;
+    top: 0;
+    left: -9999px;
+    z-index: -1;
+    pointer-events: none;
+    visibility: hidden;
+}
+
 .o_three_split_right {
     background: #ffffff;
     display: flex;
@@ -659,6 +678,24 @@ body {
     vertical-align: top;
     /* Safari: suppress the default webkit media border */
     -webkit-appearance: none;
+}
+
+/* ─── Solo variant — centered, larger, no heading column ────────────────────
+   For a video-scroll section with no .o_omnigo_video_scroll_heading in its
+   markup (omit that div entirely rather than hiding it — .o_omnigo_video_
+   scroll_heading is `display: flex !important`, so simply not rendering it
+   is far more reliable than trying to out-specificity that rule). With the
+   heading gone, .o_omnigo_video_scroll_video_wrap already fills the row via
+   its existing flex: 1 1 0 — this just adds generous side gutters so it
+   reads as a deliberate, centered, larger video rather than edge-to-edge. */
+.o_omnigo_video_scroll_section--solo .o_omnigo_video_scroll_video_wrap {
+    padding: 0 clamp(24px, 8vw, 160px);
+}
+
+@media (max-width: 768px) {
+    .o_omnigo_video_scroll_section--solo .o_omnigo_video_scroll_video_wrap {
+        padding: 0 16px;
+    }
 }
 
 /* feature highlights */
