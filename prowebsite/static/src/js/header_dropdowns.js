@@ -348,29 +348,18 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
 // ─────────────────────────────────────────────────────────────────────────────
 // initHeaderGlassScroll(headerEl)
 //
-// Gives the native #top header the same glassy, fixed-overlay, shrink-on-
-// scroll treatment as the Omni pages' custom header. That header
-// (.o_omnigo_ch_header in three_product.css) drives its own independent
-// version of this same idea — this is the equivalent for every other page.
-// The actual glass background / fixed position / shrink transition live in
-// CSS (header_dropdowns.css); this only measures + toggles a state class.
+// Gives the native #top header the same glassy background + shrink-on-scroll
+// treatment as the Omni pages' custom header. Fixed positioning and reserving
+// space for page content are already handled by Odoo's own "Header Overlay"
+// website setting (header#top already ships with .o_header_fixed /
+// .o_top_fixed_element, #wrapwrap with .o_header_overlay) — this only toggles
+// a state class; the actual glass background / shrink transition live in CSS
+// (header_dropdowns.css). Deliberately does NOT touch position or add its own
+// body padding — doing that fought Odoo's existing compensation and doubled
+// it (see the CSS comment above for what that looked like).
 // ─────────────────────────────────────────────────────────────────────────────
 function initHeaderGlassScroll(headerEl) {
     const scrollRoot = document.getElementById('wrapwrap') || document.documentElement;
-
-    // Reserve the header's *expanded* height as top padding on <body> (see the
-    // `body { padding-top: var(--o_header_h) }` rule in header_dropdowns.css)
-    // so the now fixed/overlaid header never covers page content underneath
-    // it. Only measured while NOT scrolled, so the shrink-on-scroll height
-    // change never fights this — otherwise the page would jump every time the
-    // header shrinks.
-    function syncHeaderHeight() {
-        if (headerEl.classList.contains('o_header_glass_scrolled')) return;
-        document.documentElement.style.setProperty('--o_header_h', headerEl.offsetHeight + 'px');
-    }
-    syncHeaderHeight();
-    new ResizeObserver(syncHeaderHeight).observe(headerEl);
-
     scrollRoot.addEventListener('scroll', () => {
         headerEl.classList.toggle('o_header_glass_scrolled', scrollRoot.scrollTop > 50);
     }, { passive: true });

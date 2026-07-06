@@ -16,20 +16,20 @@
     padding-right: clamp(16px, 3vw, 48px);
 }
 
-/* ── Native header: glassy, fixed overlay, shrinks on scroll ─────────────────
-   Matches the Omni pages' custom header (.o_omnigo_ch_header in
-   three_product.css), which drives the identical idea independently for its
-   own injected header element. Desktop-only (≥992px, matching every other
-   header override in this file) — mobile keeps the current in-flow header
-   and offcanvas menu untouched, since forcing this onto the mobile nav risks
-   fighting the offcanvas/safe-area layout without any real benefit here. */
+/* ── Native header: glassy background + shrink on scroll ─────────────────────
+   Odoo's own "Header Overlay" website setting (already enabled here —
+   header#top ships with .o_header_fixed.o_top_fixed_element, and #wrapwrap
+   with .o_header_overlay) already handles fixed positioning and reserving
+   space for the page content correctly. This must NOT re-declare position,
+   z-index, or add its own body padding — an earlier version of this file did,
+   which fought Odoo's own compensation and doubled it (content pushed down an
+   extra header's-height, with the header itself rendering over nothing,
+   which is why it looked "pitch black" — no real content left behind it for
+   the blur to sample). This only layers color/blur/shrink on top of Odoo's
+   existing mechanism. Desktop-only (≥992px), matching every other header
+   override in this file — mobile keeps its current in-flow header untouched. */
 @media (min-width: 992px) {
     header#top {
-        position: fixed !important;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1001;
         background: rgba(6, 4, 4, 0.55) !important;
         backdrop-filter: blur(28px);
         -webkit-backdrop-filter: blur(28px);
@@ -59,13 +59,6 @@
     header#top.o_header_glass_scrolled #o_main_nav .container {
         padding-top: 0.5rem !important;
         padding-bottom: 0.5rem !important;
-    }
-
-    /* Reserve exactly the header's *expanded* height (set by
-       initHeaderGlassScroll() in header_dropdowns.js) as top padding, so the
-       now-fixed header never covers the page's own first section. */
-    body {
-        padding-top: var(--o_header_h, 0px);
     }
 }
 
