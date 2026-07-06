@@ -3,6 +3,152 @@ import { jsonrpc } from "@web/core/network/rpc_service";
 import publicWidget from "@web/legacy/js/public/public_widget";
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Top-level nav menus rebuilt into the custom hover bar, same as account/lang.
+// `label` is matched case-insensitively against the top-level link's own text
+// (there's no stable id/class for these — they're ordinary website.menu
+// entries), so a site-owner rename in the Website > Menu editor will just
+// leave that one item on its native dropdown instead of breaking anything.
+// ─────────────────────────────────────────────────────────────────────────────
+const MEGA_MENU_ITEMS = [
+    { key: 'equipment',   label: 'equipment' },
+    { key: 'software',    label: 'software' },
+    { key: 'accessories', label: 'accessories' },
+    { key: 'rentals',     label: 'rentals' },
+    { key: 'resources',   label: 'resources' },
+];
+
+/** Find the top-level nav <li> whose own link text matches `label`. */
+function findTopLevelMenuLi(headerEl, label) {
+    const topMenu = headerEl.querySelector('#top_menu') || document.querySelector('#top_menu');
+    if (!topMenu) return null;
+    return Array.from(topMenu.children).find(li => {
+        const link = li.querySelector(':scope > a');
+        return link && link.textContent.trim().toLowerCase() === label;
+    }) || null;
+}
+
+/**
+ * Walk a menu item's own dropdown/mega-menu content and group its links under
+ * whatever heading-like element precedes them. Written generically (rather
+ * than assuming one exact markup) because the real content lives in the
+ * website's menu configuration in the database — it could be a plain 2-level
+ * website.submenu (Odoo's default) or a full custom mega_menu_content HTML
+ * blob, and this needs to produce something sane either way.
+ */
+function extractMenuColumns(li) {
+    if (!li) return [];
+    const root = li.querySelector(':scope > ul.dropdown-menu, :scope > .o_mega_menu, :scope > .dropdown-menu');
+    if (!root) return [];
+
+    const HEADING_TAGS = new Set(['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'STRONG', 'B']);
+
+    function isGroupToggle(el) {
+        // A dropdown-toggle only counts as a column heading if it has a sibling
+        // dropdown-menu under the same <li> — i.e. it's a group, not a leaf link
+        // that merely happens to carry the same class.
+        return el.tagName === 'A'
+            && el.classList.contains('dropdown-toggle')
+            && !!el.parentElement?.querySelector(':scope > ul.dropdown-menu, :scope > .dropdown-menu');
+    }
+
+    const columns = [];
+    let current = null;
+
+    function pushItem(label, href) {
+        label = label.trim();
+        if (!label) return;
+        if (!current) {
+            current = { label: '', items: [] };
+            columns.push(current);
+        }
+        current.items.push({ href: href || '#', label });
+    }
+
+    function walk(node) {
+        Array.from(node.children).forEach(child => {
+            if (isGroupToggle(child)) {
+                current = { label: child.textContent.trim(), items: [] };
+                columns.push(current);
+                return; // its sibling <ul> is handled on the next iteration
+            }
+            if (child.tagName === 'A') {
+                pushItem(child.textContent, child.getAttribute('href'));
+                return;
+            }
+            if (HEADING_TAGS.has(child.tagName)) {
+                current = { label: child.textContent.trim(), items: [] };
+                columns.push(current);
+                return;
+            }
+            walk(child); // recurse through wrapper <li>/<ul>/<div>/<row>/<col> elements
+        });
+    }
+
+    walk(root);
+    return columns.filter(col => col.items.length);
+}
+
+function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c]));
+}
+
+function renderMenuColumnHTML(col) {
+    return `
+        <div class="o_hdd_menu_col">
+            ${col.label ? `<p class="o_hdd_menu_col_label">${escapeHtml(col.label)}</p>` : ''}
+            <ul class="o_hdd_menu_col_items">
+                ${col.items.map(item => `
+                    <li><a href="${escapeHtml(item.href)}" class="o_hdd_menu_link">${escapeHtml(item.label)}</a></li>
+                `).join('')}
+            </ul>
+        </div>
+    `;
+}
+
+/** Featured product cards for the Accessories panel — hand-authored, since
+ *  these promote specific products rather than mirroring a plain link list.
+ *  Update the image src / href here if the URLs change. */
+const ACCESSORIES_FEATURED_CARDS = `
+    <a href="/omnigo" class="o_hdd_feature_card">
+        <div class="o_hdd_feature_card_media">
+            <img src="https://cdn.r-e-a-l.it/images/header/Omni_GO.png" alt="OmniGO"/>
+        </div>
+        <p class="o_hdd_feature_card_kicker">Multi-Scanner Adapter</p>
+        <p class="o_hdd_feature_card_name">OmniGO</p>
+        <span class="o_hdd_feature_card_cta">Check out the OmniGO
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+        </span>
+    </a>
+    <a href="/omni360" class="o_hdd_feature_card o_hdd_feature_card--new">
+        <span class="o_hdd_feature_card_badge">New</span>
+        <div class="o_hdd_feature_card_media">
+            <img src="https://cdn.r-e-a-l.it/images/ecommerce/Omni360.png" alt="Omni360"/>
+        </div>
+        <p class="o_hdd_feature_card_kicker">Multi-Scanner Adapter</p>
+        <p class="o_hdd_feature_card_name">Omni360</p>
+        <span class="o_hdd_feature_card_cta">Check out the Omni360
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+        </span>
+    </a>
+`;
+
+function renderMenuPanelHTML(key, columns) {
+    const isAccessories = key === 'accessories';
+    return `
+        <div class="o_hdd_panel" data-panel="${key}">
+            <div class="o_hdd_menu_inner${isAccessories ? ' o_hdd_menu_inner--accessories' : ''}">
+                ${isAccessories ? `<div class="o_hdd_feature_cards">${ACCESSORIES_FEATURED_CARDS}</div>` : ''}
+                <div class="o_hdd_menu_cols${isAccessories ? ' o_hdd_menu_cols--secondary' : ''}">
+                    ${columns.map(renderMenuColumnHTML).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // initHeaderDropdowns(headerEl, iconsUl)
 //
 // Core function that creates the full-width dropdown bar for ANY header.
@@ -36,6 +182,15 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
                   || (a.dataset.url_code || '').toUpperCase(),
         active: a.classList.contains('active'),
     }));
+
+    // ── Locate + extract the 5 plain nav menus (Equipment, Software, ...) ──
+    // Each entry pairs its matched <li> (or null if this header/page doesn't
+    // have that menu — e.g. the OmniGO/Omni360 custom header) with the
+    // columns extracted from whatever dropdown/mega-menu content it has.
+    const megaMenus = MEGA_MENU_ITEMS.map(({ key, label }) => {
+        const li = findTopLevelMenuLi(headerEl, label);
+        return { key, li, columns: extractMenuColumns(li) };
+    });
 
     // ── Build the dropdown bar ─────────────────────────────────────────────
     const bar = document.createElement('div');
@@ -75,6 +230,7 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
                 </div>
             </div>
         </div>
+        ${megaMenus.filter(m => m.li).map(m => renderMenuPanelHTML(m.key, m.columns)).join('')}
     `;
 
     // Always append to body — position:fixed handles placement
@@ -169,6 +325,17 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
 
     wire(accountLi, 'account');
     wire(langLi,    'lang');
+
+    // Wire the 5 rebuilt nav menus the same way. Each matched <li> gets
+    // `o_hdd_wired` so the CSS rule below can hide its native dropdown/mega-menu
+    // at desktop widths — only for menus we actually found and rebuilt, so a
+    // renamed menu just keeps working as a normal native dropdown instead of
+    // silently losing its content.
+    megaMenus.forEach(({ key, li }) => {
+        if (!li) return;
+        li.classList.add('o_hdd_wired');
+        wire(li, key);
+    });
 
     bar.addEventListener('mouseenter', () => clearTimeout(_hideTimer));
     bar.addEventListener('mouseleave', scheduleHide);

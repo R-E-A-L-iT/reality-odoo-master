@@ -183,6 +183,222 @@
     font-size: 18px;
 }
 
+/* ── Rebuilt nav menus: Equipment / Software / Rentals / Resources ───────────
+   Same panel mechanism as account/lang (.o_hdd_panel), just a wider, plain
+   block layout instead of the lang panel's flex row. */
+.o_hdd_menu_inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px clamp(24px, 5vw, 64px);
+    background: rgba(6, 4, 4, 0.82);
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(28px, 4vw, 56px);
+}
+
+.o_hdd_menu_cols {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: flex-start;
+    gap: clamp(28px, 4vw, 56px);
+    flex-wrap: wrap;
+}
+
+.o_hdd_menu_col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 150px;
+    flex: 1 1 150px;
+}
+
+.o_hdd_menu_col_label {
+    margin: 0 0 4px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    font-family: "Montserrat", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.o_hdd_menu_col_items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.o_hdd_menu_link {
+    display: block;
+    padding: 6px 4px;
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.68);
+    text-decoration: none !important;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.o_hdd_menu_link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    transform: translateX(2px);
+}
+
+/* ── Accessories: featured product cards (OmniGO / Omni360) + secondary cols ── */
+.o_hdd_menu_inner--accessories {
+    align-items: stretch;
+}
+
+.o_hdd_feature_cards {
+    display: flex;
+    gap: 16px;
+    flex: 0 0 auto;
+}
+
+.o_hdd_feature_card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 190px;
+    padding: 20px 20px 22px;
+    border-radius: 16px;
+    background: linear-gradient(160deg, #e00000 0%, #a30000 100%);
+    text-decoration: none !important;
+    box-shadow: 0 10px 28px rgba(224, 0, 0, 0.28);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.o_hdd_feature_card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 36px rgba(224, 0, 0, 0.38);
+}
+
+.o_hdd_feature_card_badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #a30000;
+    font-family: "Montserrat", sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.o_hdd_feature_card_media {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+.o_hdd_feature_card_media img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.35));
+}
+
+.o_hdd_feature_card_kicker {
+    margin: 0 0 4px;
+    color: rgba(255, 255, 255, 0.75);
+    font-family: "Montserrat", sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.o_hdd_feature_card_name {
+    margin: 0 0 12px;
+    color: #ffffff;
+    font-family: "Arial Black", "Montserrat", sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+}
+
+.o_hdd_feature_card_cta {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #ffffff;
+    font-family: "Montserrat", sans-serif;
+    font-size: 12.5px;
+    font-weight: 700;
+}
+
+.o_hdd_feature_card_cta svg {
+    transition: transform 0.15s ease;
+}
+
+.o_hdd_feature_card:hover .o_hdd_feature_card_cta svg {
+    transform: translateX(3px);
+}
+
+/* Secondary (regular accessory) columns sit smaller/dimmer next to the cards,
+   per "all the other accessories take secondary priority". */
+.o_hdd_menu_cols--secondary .o_hdd_menu_col {
+    min-width: 130px;
+}
+
+.o_hdd_menu_cols--secondary .o_hdd_menu_col_label {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 10px;
+}
+
+.o_hdd_menu_cols--secondary .o_hdd_menu_link {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.o_hdd_menu_cols--secondary .o_hdd_menu_link:hover {
+    color: #ffffff;
+}
+
+@media (max-width: 1200px) {
+    .o_hdd_feature_cards {
+        flex-direction: column;
+    }
+
+    .o_hdd_feature_card {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 18px;
+    }
+
+    .o_hdd_feature_card_media {
+        height: 56px;
+        width: 56px;
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+
+    .o_hdd_feature_card_kicker,
+    .o_hdd_feature_card_name {
+        margin: 0;
+    }
+
+    .o_hdd_feature_card_cta {
+        margin-top: 0;
+        margin-left: auto;
+    }
+}
+
 /* ── Remove Odoo's default pricelist dropdown near the search bar ──────────
    Currency switching is handled by the header dropdown (.o_hdd_bar) instead. */
 .o_pricelist_dropdown {
@@ -196,6 +412,14 @@
 @media (min-width: 992px) {
     body.o_hdd_active header#top li.o_no_autohide_item .js_usermenu,
     body.o_hdd_active header#top .o_header_language_selector .dropdown-menu {
+        display: none !important;
+    }
+
+    /* Same treatment for the 5 rebuilt nav menus — only <li> elements the JS
+       actually matched and rebuilt get `o_hdd_wired`, so a renamed menu just
+       keeps its native dropdown/mega-menu instead of losing its content. */
+    body.o_hdd_active #top_menu > li.o_hdd_wired > .dropdown-menu,
+    body.o_hdd_active #top_menu > li.o_hdd_wired > .o_mega_menu {
         display: none !important;
     }
 }
