@@ -364,6 +364,25 @@ body {
     }
 }
 
+/* ─── Collapsed split section (e.g. Omni360 — no split-model intro) ─────────
+   Moves the whole section off-screen with `position: fixed` instead of
+   shrinking it. Keeping its normal width/height means every absolutely
+   positioned child inside it (.o_three_bottom_model_host in particular)
+   still computes valid, non-zero dimensions — the Three.js pipeline that
+   depends on #three-product-canvas-bottom-model existing keeps working
+   exactly as before (so the later scroll-callout section still initializes),
+   it just never becomes visible and the IntersectionObserver-gated render
+   loop (_bottomInView) skips it every frame since it's permanently
+   off-screen — zero wasted GPU work, zero layout space on the real page. */
+.o_three_split_section--collapsed {
+    position: fixed;
+    top: 0;
+    left: -9999px;
+    z-index: -1;
+    pointer-events: none;
+    visibility: hidden;
+}
+
 .o_three_split_right {
     background: #ffffff;
     display: flex;
@@ -661,6 +680,80 @@ body {
     -webkit-appearance: none;
 }
 
+/* ─── Solo variant — centered, larger, no heading column ────────────────────
+   For a video-scroll section with no .o_omnigo_video_scroll_heading in its
+   markup (omit that div entirely rather than hiding it — .o_omnigo_video_
+   scroll_heading is `display: flex !important`, so simply not rendering it
+   is far more reliable than trying to out-specificity that rule). With the
+   heading gone, .o_omnigo_video_scroll_video_wrap already fills the row via
+   its existing flex: 1 1 0 — this just adds generous side gutters so it
+   reads as a deliberate, centered, larger video rather than edge-to-edge. */
+.o_omnigo_video_scroll_section--solo .o_omnigo_video_scroll_video_wrap {
+    padding: 0 clamp(24px, 8vw, 160px);
+    /* Allow this flex child to shrink below the video's intrinsic height once
+       the caption above it claims some of the sticky viewport-height area. */
+    min-height: 0;
+}
+
+/* Solo layout stacks a caption above the video instead of a side column —
+   switch the row layout to a column so the caption pushes the video down
+   rather than floating over it. */
+.o_omnigo_video_scroll_section--solo .o_omnigo_video_scroll_inner {
+    flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    .o_omnigo_video_scroll_section--solo .o_omnigo_video_scroll_video_wrap {
+        padding: 0 16px;
+    }
+}
+
+/* ─── Caption above a scroll video (solo variant) ────────────────────────────
+   Plain document flow, not an overlay — it sits above
+   .o_omnigo_video_scroll_video_wrap so the video is never obstructed. */
+.o_omnigo_video_scroll_caption {
+    flex: 0 0 auto;
+    padding: clamp(28px, 4vw, 56px) clamp(24px, 5vw, 64px) 0;
+    text-align: center;
+    background: #ffffff;
+}
+
+.o_omnigo_video_scroll_caption_kicker {
+    display: block;
+    margin: 0 0 12px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #c40000;
+}
+
+.o_omnigo_video_scroll_caption_title {
+    margin: 0 0 10px;
+    font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(24px, 3.2vw, 42px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #000000;
+    line-height: 1.1;
+}
+
+.o_omnigo_video_scroll_caption_subtitle {
+    margin: 0 auto;
+    max-width: 640px;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(14px, 1.3vw, 18px);
+    line-height: 1.6;
+    color: #333333;
+}
+
+@media (max-width: 768px) {
+    .o_omnigo_video_scroll_caption {
+        padding: 20px 16px 0;
+    }
+}
+
 /* feature highlights */
 .o_three_scroll_hotspot_layer {
     display: none;
@@ -782,6 +875,43 @@ body {
     top: -27px;
 }
 
+/* Back callout — OmniGO never renders this slot as a dot (see CALLOUT_CONTENT
+   in three_product.js), so there was no existing position to reuse. This is a
+   starting placeholder for Omni360's "back" slot (Side A / protective bars):
+   it places the dot on the left side, roughly between the attachment and
+   hatch positions, so it doesn't overlap either. Re-check against the live
+   Omni_360_Model.glb rotation and adjust these offsets once you can see it. */
+.o_three_feature_callout_back {
+    left: 50%;
+    top: 50%;
+    width: 560px;
+    height: 160px;
+    transform: translate(-320px, -30px);
+}
+
+.o_three_feature_callout_back .o_three_feature_dot {
+    left: 260px;
+    top: 90px;
+}
+
+.o_three_feature_callout_back .o_three_feature_line_diagonal {
+    left: 278px;
+    top: 100px;
+    width: 220px;
+    transform: rotate(22deg);
+}
+
+.o_three_feature_callout_back .o_three_feature_line_under {
+    left: -140px;
+    top: 158px;
+    width: 400px;
+}
+
+.o_three_feature_callout_back .o_three_feature_label {
+    left: -134px;
+    top: 168px;
+}
+
 @media (max-width: 768px) {
     .o_three_feature_callout_screw {
         transform: translate(-30px, 45px) scale(0.72);
@@ -795,6 +925,11 @@ body {
 
     .o_three_feature_callout_attachment {
         transform: translate(20px, -160px) scale(0.72);
+        transform-origin: left center;
+    }
+
+    .o_three_feature_callout_back {
+        transform: translate(-260px, -20px) scale(0.72);
         transform-origin: left center;
     }
 
@@ -1975,6 +2110,118 @@ body {
     color: #c20000;
 }
 
+/* ─── Pre-launch "notify me" signup form (replaces qty + cart + preorder) ──── */
+.o_omnigo_notify_form {
+    padding-top: 4px;
+    border-top: 1px solid #ebebeb;
+    margin-top: 4px;
+}
+
+.o_omnigo_notify_fields {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.o_omnigo_notify_fields.is-hidden {
+    display: none;
+}
+
+.o_omnigo_notify_field {
+    flex: 1 1 160px;
+    min-width: 140px;
+}
+
+.o_omnigo_notify_field--email {
+    flex: 1 1 220px;
+}
+
+.o_omnigo_notify_input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    color: #111;
+    background: #fff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.o_omnigo_notify_input::placeholder {
+    color: #999;
+}
+
+.o_omnigo_notify_input:focus {
+    outline: none;
+    border-color: #e00000;
+    box-shadow: 0 0 0 3px rgba(224, 0, 0, 0.12);
+}
+
+.o_omnigo_notify_submit {
+    flex: 0 0 auto;
+    background: #e00000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 13px 28px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.o_omnigo_notify_submit:hover:not(:disabled) {
+    background: #c20000;
+    transform: translateY(-1px);
+}
+
+.o_omnigo_notify_submit:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+
+.o_omnigo_notify_submit.is-loading::after {
+    content: " …";
+}
+
+.o_omnigo_notify_error {
+    display: none;
+    margin-top: 10px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 12.5px;
+    color: #c0392b;
+}
+
+.o_omnigo_notify_error.is-visible {
+    display: block;
+}
+
+.o_omnigo_notify_success {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    background: rgba(30, 158, 74, 0.08);
+    border: 1px solid rgba(30, 158, 74, 0.25);
+    border-radius: 8px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    color: #157a3a;
+}
+
+.o_omnigo_notify_success.is-visible {
+    display: flex;
+}
+
+.o_omnigo_notify_success svg {
+    flex-shrink: 0;
+    color: #1e9e4a;
+}
 
 /* Mobile */
 @media (max-width: 768px) {
@@ -2002,6 +2249,15 @@ body {
     .o_omnigo_buy_now_btn {
         width: 100%;
         max-width: 100%;
+    }
+
+    .o_omnigo_notify_fields {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .o_omnigo_notify_submit {
+        width: 100%;
     }
 }
 

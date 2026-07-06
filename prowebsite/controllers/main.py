@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import base64
+import re
 
 from odoo import http
 from odoo.http import request
@@ -10,6 +11,16 @@ _logger = logging.getLogger(__name__)
 # Customer-facing pricelists are named EXACTLY by these flag emojis.
 CAD_PRICELIST_NAME = '🇨🇦'
 USD_PRICELIST_NAME = '🇺🇸'
+
+# Public "notify me" mailing lists this endpoint is allowed to subscribe
+# visitors to, keyed by the `data-list-key` the page passes in (never a raw
+# mailing.list id — see notify_signup below). Add one entry per new product
+# that needs a pre-launch interest list.
+NOTIFY_SIGNUP_LISTS = {
+    'omni360': 21,
+}
+
+_EMAIL_RE = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
 
 
 class ProwebsiteController(http.Controller):
@@ -261,3 +272,54 @@ class ProwebsiteController(http.Controller):
                 'active':   region == current_region,
             })
         return result
+
+    @http.route(
+        '/prowebsite/notify_signup',
+        type='json',
+        auth='public',
+        website=True,
+        csrf=False,
+    )
+    def notify_signup(self, **kw):
+        """Subscribe a visitor to a pre-launch product-interest mailing list.
+
+        `list_key` must match an entry in NOTIFY_SIGNUP_LISTS — the client
+        never supplies a raw mailing.list id, so this endpoint can't be used
+        to subscribe contacts to arbitrary (e.g. internal) lists.
+        """
+        list_key = (kw.get('list_key') or '').strip()
+        list_id = NOTIFY_SIGNUP_LISTS.get(list_key)
+        if not list_id:
+            return {'success': False, 'error': 'invalid_list'}
+
+        email = (kw.get('email') or '').strip()
+        if not email or not _EMAIL_RE.match(email):
+            return {'success': False, 'error': 'invalid_email'}
+
+        first_name = (kw.get('first_name') or '').strip()
+        last_name = (kw.get('last_name') or '').strip()
+        name = ('%s %s' % (first_name, last_name)).strip() or email
+
+        mailing_list = request.env['mailing.list'].sudo().browse(list_id)
+        if not mailing_list.exists():
+            _logger.warning("[notify_signup] configured list_id %s (key=%s) no longer exists", list_id, list_key)
+            return {'success': False, 'error': 'invalid_list'}
+
+        MailingContact = request.env['mailing.contact'].sudo()
+        contact = MailingContact.search([('email', '=', email)], limit=1)
+        if contact:
+            contact.write({'name': name})
+        else:
+            contact = MailingContact.create({'name': name, 'email': email})
+
+        # Force a fresh, active subscription. The join model backing list_ids
+        # has been renamed across Odoo versions (mailing.contact.subscription
+        # / mailing.subscription, with differing field names), so rather than
+        # querying it directly we only touch the stable public API: unlink
+        # first (clears any earlier opt_out on this list), then link — a
+        # freshly (re)created subscription row is opted-in by default.
+        if list_id in contact.list_ids.ids:
+            contact.write({'list_ids': [(3, list_id)]})
+        contact.write({'list_ids': [(4, list_id)]})
+
+        return {'success': True}

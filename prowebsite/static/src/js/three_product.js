@@ -60,23 +60,11 @@ whenReady(async () => {
             ariaNav:           'Navigation OmniGO',
             buyNowPrice:       (price) => `Acheter maintenant | ${price}`,
             dragToRotate:      'Faites glisser pour faire pivoter',
-            calloutAttachment: 'Interface d\'attache BLK2GO',
-            calloutLatch:      'Bouton de verrouillage',
-            calloutScrew:      'Fixation à vis multi-usage',
-            detailAttachTitle: 'Montage universel pour trépied',
-            detailAttachBody:  'La face inférieure est équipée d\'un filetage standard 5/8″-11 compatible avec les trépieds et poteaux d\'arpentage, pour une utilisation dans des applications axées sur le levé.',
-            detailBackTitle:   'Bouton de dégagement rapide à une touche.',
-            detailBackBody:    'Le bouton rouge est conçu pour être actionné par une simple pression prolongée afin de fixer et de détacher l\'appareil du support Leica standard pour le montage sur des perches d\'arpentages.',
-            detailHatchTitle:  'Loquet à dégagement rapide.',
-            detailHatchBody:   'L\'adaptateur peut également être fixé à un GAD52 (adaptateur BLK360) pour une utilisation sur un monopode ou un trépied et offre une autre option pour fixer et détacher rapidement le BLK2GO.',
-            detailScrewTitle:  'Interface d\'attache BLK2GO',
-            detailScrewBody:   'La face supérieure est usinée avec précision pour maintenir fermement la poignée BLK2GO, répartissant la charge uniformément sur la surface de la pince afin d\'éliminer les vibrations et les oscillations du scanner pendant le mouvement.',
-            mobileAttachment:  'Interface d\'attache BLK2GO',
-            mobileBack:        'Bouton de dégagement',
-            mobileHatch:       'Loquet à dégagement rapide',
-            mobileScrew:       'Montage universel pour trépied',
             intlNote:          'Vous achetez depuis l\'extérieur des États-Unis ou du Canada ? Contactez-nous directement <a href="/contact">ici</a> pour passer une commande.',
             goToVideo:         (n) => `Aller à la vidéo ${n}`,
+            notifyMissingName: 'Veuillez entrer votre prénom et votre nom.',
+            notifyInvalidEmail:'Veuillez entrer une adresse courriel valide.',
+            notifyGenericError:'Une erreur est survenue — veuillez réessayer.',
         },
         es_ES: {
             navAdapt:          'Adaptar',
@@ -88,23 +76,11 @@ whenReady(async () => {
             ariaNav:           'Navegación OmniGO',
             buyNowPrice:       (price) => `Comprar ahora | ${price}`,
             dragToRotate:      'Arrastra para rotar',
-            calloutAttachment: 'Interfaz de fijación BLK2GO',
-            calloutLatch:      'Botón de cierre',
-            calloutScrew:      'Fijación de tornillo multiuso',
-            detailAttachTitle: 'Montaje universal para trípode',
-            detailAttachBody:  'La cara inferior lleva una rosca estándar 5/8″-11 común en trípodes y postes de topografía, para usos en aplicaciones centradas en levantamientos.',
-            detailBackTitle:   'Botón de liberación rápida con un toque.',
-            detailBackBody:    'El botón rojo está diseñado para operarse con una sola presión para fijar y desmontar del accesorio stub Leica estándar para montar en postes de topografía.',
-            detailHatchTitle:  'Pestillo de liberación rápida.',
-            detailHatchBody:   'El adaptador también se puede fijar a un GAD52 (adaptador BLK360) para su uso en un monopodo o trípode, con otra opción para fijar y desmontar rápidamente el BLK2GO.',
-            detailScrewTitle:  'Interfaz de fijación BLK2GO',
-            detailScrewBody:   'La cara superior está mecanizada con precisión para sujetar firmemente el mango del BLK2GO, distribuyendo la carga uniformemente sobre la superficie de la abrazadera para eliminar vibraciones durante el movimiento.',
-            mobileAttachment:  'Interfaz de fijación BLK2GO',
-            mobileBack:        'Botón de liberación rápida',
-            mobileHatch:       'Pestillo de liberación rápida',
-            mobileScrew:       'Montaje universal para trípode',
             intlNote:          '¿Está comprando desde fuera de EE.UU. o Canadá? Contáctenos directamente <a href="/contact">aquí</a> para realizar un pedido.',
             goToVideo:         (n) => `Ir al video ${n}`,
+            notifyMissingName: 'Por favor ingrese su nombre y apellido.',
+            notifyInvalidEmail:'Por favor ingrese un correo electrónico válido.',
+            notifyGenericError:'Algo salió mal — por favor intente de nuevo.',
         },
     };
 
@@ -119,6 +95,93 @@ whenReady(async () => {
         const val = dict[key];
         if (val === undefined) return typeof fallback === 'function' ? fallback(...args) : fallback;
         return typeof val === 'function' ? val(...args) : val;
+    }
+
+    // ----------------------------
+    // Scroll-section highlight callouts (dot + label + detail panel + mobile label)
+    // ----------------------------
+    // The scroll timeline always dwells on 4 phases, in this fixed order:
+    // "attachment" → "back" → "hatch" → "screw". Each product supplies its own
+    // text for all 4 slots (used by the always-visible detail panel and mobile
+    // labels) plus a `dots` list naming which slots get an on-screen dot+line
+    // callout on desktop. OmniGO's `dots` list intentionally omits "back" —
+    // that's the exact behaviour it already had before this table existed.
+    // To add another product: copy a block here, list its `dots`, and (if it
+    // needs a slot OmniGO's `dots` list skips) add position CSS for
+    // `.o_three_feature_callout_<slot>` in three_product.css.
+    const CALLOUT_CONTENT = {
+        omnigo: {
+            dots: ["attachment", "hatch", "screw"],
+            slots: {
+                attachment: {
+                    label:       { en_US: 'BLK2GO attachment interface', fr_CA: 'Interface d\'attache BLK2GO', es_ES: 'Interfaz de fijación BLK2GO' },
+                    detailTitle: { en_US: 'Universal Tripod Mount', fr_CA: 'Montage universel pour trépied', es_ES: 'Montaje universal para trípode' },
+                    detailBody:  { en_US: 'The bottom face carries a standard 5/8″-11 thread that is common with survey tripods and poles, for uses in survey-centric applications.', fr_CA: 'La face inférieure est équipée d\'un filetage standard 5/8″-11 compatible avec les trépieds et poteaux d\'arpentage, pour une utilisation dans des applications axées sur le levé.', es_ES: 'La cara inferior lleva una rosca estándar 5/8″-11 común en trípodes y postes de topografía, para usos en aplicaciones centradas en levantamientos.' },
+                    mobileLabel: { en_US: 'BLK2GO Attachment Interface', fr_CA: 'Interface d\'attache BLK2GO', es_ES: 'Interfaz de fijación BLK2GO' },
+                },
+                back: {
+                    label:       { en_US: 'One-touch release button', fr_CA: 'Bouton de dégagement', es_ES: 'Botón de liberación rápida' },
+                    detailTitle: { en_US: 'One-Touch Quick Release Button.', fr_CA: 'Bouton de dégagement rapide à une touche.', es_ES: 'Botón de liberación rápida con un toque.' },
+                    detailBody:  { en_US: 'The red button is designed to be operated with a single press and hold for attaching and detaching from the standard Leica stub fitting to mount on survey poles.', fr_CA: 'Le bouton rouge est conçu pour être actionné par une simple pression prolongée afin de fixer et de détacher l\'appareil du support Leica standard pour le montage sur des perches d\'arpentages.', es_ES: 'El botón rojo está diseñado para operarse con una sola presión para fijar y desmontar del accesorio stub Leica estándar para montar en postes de topografía.' },
+                    mobileLabel: { en_US: 'One-Touch Release Button', fr_CA: 'Bouton de dégagement', es_ES: 'Botón de liberación rápida' },
+                },
+                hatch: {
+                    label:       { en_US: 'Latch lock button', fr_CA: 'Bouton de verrouillage', es_ES: 'Botón de cierre' },
+                    detailTitle: { en_US: 'Quick-Release Latch.', fr_CA: 'Loquet à dégagement rapide.', es_ES: 'Pestillo de liberación rápida.' },
+                    detailBody:  { en_US: 'The adapter can also be attached to a GAD52 (BLK360 adapter) for use on a monopod or tripod and have another option for quickly attaching and detaching of the BLK2GO.', fr_CA: 'L\'adaptateur peut également être fixé à un GAD52 (adaptateur BLK360) pour une utilisation sur un monopode ou un trépied et offre une autre option pour fixer et détacher rapidement le BLK2GO.', es_ES: 'El adaptador también se puede fijar a un GAD52 (adaptador BLK360) para su uso en un monopodo o trípode, con otra opción para fijar y desmontar rápidamente el BLK2GO.' },
+                    mobileLabel: { en_US: 'Quick-Release Latch', fr_CA: 'Loquet à dégagement rapide', es_ES: 'Pestillo de liberación rápida' },
+                },
+                screw: {
+                    label:       { en_US: 'Multi-use screw attachment', fr_CA: 'Fixation à vis multi-usage', es_ES: 'Fijación de tornillo multiuso' },
+                    detailTitle: { en_US: 'BLK2GO Attachment Interface', fr_CA: 'Interface d\'attache BLK2GO', es_ES: 'Interfaz de fijación BLK2GO' },
+                    detailBody:  { en_US: 'The top face is precision-machined to grip the BLK2GO handle securely, distributing load evenly across the clamp surface to eliminate vibration and scanner wobble during movement.', fr_CA: 'La face supérieure est usinée avec précision pour maintenir fermement la poignée BLK2GO, répartissant la charge uniformément sur la surface de la pince afin d\'éliminer les vibrations et les oscillations du scanner pendant le mouvement.', es_ES: 'La cara superior está mecanizada con precisión para sujetar firmemente el mango del BLK2GO, distribuyendo la carga uniformemente sobre la superficie de la abrazadera para eliminar vibraciones durante el movimiento.' },
+                    mobileLabel: { en_US: 'Universal Tripod Mount', fr_CA: 'Montage universel pour trépied', es_ES: 'Montaje universal para trípode' },
+                },
+            },
+        },
+        omni360: {
+            // All four highlights get an on-screen dot for Omni360.
+            dots: ["attachment", "back", "hatch", "screw"],
+            slots: {
+                // BOTTOM — universal tripod / pole mounting base
+                attachment: {
+                    label:       { en_US: 'Universal tripod & pole mount', fr_CA: 'Montage universel trépied et perche', es_ES: 'Montaje universal trípode y poste' },
+                    detailTitle: { en_US: 'Mount It However You Work', fr_CA: 'Installez-le comme vous le souhaitez', es_ES: 'Móntelo como usted trabaja' },
+                    detailBody:  { en_US: 'The configurable bottom face connects to tribrachs with optional pins, 5/8″ and 3/8″ screws with optional adapters, an RTC stub quick-release, the BLK360 adapter and Gitzo Systematic tripod heads — so the same body drops onto whichever mount you need to work with.', fr_CA: 'La face inférieure configurable se connecte aux tribrachs avec des broches optionnelles, des vis de 5/8″ et 3/8″ avec des adaptateurs optionnels, un système de dégagement rapide RTC stub, l\'adaptateur BLK360 et les têtes de trépied Gitzo Systematic — de sorte que le même boîtier s\'adapte à n\'importe quel support dont vous avez besoin.', es_ES: 'La cara inferior configurable acepta interfaces de tribraquia, tornillos de topografía 5/8″ y 3/8″ UNC, una liberación rápida de talón RTC y montajes de trípode compatibles con Gitzo — el mismo cuerpo se instala directamente en tribraquias, trípodes, postes de topografía y sistemas robóticos, sin un adaptador adicional.' },
+                    mobileLabel: { en_US: 'Tripod & pole mount', fr_CA: 'Montage trépied et perche', es_ES: 'Montaje trípode y poste' },
+                },
+                // SIDE A — protective bars
+                back: {
+                    label:       { en_US: 'Extendable protective bars', fr_CA: 'Barres de protection extensibles', es_ES: 'Barras de protección extensibles' },
+                    detailTitle: { en_US: 'Built-In Protection, On Demand', fr_CA: 'Protection intégrée, à la carte', es_ES: 'Protección incorporada, cuando la necesite' },
+                    detailBody:  { en_US: 'Three protective bars ring the perimeter and adjust between compressed and extended positions, shielding the mounted scanner and stabilizing the rig in tight or rough environments. The bars can also provide many extra mounting points for accessories. A Y-bar connector ties them together for extra rigidity and even more mounting points for compatible scanners and the middle point is perfectly positioned for GNSS antennas and/or 360 cameras.', fr_CA: 'Trois barres de protection entourent le périmètre et sont réglables entre une position comprimée et une position déployée, protégeant ainsi le scanner installé et stabilisant l\'ensemble dans les environnements exigus ou accidentés. Ces barres offrent également de nombreux points de fixation supplémentaires pour les accessoires. Un connecteur en Y les relie pour une rigidité accrue et encore plus de points de fixation pour les scanners compatibles. Le point central est idéalement positionné pour les antennes GNSS et/ou les caméras 360°.', es_ES: 'Tres barras de protección rodean el perímetro y se ajustan entre una posición comprimida y extendida, protegiendo el escáner montado y estabilizando el conjunto en entornos reducidos o exigentes. Un conector en Y las une para mayor rigidez y más puntos de montaje.' },
+                    mobileLabel: { en_US: 'Protective bars', fr_CA: 'Barres de protection', es_ES: 'Barras de protección' },
+                },
+                // SIDE B — accessory mounting points (lights, cameras, tablet, handles)
+                hatch: {
+                    label:       { en_US: 'Side accessory mounting points', fr_CA: 'Points de fixation latéraux pour accessoires', es_ES: 'Puntos de montaje laterales para accesorios' },
+                    detailTitle: { en_US: 'Rig Exactly What the Job Needs', fr_CA: 'Équipez votre scanner comme il faut pour votre projet.', es_ES: 'Equipe exactamente lo que el trabajo necesita' },
+                    detailBody:  { en_US: '3/8″ threaded holes and cold-shoe interfaces line the sides, ready for high-powered lights in the dark, a 360 camera for combined-capture workflows, a phone or tablet to monitor capture in real time, or handles for heavier setups.', fr_CA: 'Des trous filetés de 3/8″ et des interfaces de griffe porte-accessoires bordent les côtés, prêts pour des éclairages puissants dans l\'obscurité, une caméra 360 pour des flux de travail de capture combinée, un téléphone ou une tablette pour surveiller la capture en temps réel, ou des poignées pour des configurations plus lourdes.', es_ES: 'Orificios roscados 3/8″ e interfaces «cold shoe» bordean los laterales, listos para luces potentes en la oscuridad, una cámara 360° para flujos combinados, un teléfono o tableta para supervisar la captura en tiempo real, o manijas para configuraciones más pesadas.' },
+                    mobileLabel: { en_US: 'Accessory mounts', fr_CA: 'Fixations pour accessoires', es_ES: 'Montajes para accesorios' },
+                },
+                // TOP — interchangeable scanner adapters (multi-scanner)
+                screw: {
+                    label:       { en_US: 'Interchangeable top adapters', fr_CA: 'Adaptateurs supérieurs interchangeables', es_ES: 'Adaptadores superiores intercambiables' },
+                    detailTitle: { en_US: 'One Adapter, Every Scanner', fr_CA: 'Un seul adaptateur, chaque scanner', es_ES: 'Una sola parte superior, todos los escáneres' },
+                    detailBody:  { en_US: 'A standardized top mounting interface accepts an RTC stub, Wild prism, 5/8″ or 3/8″ male screw, or a BLK2GO clamp — swap in seconds to run the RTC360, BLK2GO, BLK ARC, or BLK360 on the exact same body.', fr_CA: 'Une interface de montage supérieure standardisée accepte un stub RTC, un prisme Wild, une vis mâle 5/8″ ou 3/8″ ou une pince BLK2GO — changez en quelques secondes pour faire fonctionner le RTC360, le BLK2GO, le BLK ARC ou le BLK360 sur le même boîtier.', es_ES: 'Una interfaz de montaje superior estandarizada acepta un talón RTC, un prisma Wild, un tornillo macho 5/8″ o 3/8″, o la pinza BLK2GO — intercambie en segundos para usar el RTC360, el BLK2GO, el BLK ARC o el BLK360 G2 en exactamente el mismo cuerpo.' },
+                    mobileLabel: { en_US: 'Top adapters', fr_CA: 'Adaptateurs supérieurs', es_ES: 'Adaptadores superiores' },
+                },
+            },
+        },
+    };
+
+    const activeCallouts = CALLOUT_CONTENT[activeProduct] || CALLOUT_CONTENT.omnigo;
+
+    /** Look up callout copy for the active product + active page language. */
+    function _tc(slot, field) {
+        const entry = activeCallouts.slots[slot]?.[field];
+        if (!entry) return '';
+        return entry[pageLang] || entry.en_US || '';
     }
 
     let omniCursor = null;
@@ -452,6 +515,7 @@ whenReady(async () => {
         // Still wire up lightweight features that don't need the 3D canvas
         initVideoGallery();
         initOmnigoBuySection();
+        initNotifySignupForm();
         const _faqListEarly = document.querySelector(".o_omnigo_faq_list");
         if (_faqListEarly) {
             _faqListEarly.addEventListener("click", e => {
@@ -934,28 +998,16 @@ whenReady(async () => {
         scrollHotspotLayer = document.createElement("div");
         scrollHotspotLayer.className = "o_three_scroll_hotspot_layer";
 
-        scrollHotspotLayer.innerHTML = `
-            <div class="o_three_feature_callout o_three_feature_callout_attachment">
+        // Only the slots listed in activeCallouts.dots get an on-screen dot —
+        // see the CALLOUT_CONTENT comment above for why "back" is skipped on OmniGO.
+        scrollHotspotLayer.innerHTML = activeCallouts.dots.map(slot => `
+            <div class="o_three_feature_callout o_three_feature_callout_${slot}">
                 <div class="o_three_feature_dot"></div>
                 <div class="o_three_feature_line_diagonal"></div>
                 <div class="o_three_feature_line_under"></div>
-                <div class="o_three_feature_label">${_t('calloutAttachment', 'BLK2GO attachment interface')}</div>
+                <div class="o_three_feature_label">${_tc(slot, 'label')}</div>
             </div>
-
-            <div class="o_three_feature_callout o_three_feature_callout_hatch">
-                <div class="o_three_feature_dot"></div>
-                <div class="o_three_feature_line_diagonal"></div>
-                <div class="o_three_feature_line_under"></div>
-                <div class="o_three_feature_label">${_t('calloutLatch', 'Latch lock button')}</div>
-            </div>
-
-            <div class="o_three_feature_callout o_three_feature_callout_screw">
-                <div class="o_three_feature_dot"></div>
-                <div class="o_three_feature_line_diagonal"></div>
-                <div class="o_three_feature_line_under"></div>
-                <div class="o_three_feature_label">${_t('calloutScrew', 'Multi-use screw attachment')}</div>
-            </div>
-        `;
+        `).join('');
 
         scrollHost.appendChild(scrollHotspotLayer);
 
@@ -963,20 +1015,20 @@ whenReady(async () => {
         scrollDetailPanel.className = "o_three_scroll_detail_panel";
         scrollDetailPanel.innerHTML = `
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_attachment">
-                <h3 class="o_three_scroll_feature_title">${_t('detailAttachTitle', 'Universal Tripod Mount')}</h3>
-                <p class="o_three_scroll_feature_body">${_t('detailAttachBody', 'The bottom face carries a standard 5/8″-11 thread that is common with survey tripods and poles, for uses in survey-centric applications.')}</p>
+                <h3 class="o_three_scroll_feature_title">${_tc('attachment', 'detailTitle')}</h3>
+                <p class="o_three_scroll_feature_body">${_tc('attachment', 'detailBody')}</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_back">
-                <h3 class="o_three_scroll_feature_title">${_t('detailBackTitle', 'One-Touch Quick Release Button.')}</h3>
-                <p class="o_three_scroll_feature_body">${_t('detailBackBody', 'The red button is designed to be operated with a single press and hold for attaching and detaching from the standard Leica stub fitting to mount on survey poles.')}</p>
+                <h3 class="o_three_scroll_feature_title">${_tc('back', 'detailTitle')}</h3>
+                <p class="o_three_scroll_feature_body">${_tc('back', 'detailBody')}</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_hatch">
-                <h3 class="o_three_scroll_feature_title">${_t('detailHatchTitle', 'Quick-Release Latch.')}</h3>
-                <p class="o_three_scroll_feature_body">${_t('detailHatchBody', 'The adapter can also be attached to a GAD52 (BLK360 adapter) for use on a monopod or tripod and have another option for quickly attaching and detaching of the BLK2GO.')}</p>
+                <h3 class="o_three_scroll_feature_title">${_tc('hatch', 'detailTitle')}</h3>
+                <p class="o_three_scroll_feature_body">${_tc('hatch', 'detailBody')}</p>
             </div>
             <div class="o_three_scroll_feature_detail o_three_scroll_feature_detail_screw">
-                <h3 class="o_three_scroll_feature_title">${_t('detailScrewTitle', 'BLK2GO Attachment Interface')}</h3>
-                <p class="o_three_scroll_feature_body">${_t('detailScrewBody', 'The top face is precision-machined to grip the BLK2GO handle securely, distributing load evenly across the clamp surface to eliminate vibration and scanner wobble during movement.')}</p>
+                <h3 class="o_three_scroll_feature_title">${_tc('screw', 'detailTitle')}</h3>
+                <p class="o_three_scroll_feature_body">${_tc('screw', 'detailBody')}</p>
             </div>
         `;
         scrollHost.appendChild(scrollDetailPanel);
@@ -984,10 +1036,10 @@ whenReady(async () => {
         scrollMobileLabels = document.createElement("div");
         scrollMobileLabels.className = "o_three_scroll_mobile_labels";
         scrollMobileLabels.innerHTML = `
-            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_attachment">${_t('mobileAttachment', 'BLK2GO Attachment Interface')}</div>
-            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_back">${_t('mobileBack', 'One-Touch Release Button')}</div>
-            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_hatch">${_t('mobileHatch', 'Quick-Release Latch')}</div>
-            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_screw">${_t('mobileScrew', 'Universal Tripod Mount')}</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_attachment">${_tc('attachment', 'mobileLabel')}</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_back">${_tc('back', 'mobileLabel')}</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_hatch">${_tc('hatch', 'mobileLabel')}</div>
+            <div class="o_three_scroll_mobile_label o_three_scroll_mobile_label_screw">${_tc('screw', 'mobileLabel')}</div>
         `;
         scrollHost.appendChild(scrollMobileLabels);
 
@@ -1596,7 +1648,96 @@ whenReady(async () => {
         });
     }
 
+    // ----------------------------
+    // Pre-launch "notify me" signup form
+    // ----------------------------
+    // Feature-detected, not product-gated: this only runs if a page actually
+    // contains .o_omnigo_notify_form (e.g. Omni360's buy section with shop
+    // controls switched off), so it's a no-op everywhere else, including the
+    // OmniGO page.
+    function initNotifySignupForm() {
+        const form = document.querySelector(".o_omnigo_notify_form");
+        if (!form) return;
+
+        const listKey   = form.dataset.listKey || '';
+        const fieldsEl  = form.querySelector(".o_omnigo_notify_fields");
+        const successEl = form.querySelector(".o_omnigo_notify_success");
+        const errorEl   = form.querySelector(".o_omnigo_notify_error");
+        const firstIn   = form.querySelector(".o_omnigo_notify_first");
+        const lastIn    = form.querySelector(".o_omnigo_notify_last");
+        const emailIn   = form.querySelector(".o_omnigo_notify_email");
+        const submitBtn = form.querySelector(".o_omnigo_notify_submit");
+
+        const jq = window.$ || window.jQuery;
+        const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+        function showError(msg) {
+            if (!errorEl) return;
+            errorEl.textContent = msg;
+            errorEl.classList.add("is-visible");
+        }
+
+        function clearError() {
+            errorEl?.classList.remove("is-visible");
+        }
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            clearError();
+
+            const first_name = (firstIn?.value || '').trim();
+            const last_name  = (lastIn?.value || '').trim();
+            const email      = (emailIn?.value || '').trim();
+
+            if (!first_name || !last_name) {
+                showError(_t('notifyMissingName', 'Please enter your first and last name.'));
+                return;
+            }
+            if (!emailRe.test(email)) {
+                showError(_t('notifyInvalidEmail', 'Please enter a valid email address.'));
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.classList.add("is-loading");
+
+            jq.ajax({
+                url: "/prowebsite/notify_signup",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    jsonrpc: "2.0",
+                    method: "call",
+                    id: 1,
+                    params: { first_name, last_name, email, list_key: listKey },
+                }),
+                success(resp) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove("is-loading");
+                    const result = resp?.result;
+                    if (result?.success) {
+                        fieldsEl?.classList.add("is-hidden");
+                        successEl?.classList.add("is-visible");
+                    } else {
+                        const err = result?.error;
+                        const msg = err === 'invalid_email'
+                            ? _t('notifyInvalidEmail', 'Please enter a valid email address.')
+                            : _t('notifyGenericError', 'Something went wrong — please try again.');
+                        showError(msg);
+                    }
+                },
+                error(xhr) {
+                    console.error("[notify_signup] HTTP error:", xhr.status);
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove("is-loading");
+                    showError(_t('notifyGenericError', 'Something went wrong — please try again.'));
+                },
+            });
+        });
+    }
+
     initOmnigoBuySection();
+    initNotifySignupForm();
 
     // ----------------------------
     // Video Gallery carousel — infinite loop with peek
