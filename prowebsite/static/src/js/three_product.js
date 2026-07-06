@@ -9,6 +9,35 @@ whenReady(async () => {
     const scrollHost = document.getElementById("three-product-canvas-scroll");
 
     // ----------------------------
+    // Active product (which GLB set + header branding to use)
+    // ----------------------------
+    // This file is shared by every product page built on the "OmniGO template"
+    // (split-section model, scroll-section hotspot model, injected header).
+    // Pages opt into a different product by setting data-product on their
+    // #wrap element, e.g.
+    //   <div id="wrap" class="oe_structure oe_empty" data-product="omni360">
+    // Add one entry to PRODUCT_CONFIG below per new product line — everything
+    // else in this file reads from activeConfig, so no other page is touched.
+    const PRODUCT_CONFIG = {
+        omnigo: {
+            logoSrc: "https://cdn.r-e-a-l.it/images/header/Omni_GO.png",
+            logoAlt: "OmniGO",
+            modelAdapter: "/prowebsite/static/src/models/BLK2GO_Adapter_V02B.glb",
+            modelSplit:   "/prowebsite/static/src/models/BLK2GO_with_Scanner.glb",
+        },
+        omni360: {
+            logoSrc: "https://cdn.r-e-a-l.it/images/ecommerce/Omni360.png",
+            logoAlt: "Omni360",
+            modelAdapter: "/prowebsite/static/src/models/Omni_360_Model.glb",
+            modelSplit:   "/prowebsite/static/src/models/Omni_360_Model.glb",
+        },
+    };
+    // No attribute (or an unrecognised value) falls back to "omnigo", so the
+    // OmniGO page's behaviour is unchanged if it's ever left unset.
+    const activeProduct = document.getElementById("wrap")?.dataset.product || "omnigo";
+    const activeConfig = PRODUCT_CONFIG[activeProduct] || PRODUCT_CONFIG.omnigo;
+
+    // ----------------------------
     // Custom Omni cursor
     // ----------------------------
     const omniPage = document.querySelector(".o_three_hero, .o_omnigo_buy_section, #omnigo-page-loader")?.closest("#wrap");
@@ -205,8 +234,8 @@ whenReady(async () => {
                         <img src="https://cdn.r-e-a-l.it/images/header/r_circle.png" alt="R logo" class="o_omnigo_ch_r_img" />
                     </a>
                     <div class="o_omnigo_ch_divider"></div>
-                    <a href="#" class="o_omnigo_ch_logo_omnigo" aria-label="OmniGO">
-                        <img src="https://cdn.r-e-a-l.it/images/header/Omni_GO.png" alt="OmniGO" class="o_omnigo_ch_omnigo_img" />
+                    <a href="#" class="o_omnigo_ch_logo_omnigo" aria-label="${activeConfig.logoAlt}">
+                        <img src="${activeConfig.logoSrc}" alt="${activeConfig.logoAlt}" class="o_omnigo_ch_omnigo_img" />
                     </a>
                 </div>
                 <nav class="o_omnigo_ch_nav" aria-label="${_t('ariaNav', 'OmniGO navigation')}">
@@ -463,8 +492,8 @@ whenReady(async () => {
     }
 
     // note so I can push a new commit
-    const adapterModelPath = "/prowebsite/static/src/models/BLK2GO_Adapter_V02B.glb";
-    const splitModelPath   = "/prowebsite/static/src/models/BLK2GO_with_Scanner.glb";
+    const adapterModelPath = activeConfig.modelAdapter;
+    const splitModelPath   = activeConfig.modelSplit;
 
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));

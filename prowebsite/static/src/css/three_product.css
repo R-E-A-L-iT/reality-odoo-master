@@ -1011,6 +1011,91 @@ body {
     margin-top: 3px;
 }
 
+/* ─── Client Reviews — "no reviews yet" placeholder ───────────────────────────
+   Use this instead of .o_review_waterfall_grid on a product page that doesn't
+   have testimonials yet. It sits in the same spot inside
+   .o_review_waterfall_inner, keeping the section's header, dark-to-white
+   gradient backdrop, and page rhythm intact — just swapping the 3-card grid
+   for a single honest placeholder card instead of leaving the section empty
+   or deleting it outright. ───────────────────────────────────────────────── */
+.o_review_waterfall_empty {
+    max-width: 620px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 20px;
+    padding: clamp(36px, 5vw, 56px);
+    text-align: center;
+    box-shadow:
+        0 2px 4px rgba(0,0,0,0.04),
+        0 8px 24px rgba(0,0,0,0.08),
+        0 32px 64px rgba(0,0,0,0.12);
+}
+
+.o_review_waterfall_empty_icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 22px;
+    border-radius: 50%;
+    background: rgba(196, 0, 0, 0.08);
+    color: #c40000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.o_review_waterfall_empty_title {
+    margin: 0 0 12px;
+    font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(20px, 2.4vw, 27px);
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    color: #0a0a0a;
+}
+
+.o_review_waterfall_empty_body {
+    margin: 0 0 26px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: #555;
+}
+
+.o_review_waterfall_empty_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #c40000;
+    color: #fff !important;
+    font-family: "Montserrat", sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 13px 28px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.o_review_waterfall_empty_btn:hover {
+    background: #a40000;
+    transform: translateY(-1px);
+    color: #fff !important;
+}
+
+.o_review_waterfall_empty_btn svg {
+    transition: transform 0.15s ease;
+}
+
+.o_review_waterfall_empty_btn:hover svg {
+    transform: translateX(3px);
+}
+
+@media (max-width: 768px) {
+    .o_review_waterfall_empty {
+        border-radius: 18px;
+    }
+}
+
 @media (max-width: 1100px) {
     .o_review_waterfall_grid {
         grid-template-columns: 1fr;
