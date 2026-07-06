@@ -690,6 +690,16 @@ body {
    reads as a deliberate, centered, larger video rather than edge-to-edge. */
 .o_omnigo_video_scroll_section--solo .o_omnigo_video_scroll_video_wrap {
     padding: 0 clamp(24px, 8vw, 160px);
+    /* Allow this flex child to shrink below the video's intrinsic height once
+       the caption above it claims some of the sticky viewport-height area. */
+    min-height: 0;
+}
+
+/* Solo layout stacks a caption above the video instead of a side column —
+   switch the row layout to a column so the caption pushes the video down
+   rather than floating over it. */
+.o_omnigo_video_scroll_section--solo .o_omnigo_video_scroll_inner {
+    flex-direction: column;
 }
 
 @media (max-width: 768px) {
@@ -698,29 +708,17 @@ body {
     }
 }
 
-/* ─── Overlay caption on top of a scroll video ───────────────────────────────
-   Sits inside .o_omnigo_video_scroll_video_wrap (already position: relative),
-   so no extra wrapper markup is needed elsewhere. It's `position: absolute`
-   so it paints above the plain-flow <video> element regardless of DOM order.
-   A soft top-down scrim keeps the text legible over any footage. */
-.o_omnigo_video_scroll_overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 2;
-    padding: clamp(28px, 4vw, 56px) clamp(24px, 5vw, 64px) clamp(56px, 10vw, 120px);
+/* ─── Caption above a scroll video (solo variant) ────────────────────────────
+   Plain document flow, not an overlay — it sits above
+   .o_omnigo_video_scroll_video_wrap so the video is never obstructed. */
+.o_omnigo_video_scroll_caption {
+    flex: 0 0 auto;
+    padding: clamp(28px, 4vw, 56px) clamp(24px, 5vw, 64px) 0;
     text-align: center;
-    pointer-events: none;
-    background: linear-gradient(
-        180deg,
-        rgba(0, 0, 0, 0.55) 0%,
-        rgba(0, 0, 0, 0.30) 55%,
-        rgba(0, 0, 0, 0) 100%
-    );
+    background: #ffffff;
 }
 
-.o_omnigo_video_scroll_overlay_kicker {
+.o_omnigo_video_scroll_caption_kicker {
     display: block;
     margin: 0 0 12px;
     font-family: "Montserrat", sans-serif;
@@ -728,33 +726,31 @@ body {
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #ff6b6b;
+    color: #c40000;
 }
 
-.o_omnigo_video_scroll_overlay_title {
+.o_omnigo_video_scroll_caption_title {
     margin: 0 0 10px;
     font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(24px, 3.2vw, 42px);
     font-weight: 900;
     letter-spacing: -0.02em;
-    color: #ffffff;
+    color: #000000;
     line-height: 1.1;
-    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
 }
 
-.o_omnigo_video_scroll_overlay_subtitle {
+.o_omnigo_video_scroll_caption_subtitle {
     margin: 0 auto;
     max-width: 640px;
     font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
     font-size: clamp(14px, 1.3vw, 18px);
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.88);
-    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+    color: #333333;
 }
 
 @media (max-width: 768px) {
-    .o_omnigo_video_scroll_overlay {
-        padding: 20px 16px 40px;
+    .o_omnigo_video_scroll_caption {
+        padding: 20px 16px 0;
     }
 }
 
