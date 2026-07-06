@@ -782,6 +782,43 @@ body {
     top: -27px;
 }
 
+/* Back callout — OmniGO never renders this slot as a dot (see CALLOUT_CONTENT
+   in three_product.js), so there was no existing position to reuse. This is a
+   starting placeholder for Omni360's "back" slot (Side A / protective bars):
+   it places the dot on the left side, roughly between the attachment and
+   hatch positions, so it doesn't overlap either. Re-check against the live
+   Omni_360_Model.glb rotation and adjust these offsets once you can see it. */
+.o_three_feature_callout_back {
+    left: 50%;
+    top: 50%;
+    width: 560px;
+    height: 160px;
+    transform: translate(-320px, -30px);
+}
+
+.o_three_feature_callout_back .o_three_feature_dot {
+    left: 260px;
+    top: 90px;
+}
+
+.o_three_feature_callout_back .o_three_feature_line_diagonal {
+    left: 278px;
+    top: 100px;
+    width: 220px;
+    transform: rotate(22deg);
+}
+
+.o_three_feature_callout_back .o_three_feature_line_under {
+    left: -140px;
+    top: 158px;
+    width: 400px;
+}
+
+.o_three_feature_callout_back .o_three_feature_label {
+    left: -134px;
+    top: 168px;
+}
+
 @media (max-width: 768px) {
     .o_three_feature_callout_screw {
         transform: translate(-30px, 45px) scale(0.72);
@@ -795,6 +832,11 @@ body {
 
     .o_three_feature_callout_attachment {
         transform: translate(20px, -160px) scale(0.72);
+        transform-origin: left center;
+    }
+
+    .o_three_feature_callout_back {
+        transform: translate(-260px, -20px) scale(0.72);
         transform-origin: left center;
     }
 
