@@ -3,6 +3,19 @@
    Applies on ALL pages (normal Odoo header + OmniGO custom header).
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ── Top header row: break out of Bootstrap's centered .container ────────────
+   #o_main_nav wraps the whole desktop header row (brand / nav-links /
+   icons). Its .container child caps at Bootstrap's breakpoint max-widths and
+   centers within it, which both leaves unremovable gutters on wide screens
+   AND squeezes the nav-links + icon cluster into less width than the
+   viewport actually has on "standard laptop" sizes (~1280-1440px) where that
+   cap already kicks in. Letting it use the full header width fixes both. */
+#o_main_nav .container {
+    max-width: 100% !important;
+    padding-left: clamp(16px, 3vw, 48px);
+    padding-right: clamp(16px, 3vw, 48px);
+}
+
 /* ── Bar container (full-width, fixed below the header) ─────────────────── */
 .o_hdd_bar {
     position: fixed;
@@ -187,8 +200,7 @@
    Same panel mechanism as account/lang (.o_hdd_panel), just a wider, plain
    block layout instead of the lang panel's flex row. */
 .o_hdd_menu_inner {
-    max-width: 1400px;
-    margin: 0 auto;
+    width: 100%;
     padding: 32px clamp(24px, 5vw, 64px);
     background: rgba(6, 4, 4, 0.82);
     display: flex;
