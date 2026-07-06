@@ -312,17 +312,14 @@ class ProwebsiteController(http.Controller):
         else:
             contact = MailingContact.create({'name': name, 'email': email})
 
-        if list_id not in contact.list_ids.ids:
-            contact.write({'list_ids': [(4, list_id)]})
-
-        # Re-activate the subscription if this contact had previously opted
-        # out of this specific list — adding to list_ids alone won't flip an
-        # existing opt_out=True subscription back to active.
-        subscription = request.env['mailing.contact.subscription'].sudo().search([
-            ('contact_id', '=', contact.id),
-            ('list_id', '=', list_id),
-        ], limit=1)
-        if subscription and subscription.opt_out:
-            subscription.write({'opt_out': False})
+        # Force a fresh, active subscription. The join model backing list_ids
+        # has been renamed across Odoo versions (mailing.contact.subscription
+        # / mailing.subscription, with differing field names), so rather than
+        # querying it directly we only touch the stable public API: unlink
+        # first (clears any earlier opt_out on this list), then link — a
+        # freshly (re)created subscription row is opted-in by default.
+        if list_id in contact.list_ids.ids:
+            contact.write({'list_ids': [(3, list_id)]})
+        contact.write({'list_ids': [(4, list_id)]})
 
         return {'success': True}
