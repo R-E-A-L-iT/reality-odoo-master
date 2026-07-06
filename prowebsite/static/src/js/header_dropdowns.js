@@ -346,6 +346,37 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// initHeaderGlassScroll(headerEl)
+//
+// Gives the native #top header the same glassy, fixed-overlay, shrink-on-
+// scroll treatment as the Omni pages' custom header. That header
+// (.o_omnigo_ch_header in three_product.css) drives its own independent
+// version of this same idea — this is the equivalent for every other page.
+// The actual glass background / fixed position / shrink transition live in
+// CSS (header_dropdowns.css); this only measures + toggles a state class.
+// ─────────────────────────────────────────────────────────────────────────────
+function initHeaderGlassScroll(headerEl) {
+    const scrollRoot = document.getElementById('wrapwrap') || document.documentElement;
+
+    // Reserve the header's *expanded* height as top padding on <body> (see the
+    // `body { padding-top: var(--o_header_h) }` rule in header_dropdowns.css)
+    // so the now fixed/overlaid header never covers page content underneath
+    // it. Only measured while NOT scrolled, so the shrink-on-scroll height
+    // change never fights this — otherwise the page would jump every time the
+    // header shrinks.
+    function syncHeaderHeight() {
+        if (headerEl.classList.contains('o_header_glass_scrolled')) return;
+        document.documentElement.style.setProperty('--o_header_h', headerEl.offsetHeight + 'px');
+    }
+    syncHeaderHeight();
+    new ResizeObserver(syncHeaderHeight).observe(headerEl);
+
+    scrollRoot.addEventListener('scroll', () => {
+        headerEl.classList.toggle('o_header_glass_scrolled', scrollRoot.scrollTop > 50);
+    }, { passive: true });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // publicWidget — runs on every normal Odoo page that has a standard #top header.
 // Skips on OmniGO pages (three_product.js calls initHeaderDropdowns directly
 // after it has moved the icon bar into the custom header).
@@ -359,6 +390,8 @@ publicWidget.registry.headerDropdowns = publicWidget.Widget.extend({
         // The OmniGO page hides #top and builds its own header.
         // three_product.js calls initHeaderDropdowns() directly there.
         if (document.querySelector('.o_omnigo_ch_header')) return;
+
+        initHeaderGlassScroll(this.el);
 
         // Find the right-hand icon <ul>. It is NOT a direct child of #o_main_nav
         // (it sits inside #o_main_nav > div.container), so locate it by its known

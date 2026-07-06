@@ -16,6 +16,59 @@
     padding-right: clamp(16px, 3vw, 48px);
 }
 
+/* ── Native header: glassy, fixed overlay, shrinks on scroll ─────────────────
+   Matches the Omni pages' custom header (.o_omnigo_ch_header in
+   three_product.css), which drives the identical idea independently for its
+   own injected header element. Desktop-only (≥992px, matching every other
+   header override in this file) — mobile keeps the current in-flow header
+   and offcanvas menu untouched, since forcing this onto the mobile nav risks
+   fighting the offcanvas/safe-area layout without any real benefit here. */
+@media (min-width: 992px) {
+    header#top {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1001;
+        background: rgba(6, 4, 4, 0.55) !important;
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        transition: background 0.35s ease, border-color 0.35s ease;
+    }
+
+    /* #o_main_nav (and any inner wrapper) must stay transparent, or its own
+       background would sit as an opaque layer in front of the blur above. */
+    header#top #o_main_nav,
+    header#top #o_main_nav > div {
+        background: transparent !important;
+    }
+
+    header#top.o_header_glass_scrolled {
+        background: rgba(6, 4, 4, 0.82) !important;
+        border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    /* Shrink: reduce the row's own vertical padding on scroll (Bootstrap's
+       .py-3 utility class), rather than a hard height, so it works
+       regardless of the row's natural content height. */
+    #o_main_nav .container {
+        transition: padding-top 0.35s ease, padding-bottom 0.35s ease;
+    }
+
+    header#top.o_header_glass_scrolled #o_main_nav .container {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+
+    /* Reserve exactly the header's *expanded* height (set by
+       initHeaderGlassScroll() in header_dropdowns.js) as top padding, so the
+       now-fixed header never covers the page's own first section. */
+    body {
+        padding-top: var(--o_header_h, 0px);
+    }
+}
+
 /* ── Bar container (full-width, fixed below the header) ─────────────────── */
 .o_hdd_bar {
     position: fixed;
