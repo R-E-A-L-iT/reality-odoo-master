@@ -156,6 +156,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     flex-wrap: nowrap;
     gap: 0;
     margin: 0;
@@ -351,9 +352,15 @@
 
 /* ── Language panel ──────────────────────────────────────────────────────── */
 
-/* Map image — left column, bleeds naturally (no object-fit:contain) */
+/* Map image — left column, bleeds naturally (no object-fit:contain).
+   The PNG has a transparent background, so background-color underneath
+   fills those transparent areas with the same dark glass tint used
+   everywhere else — without it, the transparent areas showed whatever was
+   blurred behind the dropdown bar instead (varying by scroll position/page
+   content), which read as an inconsistent "border" around the map. */
 .o_hdd_lang_map {
     flex: 0 0 42%;
+    background-color: var(--o_glass_tint);
     background-image: url("https://cdn.r-e-a-l.it/images/ecommerce/Map.png");
     background-size: cover;
     background-position: center 30%;
@@ -361,12 +368,13 @@
     position: relative;
 }
 
-/* Fade edge so map blends into the options area */
+/* Fade edge so map blends into the options area — same tint as the map's
+   own background-color above, so there's no visible seam between them. */
 .o_hdd_lang_map::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, transparent 60%, rgba(6, 4, 4, 0.82) 100%);
+    background: linear-gradient(to right, transparent 60%, var(--o_glass_tint) 100%);
 }
 
 /* Options area — right column; dark fill here, not on the whole bar */
@@ -497,21 +505,37 @@
 }
 
 .o_hdd_menu_link {
-    display: block;
-    padding: 6px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 6px 8px 6px 4px;
     border-radius: 6px;
     color: rgba(255, 255, 255, 0.68);
     text-decoration: none !important;
     font-family: "Montserrat", sans-serif;
     font-size: 13.5px;
     font-weight: 500;
-    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
 .o_hdd_menu_link:hover {
     background: rgba(255, 255, 255, 0.08);
     color: #ffffff;
-    transform: translateX(2px);
+}
+
+/* Arrow only reveals on hover — a quiet nudge to click, not a permanent
+   fixture that would clutter every row in a long list. */
+.o_hdd_menu_link_arrow {
+    flex-shrink: 0;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.o_hdd_menu_link:hover .o_hdd_menu_link_arrow {
+    opacity: 1;
+    transform: translateX(0);
 }
 
 /* ── Accessories: featured product cards (OmniGO / Omni360) + secondary cols ── */
@@ -525,6 +549,11 @@
     flex: 0 0 auto;
 }
 
+/* Dark background, not solid red — the OmniGO/Omni360 logos and any future
+   product photos both mix red and white, and a saturated red card made the
+   red parts of the artwork disappear into the background. A dark card with
+   a red accent (border + glow) keeps the "featured" look without that
+   contrast problem, regardless of what image ends up in the card. */
 .o_hdd_feature_card {
     position: relative;
     display: flex;
@@ -532,15 +561,17 @@
     width: 190px;
     padding: 20px 20px 22px;
     border-radius: 16px;
-    background: linear-gradient(160deg, #e00000 0%, #a30000 100%);
+    background: linear-gradient(160deg, #1c1a1a 0%, #050505 100%);
+    border: 1px solid rgba(224, 0, 0, 0.35);
     text-decoration: none !important;
-    box-shadow: 0 10px 28px rgba(224, 0, 0, 0.28);
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45), inset 0 0 40px rgba(224, 0, 0, 0.08);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .o_hdd_feature_card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 16px 36px rgba(224, 0, 0, 0.38);
+    border-color: rgba(224, 0, 0, 0.6);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), inset 0 0 50px rgba(224, 0, 0, 0.14);
 }
 
 .o_hdd_feature_card_badge {
@@ -559,7 +590,7 @@
 }
 
 .o_hdd_feature_card_media {
-    height: 100px;
+    height: 128px;
     display: flex;
     align-items: center;
     justify-content: center;

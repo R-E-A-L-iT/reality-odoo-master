@@ -100,7 +100,12 @@ function renderMenuColumnHTML(col) {
             ${col.label ? `<p class="o_hdd_menu_col_label">${escapeHtml(col.label)}</p>` : ''}
             <ul class="o_hdd_menu_col_items">
                 ${col.items.map(item => `
-                    <li><a href="${escapeHtml(item.href)}" class="o_hdd_menu_link">${escapeHtml(item.label)}</a></li>
+                    <li>
+                        <a href="${escapeHtml(item.href)}" class="o_hdd_menu_link">
+                            <span class="o_hdd_menu_link_text">${escapeHtml(item.label)}</span>
+                            <svg class="o_hdd_menu_link_arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+                        </a>
+                    </li>
                 `).join('')}
             </ul>
         </div>
@@ -109,11 +114,18 @@ function renderMenuColumnHTML(col) {
 
 /** Featured product cards for the Accessories panel — hand-authored, since
  *  these promote specific products rather than mirroring a plain link list.
- *  Update the image src / href here if the URLs change. */
+ *  Update the image src / href here if the URLs change.
+ *  Images: OmniGO uses the actual product photo already used elsewhere in
+ *  this codebase (the "Introducing OmniGO" notification popup), rather than
+ *  the plain header wordmark — reads much better at this card size. Omni360
+ *  still uses its wordmark (Omni360.png) as a placeholder — swap for a real
+ *  product photo of the physical adapter once one exists; the card's dark
+ *  background (see .o_hdd_feature_card in header_dropdowns.css) now has
+ *  enough contrast for either a red-and-white logo or a photo either way. */
 const ACCESSORIES_FEATURED_CARDS = `
     <a href="/omnigo" class="o_hdd_feature_card">
         <div class="o_hdd_feature_card_media">
-            <img src="https://cdn.r-e-a-l.it/images/header/Omni_GO.png" alt="OmniGO"/>
+            <img src="https://cdn.r-e-a-l.it/images/ecommerce/OmniGO2.png" alt="OmniGO"/>
         </div>
         <p class="o_hdd_feature_card_kicker">Multi-Scanner Adapter</p>
         <p class="o_hdd_feature_card_name">OmniGO</p>
@@ -189,7 +201,18 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
     // columns extracted from whatever dropdown/mega-menu content it has.
     const megaMenus = MEGA_MENU_ITEMS.map(({ key, label }) => {
         const li = findTopLevelMenuLi(headerEl, label);
-        return { key, li, columns: extractMenuColumns(li) };
+        let columns = extractMenuColumns(li);
+        if (key === 'accessories') {
+            // The featured OmniGO/Omni360 cards above already cover both
+            // products prominently — drop the server-side "OmniGO adapter
+            // for BLK2GO" column (extracted from the actual mega-menu
+            // content in the database) so it isn't duplicated as a smaller,
+            // OmniGO-only column right next to them. That heading text lives
+            // in Odoo's own menu editor, not here, so it can't be renamed
+            // from code — but filtering it out achieves the same end result.
+            columns = columns.filter(col => !/omnigo/i.test(col.label));
+        }
+        return { key, li, columns };
     });
 
     // ── Build the dropdown bar ─────────────────────────────────────────────
