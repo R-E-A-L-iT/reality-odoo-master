@@ -24,12 +24,18 @@ whenReady(async () => {
             logoAlt: "OmniGO",
             modelAdapter: "/prowebsite/static/src/models/BLK2GO_Adapter_V02B.glb",
             modelSplit:   "/prowebsite/static/src/models/BLK2GO_with_Scanner.glb",
+            // Nav button shows a live price once the pricelist sync resolves.
+            buyBtnLabel: { en_US: 'Buy Now', fr_CA: 'Acheter maintenant', es_ES: 'Comprar ahora' },
+            showPrice: true,
         },
         omni360: {
             logoSrc: "https://cdn.r-e-a-l.it/images/ecommerce/Omni360.png",
             logoAlt: "Omni360",
             modelAdapter: "/prowebsite/static/src/models/Omni_360_Model.glb",
             modelSplit:   "/prowebsite/static/src/models/Omni_360_Model.glb",
+            // Not purchasable yet — nav button just says "Coming Soon", no price.
+            buyBtnLabel: { en_US: 'Coming Soon', fr_CA: 'Bientôt disponible', es_ES: 'Próximamente' },
+            showPrice: false,
         },
     };
     // No attribute (or an unrecognised value) falls back to "omnigo", so the
@@ -48,6 +54,13 @@ whenReady(async () => {
     // Read the active language from the <html lang="..."> attribute that Odoo sets.
     // Normalise BCP-47 hyphens to underscores so both "fr-CA" and "fr_CA" match.
     const pageLang = (document.documentElement.lang || 'en_US').replace('-', '_');
+
+    /** Look up a per-product, per-language string from PRODUCT_CONFIG (e.g. buyBtnLabel). */
+    function _tp(field) {
+        const entry = activeConfig[field];
+        if (!entry) return '';
+        return entry[pageLang] || entry.en_US || '';
+    }
 
     const _i18n = {
         fr_CA: {
@@ -305,7 +318,7 @@ whenReady(async () => {
                     <a href="#adapt" class="o_omnigo_ch_nav_link">${_t('navAdapt', 'Adapt')}</a>
                     <a href="#expand" class="o_omnigo_ch_nav_link">${_t('navExpand', 'Expand')}</a>
                     <a href="#capture" class="o_omnigo_ch_nav_link">${_t('navCapture', 'Capture')}</a>
-                    <a href="#buy" class="o_omnigo_ch_buy_btn">${_t('buyNow', 'Buy Now')}&thinsp;|&thinsp;$299</a>
+                    <a href="#buy" class="o_omnigo_ch_buy_btn">${_tp('buyBtnLabel')}${activeConfig.showPrice ? '&thinsp;|&thinsp;$299' : ''}</a>
                 </nav>
                 <button class="o_omnigo_ch_hamburger" aria-label="${_t('ariaOpenMenu', 'Open menu')}" aria-expanded="false">
                     <span></span><span></span><span></span>
@@ -315,7 +328,7 @@ whenReady(async () => {
                 <a href="#adapt" class="o_omnigo_ch_mobile_link">${_t('navAdapt', 'Adapt')}</a>
                 <a href="#expand" class="o_omnigo_ch_mobile_link">${_t('navExpand', 'Expand')}</a>
                 <a href="#capture" class="o_omnigo_ch_mobile_link">${_t('navCapture', 'Capture')}</a>
-                <a href="#buy" class="o_omnigo_ch_buy_btn o_omnigo_ch_mobile_buy">${_t('buyNow', 'Buy Now')}&thinsp;|&thinsp;$299</a>
+                <a href="#buy" class="o_omnigo_ch_buy_btn o_omnigo_ch_mobile_buy">${_tp('buyBtnLabel')}${activeConfig.showPrice ? '&thinsp;|&thinsp;$299' : ''}</a>
             </div>
         `;
 
@@ -1524,7 +1537,10 @@ whenReady(async () => {
 
                         // Update the header "Buy Now | $..." buttons with the
                         // live price shown on the page (same element, badge stripped).
-                        const priceEl2 = buySection.querySelector(".o_omnigo_buy_price");
+                        // Skipped for products with showPrice: false (e.g. Omni360's
+                        // "Coming Soon" button) — there's no live price to show yet,
+                        // and this would otherwise overwrite that label with one.
+                        const priceEl2 = activeConfig.showPrice ? buySection.querySelector(".o_omnigo_buy_price") : null;
                         if (priceEl2) {
                             const clone = priceEl2.cloneNode(true);
                             clone.querySelector(".o_omnigo_buy_currency")?.remove();
