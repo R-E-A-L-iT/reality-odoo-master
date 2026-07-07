@@ -1,0 +1,129 @@
+/* ProPortal — Company Settings Address Cards */
+
+.addr_scroll_wrap {
+    display: flex;
+    gap: 14px;
+    align-items: stretch;
+}
+
+#invoice-address-cards,
+#delivery-address-cards {
+    flex: 1;
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0;
+    scrollbar-width: thin;
+    scrollbar-color: #db0d0d #1a1e25;
+}
+#invoice-address-cards::-webkit-scrollbar,
+#delivery-address-cards::-webkit-scrollbar { height: 6px; }
+#invoice-address-cards::-webkit-scrollbar-track,
+#delivery-address-cards::-webkit-scrollbar-track { background: #1a1e25; border-radius: 999px; }
+#invoice-address-cards::-webkit-scrollbar-thumb,
+#delivery-address-cards::-webkit-scrollbar-thumb { background: #db0d0d; border-radius: 999px; }
+
+.addr_scroll_wrap > .addr_card.add_card {
+    flex: 0 0 270px;
+    min-width: 270px;
+    max-width: 270px;
+}
+
+#company-address-section .addr_card {
+    padding: 18px 20px 16px;
+    min-height: 110px;
+    flex: 0 0 270px;
+    min-width: 270px;
+    max-width: 270px;
+}
+#company-address-section .addr_card .name {
+    font-size: 0.97rem;
+    margin-bottom: 6px;
+}
+#company-address-section .addr_card .lines {
+    white-space: normal;
+    line-height: 1.55;
+    font-size: 0.88rem;
+}
+#company-address-section .addr_card .addr_badge {
+    margin-bottom: 6px;
+    display: inline-block;
+}
+#company-address-section .addr_matrix {
+    margin-bottom: 0;
+}
+
+.addr_card_actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+}
+.addr_action_btn {
+    width: 24px; height: 24px;
+    border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; opacity: 0.65;
+    transition: opacity 0.15s ease, box-shadow 0.15s ease;
+    padding: 0; background: none; border: none;
+}
+.addr_action_btn svg { width: 12px; height: 12px; display: block; pointer-events: none; }
+.addr_card:hover .addr_action_btn { opacity: 1; }
+
+.addr_edit_btn  { border: 1px solid #4b1f1f; background: #231314; color: #db0d0d; }
+.addr_edit_btn:hover  { box-shadow: 0 0 0 2px rgba(219,13,13,0.25) inset; opacity: 1; }
+.addr_delete_btn { border: 1px solid #1f2b4b; background: #131823; color: #5f8dd3; }
+.addr_delete_btn:hover { box-shadow: 0 0 0 2px rgba(95,141,211,0.25) inset; opacity: 1; }
+
+/* ── Inline edit form ── */
+#addr-inline-editor { margin-top: 14px; }
+#addr-inline-editor select,
+#addr-new-modal-box select {
+    -webkit-appearance: none; -moz-appearance: none; appearance: none;
+    background-color: #0a0d11;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23c9d1d9' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat; background-position: right 10px center; background-size: 14px 10px;
+    color: #e6edf3; border: 1px solid #2b3139; border-radius: 8px;
+    padding: 8px 34px 8px 12px; width: 100%; cursor: pointer;
+    font-size: 0.875rem; line-height: 1.5;
+}
+#addr-inline-editor select:focus,
+#addr-new-modal-box select:focus {
+    border-color: #3f8cff; box-shadow: 0 0 0 3px rgba(63,140,255,0.20); outline: none;
+}
+#addr-inline-editor select option,
+#addr-new-modal-box select option { background: #0a0d11; color: #e6edf3; }
+#addr-inline-editor .actions,
+#addr-new-modal-box .actions { margin-top: 16px; text-align: right; }
+
+/* ── Add new modal ── */
+#addr-new-modal {
+    position: fixed; inset: 0; z-index: 9000;
+    display: flex; align-items: center; justify-content: center;
+}
+#addr-new-modal-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.72); cursor: pointer;
+}
+#addr-new-modal-box {
+    position: relative; z-index: 1;
+    width: min(500px, 92vw);
+    background: #14171c; border: 1px solid #23272f; border-radius: 14px;
+    padding: 24px; color: #e6edf3; max-height: 85vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+#addr-new-modal-box .addr_editor { margin: 0; padding: 0; background: transparent; border: none; color: #e6edf3; }
+#addr-new-modal-box .addr_editor fieldset { min-width: 100%; flex: 1 1 100%; border: none; background: transparent; padding: 0; }
+#addr-new-modal-box .addr_editor legend {
+    font-size: 1.05rem; font-weight: 700; color: #e6edf3;
+    padding: 0 0 10px; margin-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.10); width: 100%;
+}
+#addr-new-modal-box .addr_editor input[type="text"] {
+    background: #0a0d11; color: #e6edf3; border: 1px solid #2b3139; border-radius: 8px;
+}
+#addr-new-modal-box .addr_editor input[type="text"]:focus {
+    border-color: #3f8cff; box-shadow: 0 0 0 3px rgba(63,140,255,0.20); outline: none;
+}
