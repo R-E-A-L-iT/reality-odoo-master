@@ -254,6 +254,12 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
             </div>
         </div>
         ${megaMenus.filter(m => m.li).map(m => renderMenuPanelHTML(m.key, m.columns)).join('')}
+        <div class="o_hdd_footer">
+            <a href="/contact" class="o_hdd_footer_link">
+                <span>Need help? Contact us</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+            </a>
+        </div>
     `;
 
     // Always append to body — position:fixed handles placement
