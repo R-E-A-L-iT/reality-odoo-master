@@ -394,7 +394,16 @@ function buildSiteHeader(nativeHeaderEl) {
     if (!brand || !topMenu || !iconsUl) return null;
 
     const header = document.createElement('header');
-    const wantsOverlay = document.getElementById('wrapwrap')?.classList.contains('o_header_overlay');
+    // Two signals, either is enough: Odoo's own per-page "Header Position:
+    // Over The Content" builder flag (#wrapwrap.o_header_overlay) — OR the
+    // page actually having a full-bleed hero to overlay in the first place.
+    // The flag alone isn't reliable: pages like the RTC series predate this
+    // system entirely and were built around their own hero design (e.g. a
+    // deliberate 176px top padding reserved for a floating header) without
+    // ever having that native per-page setting turned on.
+    const wantsOverlay =
+        document.getElementById('wrapwrap')?.classList.contains('o_header_overlay')
+        || !!document.querySelector('#wrap .s_cover.o_full_screen_height');
     header.className = 'o_site_header' + (wantsOverlay ? ' o_site_header--overlay' : '');
     header.innerHTML = `
         <div class="o_site_header_inner">
@@ -412,6 +421,16 @@ function buildSiteHeader(nativeHeaderEl) {
     header.querySelector('.o_site_header_right').appendChild(iconsUl);
 
     document.body.prepend(header);
+
+    // desktopNav is now an empty shell (its meaningful children were just
+    // relocated above), but its own box (padding, the .container inside it,
+    // possibly a second "Bottom" row for text/social links) still renders —
+    // an empty but still-sized bar. The CSS rule that hides it pre-JS
+    // (header#top nav[aria-label="Main"] {...} in header_dropdowns.css)
+    // stops matching the instant the id="top" strip below runs, since it's
+    // an ID selector — so it must also be hidden directly, here, in a way
+    // that doesn't depend on any selector that could later stop matching.
+    desktopNav.style.setProperty('display', 'none', 'important');
 
     // The native mobile nav (a <nav aria-label="Mobile"> sibling of
     // desktopNav, still inside nativeHeaderEl) is deliberately left exactly

@@ -98,8 +98,8 @@
 .o_site_header_inner {
     display: flex;
     align-items: center;
-    gap: clamp(20px, 3vw, 48px);
-    padding: 18px clamp(20px, 3vw, 48px);
+    gap: clamp(10px, 1.5vw, 28px);
+    padding: 12px clamp(14px, 2vw, 32px);
 }
 
 .o_site_header_left {
@@ -109,12 +109,15 @@
 }
 
 .o_site_header_left img {
+    max-height: 34px;
+    width: auto;
     transition: height 0.35s ease;
 }
 
 .o_site_header_nav {
     flex: 1 1 auto;
     min-width: 0;
+    overflow: hidden;
 }
 
 /* Bootstrap's .navbar-nav only lays out as a row under a .navbar-expand-lg
@@ -129,28 +132,32 @@
     flex-direction: row;
     align-items: center;
     flex-wrap: nowrap;
-    gap: 4px;
+    gap: 0;
     margin: 0;
 }
 
 /* Same ancestor-dependent theme styling (color, spacing, hover state) that
    .nav-link relied on is also gone along with that ancestor — style these
    directly rather than hoping something still applies. Matches the Omni
-   pages' own .o_omnigo_ch_nav_link treatment for visual consistency. */
+   pages' own .o_omnigo_ch_nav_link treatment for visual consistency.
+   Padding/font-size kept compact on purpose — six top-level menus plus the
+   Contact button and three icons need to fit on ~1024-1440px screens
+   without wrapping or overflowing. */
 .o_site_header_nav #top_menu > li {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .o_site_header_nav #top_menu .nav-link {
     display: inline-flex;
     align-items: center;
-    padding: 8px 14px !important;
+    padding: 8px clamp(6px, 0.9vw, 12px) !important;
     color: rgba(255, 255, 255, 0.82) !important;
     font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
-    font-size: 13px;
+    font-size: clamp(11.5px, 0.95vw, 13px);
     font-weight: 600;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
     text-decoration: none !important;
     white-space: nowrap;
@@ -182,7 +189,35 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: 4px;
     margin: 0;
+}
+
+/* The Contact CTA's <li class="flex-grow-1"> and its inner .oe_structure >
+   section > .container were themed for the native header's own layout,
+   where a wide, centered top-level container gave that flex-grow-1 room to
+   mean "push me right" without visibly expanding. In .o_site_header_right's
+   tighter, content-sized flex row, the same classes instead stretched an
+   effectively unbounded .container-with-auto-centering out far enough to
+   overlap the nav — this is the "Contact button overlapping other nav
+   items" bug. Bootstrap's .container assumes it's a page-level top-level
+   element; neutralize it wherever it turns up inside the header, and stop
+   this specific <li> from growing at all. */
+.o_site_header_right li.flex-grow-1 {
+    flex: 0 0 auto !important;
+}
+
+.o_site_header .container {
+    max-width: none !important;
+    width: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.o_site_header_right .btn_cta {
+    padding: 8px clamp(14px, 1.6vw, 22px) !important;
+    font-size: clamp(12.5px, 1vw, 14px) !important;
+    white-space: nowrap;
 }
 
 /* ── Bar container (full-width, fixed below the header) ─────────────────── */
