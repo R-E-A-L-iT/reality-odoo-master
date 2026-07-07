@@ -49,3 +49,7 @@
     -webkit-text-fill-color: transparent;
     color: transparent;
 }
+
+#wrapwrap > main > div:nth-child(1) > div.alert-info {
+    margin-top: 80px;
+}
