@@ -1281,27 +1281,6 @@ whenReady(async () => {
     }
     window.addEventListener("resize", onResize, { passive: true });
 
-    // ----------------------------
-    // Scroll dirty flag — avoids getBoundingClientRect() on every rAF frame.
-    // Both updateScrollSectionProgress and updateOmnigoScrollVideo are now
-    // driven by scroll events and only computed when the page actually scrolls.
-    // ----------------------------
-    const _scrollRoot = document.getElementById("wrapwrap") || document.documentElement;
-    let _scrollDirty = true; // compute on first frame
-    _scrollRoot.addEventListener("scroll", () => { _scrollDirty = true; }, { passive: true });
-
-    // ----------------------------
-    // Skip rendering when panels are off-screen (IntersectionObserver)
-    // ----------------------------
-    let _bottomInView = true; // assume visible until observer fires
-    let _scrollSectionInView = false;
-    new IntersectionObserver(([e]) => { _bottomInView = e.isIntersecting; }, { threshold: 0 })
-        .observe(bottomModelHost);
-    if (scrollSection) {
-        new IntersectionObserver(([e]) => { _scrollSectionInView = e.isIntersecting; }, { threshold: 0 })
-            .observe(scrollSection);
-    }
-
     // ── Browser detection ────────────────────────────────────────────────────
     // Safari is identified by the absence of "Chrome"/"CriOS"/"FxiOS" in the UA
     // combined with the presence of "Safari". This catches desktop Safari and
@@ -1410,13 +1389,8 @@ whenReady(async () => {
     function animate(now) {
         requestAnimationFrame(animate);
 
-        // Process scroll-driven updates only when the page actually scrolled.
-        // This eliminates getBoundingClientRect() being called 60×/sec at rest.
-        if (_scrollDirty) {
-            _scrollDirty = false;
-            updateScrollSectionProgress();
-            updateOmnigoScrollVideo();
-        }
+        updateScrollSectionProgress();
+        updateOmnigoScrollVideo();
 
         // Only run the expensive pose math when the progress value has changed.
         if (scrollAnimProgress !== _lastScrollProgress) {
@@ -1435,14 +1409,8 @@ whenReady(async () => {
             bottomWrapper.rotation.y += bottomAutoRotateSpeed;
         }
 
-        // Skip GPU render calls when the panel is off-screen — biggest frame-rate
-        // saving when the user is far from either section.
-        if (_bottomInView) {
-            bottomRenderer.render(bottomScene, bottomCamera);
-        }
-        if (_scrollSectionInView) {
-            scrollRenderer.render(scrollScene, scrollCamera);
-        }
+        bottomRenderer.render(bottomScene, bottomCamera);
+        scrollRenderer.render(scrollScene, scrollCamera);
     }
 
     const reviewCards = document.querySelectorAll(".o_review_waterfall_card");
