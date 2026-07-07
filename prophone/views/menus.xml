@@ -19,4 +19,16 @@
               parent="quo_root_menu"
               action="action_quo_transcripts"
               sequence="20"/>
+
+    <menuitem id="quo_menu_configuration"
+              name="Configuration"
+              parent="quo_root_menu"
+              groups="base.group_system"
+              sequence="90"/>
+
+    <menuitem id="quo_menu_ignored_contacts"
+              name="Ignored Contacts"
+              parent="quo_menu_configuration"
+              action="action_quo_ignored_contacts"
+              sequence="10"/>
 </odoo>

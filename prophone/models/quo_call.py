@@ -369,70 +369,40 @@ class QuoCall(models.Model):
 
     @api.model
     def _find_partners_by_phone(self, numbers):
+        """Find res.partner records whose phone/mobile matches any of `numbers`,
+        regardless of formatting differences (dashes, spaces, parens, +1 prefix, etc.).
+
+        Matching is done against normalized, indexed key fields on res.partner
+        (see res.partner._quo_normalize_phone_key), so two numbers that only
+        differ in formatting always resolve to the same key.
+        """
         numbers = [n for n in (numbers or []) if n]
         if not numbers:
             return self.env["res.partner"]
 
-        patterns = set()
+        Partner = self.env["res.partner"].sudo()
 
+        full_keys = set()
+        short_keys = set()
         for n in numbers:
-            d = re.sub(r"\D+", "", n or "")
-            if not d:
+            key = Partner._quo_normalize_phone_key(n)
+            if not key:
                 continue
+            full_keys.add(key)
+            if len(key) >= 7:
+                short_keys.add(key[-7:])
 
-            # Use last 10 digits for NANP (US/CA), last 7 as fallback
-            last10 = d[-10:] if len(d) >= 10 else d
-            last7 = d[-7:] if len(d) >= 7 else ""
-
-            # Build patterns that survive formatting: 800-555-0100 => %800%555%0100%
-            if len(last10) == 10:
-                patterns.add(f"%{last10[0:3]}%{last10[3:6]}%{last10[6:10]}%")  # %800%555%0100%
-                patterns.add(f"%{last10[3:6]}%{last10[6:10]}%")                # %555%0100%
-            if last7:
-                patterns.add(f"%{last7[0:3]}%{last7[3:7]}%")                    # %555%0100%
-
-            # Also keep raw digits as a sometimes-useful direct match
-            patterns.add(last10)
-            if last7:
-                patterns.add(last7)
-
-        if not patterns:
+        if not full_keys and not short_keys:
             return self.env["res.partner"]
 
-        # OR domain across all patterns for phone/mobile
         domain = []
-        first = True
-        for p in patterns:
-            chunk = ["|", ("phone", "ilike", p), ("mobile", "ilike", p)]
-            if first:
-                domain = chunk
-                first = False
-            else:
-                domain = ["|"] + chunk + domain
+        if full_keys:
+            domain += ["|", ("quo_phone_key", "in", list(full_keys)), ("quo_mobile_key", "in", list(full_keys))]
+        if short_keys:
+            short_domain = ["|", ("quo_phone_key7", "in", list(short_keys)), ("quo_mobile_key7", "in", list(short_keys))]
+            domain = (["|"] + domain + short_domain) if domain else short_domain
 
-        candidates = self.env["res.partner"].sudo().search(domain)
-
-        # FINAL FILTER: sanitize candidate phone/mobile and compare by last 10/last 7 digits
-        def norm_digits(val):
-            return re.sub(r"\D+", "", val or "")
-
-        wanted = set()
-        for n in numbers:
-            d = norm_digits(n)
-            if len(d) >= 10:
-                wanted.add(d[-10:])
-            if len(d) >= 7:
-                wanted.add(d[-7:])
-
-        def is_match(p):
-            pd = norm_digits(p.phone) + " " + norm_digits(p.mobile)
-            # check last10/last7 existence anywhere in pd
-            for w in wanted:
-                if w and w in pd:
-                    return True
-            return False
-
-        return candidates.filtered(is_match)
+        return Partner.search(domain)
 
     def _format_bullets(self, items):
         """items: list[str] -> '• ...' lines"""
@@ -511,6 +481,10 @@ class QuoCall(models.Model):
     def _get_or_create_partner_for_phone(self, phone, default_name=None):
         """Return a single res.partner for a phone.
         If none exists, create a contact named 'Unknown: <phone>' (or default_name if provided).
+
+        Never creates a new contact for a malformed/invalid number (e.g. a glitched
+        "+1" with no further digits coming from a badly set up Quo contact) — those
+        just resolve to an empty recordset instead of spawning junk placeholder contacts.
         """
         sanitized = self._sanitize_phone(phone)
         if not sanitized:
@@ -520,6 +494,10 @@ class QuoCall(models.Model):
         if matches:
             # choose the first deterministically
             return matches.sorted(lambda p: p.id)[0]
+
+        if not self._is_valid_quo_phone(sanitized):
+            _logger.info("Not creating a contact for invalid/malformed phone: %r", phone)
+            return self.env["res.partner"]
 
         # create a new contact — use the phone number in the name so records are
         # identifiable at a glance even before a name is manually added.
@@ -534,10 +512,7 @@ class QuoCall(models.Model):
     # -------------------------------------------------------------------------
 
     def _phone_key(self, phone):
-        d = re.sub(r"\D+", "", phone or "")
-        if not d:
-            return ""
-        return d[-10:] if len(d) > 10 else d
+        return self.env["res.partner"]._quo_normalize_phone_key(phone) or ""
 
     def _quo_iter_contacts(self, max_pages=500, page_size=50):
         """Yield Quo contacts by paging GET /contacts."""
@@ -551,7 +526,7 @@ class QuoCall(models.Model):
                 break
 
     def _quo_contact_extract(self, quo_contact):
-        """Extract (name, email, company, role, phones[]) from a Quo contact dict."""
+        """Extract (name, email, company, role, phones[], quo_id, source_url) from a Quo contact dict."""
         df = (quo_contact.get("defaultFields") or {})
         first = (df.get("firstName") or "").strip()
         last = (df.get("lastName") or "").strip()
@@ -574,7 +549,11 @@ class QuoCall(models.Model):
         display_name = (f"{first} {last}").strip()
         if not display_name:
             display_name = company or ""
-        return display_name, email, company, role, phones
+
+        quo_id = (quo_contact.get("id") or "").strip() or False
+        source_url = (quo_contact.get("sourceUrl") or quo_contact.get("source_url") or "").strip() or False
+
+        return display_name, email, company, role, phones, quo_id, source_url
 
     def _ensure_company_partner(self, company_name):
         if not company_name:
@@ -725,45 +704,104 @@ class QuoCall(models.Model):
         updated_odoo = 0
 
         for qc in self.sudo()._quo_iter_contacts(max_pages=quo_max_pages, page_size=50):
-            display_name, email, company, role, phones = self._quo_contact_extract(qc)
+            display_name, email, company, role, phones, quo_id, source_url = self._quo_contact_extract(qc)
             if not phones:
                 continue
 
+            # Only keep phones that are actually usable — this is what stops garbage
+            # numbers coming from a misconfigured Quo contact (e.g. a lone "+1" with
+            # no further digits) from spawning a new Odoo contact every sync. Dedupe by
+            # normalized key so the same number in two different formats isn't kept twice.
+            valid_phones = []
+            seen_keys = set()
             for raw_phone in phones:
                 sanitized = self._sanitize_phone(raw_phone)
-                if not sanitized:
+                if not sanitized or not self._is_valid_quo_phone(sanitized):
                     continue
+                pkey = Partner._quo_normalize_phone_key(sanitized)
+                if pkey in seen_keys:
+                    continue
+                seen_keys.add(pkey)
+                valid_phones.append(sanitized)
 
+            if not valid_phones:
+                _logger.info(
+                    "Quo contact sync: skipping contact %r (quo_id=%s) — no valid phone number",
+                    display_name, quo_id,
+                )
+                continue
+
+            for sanitized in valid_phones:
                 key = self._phone_key(sanitized)
                 if key:
                     quo_phone_keys.add(key)
 
-                matches = self._find_partners_by_phone([sanitized])
-                if matches:
-                    partner = matches.sorted(lambda p: p.id)[0]
-                    if self._update_partner_from_quo_if_empty(
-                        partner, display_name, email, company, role, sanitized
-                    ):
-                        updated_odoo += 1
-                    continue
+            # Memory: match by the stable Quo contact id first. This is what lets us
+            # recognize a contact we already created/matched on a previous run even if
+            # phone-number matching alone would fail (number reformatted, extra number
+            # added, etc.) — without it, the same Quo contact gets recreated every sync.
+            partner = self.env["res.partner"]
+            if quo_id:
+                partner = Partner.search([("quo_contact_id", "=", quo_id)], limit=1)
+            if not partner:
+                partner = self._find_partners_by_phone(valid_phones).sorted(lambda p: p.id)[:1]
 
-                vals = {
-                    "name": display_name or f"Unknown: {sanitized}",
-                    "phone": sanitized,
-                }
-                if email:
-                    vals["email"] = email
-                if role:
-                    vals["function"] = role
+            if partner:
+                updated = self._update_partner_from_quo_if_empty(
+                    partner, display_name, email, company, role, valid_phones[0]
+                )
 
-                if company:
-                    comp = self._ensure_company_partner(company)
-                    if comp:
-                        vals["parent_id"] = comp.id
-                        vals["company_type"] = "person"
+                # A Quo contact may list a second distinct number (e.g. mobile) — keep
+                # it on the SAME partner instead of spawning a duplicate contact. Compare
+                # by normalized key, not raw string, since partner.phone may already hold
+                # the same number in different formatting than our sanitized value.
+                if len(valid_phones) > 1 and not (partner.mobile or "").strip():
+                    existing_key = Partner._quo_normalize_phone_key(partner.phone)
+                    second = next(
+                        (p for p in valid_phones if Partner._quo_normalize_phone_key(p) != existing_key),
+                        None,
+                    )
+                    if second:
+                        partner.sudo().write({"mobile": second})
+                        updated = True
 
-                Partner.create(vals)
-                created_odoo += 1
+                # Repair memory on legacy records synced before quo_contact_id tracking existed.
+                repair_vals = {}
+                if quo_id and partner.quo_contact_id != quo_id:
+                    repair_vals["quo_contact_id"] = quo_id
+                if source_url and partner.quo_contact_source_url != source_url:
+                    repair_vals["quo_contact_source_url"] = source_url
+                if repair_vals:
+                    partner.sudo().write(repair_vals)
+                    updated = True
+
+                if updated:
+                    updated_odoo += 1
+                continue
+
+            vals = {
+                "name": display_name or f"Unknown: {valid_phones[0]}",
+                "phone": valid_phones[0],
+            }
+            if len(valid_phones) > 1:
+                vals["mobile"] = valid_phones[1]
+            if email:
+                vals["email"] = email
+            if role:
+                vals["function"] = role
+            if quo_id:
+                vals["quo_contact_id"] = quo_id
+            if source_url:
+                vals["quo_contact_source_url"] = source_url
+
+            if company:
+                comp = self._ensure_company_partner(company)
+                if comp:
+                    vals["parent_id"] = comp.id
+                    vals["company_type"] = "person"
+
+            Partner.create(vals)
+            created_odoo += 1
 
         _logger.info(
             "Quo contact sync phase1 done: created_odoo=%s updated_odoo=%s quo_phones_indexed=%s",
@@ -1169,32 +1207,40 @@ class QuoCall(models.Model):
             parts.append(Markup(call_link))
             body_html = Markup("").join(parts)
 
+            # Contacts flagged "Ignore for Quo" (e.g. internal phone lines, shared/front-desk
+            # numbers) are never treated as customers: no opportunity is searched for or
+            # created on their behalf. Other participants on the same call (real clients)
+            # are completely unaffected and keep the normal behaviour below.
+            opportunity_eligible_partners = external_partners.filtered(lambda p: not p.quo_ignore_as_customer)
+
             for partner in external_partners:
                 # -------------------------
-                # Opportunities (CRM)
+                # Opportunities (CRM) — skipped entirely for ignored contacts
                 # -------------------------
-                opp_domain = [
-                    ("type", "=", "opportunity"),
-                    ("active", "=", True),
-                    ("stage_id.is_won", "=", False),
-                    ("probability", ">", 0),
-                ]
-                if call_dt:
-                    opp_domain.append(("create_date", "<", call_dt))
-                opp_domain += [
-                    "|",
-                        ("partner_id", "child_of", partner.commercial_partner_id.id),
-                        ("message_partner_ids", "in", partner.ids),
-                ]
-                opportunities = self.env["crm.lead"].sudo().search(opp_domain, order="create_date desc, id desc")
+                opportunities = self.env["crm.lead"]
+                if partner in opportunity_eligible_partners:
+                    opp_domain = [
+                        ("type", "=", "opportunity"),
+                        ("active", "=", True),
+                        ("stage_id.is_won", "=", False),
+                        ("probability", ">", 0),
+                    ]
+                    if call_dt:
+                        opp_domain.append(("create_date", "<", call_dt))
+                    opp_domain += [
+                        "|",
+                            ("partner_id", "child_of", partner.commercial_partner_id.id),
+                            ("message_partner_ids", "in", partner.ids),
+                    ]
+                    opportunities = self.env["crm.lead"].sudo().search(opp_domain, order="create_date desc, id desc")
 
-                if opportunities:
-                    _logger.info(
-                        "Posting Quo call %s to %d opportunities for partner %s: %s",
-                        call.id, len(opportunities), partner.display_name, opportunities.ids
-                    )
-                    if _is_newer(opportunities[0], best_opp[0] if best_opp else False):
-                        best_opp = opportunities[0:1]
+                    if opportunities:
+                        _logger.info(
+                            "Posting Quo call %s to %d opportunities for partner %s: %s",
+                            call.id, len(opportunities), partner.display_name, opportunities.ids
+                        )
+                        if _is_newer(opportunities[0], best_opp[0] if best_opp else False):
+                            best_opp = opportunities[0:1]
 
                 # -------------------------
                 # Quotes (Sales)
@@ -1289,7 +1335,7 @@ class QuoCall(models.Model):
             if next_steps:
                 if best_opp:
                     activity_target = best_opp[0]
-                elif external_partners:
+                elif opportunity_eligible_partners:
                     # Resolve Derek deBlois as the assignee
                     derek_user = self.env["res.users"].sudo().search([
                         "|",
@@ -1301,7 +1347,7 @@ class QuoCall(models.Model):
                             ("name", "ilike", "Derek deBlois"),
                         ], limit=1)
 
-                    fallback_partner = external_partners[0]
+                    fallback_partner = opportunity_eligible_partners[0]
                     activity_target = self.env["crm.lead"].sudo().create({
                         "name": f"Follow-up: {fallback_partner.display_name}",
                         "type": "opportunity",

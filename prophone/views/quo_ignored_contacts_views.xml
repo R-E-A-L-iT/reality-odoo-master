@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="quo_ignored_contacts_list_view" model="ir.ui.view">
+        <field name="name">quo.ignored.contacts.list</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Quo Ignored Contacts" editable="bottom" create="0" import="0">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <field name="quo_ignore_as_customer" widget="boolean_toggle" string="Ignore for Quo"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="quo_ignored_contacts_search_view" model="ir.ui.view">
+        <field name="name">quo.ignored.contacts.search</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search string="Search Contacts">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <filter string="Ignored for Quo" name="quo_ignored" domain="[('quo_ignore_as_customer', '=', True)]"/>
+                <filter string="Not Ignored" name="quo_not_ignored" domain="[('quo_ignore_as_customer', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_quo_ignored_contacts" model="ir.actions.act_window">
+        <field name="name">Ignored Contacts</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="quo_ignored_contacts_list_view"/>
+        <field name="search_view_id" ref="quo_ignored_contacts_search_view"/>
+        <field name="context">{'search_default_quo_ignored': 1}</field>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No ignored contacts yet.
+            </p><p>
+                Search for a contact (e.g. an internal phone line or a shared front-desk
+                number) and toggle "Ignore for Quo" so the Quo integration never treats it
+                as a customer — no opportunities will be created or matched for it. Real
+                customers on the same call are unaffected.
+            </p>
+        </field>
+    </record>
+</odoo>

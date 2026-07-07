@@ -12,6 +12,14 @@ class ResPartner(models.Model):
     quo_contact_id = fields.Char(string="Quo Contact ID", index=True)
     quo_contact_source_url = fields.Char(string="Quo Contact URL")
 
+    quo_ignore_as_customer = fields.Boolean(
+        string="Ignore for Quo (Not a Customer)",
+        help="If enabled, the Quo phone integration will never treat this contact as a "
+             "customer: it will not search for or create CRM opportunities for it (useful "
+             "for internal phone lines, shared/front-desk numbers, or other non-customer "
+             "contacts). Other participants on the same call are handled normally.",
+    )
+
     quo_has_valid_phone = fields.Boolean(
         compute="_compute_quo_has_valid_phone",
         string="Has Valid SMS Phone",
@@ -21,6 +29,39 @@ class ResPartner(models.Model):
         compute="_compute_quo_can_send_text",
         string="Can Send Text"
     )
+
+    quo_phone_key = fields.Char(compute="_compute_quo_phone_keys", store=True, index=True)
+    quo_phone_key7 = fields.Char(compute="_compute_quo_phone_keys", store=True, index=True)
+    quo_mobile_key = fields.Char(compute="_compute_quo_phone_keys", store=True, index=True)
+    quo_mobile_key7 = fields.Char(compute="_compute_quo_phone_keys", store=True, index=True)
+
+    @api.model
+    def _quo_normalize_phone_key(self, phone):
+        """Normalize a phone number to a key that's stable across formatting.
+
+        Strips everything but digits, then drops a leading NANP country code
+        ('1' on an 11-digit number) so that '+1 800-555-0100', '18005550100'
+        and '800.555.0100' all normalize to the same key regardless of how
+        Quo or a human happened to format them.
+        """
+        if not phone:
+            return False
+        digits = re.sub(r"\D+", "", str(phone))
+        if not digits:
+            return False
+        if len(digits) == 11 and digits.startswith("1"):
+            digits = digits[1:]
+        return digits
+
+    @api.depends("phone", "mobile")
+    def _compute_quo_phone_keys(self):
+        for partner in self:
+            pk = partner._quo_normalize_phone_key(partner.phone)
+            mk = partner._quo_normalize_phone_key(partner.mobile)
+            partner.quo_phone_key = pk or False
+            partner.quo_phone_key7 = pk[-7:] if pk and len(pk) >= 7 else False
+            partner.quo_mobile_key = mk or False
+            partner.quo_mobile_key7 = mk[-7:] if mk and len(mk) >= 7 else False
 
     def _compute_quo_can_send_text(self):
         user = self.env.user
