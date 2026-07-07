@@ -4,26 +4,31 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Top-level nav menus rebuilt into the custom hover bar, same as account/lang.
-// `label` is matched case-insensitively against the top-level link's own text
+// `labels` is matched case-insensitively against the top-level link's own text
 // (there's no stable id/class for these — they're ordinary website.menu
 // entries), so a site-owner rename in the Website > Menu editor will just
 // leave that one item on its native dropdown instead of breaking anything.
+// Each entry lists the English label plus its FR/ES translations, since the
+// same top-level <li> text changes with the active website language (this is
+// what previously made the whole hover bar silently fail to match — and so
+// render nothing — on any non-English page).
 // ─────────────────────────────────────────────────────────────────────────────
 const MEGA_MENU_ITEMS = [
-    { key: 'equipment',   label: 'equipment' },
-    { key: 'software',    label: 'software' },
-    { key: 'accessories', label: 'accessories' },
-    { key: 'rentals',     label: 'rentals' },
-    { key: 'resources',   label: 'resources' },
+    { key: 'equipment',   labels: ['equipment', 'équipement', 'équipements', 'equipo', 'equipos'] },
+    { key: 'software',    labels: ['software', 'logiciel', 'logiciels'] },
+    { key: 'accessories', labels: ['accessories', 'accessoire', 'accessoires', 'accesorio', 'accesorios'] },
+    { key: 'rentals',     labels: ['rentals', 'location', 'locations', 'alquiler', 'alquileres'] },
+    { key: 'resources',   labels: ['resources', 'ressource', 'ressources', 'recurso', 'recursos'] },
 ];
 
-/** Find the top-level nav <li> whose own link text matches `label`. */
-function findTopLevelMenuLi(headerEl, label) {
+/** Find the top-level nav <li> whose own link text matches any of `labels`. */
+function findTopLevelMenuLi(headerEl, labels) {
     const topMenu = headerEl.querySelector('#top_menu') || document.querySelector('#top_menu');
     if (!topMenu) return null;
     return Array.from(topMenu.children).find(li => {
         const link = li.querySelector(':scope > a');
-        return link && link.textContent.trim().toLowerCase() === label;
+        const text = link && link.textContent.trim().toLowerCase();
+        return text && labels.includes(text);
     }) || null;
 }
 
@@ -88,6 +93,43 @@ function extractMenuColumns(li) {
     return columns.filter(col => col.items.length);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Minimal FR/ES i18n for the handful of strings this file writes itself
+// (everything else in the dropdown panels — column headings, link labels —
+// comes straight from Odoo's own translated menu content in the DOM, so it
+// already renders correctly in whatever language the page is in). Mirrors the
+// <html lang> detection three_product.js already uses for the Omni pages.
+// ─────────────────────────────────────────────────────────────────────────────
+const HDD_I18N = {
+    fr_CA: {
+        language:      'Langue',
+        currency:      'Devise',
+        omnigoKicker:  'Adaptateur universel BLK2GO',
+        omni360Kicker: 'Adaptateur multi-scanner',
+        omnigoCta:     'Découvrez le OmniGO',
+        omni360Cta:    'Découvrez le Omni360',
+        newBadge:      'Nouveau',
+    },
+    es_ES: {
+        language:      'Idioma',
+        currency:      'Moneda',
+        omnigoKicker:  'Adaptador universal BLK2GO',
+        omni360Kicker: 'Adaptador multiescáner',
+        omnigoCta:     'Descubre el OmniGO',
+        omni360Cta:    'Descubre el Omni360',
+        newBadge:      'Nuevo',
+    },
+};
+
+function hddLang() {
+    return (document.documentElement.lang || 'en_US').replace('-', '_');
+}
+
+function hddT(key, fallback) {
+    const dict = HDD_I18N[hddLang()];
+    return (dict && dict[key]) || fallback;
+}
+
 function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -120,37 +162,41 @@ function renderMenuColumnHTML(col) {
  *  the plain header wordmark — reads much better at this card size. Omni360
  *  uses Omni360_Cover.png (its own dedicated cover image). The card's dark
  *  background (see .o_hdd_feature_card in header_dropdowns.css) has enough
- *  contrast for either a red-and-white logo or a photo either way. */
-const ACCESSORIES_FEATURED_CARDS = `
+ *  contrast for either a red-and-white logo or a photo either way. Text is
+ *  translated via HDD_I18N (product names stay as brand names in every
+ *  language). */
+function buildAccessoriesFeaturedCards() {
+    return `
     <a href="/omnigo" class="o_hdd_feature_card">
         <div class="o_hdd_feature_card_media">
             <img src="https://cdn.r-e-a-l.it/images/ecommerce/OmniGO2.png" alt="OmniGO"/>
         </div>
-        <p class="o_hdd_feature_card_kicker">All-Use BLK2GO Adapter</p>
+        <p class="o_hdd_feature_card_kicker">${hddT('omnigoKicker', 'All-Use BLK2GO Adapter')}</p>
         <p class="o_hdd_feature_card_name">OmniGO</p>
-        <span class="o_hdd_feature_card_cta">Check out the OmniGO
+        <span class="o_hdd_feature_card_cta">${hddT('omnigoCta', 'Check out the OmniGO')}
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
         </span>
     </a>
     <a href="/omni360" class="o_hdd_feature_card o_hdd_feature_card--new">
-        <span class="o_hdd_feature_card_badge">New</span>
+        <span class="o_hdd_feature_card_badge">${hddT('newBadge', 'New')}</span>
         <div class="o_hdd_feature_card_media">
             <img src="https://cdn.r-e-a-l.it/images/ecommerce/Omni360_Cover.png" alt="Omni360"/>
         </div>
-        <p class="o_hdd_feature_card_kicker">Multi-Scanner Adapter</p>
+        <p class="o_hdd_feature_card_kicker">${hddT('omni360Kicker', 'Multi-Scanner Adapter')}</p>
         <p class="o_hdd_feature_card_name">Omni360</p>
-        <span class="o_hdd_feature_card_cta">Check out the Omni360
+        <span class="o_hdd_feature_card_cta">${hddT('omni360Cta', 'Check out the Omni360')}
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
         </span>
     </a>
 `;
+}
 
 function renderMenuPanelHTML(key, columns) {
     const isAccessories = key === 'accessories';
     return `
         <div class="o_hdd_panel" data-panel="${key}">
             <div class="o_hdd_menu_inner${isAccessories ? ' o_hdd_menu_inner--accessories' : ''}">
-                ${isAccessories ? `<div class="o_hdd_feature_cards">${ACCESSORIES_FEATURED_CARDS}</div>` : ''}
+                ${isAccessories ? `<div class="o_hdd_feature_cards">${buildAccessoriesFeaturedCards()}</div>` : ''}
                 <div class="o_hdd_menu_cols${isAccessories ? ' o_hdd_menu_cols--secondary' : ''}">
                     ${columns.map(renderMenuColumnHTML).join('')}
                 </div>
@@ -198,8 +244,8 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
     // Each entry pairs its matched <li> (or null if this header/page doesn't
     // have that menu — e.g. the OmniGO/Omni360 custom header) with the
     // columns extracted from whatever dropdown/mega-menu content it has.
-    const megaMenus = MEGA_MENU_ITEMS.map(({ key, label }) => {
-        const li = findTopLevelMenuLi(headerEl, label);
+    const megaMenus = MEGA_MENU_ITEMS.map(({ key, labels }) => {
+        const li = findTopLevelMenuLi(headerEl, labels);
         let columns = extractMenuColumns(li);
         if (key === 'accessories') {
             // The featured OmniGO/Omni360 cards above already cover both
@@ -232,7 +278,7 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
             <div class="o_hdd_lang_map"></div>
             <div class="o_hdd_lang_options">
                 <div class="o_hdd_col">
-                    <p class="o_hdd_col_label">Language</p>
+                    <p class="o_hdd_col_label">${hddT('language', 'Language')}</p>
                     <div class="o_hdd_col_items">
                         ${langItems.map(item => `
                             <a href="${item.href}"
@@ -245,7 +291,7 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
                 </div>
                 <div class="o_hdd_col_divider" data-cur-divider></div>
                 <div class="o_hdd_col" data-cur-col>
-                    <p class="o_hdd_col_label">Currency</p>
+                    <p class="o_hdd_col_label">${hddT('currency', 'Currency')}</p>
                     <div class="o_hdd_col_items" data-cur-items>
                         <span class="o_hdd_loading">…</span>
                     </div>
