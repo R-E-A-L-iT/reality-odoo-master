@@ -1993,7 +1993,9 @@ whenReady(async () => {
 
 /* ─── Promo popup dismiss (handles OmniGO + RTC) ───────────────────────────── */
 // One delegated handler per close-button class. Finds the nearest ancestor
-// promo card, animates it out, then removes it from layout so the stack collapses.
+// promo card, lets its CSS transition collapse it (max-height/margin/opacity/
+// transform, see .o_promo_stack .is-dismissed in three_product.css), then
+// removes it from layout once that's done so the stack stays clean.
 (function () {
     function dismissPromo(closeSelector, cardSelector) {
         document.addEventListener("click", function (e) {
@@ -2001,9 +2003,15 @@ whenReady(async () => {
             var popup = e.target.closest(cardSelector);
             if (!popup) return;
             popup.classList.add("is-dismissed");
-            popup.addEventListener("animationend", function () {
+            // max-height is the longest-running of the transitioned properties
+            // (0.4s, vs 0.22s for opacity/transform) — wait specifically for
+            // it so display:none never cuts the collapse off mid-animation.
+            function onEnd(ev) {
+                if (ev.target !== popup || ev.propertyName !== "max-height") return;
+                popup.removeEventListener("transitionend", onEnd);
                 popup.style.display = "none";
-            }, { once: true });
+            }
+            popup.addEventListener("transitionend", onEnd);
         });
     }
     dismissPromo(".o_omnigo_promo_close", ".o_omnigo_promo");
