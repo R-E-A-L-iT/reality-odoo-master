@@ -180,15 +180,10 @@
     align-items: center;
     padding: 8px clamp(6px, 0.9vw, 12px) !important;
     color: rgba(255, 255, 255, 0.82) !important;
-    /* Fjalla One is already this site's configured Google Font (theme
-       variable --google-fonts) — a tall, condensed display face, so words
-       read a bit bigger without needing any more horizontal room per
-       character than Montserrat did. Falls back to Montserrat if it's ever
-       missing. Easy to revert: just swap the font-family back. */
-    font-family: "Fjalla One", "Montserrat", "Helvetica Neue", Arial, sans-serif;
-    font-size: clamp(12.5px, 1.05vw, 14.5px);
-    font-weight: 400;
-    letter-spacing: 0.015em;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(11.5px, 0.95vw, 13px);
+    font-weight: 600;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
     text-decoration: none !important;
     white-space: nowrap;
@@ -260,13 +255,6 @@
     flex: 0 0 auto !important;
 }
 
-/* Contact button removed from the header — felt like clutter. Every dropdown
-   now ends with its own "Contact us" link instead (.o_hdd_footer below), so
-   it's not hard to find. Re-enable by deleting this rule. */
-.o_site_header_right li.flex-grow-1 {
-    display: none !important;
-}
-
 .o_site_header .container {
     max-width: none !important;
     width: auto !important;
@@ -325,52 +313,6 @@
 
 .o_hdd_bar.is-open .o_hdd_panel[data-panel="lang"].is-visible {
     display: flex !important;
-}
-
-/* ── Footer: "Contact us" link shown under whichever panel is open ──────────
-   A single shared element (a sibling of every .o_hdd_panel, not duplicated
-   into each one) that reads as being "at the bottom of every submenu" since
-   it's visible for any open panel, replacing the header's removed Contact
-   button as the way to reach the contact page from the nav. */
-.o_hdd_footer {
-    display: none;
-}
-
-.o_hdd_bar.is-open .o_hdd_footer {
-    display: block;
-}
-
-.o_hdd_footer_link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 13px clamp(24px, 5vw, 64px);
-    background: rgba(0, 0, 0, 0.18);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.68);
-    text-decoration: none !important;
-    font-family: "Montserrat", sans-serif;
-    font-size: 12.5px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    transition: color 0.18s ease, background 0.18s ease;
-}
-
-.o_hdd_footer_link:hover {
-    color: #ffffff;
-    background: rgba(224, 0, 0, 0.14);
-}
-
-.o_hdd_footer_link svg {
-    flex-shrink: 0;
-    color: #ff6b6b;
-    transition: transform 0.15s ease;
-}
-
-.o_hdd_footer_link:hover svg {
-    transform: translateX(3px);
 }
 
 /* ── Account panel ───────────────────────────────────────────────────────── */
