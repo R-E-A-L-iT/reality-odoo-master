@@ -34,11 +34,37 @@
         left: 0;
         right: 0;
         z-index: 1001;
-        background: rgba(6, 4, 4, 0.55) !important;
+        /* No background or transition here — a transitioning background-color
+           alpha on the same element as backdrop-filter is a known Chromium/
+           WebKit rendering bug: mid-transition, the blur flashes to solid
+           opaque instead of staying translucent (visible as a "black band"
+           during the exact scroll range where the shrink transition runs,
+           while both the resting and fully-scrolled states look correct).
+           The blur itself must stay completely static; the tint below is a
+           separate ::before layer so *it* can transition safely instead. */
+        background: transparent !important;
         backdrop-filter: blur(28px);
         -webkit-backdrop-filter: blur(28px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        transition: background 0.35s ease, border-color 0.35s ease;
+        transition: border-color 0.35s ease;
+    }
+
+    /* Tint layer — fixed background color, only its opacity transitions.
+       0.67 * 0.82 ≈ 0.55 (the old resting tint), 1 * 0.82 = 0.82 (scrolled),
+       so this reproduces the same two visual states as before without ever
+       animating a color that backdrop-filter has to recompose. */
+    header#top::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: rgba(6, 4, 4, 0.82);
+        opacity: 0.67;
+        transition: opacity 0.35s ease;
+    }
+
+    header#top.o_header_glass_scrolled::before {
+        opacity: 1;
     }
 
     /* #o_main_nav (and any inner wrapper) must stay transparent, or its own
@@ -49,7 +75,6 @@
     }
 
     header#top.o_header_glass_scrolled {
-        background: rgba(6, 4, 4, 0.82) !important;
         border-color: rgba(255, 255, 255, 0.14);
     }
 
