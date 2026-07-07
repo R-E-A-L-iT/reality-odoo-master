@@ -462,16 +462,22 @@ function buildSiteHeader(nativeHeaderEl) {
     if (!brand || !topMenu || !iconsUl) return null;
 
     const header = document.createElement('header');
-    // Two signals, either is enough: Odoo's own per-page "Header Position:
+    // Three signals, any one is enough: Odoo's own per-page "Header Position:
     // Over The Content" builder flag (#wrapwrap.o_header_overlay) — OR the
-    // page actually having a full-bleed hero to overlay in the first place.
-    // The flag alone isn't reliable: pages like the RTC series predate this
-    // system entirely and were built around their own hero design (e.g. a
-    // deliberate 176px top padding reserved for a floating header) without
-    // ever having that native per-page setting turned on.
+    // page actually having a full-bleed hero to overlay in the first place —
+    // OR an explicit per-path opt-in below. The first two aren't reliable for
+    // every page: the RTC series page predates this system entirely and was
+    // built with Odoo's "Fixed" header position (header#top.o_header_fixed)
+    // instead of "Over The Content", and its hero isn't a plain
+    // .s_cover.o_full_screen_height section either — so there's no DOM
+    // signal to key off, and it's opted in by URL instead.
+    const OVERLAY_PATHS = [
+        '/capture/equipment/terrestrial/rtc-series',
+    ];
     const wantsOverlay =
         document.getElementById('wrapwrap')?.classList.contains('o_header_overlay')
-        || !!document.querySelector('#wrap .s_cover.o_full_screen_height');
+        || !!document.querySelector('#wrap .s_cover.o_full_screen_height')
+        || OVERLAY_PATHS.includes(window.location.pathname);
     header.className = 'o_site_header' + (wantsOverlay ? ' o_site_header--overlay' : '');
     header.innerHTML = `
         <div class="o_site_header_inner">
