@@ -413,11 +413,24 @@ function buildSiteHeader(nativeHeaderEl) {
 
     document.body.prepend(header);
 
-    // The native desktop nav is now an empty shell. CSS already hides it
-    // immediately (see header_dropdowns.css) to avoid a flash of the
-    // original header before this function runs — this is just belt-and-
-    // braces for that same rule.
-    desktopNav.style.setProperty('display', 'none', 'important');
+    // Relocate the native mobile nav (the offcanvas menu) out from under
+    // header#top too — its own parent, not its contents, is all that
+    // changes, so its offcanvas/search/account/language bindings are
+    // untouched. This is what lets header#top be fully removed below rather
+    // than just hidden.
+    const mobileNav = nativeHeaderEl.querySelector('nav[aria-label="Mobile"]');
+    if (mobileNav) {
+        document.body.insertBefore(mobileNav, header.nextSibling);
+    }
+
+    // Remove the native header entirely rather than hide it. Several earlier
+    // bugs (the native overlay+scroll-effect combo misbehaving, the header
+    // flashing visible for 1-2s before this function ran) could easily have
+    // been Odoo-core JS/CSS still targeting id="top" even after its content
+    // was emptied out — display:none stops it being *visible*, not being
+    // acted on. With no id="top" element left on the page at all, there's
+    // nothing left for that code to find.
+    nativeHeaderEl.remove();
 
     // Shrink on scroll — only visually relevant for the floating (--overlay)
     // layout, but harmless to toggle regardless of which one this page has.
