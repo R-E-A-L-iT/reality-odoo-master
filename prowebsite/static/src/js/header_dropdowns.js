@@ -413,24 +413,28 @@ function buildSiteHeader(nativeHeaderEl) {
 
     document.body.prepend(header);
 
-    // Relocate the native mobile nav (the offcanvas menu) out from under
-    // header#top too — its own parent, not its contents, is all that
-    // changes, so its offcanvas/search/account/language bindings are
-    // untouched. This is what lets header#top be fully removed below rather
-    // than just hidden.
-    const mobileNav = nativeHeaderEl.querySelector('nav[aria-label="Mobile"]');
-    if (mobileNav) {
-        document.body.insertBefore(mobileNav, header.nextSibling);
-    }
+    // The native mobile nav (a <nav aria-label="Mobile"> sibling of
+    // desktopNav, still inside nativeHeaderEl) is deliberately left exactly
+    // where it is — untouched, still fully functional. It's already only
+    // visible below 992px via its own native d-lg-none class, so it stays
+    // invisible on desktop without any help from this code, and there's no
+    // reason to relocate something that's already correctly self-hiding.
 
-    // Remove the native header entirely rather than hide it. Several earlier
-    // bugs (the native overlay+scroll-effect combo misbehaving, the header
-    // flashing visible for 1-2s before this function ran) could easily have
-    // been Odoo-core JS/CSS still targeting id="top" even after its content
-    // was emptied out — display:none stops it being *visible*, not being
-    // acted on. With no id="top" element left on the page at all, there's
-    // nothing left for that code to find.
-    nativeHeaderEl.remove();
+    // Strip id="top" so nothing can match this element by ID going forward
+    // (CSS #top {...} rules, document.getElementById('top'), etc.) — but
+    // leave the element itself attached to the DOM, still containing the
+    // native mobile nav. Odoo's own core header-affix widget (unrelated to
+    // this module, part of the website addon's own JS bundle) is already
+    // bound to this exact element by the time this code runs. A previous
+    // version of this function called nativeHeaderEl.remove() instead, which
+    // left that widget holding a reference into a now-detached subtree —
+    // every scroll/resize tick after that it tried to resolve an ancestor
+    // chain that no longer existed and threw ("scrollableEl.matches is not
+    // a function", scrollableEl undefined) continuously. Keeping the node
+    // attached (now empty on desktop, id-less, visually inert) keeps that
+    // widget's internal references valid, so it just quietly does nothing
+    // instead of erroring.
+    nativeHeaderEl.removeAttribute('id');
 
     // Shrink on scroll — only visually relevant for the floating (--overlay)
     // layout, but harmless to toggle regardless of which one this page has.
