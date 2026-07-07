@@ -2677,13 +2677,15 @@ body {
 }
 
 /* ─── OmniGO promo popup ────────────────────────────────────────────────────── */
-/* position:fixed keeps it viewport-anchored, never affects page flow or scroll */
+/* position:fixed keeps it viewport-anchored, never affects page flow or scroll.
+   Sizing kept compact on purpose — this floats over page content and
+   shouldn't dominate the corner of the screen. */
 .o_omnigo_promo {
     position: fixed;
     top: 95px;
     right: 24px;
-    z-index: 9000;
-    width: 380px;
+    z-index: 500;
+    width: 300px;
     display: flex;
     flex-direction: row;
     align-items: stretch;
@@ -2691,7 +2693,7 @@ body {
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 14px;
+    border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), 0 1px 4px rgba(0, 0, 0, 0.08);
     color: #111;
     font-family: inherit;
@@ -2699,33 +2701,23 @@ body {
     animation: omnigo-promo-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.o_omnigo_promo.is-dismissed {
-    animation: omnigo-promo-out 0.3s ease forwards;
-    pointer-events: none;
-}
-
 @keyframes omnigo-promo-in {
     from { opacity: 0; transform: translateY(-10px) scale(0.97); }
     to   { opacity: 1; transform: translateY(0)     scale(1);    }
 }
 
-@keyframes omnigo-promo-out {
-    from { opacity: 1; transform: translateY(0)     scale(1);    }
-    to   { opacity: 0; transform: translateY(-8px)  scale(0.97); }
-}
-
 /* Left image panel */
 .o_omnigo_promo_img_wrap {
-    flex: 0 0 130px;
+    flex: 0 0 92px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px;
+    padding: 10px;
 }
 
 .o_omnigo_promo_img {
-    width: 110px;
-    height: 110px;
+    width: 72px;
+    height: 72px;
     object-fit: contain;
     display: block;
     filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px rgba(224, 0, 0, 0.3));
@@ -2740,7 +2732,7 @@ body {
 /* Right text body */
 .o_omnigo_promo_body {
     flex: 1 1 0;
-    padding: 14px 14px 14px 14px;
+    padding: 11px 11px 11px 4px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -2751,19 +2743,19 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 7px;
+    margin-bottom: 5px;
 }
 
 .o_omnigo_promo_badge {
-    font-size: 9.5px;
+    font-size: 9px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     color: #e00000;
     background: rgba(224, 0, 0, 0.08);
     border: 1px solid rgba(224, 0, 0, 0.22);
     border-radius: 4px;
-    padding: 2px 7px;
+    padding: 2px 6px;
     line-height: 1.5;
 }
 
@@ -2772,10 +2764,10 @@ body {
     background: none;
     border: none;
     color: rgba(0, 0, 0, 0.28);
-    font-size: 17px;
+    font-size: 16px;
     line-height: 1;
     cursor: pointer;
-    padding: 0 0 0 8px;
+    padding: 0 0 0 6px;
     margin: 0;
     flex-shrink: 0;
     transition: color 0.15s ease;
@@ -2787,11 +2779,11 @@ body {
 }
 
 .o_omnigo_promo_title {
-    font-size: 15px;
+    font-size: 13.5px;
     font-weight: 700;
     letter-spacing: -0.01em;
     color: #111;
-    margin: 0 0 10px;
+    margin: 0 0 8px;
     line-height: 1.25;
 }
 
@@ -2801,11 +2793,11 @@ body {
     gap: 6px;
     background: #e00000;
     color: #fff !important;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 600;
     text-decoration: none !important;
     border-radius: 6px;
-    padding: 7px 12px;
+    padding: 6px 10px;
     align-self: flex-start;
     transition: background 0.2s ease, transform 0.15s ease;
 }
@@ -2826,33 +2818,28 @@ body {
     transform: translateX(2px);
 }
 
-@media (max-width: 767px) {
-    .o_omnigo_promo {
-        top: auto;
-        bottom: 16px;
-        right: 12px;
-        left: 12px;
-        width: auto;
-    }
-}
-
 /* ─── Notification stack — wraps OmniGO + RTC popups together ──────────────── */
 /* JS creates this container and moves any .*_promo elements into it.
-   flex-direction:column makes them stack; when one is dismissed (display:none)
-   the other slides up naturally. pointer-events:none on the container means
-   only the popup cards themselves are clickable, not the gap between them.   */
+   Spacing between items comes from each item's own margin-bottom (below),
+   not a `gap` on this container — flex `gap` can't be animated per-item, so
+   a dismissed item's margin has to collapse on its own for the sibling
+   above/below it to slide into place smoothly instead of snapping. */
 .o_promo_stack {
     position: fixed;
     top: 95px;
     right: 24px;
-    z-index: 9000;
+    z-index: 500;
     display: flex;
     flex-direction: column;
-    gap: 12px;
     pointer-events: none;
 }
 
-/* Popups inside the stack: override their individual fixed positioning */
+/* Popups inside the stack: override their individual fixed positioning, and
+   drive the dismiss collapse via transition instead of a keyframe animation
+   that just fades in place — transitioning max-height/margin alongside
+   opacity/transform means the box itself gradually shrinks to nothing while
+   fading, so the OTHER popup in the stack reflows into the gap smoothly as
+   it opens up, rather than snapping the instant display:none applies. */
 .o_promo_stack .o_omnigo_promo,
 .o_promo_stack .o_rtc_promo {
     position: relative !important;
@@ -2861,6 +2848,22 @@ body {
     bottom: auto !important;
     left: auto !important;
     pointer-events: auto;
+    margin-bottom: 10px;
+    max-height: 200px;
+    transition:
+        max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        margin-bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.22s ease,
+        transform 0.22s ease;
+}
+
+.o_promo_stack .o_omnigo_promo.is-dismissed,
+.o_promo_stack .o_rtc_promo.is-dismissed {
+    max-height: 0;
+    margin-bottom: 0;
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+    pointer-events: none;
 }
 
 /* Stagger entry: second popup in the stack slides in 150 ms after the first */
@@ -2868,13 +2871,13 @@ body {
     animation-delay: 0.15s;
 }
 
-@media (max-width: 767px) {
-    .o_promo_stack {
-        top: auto;
-        bottom: 16px;
-        right: 12px;
-        left: 12px;
-        flex-direction: column-reverse; /* most recent notification closest to bottom edge */
+/* Hidden entirely on mobile — a floating corner notification competes too
+   much for space on small screens. */
+@media (max-width: 991px) {
+    .o_promo_stack,
+    .o_omnigo_promo,
+    .o_rtc_promo {
+        display: none !important;
     }
 }
 
@@ -2883,8 +2886,8 @@ body {
     position: fixed;
     top: 95px;
     right: 24px;
-    z-index: 9000;
-    width: 380px;
+    z-index: 500;
+    width: 300px;
     display: flex;
     flex-direction: row;
     align-items: stretch;
@@ -2892,27 +2895,12 @@ body {
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 14px;
+    border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), 0 1px 4px rgba(0, 0, 0, 0.08);
     color: #111;
     font-family: inherit;
     overflow: hidden;
     animation: omnigo-promo-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.o_rtc_promo.is-dismissed {
-    animation: omnigo-promo-out 0.3s ease forwards;
-    pointer-events: none;
-}
-
-@media (max-width: 767px) {
-    .o_rtc_promo {
-        top: auto;
-        bottom: 16px;
-        right: 12px;
-        left: 12px;
-        width: auto;
-    }
 }
 
 /* ─── OmniGO rental-kit promo section ──────────────────────────────────────── */

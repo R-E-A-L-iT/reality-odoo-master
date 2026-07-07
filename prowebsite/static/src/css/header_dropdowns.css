@@ -3,6 +3,19 @@
    Applies on ALL pages (normal Odoo header + OmniGO custom header).
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ── Shared glass tokens ──────────────────────────────────────────────────────
+   One definition of "the glass look", referenced by both .o_site_header and
+   .o_hdd_bar's panels, so they can't drift apart into different tints/blur
+   amounts again. Blur reduced from the previous 28px; tint reduced from the
+   previous 0.82 dropdown-panel alpha — dropdown panels use this at full
+   strength (--o_glass_tint as-is), the header's ::before multiplies it by a
+   lower opacity at rest and 1 once scrolled, so both are built from the exact
+   same base color instead of two independently-chosen ones. */
+:root {
+    --o_glass_blur: 20px;
+    --o_glass_tint: rgba(6, 4, 4, 0.62);
+}
+
 /* ── Hide the native desktop nav immediately, CSS-first ──────────────────────
    Not JS-driven — this must apply the instant the stylesheet loads, before
    buildSiteHeader() in header_dropdowns.js even runs, or the fully-rendered
@@ -46,6 +59,17 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* .o_site_header only ever holds the relocated *desktop* nav — hide it
+   below 992px so the native mobile header (its own separate <nav
+   aria-label="Mobile"> element, left untouched this whole time, complete
+   with its own working hamburger/offcanvas menu) is the only nav visible
+   on mobile, instead of both showing at once. */
+@media (max-width: 991px) {
+    .o_site_header {
+        display: none !important;
+    }
+}
+
 @media (min-width: 992px) {
     .o_site_header--overlay {
         position: fixed;
@@ -59,21 +83,22 @@
            static; the tint is a separate ::before layer so *it* can
            transition safely instead. */
         background: transparent;
-        backdrop-filter: blur(28px);
-        -webkit-backdrop-filter: blur(28px);
+        backdrop-filter: blur(var(--o_glass_blur));
+        -webkit-backdrop-filter: blur(var(--o_glass_blur));
         transition: border-color 0.35s ease;
     }
 
     /* Tint layer — fixed background color, only its opacity transitions.
-       0.67 * 0.82 ≈ 0.55 (resting tint), 1 * 0.82 = 0.82 (scrolled) — two
-       visual states without ever animating a color the blur has to recompose. */
+       Resting is a fraction of --o_glass_tint; scrolled (opacity: 1) is
+       --o_glass_tint at full strength — the exact same value the dropdown
+       panels use, so the two systems can never show a different tint. */
     .o_site_header--overlay::before {
         content: "";
         position: absolute;
         inset: 0;
         z-index: -1;
-        background: rgba(6, 4, 4, 0.82);
-        opacity: 0.67;
+        background: var(--o_glass_tint);
+        opacity: 0.75;
         transition: opacity 0.35s ease;
     }
 
@@ -193,6 +218,28 @@
     margin: 0;
 }
 
+/* Icon buttons (search / cart / wishlist / account / language) already carry
+   Odoo's own .rounded-circle class, but different per-button padding
+   utilities (p-1 vs p-1 pe-3, the extra pe-3 originally reserved room for a
+   dropdown caret) made them render at inconsistent sizes. Force one uniform
+   circular size, matching the Omni pages' own icon treatment. */
+.o_site_header_right .btn.rounded-circle {
+    width: 38px;
+    height: 38px;
+    padding: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% !important;
+}
+
+/* Drop Bootstrap's default dropdown-toggle caret on the account/language
+   buttons — same treatment as #top_menu's mega-menu toggles above, and
+   matching the Omni pages, which never show one either. */
+.o_site_header_right .dropdown-toggle::after {
+    display: none !important;
+}
+
 /* The Contact CTA's <li class="flex-grow-1"> and its inner .oe_structure >
    section > .container were themed for the native header's own layout,
    where a wide, centered top-level container gave that flex-grow-1 room to
@@ -232,8 +279,8 @@
     /* Transparent background so the map image shows cleanly.
        backdrop-filter still blurs everything behind the bar. */
     background: transparent;
-    backdrop-filter: blur(28px);
-    -webkit-backdrop-filter: blur(28px);
+    backdrop-filter: blur(var(--o_glass_blur));
+    -webkit-backdrop-filter: blur(var(--o_glass_blur));
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -274,7 +321,7 @@
     justify-content: center;
     gap: 8px;
     padding: 18px clamp(24px, 5vw, 64px);
-    background: rgba(6, 4, 4, 0.82);
+    background: var(--o_glass_tint);
 }
 
 .o_hdd_acct_link {
@@ -329,7 +376,7 @@
     align-items: center;
     gap: 0;
     padding: 28px clamp(24px, 4vw, 56px);
-    background: rgba(6, 4, 4, 0.82);
+    background: var(--o_glass_tint);
 }
 
 /* ── Option columns ──────────────────────────────────────────────────────── */
@@ -406,7 +453,7 @@
 .o_hdd_menu_inner {
     width: 100%;
     padding: 32px clamp(24px, 5vw, 64px);
-    background: rgba(6, 4, 4, 0.82);
+    background: var(--o_glass_tint);
     display: flex;
     align-items: flex-start;
     gap: clamp(28px, 4vw, 56px);
