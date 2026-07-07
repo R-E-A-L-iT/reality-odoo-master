@@ -280,8 +280,8 @@
     /* Transparent background so the map image shows cleanly.
        backdrop-filter still blurs everything behind the bar. */
     background: transparent;
-    backdrop-filter: blur(var(--o_glass_blur));
-    -webkit-backdrop-filter: blur(var(--o_glass_blur));
+    /* backdrop-filter: blur(var(--o_glass_blur));
+    -webkit-backdrop-filter: blur(var(--o_glass_blur)); */
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
