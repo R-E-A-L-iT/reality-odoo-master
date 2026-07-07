@@ -3,6 +3,18 @@
    Applies on ALL pages (normal Odoo header + OmniGO custom header).
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ── Hide the native desktop nav immediately, CSS-first ──────────────────────
+   Not JS-driven — this must apply the instant the stylesheet loads, before
+   buildSiteHeader() in header_dropdowns.js even runs, or the fully-rendered
+   native header flashes on screen for however long widget initialization
+   takes (this was visibly 1-2s). The native mobile header (a separate <nav
+   aria-label="Mobile"> sibling) is untouched. */
+@media (min-width: 992px) {
+    header#top nav[aria-label="Main"] {
+        display: none !important;
+    }
+}
+
 /* ── Site header: purpose-built replacement for the native #top header ───────
    Patching Odoo's native header hit three independent, unrelated failure
    modes in a row (an unreliable native overlay+scroll-effect combination, a
@@ -10,17 +22,36 @@
    confusion) — so rather than keep fighting Odoo's own header CSS/JS,
    buildSiteHeader() in header_dropdowns.js relocates the native header's
    actual interactive elements (brand, #top_menu, the icon cluster — with all
-   their existing Bootstrap/Odoo bindings intact) into this new element,
-   which this module owns outright. Same approach as the Omni pages' custom
-   header (.o_omnigo_ch_header in three_product.css). Desktop-only (≥992px)
-   — the native mobile header/offcanvas menu is untouched by any of this. */
+   their existing Bootstrap/Odoo bindings intact) into this new element.
+
+   Two layouts, chosen per-page by buildSiteHeader() reading the SAME
+   header_overlay preference Odoo's own page-customize panel already stores
+   (reflected as #wrapwrap.o_header_overlay) — reusing that signal rather
+   than guessing from page content:
+     • .o_site_header--overlay: floats, fixed, glassy, NO body padding.
+       Only correct on pages whose own hero section reserves its own space
+       for it — e.g. the RTC/Omni/OmniGO pages' cover sections carry their
+       own top padding (pt176 etc.) specifically for this. A site-wide body
+       padding compensation was the wrong model entirely: it fights that
+       per-hero spacing instead of matching it, which is what produced the
+       "black gap pushing content down" — the fix is to add none at all and
+       let each hero own its own spacing, exactly like those pages already do.
+     • default (no --overlay): a normal, in-flow, non-floating header — for
+       pages with no hero built to accommodate an overlay (checkout, cart,
+       wishlist, etc.), where a floating header would just cover content. */
+.o_site_header {
+    position: relative;
+    z-index: 1001;
+    background: rgba(6, 4, 4, 0.92);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 @media (min-width: 992px) {
-    .o_site_header {
+    .o_site_header--overlay {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        z-index: 1001;
         /* No background or transition directly on this element — a
            transitioning background-color alpha on the same element as
            backdrop-filter is a known Chromium/WebKit rendering bug (the blur
@@ -30,14 +61,13 @@
         background: transparent;
         backdrop-filter: blur(28px);
         -webkit-backdrop-filter: blur(28px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         transition: border-color 0.35s ease;
     }
 
     /* Tint layer — fixed background color, only its opacity transitions.
        0.67 * 0.82 ≈ 0.55 (resting tint), 1 * 0.82 = 0.82 (scrolled) — two
        visual states without ever animating a color the blur has to recompose. */
-    .o_site_header::before {
+    .o_site_header--overlay::before {
         content: "";
         position: absolute;
         inset: 0;
@@ -47,82 +77,112 @@
         transition: opacity 0.35s ease;
     }
 
-    .o_site_header.o_header_glass_scrolled::before {
+    .o_site_header--overlay.o_header_glass_scrolled::before {
         opacity: 1;
     }
 
-    .o_site_header.o_header_glass_scrolled {
+    .o_site_header--overlay.o_header_glass_scrolled {
         border-color: rgba(255, 255, 255, 0.14);
     }
 
-    .o_site_header_inner {
-        display: flex;
-        align-items: center;
-        gap: clamp(20px, 3vw, 48px);
-        padding: 18px clamp(20px, 3vw, 48px);
+    .o_site_header--overlay .o_site_header_inner {
         transition: padding 0.35s ease;
     }
 
-    .o_site_header.o_header_glass_scrolled .o_site_header_inner {
+    .o_site_header--overlay.o_header_glass_scrolled .o_site_header_inner {
         padding-top: 10px;
         padding-bottom: 10px;
     }
+}
 
-    .o_site_header_left {
-        flex: 0 0 auto;
-        display: flex;
-        align-items: center;
-    }
+.o_site_header_inner {
+    display: flex;
+    align-items: center;
+    gap: clamp(20px, 3vw, 48px);
+    padding: 18px clamp(20px, 3vw, 48px);
+}
 
-    .o_site_header_left img {
-        transition: height 0.35s ease;
-    }
+.o_site_header_left {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
 
-    .o_site_header_nav {
-        flex: 1 1 auto;
-        min-width: 0;
-    }
+.o_site_header_left img {
+    transition: height 0.35s ease;
+}
 
-    /* Bootstrap's .navbar-nav only lays out as a row under a .navbar-expand-lg
-       *ancestor* (a rule like ".navbar-expand-lg .navbar-nav { flex-direction:
-       row }"). That ancestor was the native <nav class="navbar navbar-expand-lg
-       ...">, which #top_menu is now relocated away from — without this,
-       .navbar-nav's own default (flex-direction: column) would take over and
-       stack the nav items vertically. Set the row layout directly instead of
-       depending on that now-absent ancestor. */
-    .o_site_header_nav #top_menu {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        flex-wrap: nowrap;
-        margin: 0;
-    }
+.o_site_header_nav {
+    flex: 1 1 auto;
+    min-width: 0;
+}
 
-    .o_site_header_right {
-        flex: 0 0 auto;
-        display: flex;
-        align-items: center;
-    }
+/* Bootstrap's .navbar-nav only lays out as a row under a .navbar-expand-lg
+   *ancestor* (a rule like ".navbar-expand-lg .navbar-nav { flex-direction:
+   row }"). That ancestor was the native <nav class="navbar navbar-expand-lg
+   ...">, which #top_menu is now relocated away from — without this,
+   .navbar-nav's own default (flex-direction: column) would take over and
+   stack the nav items vertically. Set the row layout directly instead of
+   depending on that now-absent ancestor. */
+.o_site_header_nav #top_menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 4px;
+    margin: 0;
+}
 
-    /* Same .navbar-expand-lg-ancestor issue as #top_menu above — the relocated
-       icon <ul> (search / cart / account / language) is also a .navbar-nav
-       relying on that now-absent ancestor for its row layout. */
-    .o_site_header_right ul.o_header_sales_one_right_col {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        margin: 0;
-    }
+/* Same ancestor-dependent theme styling (color, spacing, hover state) that
+   .nav-link relied on is also gone along with that ancestor — style these
+   directly rather than hoping something still applies. Matches the Omni
+   pages' own .o_omnigo_ch_nav_link treatment for visual consistency. */
+.o_site_header_nav #top_menu > li {
+    display: flex;
+    align-items: center;
+}
 
-    /* Reserve the header's *expanded* height (measured by buildSiteHeader()
-       in header_dropdowns.js, while not scrolled) as top padding, so the
-       fixed header never covers the page's own first section. Locked to the
-       expanded height specifically so this never fights the shrink-on-scroll
-       transition above — the page would otherwise jump every time the
-       header's own padding shrinks. */
-    body {
-        padding-top: var(--o_header_h, 0px);
-    }
+.o_site_header_nav #top_menu .nav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px !important;
+    color: rgba(255, 255, 255, 0.82) !important;
+    font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+.o_site_header_nav #top_menu .nav-link:hover,
+.o_site_header_nav #top_menu .nav-link.active {
+    color: #ffffff !important;
+}
+
+/* Bootstrap's default dropdown-toggle caret depends on the same missing
+   ancestor context for correct sizing/position — drop it rather than risk
+   an unstyled triangle; none of these menus showed a caret before either. */
+.o_site_header_nav #top_menu .dropdown-toggle::after {
+    display: none;
+}
+
+.o_site_header_right {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+/* Same .navbar-expand-lg-ancestor issue as #top_menu above — the relocated
+   icon <ul> (search / cart / account / language) is also a .navbar-nav
+   relying on that now-absent ancestor for its row layout. */
+.o_site_header_right ul.o_header_sales_one_right_col {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0;
 }
 
 /* ── Bar container (full-width, fixed below the header) ─────────────────── */

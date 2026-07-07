@@ -359,17 +359,20 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// initHeaderGlassScroll(headerEl)
+// buildSiteHeader(nativeHeaderEl)
 //
-// Gives the native #top header a fixed, glassy, shrink-on-scroll treatment
-// like the Omni pages' custom header. Odoo's own "Header Overlay" + "Scroll
-// Effect" website settings turned out to be unreliable together (confirmed
-// by testing) and are now reset to their plain defaults, so this owns
-// positioning entirely on its own — no Odoo-core mechanism should be
-// fighting it. The actual position:fixed / glass background / shrink
-// transition live in CSS (header_dropdowns.css); this measures the header's
-// expanded height for the body's compensating top padding, and toggles the
-// scrolled state class.
+// Replaces the native desktop header with a purpose-built one, the same
+// approach three_product.js already uses for the Omni pages. Whether it
+// floats (fixed, glassy, no page-content compensation) or sits normally
+// in-flow is decided per page by reading the SAME header_overlay preference
+// Odoo's own page-customize panel already stores (reflected as
+// #wrapwrap.o_header_overlay) — pages like RTC/Omni/the homepage have that
+// enabled *and* a hero section built with its own top padding (e.g. pt176)
+// specifically to make room for a floating header; pages without either
+// (checkout, cart, wishlist, etc.) get the plain in-flow layout instead, so
+// nothing ever gets covered. No body-padding compensation is added in either
+// case — that fights the per-hero spacing model these pages already use
+// instead of matching it.
 // ─────────────────────────────────────────────────────────────────────────────
 function buildSiteHeader(nativeHeaderEl) {
     // Desktop nav only — website.template_header_mobile renders a separate
@@ -391,7 +394,8 @@ function buildSiteHeader(nativeHeaderEl) {
     if (!brand || !topMenu || !iconsUl) return null;
 
     const header = document.createElement('header');
-    header.className = 'o_site_header';
+    const wantsOverlay = document.getElementById('wrapwrap')?.classList.contains('o_header_overlay');
+    header.className = 'o_site_header' + (wantsOverlay ? ' o_site_header--overlay' : '');
     header.innerHTML = `
         <div class="o_site_header_inner">
             <div class="o_site_header_left"></div>
@@ -409,28 +413,18 @@ function buildSiteHeader(nativeHeaderEl) {
 
     document.body.prepend(header);
 
-    // The native desktop nav is now an empty shell — hide it.
+    // The native desktop nav is now an empty shell. CSS already hides it
+    // immediately (see header_dropdowns.css) to avoid a flash of the
+    // original header before this function runs — this is just belt-and-
+    // braces for that same rule.
     desktopNav.style.setProperty('display', 'none', 'important');
 
-    // Shrink on scroll — same threshold/behaviour as the Omni pages' header.
+    // Shrink on scroll — only visually relevant for the floating (--overlay)
+    // layout, but harmless to toggle regardless of which one this page has.
     const scrollRoot = document.getElementById('wrapwrap') || document.documentElement;
     scrollRoot.addEventListener('scroll', () => {
         header.classList.toggle('o_header_glass_scrolled', scrollRoot.scrollTop > 50);
     }, { passive: true });
-
-    // Reserve the header's *expanded* height as top padding on <body> (see
-    // `body { padding-top: var(--o_header_h) }` in header_dropdowns.css) so
-    // page content isn't hidden underneath the fixed/overlaid header. Only
-    // measured while not scrolled, so it never fights the shrink transition.
-    // Unlike patching the native header, there's nothing left to double-
-    // compensate against — the native desktop nav above is display:none,
-    // contributing zero height to the page's own layout.
-    function syncHeaderHeight() {
-        if (header.classList.contains('o_header_glass_scrolled')) return;
-        document.documentElement.style.setProperty('--o_header_h', header.offsetHeight + 'px');
-    }
-    syncHeaderHeight();
-    new ResizeObserver(syncHeaderHeight).observe(header);
 
     return header;
 }
