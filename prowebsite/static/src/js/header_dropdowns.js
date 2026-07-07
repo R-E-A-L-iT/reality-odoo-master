@@ -293,11 +293,24 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
     }).catch(hideCurrency);
 
     // ── Keep bar pinned to the bottom edge of the header ──────────────────
+    // Uses the header's actual on-screen bottom edge (getBoundingClientRect),
+    // not just its height — offsetHeight alone only catches size changes
+    // (e.g. the glass shrink-on-scroll), not the header's on-screen *position*
+    // changing, which can happen independently (e.g. Odoo's own header scroll
+    // effects). Recomputed on both resize and scroll so the bar's border never
+    // freezes at a stale offset while the header itself moves around it.
+    let _barTopRaf = null;
     function updateBarTop() {
-        bar.style.top = headerEl.offsetHeight + 'px';
+        if (_barTopRaf) return;
+        _barTopRaf = requestAnimationFrame(() => {
+            _barTopRaf = null;
+            bar.style.top = headerEl.getBoundingClientRect().bottom + 'px';
+        });
     }
     updateBarTop();
     new ResizeObserver(updateBarTop).observe(headerEl);
+    (document.getElementById('wrapwrap') || window).addEventListener('scroll', updateBarTop, { passive: true });
+    window.addEventListener('resize', updateBarTop, { passive: true });
 
     // ── Hover wiring ───────────────────────────────────────────────────────
     let _hideTimer = null;
@@ -348,18 +361,32 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
 // ─────────────────────────────────────────────────────────────────────────────
 // initHeaderGlassScroll(headerEl)
 //
-// Gives the native #top header the same glassy background + shrink-on-scroll
-// treatment as the Omni pages' custom header. Fixed positioning and reserving
-// space for page content are already handled by Odoo's own "Header Overlay"
-// website setting (header#top already ships with .o_header_fixed /
-// .o_top_fixed_element, #wrapwrap with .o_header_overlay) — this only toggles
-// a state class; the actual glass background / shrink transition live in CSS
-// (header_dropdowns.css). Deliberately does NOT touch position or add its own
-// body padding — doing that fought Odoo's existing compensation and doubled
-// it (see the CSS comment above for what that looked like).
+// Gives the native #top header a fixed, glassy, shrink-on-scroll treatment
+// like the Omni pages' custom header. Odoo's own "Header Overlay" + "Scroll
+// Effect" website settings turned out to be unreliable together (confirmed
+// by testing) and are now reset to their plain defaults, so this owns
+// positioning entirely on its own — no Odoo-core mechanism should be
+// fighting it. The actual position:fixed / glass background / shrink
+// transition live in CSS (header_dropdowns.css); this measures the header's
+// expanded height for the body's compensating top padding, and toggles the
+// scrolled state class.
 // ─────────────────────────────────────────────────────────────────────────────
 function initHeaderGlassScroll(headerEl) {
     const scrollRoot = document.getElementById('wrapwrap') || document.documentElement;
+
+    // Reserve the header's *expanded* height as top padding on <body> (see
+    // the `body { padding-top: var(--o_header_h) }` rule in
+    // header_dropdowns.css) so the fixed header never covers page content.
+    // Only measured while NOT scrolled, so the shrink-on-scroll height change
+    // never fights this — otherwise the page would jump every time the
+    // header shrinks.
+    function syncHeaderHeight() {
+        if (headerEl.classList.contains('o_header_glass_scrolled')) return;
+        document.documentElement.style.setProperty('--o_header_h', headerEl.offsetHeight + 'px');
+    }
+    syncHeaderHeight();
+    new ResizeObserver(syncHeaderHeight).observe(headerEl);
+
     scrollRoot.addEventListener('scroll', () => {
         headerEl.classList.toggle('o_header_glass_scrolled', scrollRoot.scrollTop > 50);
     }, { passive: true });

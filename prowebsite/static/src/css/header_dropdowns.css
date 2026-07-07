@@ -16,20 +16,24 @@
     padding-right: clamp(16px, 3vw, 48px);
 }
 
-/* ── Native header: glassy background + shrink on scroll ─────────────────────
-   Odoo's own "Header Overlay" website setting (already enabled here —
-   header#top ships with .o_header_fixed.o_top_fixed_element, and #wrapwrap
-   with .o_header_overlay) already handles fixed positioning and reserving
-   space for the page content correctly. This must NOT re-declare position,
-   z-index, or add its own body padding — an earlier version of this file did,
-   which fought Odoo's own compensation and doubled it (content pushed down an
-   extra header's-height, with the header itself rendering over nothing,
-   which is why it looked "pitch black" — no real content left behind it for
-   the blur to sample). This only layers color/blur/shrink on top of Odoo's
-   existing mechanism. Desktop-only (≥992px), matching every other header
+/* ── Native header: fixed overlay, glassy background, shrink on scroll ───────
+   Odoo's own "Header Overlay" + "Scroll Effect" website settings turned out
+   to be unreliable together in this version/theme (confirmed by testing —
+   the header would disappear then reappear fixed a second later depending on
+   scroll direction, with no code in this repo controlling that). Both
+   settings are now reset to their plain defaults (Scroll Effect: Standard,
+   Header Position: Regular), so Odoo's own header sits in normal, boring,
+   in-flow document flow with no scroll effects at all. This block takes full,
+   sole ownership of positioning instead — nothing else in Odoo core should be
+   fighting it anymore. Desktop-only (≥992px), matching every other header
    override in this file — mobile keeps its current in-flow header untouched. */
 @media (min-width: 992px) {
     header#top {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1001;
         background: rgba(6, 4, 4, 0.55) !important;
         backdrop-filter: blur(28px);
         -webkit-backdrop-filter: blur(28px);
@@ -59,6 +63,16 @@
     header#top.o_header_glass_scrolled #o_main_nav .container {
         padding-top: 0.5rem !important;
         padding-bottom: 0.5rem !important;
+    }
+
+    /* Reserve exactly the header's *expanded* height (measured once by
+       initHeaderGlassScroll() in header_dropdowns.js, while not scrolled) as
+       top padding, so the now fixed/overlaid header never covers the page's
+       own first section. Locked to the expanded height specifically so this
+       never fights the shrink-on-scroll transition above — the page would
+       otherwise jump every time the header's own padding shrinks. */
+    body {
+        padding-top: var(--o_header_h, 0px);
     }
 }
 
