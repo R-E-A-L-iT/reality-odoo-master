@@ -3,46 +3,31 @@
    Applies on ALL pages (normal Odoo header + OmniGO custom header).
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Top header row: break out of Bootstrap's centered .container ────────────
-   #o_main_nav wraps the whole desktop header row (brand / nav-links /
-   icons). Its .container child caps at Bootstrap's breakpoint max-widths and
-   centers within it, which both leaves unremovable gutters on wide screens
-   AND squeezes the nav-links + icon cluster into less width than the
-   viewport actually has on "standard laptop" sizes (~1280-1440px) where that
-   cap already kicks in. Letting it use the full header width fixes both. */
-#o_main_nav .container {
-    max-width: 100% !important;
-    padding-left: clamp(16px, 3vw, 48px);
-    padding-right: clamp(16px, 3vw, 48px);
-}
-
-/* ── Native header: fixed overlay, glassy background, shrink on scroll ───────
-   Odoo's own "Header Overlay" + "Scroll Effect" website settings turned out
-   to be unreliable together in this version/theme (confirmed by testing —
-   the header would disappear then reappear fixed a second later depending on
-   scroll direction, with no code in this repo controlling that). Both
-   settings are now reset to their plain defaults (Scroll Effect: Standard,
-   Header Position: Regular), so Odoo's own header sits in normal, boring,
-   in-flow document flow with no scroll effects at all. This block takes full,
-   sole ownership of positioning instead — nothing else in Odoo core should be
-   fighting it anymore. Desktop-only (≥992px), matching every other header
-   override in this file — mobile keeps its current in-flow header untouched. */
+/* ── Site header: purpose-built replacement for the native #top header ───────
+   Patching Odoo's native header hit three independent, unrelated failure
+   modes in a row (an unreliable native overlay+scroll-effect combination, a
+   Chromium/WebKit backdrop-filter-transition rendering bug, asset caching
+   confusion) — so rather than keep fighting Odoo's own header CSS/JS,
+   buildSiteHeader() in header_dropdowns.js relocates the native header's
+   actual interactive elements (brand, #top_menu, the icon cluster — with all
+   their existing Bootstrap/Odoo bindings intact) into this new element,
+   which this module owns outright. Same approach as the Omni pages' custom
+   header (.o_omnigo_ch_header in three_product.css). Desktop-only (≥992px)
+   — the native mobile header/offcanvas menu is untouched by any of this. */
 @media (min-width: 992px) {
-    header#top {
-        position: fixed !important;
+    .o_site_header {
+        position: fixed;
         top: 0;
         left: 0;
         right: 0;
         z-index: 1001;
-        /* No background or transition here — a transitioning background-color
-           alpha on the same element as backdrop-filter is a known Chromium/
-           WebKit rendering bug: mid-transition, the blur flashes to solid
-           opaque instead of staying translucent (visible as a "black band"
-           during the exact scroll range where the shrink transition runs,
-           while both the resting and fully-scrolled states look correct).
-           The blur itself must stay completely static; the tint below is a
-           separate ::before layer so *it* can transition safely instead. */
-        background: transparent !important;
+        /* No background or transition directly on this element — a
+           transitioning background-color alpha on the same element as
+           backdrop-filter is a known Chromium/WebKit rendering bug (the blur
+           flashes to solid opaque mid-transition). The blur stays completely
+           static; the tint is a separate ::before layer so *it* can
+           transition safely instead. */
+        background: transparent;
         backdrop-filter: blur(28px);
         -webkit-backdrop-filter: blur(28px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -50,10 +35,9 @@
     }
 
     /* Tint layer — fixed background color, only its opacity transitions.
-       0.67 * 0.82 ≈ 0.55 (the old resting tint), 1 * 0.82 = 0.82 (scrolled),
-       so this reproduces the same two visual states as before without ever
-       animating a color that backdrop-filter has to recompose. */
-    header#top::before {
+       0.67 * 0.82 ≈ 0.55 (resting tint), 1 * 0.82 = 0.82 (scrolled) — two
+       visual states without ever animating a color the blur has to recompose. */
+    .o_site_header::before {
         content: "";
         position: absolute;
         inset: 0;
@@ -63,39 +47,79 @@
         transition: opacity 0.35s ease;
     }
 
-    header#top.o_header_glass_scrolled::before {
+    .o_site_header.o_header_glass_scrolled::before {
         opacity: 1;
     }
 
-    /* #o_main_nav (and any inner wrapper) must stay transparent, or its own
-       background would sit as an opaque layer in front of the blur above. */
-    header#top #o_main_nav,
-    header#top #o_main_nav > div {
-        background: transparent !important;
-    }
-
-    header#top.o_header_glass_scrolled {
+    .o_site_header.o_header_glass_scrolled {
         border-color: rgba(255, 255, 255, 0.14);
     }
 
-    /* Shrink: reduce the row's own vertical padding on scroll (Bootstrap's
-       .py-3 utility class), rather than a hard height, so it works
-       regardless of the row's natural content height. */
-    #o_main_nav .container {
-        transition: padding-top 0.35s ease, padding-bottom 0.35s ease;
+    .o_site_header_inner {
+        display: flex;
+        align-items: center;
+        gap: clamp(20px, 3vw, 48px);
+        padding: 18px clamp(20px, 3vw, 48px);
+        transition: padding 0.35s ease;
     }
 
-    header#top.o_header_glass_scrolled #o_main_nav .container {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
+    .o_site_header.o_header_glass_scrolled .o_site_header_inner {
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 
-    /* Reserve exactly the header's *expanded* height (measured once by
-       initHeaderGlassScroll() in header_dropdowns.js, while not scrolled) as
-       top padding, so the now fixed/overlaid header never covers the page's
-       own first section. Locked to the expanded height specifically so this
-       never fights the shrink-on-scroll transition above — the page would
-       otherwise jump every time the header's own padding shrinks. */
+    .o_site_header_left {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+    }
+
+    .o_site_header_left img {
+        transition: height 0.35s ease;
+    }
+
+    .o_site_header_nav {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    /* Bootstrap's .navbar-nav only lays out as a row under a .navbar-expand-lg
+       *ancestor* (a rule like ".navbar-expand-lg .navbar-nav { flex-direction:
+       row }"). That ancestor was the native <nav class="navbar navbar-expand-lg
+       ...">, which #top_menu is now relocated away from — without this,
+       .navbar-nav's own default (flex-direction: column) would take over and
+       stack the nav items vertically. Set the row layout directly instead of
+       depending on that now-absent ancestor. */
+    .o_site_header_nav #top_menu {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: nowrap;
+        margin: 0;
+    }
+
+    .o_site_header_right {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Same .navbar-expand-lg-ancestor issue as #top_menu above — the relocated
+       icon <ul> (search / cart / account / language) is also a .navbar-nav
+       relying on that now-absent ancestor for its row layout. */
+    .o_site_header_right ul.o_header_sales_one_right_col {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 0;
+    }
+
+    /* Reserve the header's *expanded* height (measured by buildSiteHeader()
+       in header_dropdowns.js, while not scrolled) as top padding, so the
+       fixed header never covers the page's own first section. Locked to the
+       expanded height specifically so this never fights the shrink-on-scroll
+       transition above — the page would otherwise jump every time the
+       header's own padding shrinks. */
     body {
         padding-top: var(--o_header_h, 0px);
     }
@@ -503,12 +527,15 @@
 }
 
 /* ── Replace the native account + language Bootstrap menus with the hover bar.
-   Scoped to the desktop header (≥992px, where it is visible) and to
-   `o_hdd_active` (set by JS only when the bar built), so the mega menus, the
-   mobile offcanvas, and a JS-failure fallback are all untouched. */
+   Scoped to .o_site_header specifically (not just any .js_usermenu /
+   .o_header_language_selector on the page) — the footer has its own,
+   completely unrelated language-selector dropdown that must keep working
+   normally. Desktop-only (≥992px) and gated on `o_hdd_active` (set by JS
+   only once the bar actually built), so the mobile offcanvas and a
+   JS-failure fallback are both untouched. */
 @media (min-width: 992px) {
-    body.o_hdd_active header#top li.o_no_autohide_item .js_usermenu,
-    body.o_hdd_active header#top .o_header_language_selector .dropdown-menu {
+    body.o_hdd_active .o_site_header li.o_no_autohide_item .js_usermenu,
+    body.o_hdd_active .o_site_header .o_header_language_selector .dropdown-menu {
         display: none !important;
     }
 

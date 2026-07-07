@@ -371,31 +371,74 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
 // expanded height for the body's compensating top padding, and toggles the
 // scrolled state class.
 // ─────────────────────────────────────────────────────────────────────────────
-function initHeaderGlassScroll(headerEl) {
+function buildSiteHeader(nativeHeaderEl) {
+    // Desktop nav only — website.template_header_mobile renders a separate
+    // <nav aria-label="Mobile"> sibling for the offcanvas menu, which is
+    // left completely untouched.
+    const desktopNav = nativeHeaderEl.querySelector('nav[aria-label="Main"]');
+    if (!desktopNav) return null;
+
+    const brand = desktopNav.querySelector('.navbar-brand');
+    const topMenu = desktopNav.querySelector('#top_menu');
+    const iconsUl =
+        desktopNav.querySelector('ul.o_header_sales_one_right_col')
+        || desktopNav.querySelector('.o_header_language_selector')?.closest('ul');
+
+    // Any of these missing means the native header isn't shaped the way this
+    // function expects (e.g. a page-specific header override) — bail out and
+    // leave the native header exactly as Odoo rendered it, rather than build
+    // a half-populated replacement.
+    if (!brand || !topMenu || !iconsUl) return null;
+
+    const header = document.createElement('header');
+    header.className = 'o_site_header';
+    header.innerHTML = `
+        <div class="o_site_header_inner">
+            <div class="o_site_header_left"></div>
+            <nav class="o_site_header_nav" aria-label="Main"></nav>
+            <div class="o_site_header_right"></div>
+        </div>
+    `;
+
+    // Relocate (not clone) — every native Bootstrap/Odoo binding on these
+    // elements (dropdown toggles, search modal trigger, cart badge, language
+    // switcher, mega-menu dropdown wiring added below) travels with them.
+    header.querySelector('.o_site_header_left').appendChild(brand);
+    header.querySelector('.o_site_header_nav').appendChild(topMenu);
+    header.querySelector('.o_site_header_right').appendChild(iconsUl);
+
+    document.body.prepend(header);
+
+    // The native desktop nav is now an empty shell — hide it.
+    desktopNav.style.setProperty('display', 'none', 'important');
+
+    // Shrink on scroll — same threshold/behaviour as the Omni pages' header.
     const scrollRoot = document.getElementById('wrapwrap') || document.documentElement;
+    scrollRoot.addEventListener('scroll', () => {
+        header.classList.toggle('o_header_glass_scrolled', scrollRoot.scrollTop > 50);
+    }, { passive: true });
 
     // Reserve the header's *expanded* height as top padding on <body> (see
-    // the `body { padding-top: var(--o_header_h) }` rule in
-    // header_dropdowns.css) so the fixed header never covers page content.
-    // Only measured while NOT scrolled, so the shrink-on-scroll height change
-    // never fights this — otherwise the page would jump every time the
-    // header shrinks.
+    // `body { padding-top: var(--o_header_h) }` in header_dropdowns.css) so
+    // page content isn't hidden underneath the fixed/overlaid header. Only
+    // measured while not scrolled, so it never fights the shrink transition.
+    // Unlike patching the native header, there's nothing left to double-
+    // compensate against — the native desktop nav above is display:none,
+    // contributing zero height to the page's own layout.
     function syncHeaderHeight() {
-        if (headerEl.classList.contains('o_header_glass_scrolled')) return;
-        document.documentElement.style.setProperty('--o_header_h', headerEl.offsetHeight + 'px');
+        if (header.classList.contains('o_header_glass_scrolled')) return;
+        document.documentElement.style.setProperty('--o_header_h', header.offsetHeight + 'px');
     }
     syncHeaderHeight();
-    new ResizeObserver(syncHeaderHeight).observe(headerEl);
+    new ResizeObserver(syncHeaderHeight).observe(header);
 
-    scrollRoot.addEventListener('scroll', () => {
-        headerEl.classList.toggle('o_header_glass_scrolled', scrollRoot.scrollTop > 50);
-    }, { passive: true });
+    return header;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // publicWidget — runs on every normal Odoo page that has a standard #top header.
-// Skips on OmniGO pages (three_product.js calls initHeaderDropdowns directly
-// after it has moved the icon bar into the custom header).
+// Skips on OmniGO/Omni360 pages (three_product.js calls initHeaderDropdowns
+// directly there, after moving the icon bar into its own custom header).
 // ─────────────────────────────────────────────────────────────────────────────
 publicWidget.registry.headerDropdowns = publicWidget.Widget.extend({
     selector: 'header#top',
@@ -403,21 +446,16 @@ publicWidget.registry.headerDropdowns = publicWidget.Widget.extend({
     start() {
         this._super(...arguments);
 
-        // The OmniGO page hides #top and builds its own header.
-        // three_product.js calls initHeaderDropdowns() directly there.
         if (document.querySelector('.o_omnigo_ch_header')) return;
 
-        initHeaderGlassScroll(this.el);
+        const header = buildSiteHeader(this.el);
+        if (!header) return;
 
-        // Find the right-hand icon <ul>. It is NOT a direct child of #o_main_nav
-        // (it sits inside #o_main_nav > div.container), so locate it by its known
-        // class / by the language selector it contains.
         const iconsUl =
-            this.el.querySelector('ul.o_header_sales_one_right_col')
-            || this.el.querySelector('.o_header_language_selector')?.closest('ul')
-            || this.el.querySelector('#o_main_nav ul.align-items-center');
+            header.querySelector('ul.o_header_sales_one_right_col')
+            || header.querySelector('.o_header_language_selector')?.closest('ul');
         if (!iconsUl || !iconsUl.children.length) return;
 
-        initHeaderDropdowns(this.el, iconsUl);
+        initHeaderDropdowns(header, iconsUl);
     },
 });
