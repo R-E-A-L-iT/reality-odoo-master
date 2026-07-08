@@ -138,7 +138,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             }
 
             const newCard = this._buildAddressCard(result, type);
-            if (container) container.appendChild(newCard);
+            this._insertCard(container, newCard);
 
             this._onCloseNewModal();
         }
@@ -159,9 +159,8 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const containerId = btn.dataset.addressType === "invoice"
             ? "invoice-address-cards"
             : "delivery-address-cards";
-        const container  = document.getElementById(containerId);
-        const scrollWrap = container?.closest(".addr_scroll_wrap");
-        const matrix     = scrollWrap?.parentNode;
+        const container = document.getElementById(containerId);
+        const matrix     = container?.closest(".addr_matrix");
         if (matrix) matrix.appendChild(editor);
 
         // Populate fields
@@ -297,12 +296,24 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
 
             if (remaining === 0) {
                 const defaultCard = this._buildDefaultCard(container, type);
-                if (defaultCard) container.appendChild(defaultCard);
+                if (defaultCard) this._insertCard(container, defaultCard);
             }
         }
     },
 
     // ── Build card DOM helpers ────────────────────────────────────────────────
+
+    // Cards live in the same scrollable row as the "Add Address" tile, which
+    // must always stay last — so new/rebuilt cards are inserted before it.
+    _insertCard(container, card) {
+        if (!container) return;
+        const addTile = container.querySelector(".add_card");
+        if (addTile) {
+            container.insertBefore(card, addTile);
+        } else {
+            container.appendChild(card);
+        }
+    },
 
     _buildAddressCard(data, addressType) {
         const lines = [

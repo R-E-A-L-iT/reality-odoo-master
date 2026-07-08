@@ -3,98 +3,8 @@
 	padding-left: 20px;
 }
 
-/* address editor */
-/* Dark theme matrix */
-                        .addr_matrix { margin: 18px 0; padding: 14px; border-radius:12px; color:#e6edf3; }
-                        .addr_hdr { display:flex; align-items:center; justify-content:space-between; margin: 2px 2px 10px; }
-                        .addr_hdr h4 { font-size:1.05rem; margin:0; color:#e6edf3; }
-                        .addr_cards { display:flex; flex-wrap:wrap; gap:14px; }
-
-                        .addr_card {
-                            background:#0f1318; border:1px solid #2b3139; border-radius:10px; padding:10px 12px;
-                            min-width:300px; max-width:420px; flex: 1 1 320px; position:relative;
-                        }
-                        .addr_card .name { font-weight:700; margin-bottom:6px; color:#e6edf3; }
-                        .addr_card .lines { color:#c9d1d9; line-height:1.35; white-space:pre-line; }
-                        .addr_card.current { outline: 2px solid #db0d0d; }
-
-                        /* “Add address” tile */
-                        .addr_card.add_card {
-                            background:#18202a; border:1px dashed #3a4352;
-                            display:flex; align-items:center; justify-content:center; text-align:center;
-                            min-height: 160px; color:#c9d1d9;
-                        }
-                        .add_inner { display:flex; flex-direction:column; align-items:center; gap:8px; }
-                        .add_label { font-weight:600; }
-
-                        .addr_badge { display:inline-block; font-size:.75rem; padding:2px 6px; border-radius:999px; border:1px solid #2b3139; color:#8b949e; }
-
-/* address editor */
-.addresses .addr_editor {
-    margin: 18px 0;
-	padding: 14px;
-    background: #14171c;
-    border-radius: 12px;
-    border: 1px solid #23272f;
-    color: #e6edf3;
-}
-.addresses .addr_editor .cols {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 18px;
-}
-.addresses .addr_editor fieldset {
-      min-width: 320px;
-      flex: 1 1 420px;
-      border: 1px solid #2b3139;
-      border-radius: 10px;
-      padding: 12px 12px 6px;
-      background: #0f1318;
-}
-.addresses .addr_editor legend {
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 0 6px;
-      color: #e6edf3;
-}
-.addresses .addr_editor .row {
-      display: flex;
-      gap: 10px;
-      margin: 8px 0;
-      align-items: center;
-}
-.addresses .addr_editor label {
-      min-width: 110px;
-      font-weight: 600;
-      color: #c9d1d9;
-}
-.addresses .addr_editor input[type="text"],
-.addresses .addr_editor input[type="date"],
-.addresses .addr_editor input:not([type]) {
-    flex: 1;
-    padding: 8px 10px;
-    background: #0a0d11;
-    color: #e6edf3;
-    border: 1px solid #2b3139;
-    border-radius: 8px;
-    outline: none;
-    box-shadow: none;
-}
-.addresses .addr_editor input::placeholder {
-    color: #8b949e;
-    opacity: 1;
-}
-.addresses .addr_editor input:focus {
-    border-color: #3f8cff;
-    box-shadow: 0 0 0 3px rgba(63, 140, 255, 0.25);
-}
-.addresses .addr_editor .actions {
-    margin-top: 12px;
-    text-align: right;
-}
-.addresses .addr_editor .btn.btn-primary.btn-sm {
-    color: #ffffff;
-}
+/* The full address-selector feature (card grid + editor forms) lives in
+   proquotes/static/src/CSS/address_selector.css. */
 
 /* rental dates section */
 .rental_info {
@@ -361,7 +271,7 @@ img.quoteFooterContactImage {
 
 /* Section fold rows */
 tr.quoteLineRowSection {
-	background-color: #bababa !important;
+	background-color: #797979 !important;
 	color: #fff !important;
 }
 

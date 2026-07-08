@@ -389,14 +389,13 @@
                     <t t-set="all_states"    t-value="request.env['res.country.state'].sudo().search([], order='name asc')"/>
 
                     <!-- ===== INVOICE ADDRESS ===== -->
-                    <div class="addr_matrix mb-3">
+                    <div class="addr_matrix">
                         <div class="addr_hdr">
                             <h4 t-if="language == 'fr_CA'">Adresse de facturation</h4>
                             <h4 t-elif="language == 'es_ES'">Dirección de facturación</h4>
                             <h4 t-else="">Invoice Address</h4>
                         </div>
 
-                        <div class="addr_scroll_wrap">
                         <div class="addr_cards" id="invoice-address-cards"
                              t-att-data-default-partner-id="default_partner.id"
                              t-att-data-default-name="default_partner.name or ''"
@@ -437,7 +436,7 @@
                                         </button>
                                     </div>
 
-                                    <span class="addr_badge mb-1">Default</span>
+                                    <span class="addr_badge">Default</span>
                                     <div class="name" t-esc="default_partner.name"/>
                                     <div class="lines">
                                         <t t-if="default_partner.street"><t t-esc="default_partner.street"/><br/></t>
@@ -497,18 +496,16 @@
                                 </div>
                             </t>
 
-                        </div><!-- /addr_cards -->
-
-                            <!-- Add New Address trigger — outside scroll container, always visible -->
+                            <!-- Add New Address trigger — last tile in the same scrollable row -->
                             <div class="addr_card add_card" id="new-address-trigger-invoice">
                                 <div class="add_inner">
-                                    <i class="fa fa-plus" style="font-size:1.3rem; opacity:0.75;"/>
+                                    <i class="fa fa-plus"/>
                                     <span class="add_label" t-if="language == 'fr_CA'">Ajouter une adresse</span>
                                     <span class="add_label" t-elif="language == 'es_ES'">Agregar dirección</span>
                                     <span class="add_label" t-else="">Add Address</span>
                                 </div>
                             </div>
-                        </div><!-- /addr_scroll_wrap -->
+                        </div><!-- /addr_cards -->
 
                     </div>
 
@@ -520,7 +517,6 @@
                             <h4 t-else="">Delivery Address</h4>
                         </div>
 
-                        <div class="addr_scroll_wrap">
                         <div class="addr_cards" id="delivery-address-cards"
                              t-att-data-default-partner-id="default_partner.id"
                              t-att-data-default-name="default_partner.name or ''"
@@ -561,7 +557,7 @@
                                         </button>
                                     </div>
 
-                                    <span class="addr_badge mb-1">Default</span>
+                                    <span class="addr_badge">Default</span>
                                     <div class="name" t-esc="default_partner.name"/>
                                     <div class="lines">
                                         <t t-if="default_partner.street"><t t-esc="default_partner.street"/><br/></t>
@@ -621,18 +617,16 @@
                                 </div>
                             </t>
 
-                        </div><!-- /addr_cards -->
-
-                            <!-- Add New Address trigger — outside scroll container, always visible -->
+                            <!-- Add New Address trigger — last tile in the same scrollable row -->
                             <div class="addr_card add_card" id="new-address-trigger-delivery">
                                 <div class="add_inner">
-                                    <i class="fa fa-plus" style="font-size:1.3rem; opacity:0.75;"/>
+                                    <i class="fa fa-plus"/>
                                     <span class="add_label" t-if="language == 'fr_CA'">Ajouter une adresse</span>
                                     <span class="add_label" t-elif="language == 'es_ES'">Agregar dirección</span>
                                     <span class="add_label" t-else="">Add Address</span>
                                 </div>
                             </div>
-                        </div><!-- /addr_scroll_wrap -->
+                        </div><!-- /addr_cards -->
 
                     </div>
 

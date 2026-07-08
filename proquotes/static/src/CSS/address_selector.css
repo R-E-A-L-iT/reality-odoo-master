@@ -1,102 +1,170 @@
 /* ProQuotes Address Selector
-   Base card styles from proquotes/static/src/CSS/quoteStyle.css
-   (.addr_matrix, .addr_card, .addr_card.current, .addr_card.add_card, etc.)
-   Base editor-form styles (fieldset/legend/row/label/input) also live in
-   quoteStyle.css under ".addresses .addr_editor" — both the inline editor
-   and the "add new address" modal carry the "addresses" class so they
-   share that same base; only the differences are overridden below. */
+   Everything for the invoice/delivery address card picker on the quote
+   portal lives in this one file: the card grid, the "Add Address" tile,
+   and the shared editor form skin used by both the inline editor and the
+   "add new address" modal. */
 
-/* ── Scroll wrap: card row + pinned add button side by side ── */
-.addr_scroll_wrap {
+/* ══════════════════════════════════════════════
+   SECTION PANEL
+══════════════════════════════════════════════ */
+
+#rental-address-section .addr_matrix {
+    margin: 0 0 20px;
+    padding: 18px 20px 20px;
+    background: rgba(0, 0, 0, 0.20);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    color: #e6edf3;
+}
+
+#rental-address-section .addr_hdr {
     display: flex;
-    gap: 14px;
-    align-items: stretch;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
 }
 
-/* ── Card containers: take remaining width, scroll horizontally ── */
-#invoice-address-cards,
-#delivery-address-cards {
-    flex: 1;
-    min-width: 0;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 0;
-    scrollbar-width: thin;
-    scrollbar-color: #db0d0d #1a1e25;
+#rental-address-section .addr_hdr h4 {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
 }
-#invoice-address-cards::-webkit-scrollbar,
-#delivery-address-cards::-webkit-scrollbar {
+
+/* ══════════════════════════════════════════════
+   CARD ROW — one scrollable flex row per section;
+   the "Add Address" tile is the last item in it.
+══════════════════════════════════════════════ */
+
+#rental-address-section .addr_cards {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: #db0d0d rgba(255, 255, 255, 0.08);
+}
+#rental-address-section .addr_cards::-webkit-scrollbar {
     height: 6px;
 }
-#invoice-address-cards::-webkit-scrollbar-track,
-#delivery-address-cards::-webkit-scrollbar-track {
-    background: #1a1e25;
+#rental-address-section .addr_cards::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.06);
     border-radius: 999px;
 }
-#invoice-address-cards::-webkit-scrollbar-thumb,
-#delivery-address-cards::-webkit-scrollbar-thumb {
+#rental-address-section .addr_cards::-webkit-scrollbar-thumb {
     background: #db0d0d;
     border-radius: 999px;
 }
 
-/* ── Card padding, sizing & pointer affordance ──
-   Shared by every card in the section: selectable addresses (default
-   company card, saved addresses, and cards built dynamically in JS all
-   carry data-partner-id) and the "Add Address" trigger tile alike. */
+/* ── Every tile in the row: selectable address cards and the add-tile alike ── */
 #rental-address-section .addr_card {
-    cursor: pointer;
-    padding: 18px 20px 16px;
-    min-height: 110px;
-    /* Fixed width: 3 cards + 2×14px gap ≈ 868px — fits portal width */
-    flex: 0 0 270px;
-    min-width: 270px;
-    max-width: 270px;
+    position: relative;
+    box-sizing: border-box;
+    flex: 0 0 260px;
+    min-width: 260px;
+    max-width: 260px;
+    min-height: 118px;
+    padding: 34px 18px 16px;
+    background: #12161c;
+    border: 1px solid #262c35;
+    border-radius: 12px;
+    color: #e6edf3;
     scroll-snap-align: start;
+    transition: border-color 0.15s ease, background 0.15s ease,
+        box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-/* ── Selectable cards need extra top padding to clear the edit/delete buttons ── */
 #rental-address-section .addr_card[data-partner-id] {
-    padding-top: 36px;
+    cursor: pointer;
 }
 
-/* ── Name spacing ── */
+#rental-address-section .addr_card[data-partner-id]:hover:not(.current) {
+    border-color: rgba(219, 13, 13, 0.45);
+    background: #171114;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* ── Selected card: accent left bar + checkmark, no harsh outline ── */
+#rental-address-section .addr_card.current {
+    background: #1b1010;
+    border-color: #db0d0d;
+    box-shadow: inset 3px 0 0 #db0d0d;
+}
+#rental-address-section .addr_card.current::after {
+    content: "";
+    position: absolute;
+    top: 14px;
+    left: 18px;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: #db0d0d;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpolyline points='1.5 5.5 4.5 8.5 10.5 1.5' stroke='%23ffffff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 8px 7px;
+}
+
+/* ── Card content ── */
 #rental-address-section .addr_card .name {
-    font-size: 0.97rem;
-    margin-bottom: 6px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #f2f5f8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-
-/* ── Lines: fix QWeb whitespace gaps (pre-line + newlines between <t> tags = blank lines) ── */
 #rental-address-section .addr_card .lines {
     white-space: normal;
-    line-height: 1.55;
-    font-size: 0.88rem;
+    line-height: 1.5;
+    font-size: 0.85rem;
+    color: #9aa4b2;
 }
 
-/* ── Selected card: solid dark-red background + red border ── */
-#rental-address-section .addr_card.current {
-    background: #1f0b0b;
-    border-color: #db0d0d;
-    outline: 2px solid #db0d0d;
+#rental-address-section .addr_card .addr_badge {
+    position: absolute;
+    top: 14px;
+    left: 18px;
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(219, 13, 13, 0.4);
+    color: #ff8080;
+    background: rgba(219, 13, 13, 0.08);
+}
+/* Selected card already shows a checkmark in that top-left spot */
+#rental-address-section .addr_card.current .addr_badge {
+    display: none;
 }
 
-/* ── Hover highlight for non-selected cards ── */
-#rental-address-section .addr_card[data-partner-id]:hover:not(.current) {
-    outline: 1px solid rgba(219, 13, 13, 0.45);
-    background: #160c0c;
-}
-
-/* ── Card action buttons container ── */
-.addr_card_actions {
+/* ── Edit / delete actions — always reachable (incl. touch), subtle until hover/focus ── */
+#rental-address-section .addr_card_actions {
     position: absolute;
     top: 10px;
     right: 10px;
     display: flex;
     gap: 6px;
     z-index: 2;
+    opacity: 0.55;
+    transition: opacity 0.15s ease;
+}
+#rental-address-section .addr_card:hover .addr_card_actions,
+#rental-address-section .addr_card_actions:focus-within {
+    opacity: 1;
 }
 
-/* ── Shared pill button base ── */
-.addr_action_btn {
+#rental-address-section .addr_action_btn {
     width: 24px;
     height: 24px;
     border-radius: 999px;
@@ -104,58 +172,156 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    opacity: 0.65;
-    transition: opacity 0.15s ease, box-shadow 0.15s ease;
     padding: 0;
     background: none;
     border: none;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
-.addr_action_btn svg {
+#rental-address-section .addr_action_btn svg {
     width: 12px;
     height: 12px;
     display: block;
     pointer-events: none;
 }
-.addr_card:hover .addr_action_btn { opacity: 1; }
+#rental-address-section .addr_action_btn:hover {
+    transform: scale(1.08);
+}
+#rental-address-section .addr_action_btn:focus-visible {
+    outline: 2px solid #3f8cff;
+    outline-offset: 1px;
+}
 
-/* ── Edit button ── */
-.addr_edit_btn {
+#rental-address-section .addr_edit_btn {
     border: 1px solid #4b1f1f;
     background: #231314;
     color: #db0d0d;
 }
-.addr_edit_btn:hover {
+#rental-address-section .addr_edit_btn:hover {
     box-shadow: 0 0 0 2px rgba(219, 13, 13, 0.25) inset;
-    opacity: 1;
 }
 
-/* ── Delete button ── */
-.addr_delete_btn {
+#rental-address-section .addr_delete_btn {
     border: 1px solid #1f2b4b;
     background: #131823;
     color: #5f8dd3;
 }
-.addr_delete_btn:hover {
+#rental-address-section .addr_delete_btn:hover {
     box-shadow: 0 0 0 2px rgba(95, 141, 211, 0.25) inset;
-    opacity: 1;
 }
 
-/* ── addr_badge spacing ── */
-#rental-address-section .addr_card .addr_badge {
-    margin-bottom: 6px;
-    display: inline-block;
+/* ── "Add Address" tile — same footprint as a card, dashed accent style ── */
+#rental-address-section .addr_card.add_card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 16px;
+    cursor: pointer;
+    background: rgba(219, 13, 13, 0.04);
+    border: 1.5px dashed rgba(219, 13, 13, 0.35);
+}
+#rental-address-section .addr_card.add_card:hover {
+    background: rgba(219, 13, 13, 0.09);
+    border-color: rgba(219, 13, 13, 0.6);
+    transform: translateY(-1px);
+}
+#rental-address-section .add_inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #e2b9b9;
+}
+#rental-address-section .add_inner .fa-plus {
+    font-size: 1.2rem;
+    color: #db0d0d;
+}
+#rental-address-section .add_label {
+    font-weight: 600;
+    font-size: 0.88rem;
 }
 
-/* ── addr_matrix spacing ── */
-#rental-address-section .addr_matrix {
-    margin-bottom: 0;
+/* ── Narrower viewports: slightly smaller tiles, still one clean scroll row ── */
+@media (max-width: 480px) {
+    #rental-address-section .addr_card {
+        flex-basis: 220px;
+        min-width: 220px;
+        max-width: 220px;
+    }
 }
 
 /* ══════════════════════════════════════════════
-   SHARED SELECT STYLING
+   SHARED EDITOR FORM
    (used by both the inline editor and the add-new modal)
 ══════════════════════════════════════════════ */
 
+.addresses .addr_editor {
+    margin: 18px 0;
+    padding: 16px;
+    background: #14171c;
+    border-radius: 12px;
+    border: 1px solid #23272f;
+    color: #e6edf3;
+}
+.addresses .addr_editor .cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+.addresses .addr_editor fieldset {
+    min-width: 320px;
+    flex: 1 1 420px;
+    border: 1px solid #2b3139;
+    border-radius: 10px;
+    padding: 12px 12px 6px;
+    background: #0f1318;
+}
+.addresses .addr_editor legend {
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0 6px;
+    color: #e6edf3;
+}
+.addresses .addr_editor .row {
+    display: flex;
+    gap: 10px;
+    margin: 8px 0;
+    align-items: center;
+}
+.addresses .addr_editor label {
+    min-width: 110px;
+    font-weight: 600;
+    color: #c9d1d9;
+}
+.addresses .addr_editor input[type="text"],
+.addresses .addr_editor input[type="date"],
+.addresses .addr_editor input:not([type]) {
+    flex: 1;
+    padding: 8px 10px;
+    background: #0a0d11;
+    color: #e6edf3;
+    border: 1px solid #2b3139;
+    border-radius: 8px;
+    outline: none;
+    box-shadow: none;
+}
+.addresses .addr_editor input::placeholder {
+    color: #8b949e;
+    opacity: 1;
+}
+.addresses .addr_editor input:focus {
+    border-color: #3f8cff;
+    box-shadow: 0 0 0 3px rgba(63, 140, 255, 0.25);
+}
+.addresses .addr_editor .actions {
+    margin-top: 12px;
+    text-align: right;
+}
+.addresses .addr_editor .btn.btn-primary.btn-sm {
+    color: #ffffff;
+}
+
+/* ── Select dropdowns (country/state), shared by modal and inline editor ── */
 #addr-new-modal-box select,
 #addr-inline-editor select {
     -webkit-appearance: none;
@@ -189,8 +355,8 @@
 
 /* ══════════════════════════════════════════════
    ADD NEW ADDRESS MODAL
-   (its .addr_editor form re-skins the shared ".addresses .addr_editor"
-   base from quoteStyle.css into a flat, borderless look inside the popup)
+   (its .addr_editor form re-skins the shared base above into a flat,
+   borderless look inside the popup)
 ══════════════════════════════════════════════ */
 
 #addr-new-modal {
@@ -200,6 +366,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 16px;
 }
 
 #addr-new-modal-backdrop {
@@ -212,7 +379,7 @@
 #addr-new-modal-box {
     position: relative;
     z-index: 1;
-    width: min(500px, 92vw);
+    width: min(500px, 100%);
     max-height: 85vh;
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
@@ -246,5 +413,5 @@
 ══════════════════════════════════════════════ */
 
 #addr-inline-editor {
-    margin-top: 14px;
+    margin-top: 6px;
 }
