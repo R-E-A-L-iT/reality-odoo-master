@@ -84,7 +84,8 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         if (!container) return;
 
         // Only one unsaved blank card at a time — focus it instead of stacking more.
-        const pending = container.querySelector(".addr_card:not([data-partner-id])");
+        // (The add-tile itself also lacks data-partner-id, so it must be excluded here.)
+        const pending = container.querySelector(".addr_card:not(.add_card):not([data-partner-id])");
         if (pending) {
             pending.querySelector(".edit-name")?.focus();
             return;
