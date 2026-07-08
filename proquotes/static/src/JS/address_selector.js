@@ -133,6 +133,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     async _onSaveClick(ev) {
         ev.stopImmediatePropagation();
         const card = ev.currentTarget.closest(".addr_card");
+        if (card.dataset.saving === "1") return; // already persisting this card
         const editDiv = card.querySelector(".addr_card_edit");
         const viewDiv = card.querySelector(".addr_card_view");
         const addressType = card.dataset.addressType;
@@ -142,15 +143,42 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         // company's main address.
         const isCreate = !card.dataset.partnerId;
 
+        const countryEl = editDiv.querySelector(".edit-country");
+        const stateEl   = editDiv.querySelector(".edit-state");
         const vals = {
             name:    editDiv.querySelector(".edit-name")?.value.trim()   || "",
             street:  editDiv.querySelector(".edit-street")?.value.trim() || "",
             city:    editDiv.querySelector(".edit-city")?.value.trim()   || "",
-            state:   editDiv.querySelector(".edit-state")?.value         || "",
+            state:   stateEl?.value   || "",
             zip:     editDiv.querySelector(".edit-zip")?.value.trim()    || "",
-            country: editDiv.querySelector(".edit-country")?.value       || "",
+            country: countryEl?.value || "",
         };
 
+        // Optimistic UI: the user already sees exactly what they typed, so
+        // reflect it immediately instead of making them wait on the network
+        // round trip — the actual save happens in the background below.
+        const optimistic = {
+            name: vals.name,
+            street: vals.street,
+            city: vals.city,
+            zip: vals.zip,
+            state: stateEl?.options[stateEl.selectedIndex]?.text || "",
+            country: countryEl?.options[countryEl.selectedIndex]?.text || "",
+        };
+        card.dataset.name      = optimistic.name;
+        card.dataset.street    = optimistic.street;
+        card.dataset.city      = optimistic.city;
+        card.dataset.zip       = optimistic.zip;
+        card.dataset.countryId = vals.country;
+        card.dataset.stateId   = vals.state;
+        viewDiv.querySelector(".name").textContent = optimistic.name;
+        viewDiv.querySelector(".lines").innerHTML = this._formatLines(optimistic);
+        this._setCardMode(card, "view");
+        if (card.dataset.fallback === "1") {
+            this._syncTwinDefaultCard(card, addressType, optimistic);
+        }
+
+        card.dataset.saving = "1";
         const params = { access_token: this.orderDetail.token, ...vals };
         let route;
         if (isCreate) {
@@ -162,32 +190,22 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         }
 
         const result = await jsonrpc("/my/orders/" + this.orderDetail.orderId + "/" + route, params);
-        if (!result || !result.success) return;
+        delete card.dataset.saving;
+
+        if (!result || !result.success) {
+            // Something went wrong server-side — don't leave the user
+            // thinking an unsaved change was saved. Reopen it for editing.
+            window.alert("Could not save this address. Please try again.");
+            this._setCardMode(card, "edit");
+            return;
+        }
 
         if (isCreate) {
             const container = document.getElementById(this._containerId(addressType));
             container?.querySelectorAll(".addr_card[data-partner-id]").forEach(c => c.classList.remove("current"));
             card.classList.add("current");
+            card.dataset.partnerId = result.partner_id;
         }
-
-        card.dataset.partnerId = result.partner_id;
-        card.dataset.name      = result.name || "";
-        card.dataset.street    = result.street || "";
-        card.dataset.city      = result.city || "";
-        card.dataset.zip       = result.zip || "";
-        card.dataset.countryId = editDiv.querySelector(".edit-country")?.value || "";
-        card.dataset.stateId   = editDiv.querySelector(".edit-state")?.value || "";
-
-        viewDiv.querySelector(".name").textContent = result.name || "";
-        viewDiv.querySelector(".lines").innerHTML = this._formatLines(result);
-
-        // The "Default" card in each section (invoice/delivery) represents
-        // the exact same partner record — keep them showing the same data.
-        if (card.dataset.fallback === "1") {
-            this._syncTwinDefaultCard(card, addressType, result);
-        }
-
-        this._setCardMode(card, "view");
     },
 
     // Updates the Default card in the OTHER section so both stay in sync,
@@ -260,6 +278,13 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         );
         if (!confirmed) return;
 
+        // Optimistic UI: remove it immediately so the deletion feels instant,
+        // then persist in the background. Keep enough to undo the removal
+        // if the server call turns out to have failed.
+        const container = document.getElementById(this._containerId(addressType));
+        const nextSibling = card.nextSibling;
+        card.remove();
+
         const result = await jsonrpc(
             "/my/orders/" + this.orderDetail.orderId + "/delete_address",
             {
@@ -268,10 +293,16 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
                 address_type: addressType,
             }
         );
-        if (!result || !result.success) return;
 
-        const container = document.getElementById(this._containerId(addressType));
-        card.remove();
+        if (!result || !result.success) {
+            // Roll back: the delete didn't actually happen, so put it back.
+            if (container) {
+                if (nextSibling) container.insertBefore(card, nextSibling);
+                else container.appendChild(card);
+            }
+            window.alert("Could not delete this address. Please try again.");
+            return;
+        }
 
         // The server always falls back to the order's main contact when the
         // deleted address was selected — that's the permanent "Default" card.

@@ -92,7 +92,21 @@
                     </select>
                     <select class="edit-state">
                         <option value=""><t t-esc="lbl_state"/></option>
-                        <t t-foreach="all_states" t-as="s">
+                        <t t-foreach="ca_states" t-as="s">
+                            <option t-att-value="s.id"
+                                    t-att-data-country-id="s.country_id.id"
+                                    t-esc="s.name"
+                                    t-att-selected="s.id == addr.state_id.id"/>
+                        </t>
+                        <option value="" disabled="disabled">──────────</option>
+                        <t t-foreach="us_states" t-as="s">
+                            <option t-att-value="s.id"
+                                    t-att-data-country-id="s.country_id.id"
+                                    t-esc="s.name"
+                                    t-att-selected="s.id == addr.state_id.id"/>
+                        </t>
+                        <option value="" disabled="disabled">──────────</option>
+                        <t t-foreach="other_states" t-as="s">
                             <option t-att-value="s.id"
                                     t-att-data-country-id="s.country_id.id"
                                     t-esc="s.name"
@@ -486,7 +500,13 @@
                          then everything else alphabetically below a separator. -->
                     <t t-set="priority_countries" t-value="sorted(request.env['res.country'].sudo().search([('code', 'in', ['CA', 'US'])]), key=lambda c: ['CA', 'US'].index(c.code))"/>
                     <t t-set="other_countries" t-value="request.env['res.country'].sudo().search([('code', 'not in', ['CA', 'US'])], order='name asc')"/>
-                    <t t-set="all_states" t-value="request.env['res.country.state'].sudo().search([], order='name asc')"/>
+
+                    <!-- Same idea for states/provinces: Canadian provinces, then US
+                         states, then everything else, each alphabetical, with the
+                         country each one belongs to still tagged for live filtering. -->
+                    <t t-set="ca_states" t-value="request.env['res.country.state'].sudo().search([('country_id.code', '=', 'CA')], order='name asc')"/>
+                    <t t-set="us_states" t-value="request.env['res.country.state'].sudo().search([('country_id.code', '=', 'US')], order='name asc')"/>
+                    <t t-set="other_states" t-value="request.env['res.country.state'].sudo().search([('country_id.code', 'not in', ['CA', 'US'])], order='name asc')"/>
 
                     <!-- Localized labels, computed once and reused by every card -->
                     <t t-set="lbl_name" t-value="'Nom' if language == 'fr_CA' else ('Nombre' if language == 'es_ES' else 'Name')"/>
@@ -517,43 +537,18 @@
                     </select>
                     <select id="addr-state-options-template" style="display:none;" tabindex="-1" aria-hidden="true">
                         <option value=""><t t-esc="lbl_state"/></option>
-                        <t t-foreach="all_states" t-as="s">
+                        <t t-foreach="ca_states" t-as="s">
+                            <option t-att-value="s.id" t-att-data-country-id="s.country_id.id" t-esc="s.name"/>
+                        </t>
+                        <option value="" disabled="disabled">──────────</option>
+                        <t t-foreach="us_states" t-as="s">
+                            <option t-att-value="s.id" t-att-data-country-id="s.country_id.id" t-esc="s.name"/>
+                        </t>
+                        <option value="" disabled="disabled">──────────</option>
+                        <t t-foreach="other_states" t-as="s">
                             <option t-att-value="s.id" t-att-data-country-id="s.country_id.id" t-esc="s.name"/>
                         </t>
                     </select>
-
-                    <!-- ===== INVOICE ADDRESS ===== -->
-                    <div class="addr_matrix">
-                        <div class="addr_hdr">
-                            <h4 t-if="language == 'fr_CA'">Adresse de facturation</h4>
-                            <h4 t-elif="language == 'es_ES'">Dirección de facturación</h4>
-                            <h4 t-else="">Invoice Address</h4>
-                        </div>
-
-                        <div class="addr_cards" id="invoice-address-cards">
-
-                            <!-- The company's main contact is always shown first as the
-                                 permanent "Default" card, followed by any additional
-                                 invoice-specific addresses the customer has added. -->
-                            <t t-set="invoice_list" t-value="default_partner + invoice_addresses"/>
-                            <t t-foreach="invoice_list" t-as="addr">
-                                <t t-call="proquotes.address_card_tile">
-                                    <t t-set="address_type" t-value="'invoice'"/>
-                                    <t t-set="is_fallback" t-value="addr.id == default_partner.id"/>
-                                    <t t-set="is_selected" t-value="addr.id == sale_order.partner_invoice_id.id"/>
-                                </t>
-                            </t>
-
-                            <!-- Add New Address trigger — last tile in the same scrollable row -->
-                            <div class="addr_card add_card" id="new-address-trigger-invoice">
-                                <div class="add_inner">
-                                    <i class="fa fa-plus"/>
-                                    <span class="add_label" t-esc="lbl_add"/>
-                                </div>
-                            </div>
-                        </div><!-- /addr_cards -->
-
-                    </div>
 
                     <!-- ===== DELIVERY ADDRESS ===== -->
                     <div class="addr_matrix">
@@ -579,6 +574,39 @@
 
                             <!-- Add New Address trigger — last tile in the same scrollable row -->
                             <div class="addr_card add_card" id="new-address-trigger-delivery">
+                                <div class="add_inner">
+                                    <i class="fa fa-plus"/>
+                                    <span class="add_label" t-esc="lbl_add"/>
+                                </div>
+                            </div>
+                        </div><!-- /addr_cards -->
+
+                    </div>
+
+                    <!-- ===== INVOICE ADDRESS ===== -->
+                    <div class="addr_matrix">
+                        <div class="addr_hdr">
+                            <h4 t-if="language == 'fr_CA'">Adresse de facturation</h4>
+                            <h4 t-elif="language == 'es_ES'">Dirección de facturación</h4>
+                            <h4 t-else="">Invoice Address</h4>
+                        </div>
+
+                        <div class="addr_cards" id="invoice-address-cards">
+
+                            <!-- The company's main contact is always shown first as the
+                                 permanent "Default" card, followed by any additional
+                                 invoice-specific addresses the customer has added. -->
+                            <t t-set="invoice_list" t-value="default_partner + invoice_addresses"/>
+                            <t t-foreach="invoice_list" t-as="addr">
+                                <t t-call="proquotes.address_card_tile">
+                                    <t t-set="address_type" t-value="'invoice'"/>
+                                    <t t-set="is_fallback" t-value="addr.id == default_partner.id"/>
+                                    <t t-set="is_selected" t-value="addr.id == sale_order.partner_invoice_id.id"/>
+                                </t>
+                            </t>
+
+                            <!-- Add New Address trigger — last tile in the same scrollable row -->
+                            <div class="addr_card add_card" id="new-address-trigger-invoice">
                                 <div class="add_inner">
                                     <i class="fa fa-plus"/>
                                     <span class="add_label" t-esc="lbl_add"/>

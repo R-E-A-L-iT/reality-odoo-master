@@ -45,7 +45,7 @@
     flex-wrap: nowrap;
     gap: 14px;
     overflow-x: auto;
-    padding-bottom: 6px;
+    padding-bottom: 16px;
     scrollbar-width: thin;
     scrollbar-color: #db0d0d rgba(255, 255, 255, 0.08);
 }
@@ -103,8 +103,8 @@
 #rental-address-section .addr_card.current .addr_card_view::after {
     content: "";
     position: absolute;
-    top: 14px;
-    left: 18px;
+    top: 16px;
+    left: 20px;
     width: 16px;
     height: 16px;
     border-radius: 999px;
@@ -125,7 +125,7 @@
 
 #rental-address-section .addr_card_view {
     position: relative;
-    padding: 34px 18px 16px;
+    padding: 40px 20px 18px;
     min-height: 118px;
     box-sizing: border-box;
 }
@@ -148,8 +148,8 @@
 
 #rental-address-section .addr_card .addr_badge {
     position: absolute;
-    top: 14px;
-    left: 18px;
+    top: 16px;
+    left: 20px;
     display: inline-block;
     font-size: 0.68rem;
     font-weight: 600;
@@ -165,8 +165,8 @@
 /* ── Edit / delete actions — always reachable (incl. touch), subtle until hover/focus ── */
 #rental-address-section .addr_card_actions {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 12px;
+    right: 12px;
     display: flex;
     gap: 6px;
     z-index: 2;
@@ -251,7 +251,7 @@
 ══════════════════════════════════════════════ */
 
 #rental-address-section .addr_card_edit {
-    padding: 34px 16px 16px;
+    padding: 40px 18px 18px;
     box-sizing: border-box;
 }
 
