@@ -1,0 +1,98 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   .o_liquid_glass — reusable "liquid glass" notification/card surface.
+   Apply this class to any floating card-like element (see liquid_glass.js for
+   the accompanying pointer-tilt behavior) to get the same glass material
+   everywhere it's used, rather than each page hand-rolling its own blur/tint/
+   shadow recipe. Tunable per-instance via the --o_lg_* custom properties
+   below (set them on the element itself, or a page-specific selector that
+   targets it) instead of overriding the shorthand properties directly, so
+   every instance stays built from the same recipe as this one changes.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+    --o_lg_tint: rgba(40, 38, 42, 0.42);
+    --o_lg_border: rgba(255, 255, 255, 0.4);
+    --o_lg_blur: 26px;
+    --o_lg_saturate: 1.8;
+    --o_lg_radius: 24px;
+
+    /* Written by liquid_glass.js on pointer move; fall back to a neutral
+       resting pose so the element looks correct before JS runs / on
+       reduced-motion or coarse-pointer devices where the widget no-ops. */
+    --o_lg_rx: 0deg;
+    --o_lg_ry: 0deg;
+    --o_lg_tx: 0px;
+    --o_lg_ty: 0px;
+    --o_lg_glint_x: 30%;
+    --o_lg_glint_y: -10%;
+}
+
+.o_liquid_glass {
+    /* !important throughout the visual properties here since this is meant
+       to be droppable onto elements that already carry their own competing
+       styling (e.g. Bootstrap's .alert, with its own background/border/
+       radius all defined via CSS variables) and reliably win regardless of
+       where in the cascade that other styling was declared. */
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: var(--o_lg_radius) !important;
+    background: var(--o_lg_tint) !important;
+    border: 1px solid var(--o_lg_border) !important;
+    backdrop-filter: blur(var(--o_lg_blur)) saturate(var(--o_lg_saturate)) !important;
+    -webkit-backdrop-filter: blur(var(--o_lg_blur)) saturate(var(--o_lg_saturate)) !important;
+
+    /* Layered shadow: a soft wide ambient shadow + a tighter contact shadow
+       give it real "floating above the page" depth, and the two inset lines
+       (bright top edge, faint dark bottom edge) plus the two side inset
+       lines are what read as light catching a curved glass edge — the same
+       trick used for glass/skeuomorphic UI generally. */
+    box-shadow:
+        0 32px 64px rgba(0, 0, 0, 0.4),
+        0 8px 22px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+        inset 1px 0 0 rgba(255, 255, 255, 0.14),
+        inset -1px 0 0 rgba(0, 0, 0, 0.08) !important;
+
+    transform:
+        perspective(900px)
+        rotateX(var(--o_lg_rx))
+        rotateY(var(--o_lg_ry))
+        translate3d(var(--o_lg_tx), var(--o_lg_ty), 0);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+    will-change: transform;
+}
+
+/* Specular sheen — a soft highlight positioned by --o_lg_glint_x/y, which
+   liquid_glass.js nudges opposite the tilt so it reads as one light source
+   catching the glass from a fixed angle as the card leans, rather than a
+   static gradient painted on top. border-radius:inherit rounds its own
+   background to match the card even without the card's own overflow:hidden
+   clipping it — instances that need something (like a corner badge) to
+   visibly poke outside the card can safely override overflow to visible
+   without this sheen suddenly showing square corners. */
+.o_liquid_glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    background: radial-gradient(120% 90% at var(--o_lg_glint_x) var(--o_lg_glint_y), rgba(255, 255, 255, 0.5), transparent 55%);
+    mix-blend-mode: overlay;
+    transition: background-position 0.6s ease;
+}
+
+/* Everything else in the card paints above the sheen layer. */
+.o_liquid_glass > * {
+    position: relative;
+    z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce), (hover: none) {
+    .o_liquid_glass {
+        transition: box-shadow 0.4s ease;
+        transform: none !important;
+    }
+}
