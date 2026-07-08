@@ -144,10 +144,6 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         }
     },
 
-    _onNewModalCountryChange() {
-        this._filterStatesByCountry("new-modal-country", "new-modal-state");
-    },
-
     // ── Edit address → inline form in section ────────────────────────────────
 
     _onEditAddress(ev) {
@@ -319,8 +315,6 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         card.className = "addr_card current";
         card.dataset.partnerId   = String(data.partner_id);
         card.dataset.addressType = addressType;
-        card.style.cursor     = "pointer";
-        card.style.paddingTop = "36px";
 
         const actions = document.createElement("div");
         actions.className = "addr_card_actions";
@@ -376,8 +370,6 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         card.className = "addr_card current";
         card.dataset.partnerId   = d.defaultPartnerId;
         card.dataset.addressType = addressType;
-        card.style.cursor     = "pointer";
-        card.style.paddingTop = "36px";
 
         const actions = document.createElement("div");
         actions.className = "addr_card_actions";

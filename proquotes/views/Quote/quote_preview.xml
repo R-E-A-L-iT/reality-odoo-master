@@ -377,188 +377,420 @@
 
                 <!-- ================= ADDRESS SECTION ================= -->
 
-                <div class="row" id="rental-address-section">
+                <div id="rental-address-section">
 
-                    <!-- ================================================= -->
-                    <!-- ================= INVOICE ADDRESS =============== -->
-                    <!-- ================================================= -->
+                    <!-- Precompute address lists -->
+                    <t t-set="invoice_addresses" t-value="sale_order.partner_id.child_ids.filtered(lambda p: p.type == 'invoice' and p.active)"/>
+                    <t t-set="delivery_addresses" t-value="sale_order.partner_id.child_ids.filtered(lambda p: p.type == 'delivery' and p.active)"/>
+                    <t t-set="default_partner" t-value="sale_order.partner_id"/>
 
-                    <div class="col-md-6 mb-3">
-                        <h5 class="fw-bold mb-3" t-if="language == 'en_CA' or language == 'en_US'">Invoice Address</h5>
-                        <h5 class="fw-bold mb-3" t-elif="language == 'fr_CA'">Adresse de facturation</h5>
-                        <h5 class="fw-bold mb-3" t-elif="language == 'es_ES'">Dirección de facturación</h5>
+                    <!-- Country / state lists for modal edit form and new address forms -->
+                    <t t-set="all_countries" t-value="request.env['res.country'].sudo().search([], order='name asc')"/>
+                    <t t-set="all_states"    t-value="request.env['res.country.state'].sudo().search([], order='name asc')"/>
 
-                        <t t-set="inv" t-value="sale_order.partner_invoice_id"/>
-
-                        <!-- Name -->
-                        <label class="form-label" t-if="language == 'fr_CA'">Nom</label>
-                        <label class="form-label" t-elif="language == 'es_ES'">Nombre</label>
-                        <label class="form-label" t-else="">Name</label>
-                        <input id="invoice-name"
-                               type="text"
-                               class="form-control form-control-sm mb-2"
-                               t-att-value="inv.name or ''"/>
-
-                        <!-- Street -->
-                        <label class="form-label" t-if="language == 'fr_CA'">Rue</label>
-                        <label class="form-label" t-elif="language == 'es_ES'">Calle</label>
-                        <label class="form-label" t-else="">Street</label>
-                        <input id="invoice-street"
-                               type="text"
-                               class="form-control form-control-sm mb-2"
-                               t-att-value="inv.street or ''"/>
-
-                        <!-- City | State | Country -->
-                        <div class="row g-2 mb-2">
-
-                            <!-- City -->
-                            <div class="col-4">
-                                <label class="form-label" t-if="language == 'fr_CA'">Ville</label>
-                                <label class="form-label" t-elif="language == 'es_ES'">Ciudad</label>
-                                <label class="form-label" t-else="">City</label>
-                                <input id="invoice-city"
-                                       type="text"
-                                       class="form-control form-control-sm"
-                                       t-att-value="inv.city or ''"/>
-                            </div>
-
-                            <!-- State -->
-                            <div class="col-4">
-                                <label class="form-label" t-if="language == 'fr_CA'">État/Province</label>
-                                <label class="form-label" t-elif="language == 'es_ES'">Estado</label>
-                                <label class="form-label" t-else="">State/Province</label>
-                                <select id="invoice-state-text"
-                                        class="form-select form-select-sm">
-                                    <option value="">Select</option>
-                                    <t t-foreach="request.env['res.country.state'].sudo().search([])" t-as="state">
-                                        <option t-att-value="state.id"
-                                                t-att-data-country-id="state.country_id.id"
-                                                t-att-selected="state.id == inv.state_id.id">
-                                            <t t-esc="state.name"/>
-                                        </option>
-                                    </t>
-                                </select>
-                            </div>
-
-                            <!-- Country -->
-                            <div class="col-4">
-                                <label class="form-label" t-if="language == 'fr_CA'">Pays</label>
-                                <label class="form-label" t-elif="language == 'es_ES'">País</label>
-                                <label class="form-label" t-else="">Country</label>
-                                <select id="invoice-country-text"
-                                        class="form-select form-select-sm">
-                                    <option value="">Select</option>
-                                    <t t-foreach="request.env['res.country'].sudo().search([])" t-as="country">
-                                        <option t-att-value="country.id"
-                                                t-att-selected="country.id == inv.country_id.id">
-                                            <t t-esc="country.name"/>
-                                        </option>
-                                    </t>
-                                </select>
-                            </div>
-
+                    <!-- ===== INVOICE ADDRESS ===== -->
+                    <div class="addr_matrix mb-3">
+                        <div class="addr_hdr">
+                            <h4 t-if="language == 'fr_CA'">Adresse de facturation</h4>
+                            <h4 t-elif="language == 'es_ES'">Dirección de facturación</h4>
+                            <h4 t-else="">Invoice Address</h4>
                         </div>
 
-                        <!-- Zip -->
-                        <label class="form-label" t-if="language == 'fr_CA'">Code postal</label>
-                        <label class="form-label" t-elif="language == 'es_ES'">Código postal</label>
-                        <label class="form-label" t-else="">Zip/Postal code</label>
-                        <input id="invoice-zip"
-                               type="text"
-                               class="form-control form-control-sm"
-                               t-att-value="inv.zip or ''"/>
+                        <div class="addr_scroll_wrap">
+                        <div class="addr_cards" id="invoice-address-cards"
+                             t-att-data-default-partner-id="default_partner.id"
+                             t-att-data-default-name="default_partner.name or ''"
+                             t-att-data-default-street="default_partner.street or ''"
+                             t-att-data-default-city="default_partner.city or ''"
+                             t-att-data-default-state="default_partner.state_id.name or ''"
+                             t-att-data-default-zip="default_partner.zip or ''"
+                             t-att-data-default-country="default_partner.country_id.name or ''">
+
+                            <!-- Default company address shown when no invoice-typed addresses exist -->
+                            <t t-if="not invoice_addresses">
+                                <div t-attf-class="addr_card{{ ' current' if sale_order.partner_invoice_id.id == default_partner.id else '' }}"
+                                     t-att-data-partner-id="default_partner.id"
+                                     data-address-type="invoice">
+
+                                    <div class="addr_card_actions">
+                                        <button class="addr_action_btn addr_edit_btn"
+                                                t-att-data-partner-id="default_partner.id"
+                                                t-att-data-name="default_partner.name or ''"
+                                                t-att-data-street="default_partner.street or ''"
+                                                t-att-data-city="default_partner.city or ''"
+                                                t-att-data-zip="default_partner.zip or ''"
+                                                t-att-data-state-id="default_partner.state_id.id or 0"
+                                                t-att-data-country-id="default_partner.country_id.id or 0"
+                                                data-address-type="invoice"
+                                                title="Edit">
+                                            <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                        <button class="addr_action_btn addr_delete_btn"
+                                                t-att-data-partner-id="default_partner.id"
+                                                data-address-type="invoice"
+                                                title="Delete">
+                                            <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <span class="addr_badge mb-1">Default</span>
+                                    <div class="name" t-esc="default_partner.name"/>
+                                    <div class="lines">
+                                        <t t-if="default_partner.street"><t t-esc="default_partner.street"/><br/></t>
+                                        <t t-if="default_partner.city or default_partner.state_id or default_partner.zip">
+                                            <t t-if="default_partner.city"><t t-esc="default_partner.city"/><t t-if="default_partner.state_id or default_partner.zip">, </t></t>
+                                            <t t-if="default_partner.state_id"><t t-esc="default_partner.state_id.name"/> </t>
+                                            <t t-if="default_partner.zip"><t t-esc="default_partner.zip"/></t>
+                                            <br/>
+                                        </t>
+                                        <t t-if="default_partner.country_id"><t t-esc="default_partner.country_id.name"/></t>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- Existing invoice address cards -->
+                            <t t-foreach="invoice_addresses" t-as="addr">
+                                <div t-attf-class="addr_card{{ ' current' if addr.id == sale_order.partner_invoice_id.id else '' }}"
+                                     t-att-data-partner-id="addr.id"
+                                     data-address-type="invoice">
+
+                                    <div class="addr_card_actions">
+                                        <button class="addr_action_btn addr_edit_btn"
+                                                t-att-data-partner-id="addr.id"
+                                                t-att-data-name="addr.name or ''"
+                                                t-att-data-street="addr.street or ''"
+                                                t-att-data-city="addr.city or ''"
+                                                t-att-data-zip="addr.zip or ''"
+                                                t-att-data-state-id="addr.state_id.id or 0"
+                                                t-att-data-country-id="addr.country_id.id or 0"
+                                                data-address-type="invoice"
+                                                title="Edit">
+                                            <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                        <button class="addr_action_btn addr_delete_btn"
+                                                t-att-data-partner-id="addr.id"
+                                                data-address-type="invoice"
+                                                title="Delete">
+                                            <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="name" t-esc="addr.name"/>
+                                    <div class="lines">
+                                        <t t-if="addr.street"><t t-esc="addr.street"/><br/></t>
+                                        <t t-if="addr.city or addr.state_id or addr.zip">
+                                            <t t-if="addr.city"><t t-esc="addr.city"/><t t-if="addr.state_id or addr.zip">, </t></t>
+                                            <t t-if="addr.state_id"><t t-esc="addr.state_id.name"/> </t>
+                                            <t t-if="addr.zip"><t t-esc="addr.zip"/></t>
+                                            <br/>
+                                        </t>
+                                        <t t-if="addr.country_id"><t t-esc="addr.country_id.name"/></t>
+                                    </div>
+                                </div>
+                            </t>
+
+                        </div><!-- /addr_cards -->
+
+                            <!-- Add New Address trigger — outside scroll container, always visible -->
+                            <div class="addr_card add_card" id="new-address-trigger-invoice">
+                                <div class="add_inner">
+                                    <i class="fa fa-plus" style="font-size:1.3rem; opacity:0.75;"/>
+                                    <span class="add_label" t-if="language == 'fr_CA'">Ajouter une adresse</span>
+                                    <span class="add_label" t-elif="language == 'es_ES'">Agregar dirección</span>
+                                    <span class="add_label" t-else="">Add Address</span>
+                                </div>
+                            </div>
+                        </div><!-- /addr_scroll_wrap -->
+
                     </div>
 
-
-                    <!-- ================================================= -->
-                    <!-- ================= DELIVERY ADDRESS ============== -->
-                    <!-- ================================================= -->
-
-                    <div class="col-md-6 mb-3">
-                        <h5 class="fw-bold mb-3" t-if="language == 'fr_CA'">Adresse de livraison</h5>
-                        <h5 class="fw-bold mb-3" t-elif="language == 'es_ES'">Dirección de entrega</h5>
-                        <h5 class="fw-bold mb-3" t-else="">Delivery Address</h5>
-
-                        <t t-set="dlv" t-value="sale_order.partner_shipping_id"/>
-
-                        <!-- Name -->
-                        <label class="form-label" t-if="language == 'fr_CA'">Nom</label>
-                        <label class="form-label" t-elif="language == 'es_ES'">Nombre</label>
-                        <label class="form-label" t-else="">Name</label>
-                        <input id="delivery-name"
-                               type="text"
-                               class="form-control form-control-sm mb-2"
-                               t-att-value="dlv.name or ''"/>
-
-                        <!-- Street -->
-                        <label class="form-label" t-if="language == 'fr_CA'">Rue</label>
-                        <label class="form-label" t-elif="language == 'es_ES'">Calle</label>
-                        <label class="form-label" t-else="">Street</label>
-                        <input id="delivery-street"
-                               type="text"
-                               class="form-control form-control-sm mb-2"
-                               t-att-value="dlv.street or ''"/>
-
-                        <!-- City | State | Country -->
-                        <div class="row g-2 mb-2">
-
-                            <!-- City -->
-                            <div class="col-4">
-                                <label class="form-label" t-if="language == 'fr_CA'">Ville</label>
-                                <label class="form-label" t-elif="language == 'es_ES'">Ciudad</label>
-                                <label class="form-label" t-else="">City</label>
-                                <input id="delivery-city"
-                                       type="text"
-                                       class="form-control form-control-sm"
-                                       t-att-value="dlv.city or ''"/>
-                            </div>
-
-                            <!-- State -->
-                            <div class="col-4">
-                                <label class="form-label" t-if="language == 'fr_CA'">État/Province</label>
-                                <label class="form-label" t-elif="language == 'es_ES'">Estado/Provincia</label>
-                                <label class="form-label" t-else="">State/Province</label>
-                                <select id="delivery-state-text"
-                                        class="form-select form-select-sm">
-                                    <option value="">Select</option>
-                                    <t t-foreach="request.env['res.country.state'].sudo().search([])" t-as="state">
-                                        <option t-att-value="state.id"
-                                                t-att-data-country-id="state.country_id.id"
-                                                t-att-selected="state.id == dlv.state_id.id">
-                                            <t t-esc="state.name"/>
-                                        </option>
-                                    </t>
-                                </select>
-                            </div>
-
-                            <!-- Country -->
-                            <div class="col-4">
-                                <label class="form-label" t-if="language == 'fr_CA'">Pays</label>
-                                <label class="form-label" t-elif="language == 'es_ES'">País</label>
-                                <label class="form-label" t-else="">Country</label>
-                                <select id="delivery-country-text"
-                                        class="form-select form-select-sm">
-                                    <option value="">Select</option>
-                                    <t t-foreach="request.env['res.country'].sudo().search([])" t-as="country">
-                                        <option t-att-value="country.id"
-                                                t-att-selected="country.id == dlv.country_id.id">
-                                            <t t-esc="country.name"/>
-                                        </option>
-                                    </t>
-                                </select>
-                            </div>
-
+                    <!-- ===== DELIVERY ADDRESS ===== -->
+                    <div class="addr_matrix">
+                        <div class="addr_hdr">
+                            <h4 t-if="language == 'fr_CA'">Adresse de livraison</h4>
+                            <h4 t-elif="language == 'es_ES'">Dirección de entrega</h4>
+                            <h4 t-else="">Delivery Address</h4>
                         </div>
 
-                        <!-- Zip -->
-                        <label class="form-label" t-if="language == 'fr_CA'">Code postal</label>
-                        <label class="form-label" t-elif="language == 'es_ES'">Código postal</label>
-                        <label class="form-label" t-else="">Zip/Postal Code</label>
-                        <input id="delivery-zip"
-                               type="text"
-                               class="form-control form-control-sm"
-                               t-att-value="dlv.zip or ''"/>
+                        <div class="addr_scroll_wrap">
+                        <div class="addr_cards" id="delivery-address-cards"
+                             t-att-data-default-partner-id="default_partner.id"
+                             t-att-data-default-name="default_partner.name or ''"
+                             t-att-data-default-street="default_partner.street or ''"
+                             t-att-data-default-city="default_partner.city or ''"
+                             t-att-data-default-state="default_partner.state_id.name or ''"
+                             t-att-data-default-zip="default_partner.zip or ''"
+                             t-att-data-default-country="default_partner.country_id.name or ''">
+
+                            <!-- Default company address shown when no delivery-typed addresses exist -->
+                            <t t-if="not delivery_addresses">
+                                <div t-attf-class="addr_card{{ ' current' if sale_order.partner_shipping_id.id == default_partner.id else '' }}"
+                                     t-att-data-partner-id="default_partner.id"
+                                     data-address-type="delivery">
+
+                                    <div class="addr_card_actions">
+                                        <button class="addr_action_btn addr_edit_btn"
+                                                t-att-data-partner-id="default_partner.id"
+                                                t-att-data-name="default_partner.name or ''"
+                                                t-att-data-street="default_partner.street or ''"
+                                                t-att-data-city="default_partner.city or ''"
+                                                t-att-data-zip="default_partner.zip or ''"
+                                                t-att-data-state-id="default_partner.state_id.id or 0"
+                                                t-att-data-country-id="default_partner.country_id.id or 0"
+                                                data-address-type="delivery"
+                                                title="Edit">
+                                            <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                        <button class="addr_action_btn addr_delete_btn"
+                                                t-att-data-partner-id="default_partner.id"
+                                                data-address-type="delivery"
+                                                title="Delete">
+                                            <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <span class="addr_badge mb-1">Default</span>
+                                    <div class="name" t-esc="default_partner.name"/>
+                                    <div class="lines">
+                                        <t t-if="default_partner.street"><t t-esc="default_partner.street"/><br/></t>
+                                        <t t-if="default_partner.city or default_partner.state_id or default_partner.zip">
+                                            <t t-if="default_partner.city"><t t-esc="default_partner.city"/><t t-if="default_partner.state_id or default_partner.zip">, </t></t>
+                                            <t t-if="default_partner.state_id"><t t-esc="default_partner.state_id.name"/> </t>
+                                            <t t-if="default_partner.zip"><t t-esc="default_partner.zip"/></t>
+                                            <br/>
+                                        </t>
+                                        <t t-if="default_partner.country_id"><t t-esc="default_partner.country_id.name"/></t>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- Existing delivery address cards -->
+                            <t t-foreach="delivery_addresses" t-as="addr">
+                                <div t-attf-class="addr_card{{ ' current' if addr.id == sale_order.partner_shipping_id.id else '' }}"
+                                     t-att-data-partner-id="addr.id"
+                                     data-address-type="delivery">
+
+                                    <div class="addr_card_actions">
+                                        <button class="addr_action_btn addr_edit_btn"
+                                                t-att-data-partner-id="addr.id"
+                                                t-att-data-name="addr.name or ''"
+                                                t-att-data-street="addr.street or ''"
+                                                t-att-data-city="addr.city or ''"
+                                                t-att-data-zip="addr.zip or ''"
+                                                t-att-data-state-id="addr.state_id.id or 0"
+                                                t-att-data-country-id="addr.country_id.id or 0"
+                                                data-address-type="delivery"
+                                                title="Edit">
+                                            <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                        <button class="addr_action_btn addr_delete_btn"
+                                                t-att-data-partner-id="addr.id"
+                                                data-address-type="delivery"
+                                                title="Delete">
+                                            <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="name" t-esc="addr.name"/>
+                                    <div class="lines">
+                                        <t t-if="addr.street"><t t-esc="addr.street"/><br/></t>
+                                        <t t-if="addr.city or addr.state_id or addr.zip">
+                                            <t t-if="addr.city"><t t-esc="addr.city"/><t t-if="addr.state_id or addr.zip">, </t></t>
+                                            <t t-if="addr.state_id"><t t-esc="addr.state_id.name"/> </t>
+                                            <t t-if="addr.zip"><t t-esc="addr.zip"/></t>
+                                            <br/>
+                                        </t>
+                                        <t t-if="addr.country_id"><t t-esc="addr.country_id.name"/></t>
+                                    </div>
+                                </div>
+                            </t>
+
+                        </div><!-- /addr_cards -->
+
+                            <!-- Add New Address trigger — outside scroll container, always visible -->
+                            <div class="addr_card add_card" id="new-address-trigger-delivery">
+                                <div class="add_inner">
+                                    <i class="fa fa-plus" style="font-size:1.3rem; opacity:0.75;"/>
+                                    <span class="add_label" t-if="language == 'fr_CA'">Ajouter une adresse</span>
+                                    <span class="add_label" t-elif="language == 'es_ES'">Agregar dirección</span>
+                                    <span class="add_label" t-else="">Add Address</span>
+                                </div>
+                            </div>
+                        </div><!-- /addr_scroll_wrap -->
+
                     </div>
+
+                    <!-- ===== ADD NEW ADDRESS MODAL ===== -->
+                    <div id="addr-new-modal" style="display:none;">
+                        <div id="addr-new-modal-backdrop"/>
+                        <div id="addr-new-modal-box" class="addresses">
+                            <input type="hidden" id="new-modal-type"/>
+                            <div class="addr_editor">
+                                <div class="cols">
+                                    <fieldset>
+                                        <legend id="new-modal-legend">Add New Address</legend>
+
+                                        <div class="row">
+                                            <label t-if="language == 'fr_CA'">Nom</label>
+                                            <label t-elif="language == 'es_ES'">Nombre</label>
+                                            <label t-else="">Name</label>
+                                            <input type="text" id="new-modal-name" placeholder=""/>
+                                        </div>
+                                        <div class="row">
+                                            <label t-if="language == 'fr_CA'">Rue</label>
+                                            <label t-elif="language == 'es_ES'">Calle</label>
+                                            <label t-else="">Street</label>
+                                            <input type="text" id="new-modal-street" placeholder=""/>
+                                        </div>
+                                        <div class="row">
+                                            <label t-if="language == 'fr_CA'">Ville</label>
+                                            <label t-elif="language == 'es_ES'">Ciudad</label>
+                                            <label t-else="">City</label>
+                                            <input type="text" id="new-modal-city" placeholder=""/>
+                                        </div>
+                                        <div class="row">
+                                            <label t-if="language == 'fr_CA'">Pays</label>
+                                            <label t-elif="language == 'es_ES'">País</label>
+                                            <label t-else="">Country</label>
+                                            <select id="new-modal-country" class="form-select form-select-sm">
+                                                <option value="">— Select —</option>
+                                                <t t-foreach="all_countries" t-as="c">
+                                                    <option t-att-value="c.id" t-esc="c.name"/>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        <div class="row">
+                                            <label t-if="language == 'fr_CA'">État/Province</label>
+                                            <label t-elif="language == 'es_ES'">Estado</label>
+                                            <label t-else="">State/Province</label>
+                                            <select id="new-modal-state" class="form-select form-select-sm">
+                                                <option value="">— Select —</option>
+                                                <t t-foreach="all_states" t-as="s">
+                                                    <option t-att-value="s.id"
+                                                            t-att-data-country-id="s.country_id.id"
+                                                            t-esc="s.name"/>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        <div class="row">
+                                            <label t-if="language == 'fr_CA'">Code postal</label>
+                                            <label t-elif="language == 'es_ES'">Código postal</label>
+                                            <label t-else="">Zip/Postal Code</label>
+                                            <input type="text" id="new-modal-zip" placeholder=""/>
+                                        </div>
+
+                                        <div class="actions">
+                                            <button type="button" id="save-new-modal" class="btn btn-primary btn-sm">
+                                                <t t-if="language == 'fr_CA'">Enregistrer</t>
+                                                <t t-elif="language == 'es_ES'">Guardar</t>
+                                                <t t-else="">Save</t>
+                                            </button>
+                                            <button type="button" id="cancel-new-modal" class="btn btn-secondary btn-sm ms-2">
+                                                <t t-if="language == 'fr_CA'">Annuler</t>
+                                                <t t-elif="language == 'es_ES'">Cancelar</t>
+                                                <t t-else="">Cancel</t>
+                                            </button>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ===== END ADD NEW ADDRESS MODAL ===== -->
+
+                    <!-- ===== SHARED INLINE EDIT FORM (JS moves this into the correct section) ===== -->
+                    <div class="addresses" id="addr-inline-editor" style="display:none;">
+                        <div class="addr_editor">
+                            <input type="hidden" id="inline-edit-partner-id"/>
+                            <input type="hidden" id="inline-edit-address-type"/>
+                            <div class="cols">
+                                <fieldset>
+                                    <legend id="inline-edit-legend" t-if="language == 'fr_CA'">Modifier l'adresse</legend>
+                                    <legend id="inline-edit-legend" t-elif="language == 'es_ES'">Editar dirección</legend>
+                                    <legend id="inline-edit-legend" t-else="">Edit Address</legend>
+
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Nom</label>
+                                        <label t-elif="language == 'es_ES'">Nombre</label>
+                                        <label t-else="">Name</label>
+                                        <input type="text" id="inline-edit-name" placeholder=""/>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Rue</label>
+                                        <label t-elif="language == 'es_ES'">Calle</label>
+                                        <label t-else="">Street</label>
+                                        <input type="text" id="inline-edit-street" placeholder=""/>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Ville</label>
+                                        <label t-elif="language == 'es_ES'">Ciudad</label>
+                                        <label t-else="">City</label>
+                                        <input type="text" id="inline-edit-city" placeholder=""/>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Pays</label>
+                                        <label t-elif="language == 'es_ES'">País</label>
+                                        <label t-else="">Country</label>
+                                        <select id="inline-edit-country" class="form-select form-select-sm">
+                                            <option value="">— Select —</option>
+                                            <t t-foreach="all_countries" t-as="c">
+                                                <option t-att-value="c.id" t-esc="c.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">État/Province</label>
+                                        <label t-elif="language == 'es_ES'">Estado</label>
+                                        <label t-else="">State/Province</label>
+                                        <select id="inline-edit-state" class="form-select form-select-sm">
+                                            <option value="">— Select —</option>
+                                            <t t-foreach="all_states" t-as="s">
+                                                <option t-att-value="s.id"
+                                                        t-att-data-country-id="s.country_id.id"
+                                                        t-esc="s.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <label t-if="language == 'fr_CA'">Code postal</label>
+                                        <label t-elif="language == 'es_ES'">Código postal</label>
+                                        <label t-else="">Zip/Postal Code</label>
+                                        <input type="text" id="inline-edit-zip" placeholder=""/>
+                                    </div>
+
+                                    <div class="actions">
+                                        <button type="button" id="save-inline-edit" class="btn btn-primary btn-sm">
+                                            <t t-if="language == 'fr_CA'">Enregistrer</t>
+                                            <t t-elif="language == 'es_ES'">Guardar</t>
+                                            <t t-else="">Save</t>
+                                        </button>
+                                        <button type="button" id="cancel-inline-edit" class="btn btn-secondary btn-sm ms-2">
+                                            <t t-if="language == 'fr_CA'">Annuler</t>
+                                            <t t-elif="language == 'es_ES'">Cancelar</t>
+                                            <t t-else="">Cancel</t>
+                                        </button>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ===== END INLINE EDIT FORM ===== -->
 
                 </div>
 

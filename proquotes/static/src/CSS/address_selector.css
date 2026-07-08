@@ -1,6 +1,10 @@
 /* ProQuotes Address Selector
    Base card styles from proquotes/static/src/CSS/quoteStyle.css
-   (.addr_matrix, .addr_card, .addr_card.current, .addr_card.add_card, .addr_edit, etc.) */
+   (.addr_matrix, .addr_card, .addr_card.current, .addr_card.add_card, etc.)
+   Base editor-form styles (fieldset/legend/row/label/input) also live in
+   quoteStyle.css under ".addresses .addr_editor" — both the inline editor
+   and the "add new address" modal carry the "addresses" class so they
+   share that same base; only the differences are overridden below. */
 
 /* ── Scroll wrap: card row + pinned add button side by side ── */
 .addr_scroll_wrap {
@@ -35,16 +39,12 @@
     border-radius: 999px;
 }
 
-
-/* ── Add card: pinned outside scroll, always visible ── */
-.addr_scroll_wrap > .addr_card.add_card {
-    flex: 0 0 270px;
-    min-width: 270px;
-    max-width: 270px;
-}
-
-/* ── Card padding & layout ── */
+/* ── Card padding, sizing & pointer affordance ──
+   Shared by every card in the section: selectable addresses (default
+   company card, saved addresses, and cards built dynamically in JS all
+   carry data-partner-id) and the "Add Address" trigger tile alike. */
 #rental-address-section .addr_card {
+    cursor: pointer;
     padding: 18px 20px 16px;
     min-height: 110px;
     /* Fixed width: 3 cards + 2×14px gap ≈ 868px — fits portal width */
@@ -52,6 +52,11 @@
     min-width: 270px;
     max-width: 270px;
     scroll-snap-align: start;
+}
+
+/* ── Selectable cards need extra top padding to clear the edit/delete buttons ── */
+#rental-address-section .addr_card[data-partner-id] {
+    padding-top: 36px;
 }
 
 /* ── Name spacing ── */
@@ -141,22 +146,51 @@
     display: inline-block;
 }
 
-/* ── Override quoteStyle.css cursor:default on .addr_edit ── */
-.addr_edit { cursor: pointer !important; }
-
-/* ── Inline edit select option colours ── */
-#addr-inline-editor select option {
-    background: #0a0d11;
-    color: #e6edf3;
-}
-
 /* ── addr_matrix spacing ── */
 #rental-address-section .addr_matrix {
     margin-bottom: 0;
 }
 
 /* ══════════════════════════════════════════════
+   SHARED SELECT STYLING
+   (used by both the inline editor and the add-new modal)
+══════════════════════════════════════════════ */
+
+#addr-new-modal-box select,
+#addr-inline-editor select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #0a0d11;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23c9d1d9' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px 10px;
+    color: #e6edf3;
+    border: 1px solid #2b3139;
+    border-radius: 8px;
+    padding: 8px 34px 8px 12px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+#addr-new-modal-box select:focus,
+#addr-inline-editor select:focus {
+    border-color: #3f8cff;
+    box-shadow: 0 0 0 3px rgba(63, 140, 255, 0.20);
+    outline: none;
+}
+#addr-new-modal-box select option,
+#addr-inline-editor select option {
+    background: #0a0d11;
+    color: #e6edf3;
+}
+
+/* ══════════════════════════════════════════════
    ADD NEW ADDRESS MODAL
+   (its .addr_editor form re-skins the shared ".addresses .addr_editor"
+   base from quoteStyle.css into a flat, borderless look inside the popup)
 ══════════════════════════════════════════════ */
 
 #addr-new-modal {
@@ -179,11 +213,6 @@
     position: relative;
     z-index: 1;
     width: min(500px, 92vw);
-    background: #14171c;
-    border: 1px solid #23272f;
-    border-radius: 14px;
-    padding: 24px;
-    color: #e6edf3;
     max-height: 85vh;
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
@@ -191,11 +220,9 @@
 
 #addr-new-modal-box .addr_editor {
     margin: 0;
-    padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    color: #e6edf3;
+    padding: 24px;
+    background: #14171c;
+    border-radius: 14px;
 }
 
 #addr-new-modal-box .addr_editor fieldset {
@@ -208,54 +235,10 @@
 
 #addr-new-modal-box .addr_editor legend {
     font-size: 1.05rem;
-    font-weight: 700;
-    color: #e6edf3;
-    padding: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    padding: 0 0 10px;
     margin-bottom: 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.10);
-    padding-bottom: 10px;
     width: 100%;
-}
-
-#addr-new-modal-box .addr_editor input[type="text"] {
-    background: #0a0d11;
-    color: #e6edf3;
-    border: 1px solid #2b3139;
-    border-radius: 8px;
-}
-#addr-new-modal-box .addr_editor input[type="text"]:focus {
-    border-color: #3f8cff;
-    box-shadow: 0 0 0 3px rgba(63, 140, 255, 0.20);
-    outline: none;
-}
-
-#addr-new-modal-box select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-color: #0a0d11;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23c9d1d9' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 14px 10px;
-    color: #e6edf3;
-    border: 1px solid #2b3139;
-    border-radius: 8px;
-    padding: 8px 34px 8px 12px;
-    width: 100%;
-    cursor: pointer;
-    font-size: 0.875rem;
-    line-height: 1.5;
-}
-#addr-new-modal-box select:focus {
-    border-color: #3f8cff;
-    box-shadow: 0 0 0 3px rgba(63, 140, 255, 0.20);
-    outline: none;
-}
-
-#addr-new-modal-box .actions {
-    margin-top: 16px;
-    text-align: right;
 }
 
 /* ══════════════════════════════════════════════
@@ -264,33 +247,4 @@
 
 #addr-inline-editor {
     margin-top: 14px;
-}
-
-#addr-inline-editor select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-color: #0a0d11;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23c9d1d9' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 14px 10px;
-    color: #e6edf3;
-    border: 1px solid #2b3139;
-    border-radius: 8px;
-    padding: 8px 34px 8px 12px;
-    width: 100%;
-    cursor: pointer;
-    font-size: 0.875rem;
-    line-height: 1.5;
-}
-#addr-inline-editor select:focus {
-    border-color: #3f8cff;
-    box-shadow: 0 0 0 3px rgba(63, 140, 255, 0.20);
-    outline: none;
-}
-
-#addr-inline-editor .actions {
-    margin-top: 16px;
-    text-align: right;
 }
