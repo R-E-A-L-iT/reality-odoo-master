@@ -89,17 +89,17 @@
 }
 
 #rental-address-section .addr_card[data-partner-id]:hover:not(.current):not(.editing) {
-    border-color: rgba(219, 13, 13, 0.45);
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    background:  rgba(0, 0, 0, 0.30);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: rgba(0, 0, 0, 0.30);
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
-/* ── Selected card: a lighter reddish-grey fill with a uniform red border ── */
+/* ── Selected card: a lighter reddish-grey fill with a vivid red border,
+   clearly distinct from both the resting and hover looks above ── */
 #rental-address-section .addr_card.current {
-    background: #1e1919;
-    border: 2px solid rgba(219, 13, 13, 0.45);;
+    background: #3a2b2b;
+    border: 2px solid #db0d0d;
 }
 #rental-address-section .addr_card.current .addr_card_view::after {
     content: "";

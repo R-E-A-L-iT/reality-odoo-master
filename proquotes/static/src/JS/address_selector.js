@@ -162,8 +162,11 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             street: vals.street,
             city: vals.city,
             zip: vals.zip,
-            state: stateEl?.options[stateEl.selectedIndex]?.text || "",
-            country: countryEl?.options[countryEl.selectedIndex]?.text || "",
+            // Only read the option's label when something was actually picked —
+            // otherwise selectedIndex points at the blank placeholder option
+            // ("State/Province" / "Country"), and that text isn't real data.
+            state: vals.state ? (stateEl?.options[stateEl.selectedIndex]?.text || "") : "",
+            country: vals.country ? (countryEl?.options[countryEl.selectedIndex]?.text || "") : "",
         };
         card.dataset.name      = optimistic.name;
         card.dataset.street    = optimistic.street;
