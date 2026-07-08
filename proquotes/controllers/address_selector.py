@@ -117,11 +117,9 @@ class AddressSelectorPortal(http.Controller):
         partner = request.env["res.partner"].sudo().browse(int(partner_id))
         if not partner.exists():
             return {"error": "Partner not found"}
-        if partner.id == order.partner_id.id:
-            # The order's own contact is the fallback address — editing it
-            # must create a proper child address instead of overwriting the
-            # customer's main contact record.
-            return {"error": "Cannot update the default address directly"}
+        # Note: partner_id may be the order's own contact — the "Default"
+        # card intentionally edits that record directly, since it represents
+        # the company's main address rather than a separate child address.
 
         vals = {"name": name, "street": street, "city": city, "zip": zip}
         if country:

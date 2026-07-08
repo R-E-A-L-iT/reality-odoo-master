@@ -41,7 +41,7 @@
 
 #rental-address-section .addr_cards {
     display: flex;
-    align-items: flex-start;
+    align-items: stretch;
     flex-wrap: nowrap;
     gap: 14px;
     overflow-x: auto;
@@ -68,8 +68,8 @@
     flex: 0 0 260px;
     min-width: 260px;
     max-width: 260px;
-    background: #12161c;
-    border: 1px solid #262c35;
+    background: #181515;
+    border: 1px solid #332e2e;
     border-radius: 12px;
     color: #e6edf3;
     scroll-snap-align: start;
@@ -90,16 +90,15 @@
 
 #rental-address-section .addr_card[data-partner-id]:hover:not(.current):not(.editing) {
     border-color: rgba(219, 13, 13, 0.45);
-    background: #171114;
+    background: #1e1919;
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
-/* ── Selected card: accent left bar + checkmark, no harsh outline ── */
+/* ── Selected card: a lighter reddish-grey fill with a uniform red border ── */
 #rental-address-section .addr_card.current {
-    background: #1b1010;
-    border-color: #db0d0d;
-    box-shadow: inset 3px 0 0 #db0d0d;
+    background: #3a2b2b;
+    border: 2px solid #db0d0d;
 }
 #rental-address-section .addr_card.current .addr_card_view::after {
     content: "";

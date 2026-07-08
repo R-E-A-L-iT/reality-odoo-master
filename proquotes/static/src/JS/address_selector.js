@@ -92,14 +92,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         }
 
         this._closeAllEdits(null);
-        const card = this._buildCardShell({
-            addressType,
-            partnerId: null,
-            isFallback: false,
-            isCurrent: false,
-            data: null,
-            startMode: "edit",
-        });
+        const card = this._buildBlankCard(addressType);
         this._insertCard(container, card);
         card.querySelector(".edit-name")?.focus();
         card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
@@ -143,10 +136,11 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const editDiv = card.querySelector(".addr_card_edit");
         const viewDiv = card.querySelector(".addr_card_view");
         const addressType = card.dataset.addressType;
-        // A blank new card or the fallback (company-profile) card must be
-        // created as a real address rather than mutating the customer's
-        // main contact record in place.
-        const isCreate = !card.dataset.partnerId || card.dataset.fallback === "1";
+        // Only a blank new card (from "Add Address") needs creating. The
+        // "Default" card always has a partner-id (the order's own contact)
+        // and is edited in place — that's the point of it representing the
+        // company's main address.
+        const isCreate = !card.dataset.partnerId;
 
         const vals = {
             name:    editDiv.querySelector(".edit-name")?.value.trim()   || "",
@@ -172,20 +166,8 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
 
         if (isCreate) {
             const container = document.getElementById(this._containerId(addressType));
-            container?.querySelectorAll(".addr_card[data-fallback='1']").forEach(c => {
-                if (c !== card) c.remove();
-            });
             container?.querySelectorAll(".addr_card[data-partner-id]").forEach(c => c.classList.remove("current"));
             card.classList.add("current");
-            delete card.dataset.fallback;
-            viewDiv.querySelector(".addr_badge")?.remove();
-            if (!viewDiv.querySelector(".addr_delete_btn")) {
-                const btn = document.createElement("button");
-                btn.className = "addr_action_btn addr_delete_btn";
-                btn.title = this._labels.deleteTitle;
-                btn.innerHTML = ICON_DELETE;
-                viewDiv.querySelector(".addr_card_actions")?.appendChild(btn);
-            }
         }
 
         card.dataset.partnerId = result.partner_id;
@@ -199,7 +181,38 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         viewDiv.querySelector(".name").textContent = result.name || "";
         viewDiv.querySelector(".lines").innerHTML = this._formatLines(result);
 
+        // The "Default" card in each section (invoice/delivery) represents
+        // the exact same partner record — keep them showing the same data.
+        if (card.dataset.fallback === "1") {
+            this._syncTwinDefaultCard(card, addressType, result);
+        }
+
         this._setCardMode(card, "view");
+    },
+
+    // Updates the Default card in the OTHER section so both stay in sync,
+    // since editing either one writes to the same underlying partner record.
+    _syncTwinDefaultCard(card, addressType, result) {
+        const otherContainerId = addressType === "invoice" ? "delivery-address-cards" : "invoice-address-cards";
+        const twin = document.querySelector(`#${otherContainerId} .addr_card[data-fallback="1"]`);
+        if (!twin || twin === card) return;
+
+        twin.dataset.name      = card.dataset.name;
+        twin.dataset.street    = card.dataset.street;
+        twin.dataset.city      = card.dataset.city;
+        twin.dataset.zip       = card.dataset.zip;
+        twin.dataset.countryId = card.dataset.countryId;
+        twin.dataset.stateId   = card.dataset.stateId;
+
+        const twinView = twin.querySelector(".addr_card_view");
+        twinView.querySelector(".name").textContent = result.name || "";
+        twinView.querySelector(".lines").innerHTML = this._formatLines(result);
+
+        // Refresh its edit inputs too, so opening Edit on the twin later
+        // shows the values that were just saved rather than stale ones.
+        if (!twin.classList.contains("editing")) {
+            this._resetEditInputs(twin);
+        }
     },
 
     _resetEditInputs(card) {
@@ -236,8 +249,8 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const card = ev.currentTarget.closest(".addr_card");
         const partnerId = card.dataset.partnerId;
         const addressType = card.dataset.addressType;
-        // Defense in depth — the fallback (company-profile) card never
-        // renders a delete button, but never act on it even if one exists.
+        // Defense in depth — the "Default" card never renders a delete
+        // button, but never act on it even if one somehow exists.
         if (!partnerId || card.dataset.fallback === "1") return;
 
         const confirmed = window.confirm(
@@ -260,55 +273,30 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const container = document.getElementById(this._containerId(addressType));
         card.remove();
 
-        const remaining = container?.querySelectorAll(".addr_card[data-partner-id]").length || 0;
-
-        if (result.was_selected && remaining > 0) {
-            const firstCard = container.querySelector(".addr_card[data-partner-id]");
-            firstCard?.classList.add("current");
-            const newId = parseInt(firstCard.dataset.partnerId);
-            const route = addressType === "invoice"
-                ? "/my/orders/" + this.orderDetail.orderId + "/select_invoice_address"
-                : "/my/orders/" + this.orderDetail.orderId + "/select_delivery_address";
-            jsonrpc(route, { partner_id: newId, access_token: this.orderDetail.token });
-        }
-
-        if (remaining === 0) {
-            const fallback = this._buildFallbackCard(container, addressType);
-            if (fallback) this._insertCard(container, fallback);
+        // The server always falls back to the order's main contact when the
+        // deleted address was selected — that's the permanent "Default" card.
+        if (result.was_selected) {
+            container?.querySelectorAll(".addr_card[data-partner-id]").forEach(c => c.classList.remove("current"));
+            container?.querySelector('.addr_card[data-fallback="1"]')?.classList.add("current");
         }
     },
 
-    // ── Card DOM builder — used for both a blank "add" card and the
-    //    fallback card rebuilt after the last saved address is deleted ──────
+    // ── Blank "Add Address" card builder ────────────────────────────────────
 
-    _buildCardShell({ addressType, partnerId, isFallback, isCurrent, data, startMode }) {
+    _buildBlankCard(addressType) {
         const card = document.createElement("div");
-        card.className = "addr_card" + (isCurrent ? " current" : "");
+        card.className = "addr_card";
         card.dataset.addressType = addressType;
-        if (partnerId) card.dataset.partnerId = partnerId;
-        if (isFallback) card.dataset.fallback = "1";
-        card.dataset.name      = data?.name || "";
-        card.dataset.street    = data?.street || "";
-        card.dataset.city      = data?.city || "";
-        card.dataset.zip       = data?.zip || "";
-        card.dataset.countryId = data?.countryId || "";
-        card.dataset.stateId   = data?.stateId || "";
 
         const view = document.createElement("div");
         view.className = "addr_card_view";
         view.innerHTML =
             '<div class="addr_card_actions">' +
                 '<button class="addr_action_btn addr_edit_btn" title="' + this._labels.editTitle + '">' + ICON_EDIT + '</button>' +
-                (isFallback ? "" : '<button class="addr_action_btn addr_delete_btn" title="' + this._labels.deleteTitle + '">' + ICON_DELETE + '</button>') +
+                '<button class="addr_action_btn addr_delete_btn" title="' + this._labels.deleteTitle + '">' + ICON_DELETE + '</button>' +
             '</div>' +
-            (isFallback ? '<span class="addr_badge"></span>' : "") +
             '<div class="name"></div>' +
             '<div class="lines"></div>';
-        if (isFallback) view.querySelector(".addr_badge").textContent = this._labels.defaultBadge;
-        if (data) {
-            view.querySelector(".name").textContent = data.name || "";
-            view.querySelector(".lines").innerHTML = this._formatLines(data);
-        }
 
         const edit = document.createElement("div");
         edit.className = "addr_card_edit";
@@ -329,40 +317,12 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
 
         this._cloneOptionsInto(edit.querySelector(".edit-country"), "addr-country-options-template");
         this._cloneOptionsInto(edit.querySelector(".edit-state"),   "addr-state-options-template");
-        edit.querySelector(".edit-name").value    = data?.name || "";
-        edit.querySelector(".edit-street").value  = data?.street || "";
-        edit.querySelector(".edit-city").value    = data?.city || "";
-        edit.querySelector(".edit-zip").value     = data?.zip || "";
-        edit.querySelector(".edit-country").value = data?.countryId || "";
-        edit.querySelector(".edit-state").value   = data?.stateId || "";
 
         card.appendChild(view);
         card.appendChild(edit);
         this._filterCardStates(card);
-        this._setCardMode(card, startMode || "view");
+        this._setCardMode(card, "edit");
         return card;
-    },
-
-    _buildFallbackCard(container, addressType) {
-        const d = container?.dataset;
-        if (!d || !d.defaultPartnerId) return null;
-        return this._buildCardShell({
-            addressType,
-            partnerId: d.defaultPartnerId,
-            isFallback: true,
-            isCurrent: true,
-            startMode: "view",
-            data: {
-                name: d.defaultName,
-                street: d.defaultStreet,
-                city: d.defaultCity,
-                zip: d.defaultZip,
-                country: d.defaultCountry,
-                state: d.defaultState,
-                countryId: d.defaultCountryId,
-                stateId: d.defaultStateId,
-            },
-        });
     },
 
     _cloneOptionsInto(select, templateId) {
@@ -434,15 +394,14 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     },
 
     // ── Localized strings, read once from the server-rendered markup so
-    //    JS-built cards (add / rebuilt fallback) match the portal's language
-    //    without duplicating the translation logic here ─────────────────────
+    //    JS-built cards (blank "Add Address" cards) match the portal's
+    //    language without duplicating the translation logic here ───────────
 
     _readLabels() {
         const anyCard = document.querySelector("#rental-address-section .addr_card:not(.add_card)");
         const editDiv  = anyCard?.querySelector(".addr_card_edit");
         const editBtn  = anyCard?.querySelector(".addr_edit_btn");
         const deleteBtn = document.querySelector("#rental-address-section .addr_delete_btn");
-        const badge     = document.querySelector("#rental-address-section .addr_badge");
         return {
             name:   editDiv?.querySelector(".edit-name")?.placeholder   || "Name",
             street: editDiv?.querySelector(".edit-street")?.placeholder || "Street",
@@ -452,7 +411,6 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             saveTitle:    editDiv?.querySelector(".addr_save_btn")?.title   || "Save",
             cancelTitle:  editDiv?.querySelector(".addr_cancel_btn")?.title || "Cancel",
             deleteTitle:  deleteBtn?.title || "Delete",
-            defaultBadge: badge?.textContent || "Default",
         };
     },
 });
