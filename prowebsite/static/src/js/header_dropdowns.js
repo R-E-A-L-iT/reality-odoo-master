@@ -177,19 +177,20 @@ function buildAccessoriesFeaturedCards() {
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
         </span>
     </a>
-    <a href="/omni360" class="o_hdd_feature_card o_hdd_feature_card--new">
-        <span class="o_hdd_feature_card_badge">${hddT('newBadge', 'New')}</span>
-        <div class="o_hdd_feature_card_media">
-            <img src="https://cdn.r-e-a-l.it/images/ecommerce/Omni360_Cover.png" alt="Omni360"/>
-        </div>
-        <p class="o_hdd_feature_card_kicker">${hddT('omni360Kicker', 'Multi-Scanner Adapter')}</p>
-        <p class="o_hdd_feature_card_name">Omni360</p>
-        <span class="o_hdd_feature_card_cta">${hddT('omni360Cta', 'Check out the Omni360')}
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
-        </span>
-    </a>
 `;
 }
+
+    // <a href="/omni360" class="o_hdd_feature_card o_hdd_feature_card--new">
+    //     <span class="o_hdd_feature_card_badge">${hddT('newBadge', 'New')}</span>
+    //     <div class="o_hdd_feature_card_media">
+    //         <img src="https://cdn.r-e-a-l.it/images/ecommerce/Omni360_Cover.png" alt="Omni360"/>
+    //     </div>
+    //     <p class="o_hdd_feature_card_kicker">${hddT('omni360Kicker', 'Multi-Scanner Adapter')}</p>
+    //     <p class="o_hdd_feature_card_name">Omni360</p>
+    //     <span class="o_hdd_feature_card_cta">${hddT('omni360Cta', 'Check out the Omni360')}
+    //         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+    //     </span>
+    // </a>
 
 function renderMenuPanelHTML(key, columns) {
     const isAccessories = key === 'accessories';
