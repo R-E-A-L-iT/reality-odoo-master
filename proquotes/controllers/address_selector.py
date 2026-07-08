@@ -117,6 +117,11 @@ class AddressSelectorPortal(http.Controller):
         partner = request.env["res.partner"].sudo().browse(int(partner_id))
         if not partner.exists():
             return {"error": "Partner not found"}
+        if partner.id == order.partner_id.id:
+            # The order's own contact is the fallback address — editing it
+            # must create a proper child address instead of overwriting the
+            # customer's main contact record.
+            return {"error": "Cannot update the default address directly"}
 
         vals = {"name": name, "street": street, "city": city, "zip": zip}
         if country:
@@ -152,6 +157,10 @@ class AddressSelectorPortal(http.Controller):
         partner = request.env["res.partner"].sudo().browse(int(partner_id))
         if not partner.exists():
             return {"error": "Partner not found"}
+        if partner.id == order.partner_id.id:
+            # The order's own contact is the fallback address, not a
+            # deletable child record — never archive it.
+            return {"error": "Cannot delete the default address"}
 
         was_selected = False
         if address_type == "invoice" and order.partner_invoice_id.id == partner.id:

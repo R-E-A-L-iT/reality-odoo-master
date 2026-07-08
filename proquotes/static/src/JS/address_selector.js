@@ -4,49 +4,50 @@
 import { jsonrpc } from "@web/core/network/rpc_service";
 import publicWidget from "@web/legacy/js/public/public_widget";
 
+// Static icon markup only — never interpolate user-controlled text (address
+// name/street/etc.) into innerHTML. User data is always applied afterwards
+// via .textContent/.value/.dataset, which cannot be interpreted as markup.
+const ICON_EDIT = '<svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_DELETE = '<svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_SAVE = '<svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1.5 6.5 4.5 9.5 10.5 2.5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_CANCEL = '<svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+
 publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     selector: ".o_portal_sale_sidebar",
     events: {
         // Card selection
         "click #rental-address-section": "_onSectionClick",
-        // Edit / Delete action buttons
-        "click .addr_edit_btn":   "_onEditAddress",
-        "click .addr_delete_btn": "_onDeleteAddress",
+        // Per-card view/edit toggle
+        "click .addr_edit_btn":   "_onEditClick",
+        "click .addr_cancel_btn": "_onCancelClick",
+        "click .addr_save_btn":   "_onSaveClick",
+        "click .addr_delete_btn": "_onDeleteClick",
         // Add new address triggers
-        "click #new-address-trigger-invoice":  "_onNewAddressTrigger",
-        "click #new-address-trigger-delivery": "_onNewAddressTrigger",
-        // Add new modal
-        "click #save-new-modal":          "_onSaveNewModal",
-        "click #cancel-new-modal":        "_onCloseNewModal",
-        "click #addr-new-modal-backdrop": "_onCloseNewModal",
-        "change #new-modal-country":      "_onNewModalCountryChange",
-        // Inline edit form
-        "click #save-inline-edit":    "_onSaveInlineEdit",
-        "click #cancel-inline-edit":  "_onCloseInlineEdit",
-        "change #inline-edit-country": "_onInlineEditCountryChange",
+        "click #new-address-trigger-invoice":  "_onAddTrigger",
+        "click #new-address-trigger-delivery": "_onAddTrigger",
+        // Per-card country/state filtering + keyboard shortcuts while editing
+        "change .edit-country":     "_onEditCountryChange",
+        "keydown .addr_card_edit":  "_onEditKeydown",
     },
 
     async start() {
         await this._super(...arguments);
         this.orderDetail = this.$el.find("table#sales_order_table").data();
-
-        // Move the add-new popup to <body> so position:fixed is viewport-relative.
-        const newModal = document.getElementById("addr-new-modal");
-        if (newModal) document.body.appendChild(newModal);
-
+        this._labels = this._readLabels();
+        document.querySelectorAll("#rental-address-section .addr_card").forEach(card => {
+            this._filterCardStates(card);
+        });
     },
 
-    // ── Unified section click → card selection ────────────────────────────────
+    // ── Card selection ──────────────────────────────────────────────────────
 
     async _onSectionClick(ev) {
-        if (ev.target.closest(".addr_action_btn"))  return;
+        if (ev.target.closest(".addr_action_btn"))    return;
         if (ev.target.closest(".addr_card.add_card")) return;
-        if (ev.target.closest(".addresses"))         return;
-        if (ev.target.closest("#addr-inline-editor")) return;
-        if (ev.target.closest("#addr-new-modal"))    return;
+        if (ev.target.closest(".addr_card_edit"))     return;
 
         const card = ev.target.closest(".addr_card[data-partner-id]");
-        if (!card) return;
+        if (!card || card.classList.contains("editing")) return;
 
         const partnerId   = card.dataset.partnerId;
         const addressType = card.dataset.addressType;
@@ -62,10 +63,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         });
 
         if (result && result.success) {
-            const containerId = addressType === "invoice"
-                ? "invoice-address-cards"
-                : "delivery-address-cards";
-            this._setActiveCard(containerId, partnerId);
+            this._setActiveCard(this._containerId(addressType), partnerId);
         }
     },
 
@@ -77,189 +75,172 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         });
     },
 
-    // ── Add new address ───────────────────────────────────────────────────────
+    // ── Add a brand-new address: a blank card appears in edit mode ─────────
 
-    _onNewAddressTrigger(ev) {
+    _onAddTrigger(ev) {
         ev.stopImmediatePropagation();
-        const type = ev.currentTarget.id === "new-address-trigger-invoice" ? "invoice" : "delivery";
-        this._setVal("new-modal-type", type);
+        const addressType = ev.currentTarget.id === "new-address-trigger-invoice" ? "invoice" : "delivery";
+        const container = document.getElementById(this._containerId(addressType));
+        if (!container) return;
 
-        // Update modal legend to reflect which section
-        const legend = document.getElementById("new-modal-legend");
-        if (legend) {
-            legend.textContent = type === "invoice" ? "New Invoice Address" : "New Delivery Address";
+        // Only one unsaved blank card at a time — focus it instead of stacking more.
+        const pending = container.querySelector(".addr_card:not([data-partner-id])");
+        if (pending) {
+            pending.querySelector(".edit-name")?.focus();
+            return;
         }
 
-        // Clear all fields
-        ["name", "street", "city", "zip"].forEach(f => this._setVal(`new-modal-${f}`, ""));
-        this._setVal("new-modal-country", "");
-        this._setVal("new-modal-state",   "");
-        this._filterStatesByCountry("new-modal-country", "new-modal-state");
-
-        const modal = document.getElementById("addr-new-modal");
-        if (modal) modal.style.display = "flex";
+        this._closeAllEdits(null);
+        const card = this._buildCardShell({
+            addressType,
+            partnerId: null,
+            isFallback: false,
+            isCurrent: false,
+            data: null,
+            startMode: "edit",
+        });
+        this._insertCard(container, card);
+        card.querySelector(".edit-name")?.focus();
+        card.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
     },
 
-    _onCloseNewModal() {
-        const modal = document.getElementById("addr-new-modal");
-        if (modal) modal.style.display = "none";
-    },
+    // ── Edit / Cancel / Save (in place, no popup) ───────────────────────────
 
-    async _onSaveNewModal() {
-        const type = document.getElementById("new-modal-type")?.value;
-        if (!type) return;
-
-        const result = await jsonrpc(
-            "/my/orders/" + this.orderDetail.orderId + "/create_typed_address",
-            {
-                access_token: this.orderDetail.token,
-                address_type: type,
-                name:    document.getElementById("new-modal-name")?.value    || "",
-                street:  document.getElementById("new-modal-street")?.value  || "",
-                city:    document.getElementById("new-modal-city")?.value    || "",
-                state:   document.getElementById("new-modal-state")?.value   || "",
-                zip:     document.getElementById("new-modal-zip")?.value     || "",
-                country: document.getElementById("new-modal-country")?.value || "",
-            }
-        );
-
-        if (result && result.success) {
-            const containerId = type === "invoice" ? "invoice-address-cards" : "delivery-address-cards";
-            const container   = document.getElementById(containerId);
-
-            if (container) {
-                // Remove default card if it's showing
-                const defaultId = container.dataset.defaultPartnerId;
-                container.querySelectorAll(".addr_card[data-partner-id]").forEach(c => {
-                    if (c.dataset.partnerId == defaultId) c.remove();
-                });
-                // Clear current highlight from existing cards
-                container.querySelectorAll(".addr_card").forEach(c => c.classList.remove("current"));
-            }
-
-            const newCard = this._buildAddressCard(result, type);
-            this._insertCard(container, newCard);
-
-            this._onCloseNewModal();
-        }
-    },
-
-    // ── Edit address → inline form in section ────────────────────────────────
-
-    _onEditAddress(ev) {
+    _onEditClick(ev) {
         ev.stopImmediatePropagation();
-        const btn = ev.currentTarget;
-
-        this._onCloseInlineEdit();
-
-        const editor = document.getElementById("addr-inline-editor");
-        if (!editor) return;
-
-        // Place editor below the card row of the correct section
-        const containerId = btn.dataset.addressType === "invoice"
-            ? "invoice-address-cards"
-            : "delivery-address-cards";
-        const container = document.getElementById(containerId);
-        const matrix     = container?.closest(".addr_matrix");
-        if (matrix) matrix.appendChild(editor);
-
-        // Populate fields
-        this._setVal("inline-edit-partner-id",   btn.dataset.partnerId);
-        this._setVal("inline-edit-address-type", btn.dataset.addressType);
-        this._setVal("inline-edit-name",   btn.dataset.name   || "");
-        this._setVal("inline-edit-street", btn.dataset.street || "");
-        this._setVal("inline-edit-city",   btn.dataset.city   || "");
-        this._setVal("inline-edit-zip",    btn.dataset.zip    || "");
-
-        const countryEl = document.getElementById("inline-edit-country");
-        if (countryEl) countryEl.value = btn.dataset.countryId || "";
-        this._filterStatesByCountry("inline-edit-country", "inline-edit-state");
-        const stateEl = document.getElementById("inline-edit-state");
-        if (stateEl) stateEl.value = btn.dataset.stateId || "";
-
-        editor.style.display = "";
-        editor.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        const card = ev.currentTarget.closest(".addr_card");
+        this._closeAllEdits(card);
+        this._setCardMode(card, "edit");
+        card.querySelector(".edit-name")?.focus();
     },
 
-    _onCloseInlineEdit() {
-        const editor = document.getElementById("addr-inline-editor");
-        if (!editor) return;
-        editor.style.display = "none";
-        const section = document.getElementById("rental-address-section");
-        if (section) section.appendChild(editor);
+    _onCancelClick(ev) {
+        ev.stopImmediatePropagation();
+        this._discardCardEdit(ev.currentTarget.closest(".addr_card"));
     },
 
-    async _onSaveInlineEdit() {
-        const partnerId   = document.getElementById("inline-edit-partner-id")?.value;
-        const addressType = document.getElementById("inline-edit-address-type")?.value;
-        if (!partnerId) return;
+    _discardCardEdit(card) {
+        if (!card) return;
+        if (!card.dataset.partnerId) {
+            // Never saved — just remove the blank card.
+            card.remove();
+            return;
+        }
+        this._resetEditInputs(card);
+        this._setCardMode(card, "view");
+    },
 
-        const result = await jsonrpc(
-            "/my/orders/" + this.orderDetail.orderId + "/update_address",
-            {
-                access_token: this.orderDetail.token,
-                partner_id: parseInt(partnerId),
-                name:    document.getElementById("inline-edit-name")?.value    || "",
-                street:  document.getElementById("inline-edit-street")?.value  || "",
-                city:    document.getElementById("inline-edit-city")?.value    || "",
-                state:   document.getElementById("inline-edit-state")?.value   || "",
-                zip:     document.getElementById("inline-edit-zip")?.value     || "",
-                country: document.getElementById("inline-edit-country")?.value || "",
+    _closeAllEdits(exceptCard) {
+        document.querySelectorAll("#rental-address-section .addr_card.editing").forEach(card => {
+            if (card !== exceptCard) this._discardCardEdit(card);
+        });
+    },
+
+    async _onSaveClick(ev) {
+        ev.stopImmediatePropagation();
+        const card = ev.currentTarget.closest(".addr_card");
+        const editDiv = card.querySelector(".addr_card_edit");
+        const viewDiv = card.querySelector(".addr_card_view");
+        const addressType = card.dataset.addressType;
+        // A blank new card or the fallback (company-profile) card must be
+        // created as a real address rather than mutating the customer's
+        // main contact record in place.
+        const isCreate = !card.dataset.partnerId || card.dataset.fallback === "1";
+
+        const vals = {
+            name:    editDiv.querySelector(".edit-name")?.value.trim()   || "",
+            street:  editDiv.querySelector(".edit-street")?.value.trim() || "",
+            city:    editDiv.querySelector(".edit-city")?.value.trim()   || "",
+            state:   editDiv.querySelector(".edit-state")?.value         || "",
+            zip:     editDiv.querySelector(".edit-zip")?.value.trim()    || "",
+            country: editDiv.querySelector(".edit-country")?.value       || "",
+        };
+
+        const params = { access_token: this.orderDetail.token, ...vals };
+        let route;
+        if (isCreate) {
+            route = "create_typed_address";
+            params.address_type = addressType;
+        } else {
+            route = "update_address";
+            params.partner_id = parseInt(card.dataset.partnerId);
+        }
+
+        const result = await jsonrpc("/my/orders/" + this.orderDetail.orderId + "/" + route, params);
+        if (!result || !result.success) return;
+
+        if (isCreate) {
+            const container = document.getElementById(this._containerId(addressType));
+            container?.querySelectorAll(".addr_card[data-fallback='1']").forEach(c => {
+                if (c !== card) c.remove();
+            });
+            container?.querySelectorAll(".addr_card[data-partner-id]").forEach(c => c.classList.remove("current"));
+            card.classList.add("current");
+            delete card.dataset.fallback;
+            viewDiv.querySelector(".addr_badge")?.remove();
+            if (!viewDiv.querySelector(".addr_delete_btn")) {
+                const btn = document.createElement("button");
+                btn.className = "addr_action_btn addr_delete_btn";
+                btn.title = this._labels.deleteTitle;
+                btn.innerHTML = ICON_DELETE;
+                viewDiv.querySelector(".addr_card_actions")?.appendChild(btn);
             }
-        );
+        }
 
-        if (result && result.success) {
-            const containerId = addressType === "invoice"
-                ? "invoice-address-cards"
-                : "delivery-address-cards";
-            const card = document.querySelector(
-                `#${containerId} .addr_card[data-partner-id="${partnerId}"]`
-            );
-            if (card) {
-                const nameEl = card.querySelector(".name");
-                if (nameEl) nameEl.textContent = result.name;
+        card.dataset.partnerId = result.partner_id;
+        card.dataset.name      = result.name || "";
+        card.dataset.street    = result.street || "";
+        card.dataset.city      = result.city || "";
+        card.dataset.zip       = result.zip || "";
+        card.dataset.countryId = editDiv.querySelector(".edit-country")?.value || "";
+        card.dataset.stateId   = editDiv.querySelector(".edit-state")?.value || "";
 
-                const linesEl = card.querySelector(".lines");
-                if (linesEl) {
-                    const parts = [
-                        result.street,
-                        [result.city, result.state, result.zip].filter(Boolean).join(", "),
-                        result.country,
-                    ].filter(Boolean);
-                    linesEl.innerHTML = parts.map(p => {
-                        const d = document.createElement("div");
-                        d.textContent = p;
-                        return d.innerHTML;
-                    }).join("<br>");
-                }
+        viewDiv.querySelector(".name").textContent = result.name || "";
+        viewDiv.querySelector(".lines").innerHTML = this._formatLines(result);
 
-                const editBtn = card.querySelector(".addr_edit_btn");
-                if (editBtn) {
-                    editBtn.dataset.name   = result.name;
-                    editBtn.dataset.street = result.street;
-                    editBtn.dataset.city   = result.city;
-                    editBtn.dataset.zip    = result.zip;
-                }
-            }
-            this._onCloseInlineEdit();
+        this._setCardMode(card, "view");
+    },
+
+    _resetEditInputs(card) {
+        const editDiv = card.querySelector(".addr_card_edit");
+        if (!editDiv) return;
+        const d = card.dataset;
+        editDiv.querySelector(".edit-name").value   = d.name   || "";
+        editDiv.querySelector(".edit-street").value = d.street || "";
+        editDiv.querySelector(".edit-city").value   = d.city   || "";
+        editDiv.querySelector(".edit-zip").value    = d.zip    || "";
+        editDiv.querySelector(".edit-country").value = d.countryId || "";
+        this._filterCardStates(card);
+        editDiv.querySelector(".edit-state").value  = d.stateId || "";
+    },
+
+    _setCardMode(card, mode) {
+        const view = card.querySelector(".addr_card_view");
+        const edit = card.querySelector(".addr_card_edit");
+        if (mode === "edit") {
+            if (view) view.style.display = "none";
+            if (edit) edit.style.display = "";
+            card.classList.add("editing");
+        } else {
+            if (edit) edit.style.display = "none";
+            if (view) view.style.display = "";
+            card.classList.remove("editing");
         }
     },
 
-    // ── Delete address ────────────────────────────────────────────────────────
+    // ── Delete ───────────────────────────────────────────────────────────────
 
-    async _onDeleteAddress(ev) {
+    async _onDeleteClick(ev) {
         ev.stopImmediatePropagation();
-        const btn         = ev.currentTarget;
-        const partnerId   = btn.dataset.partnerId;
-        const type        = btn.dataset.addressType;
-        const containerId = `${type}-address-cards`;
-        const container   = document.getElementById(containerId);
-
-        // Default company card — don't archive
-        if (container && container.dataset.defaultPartnerId == partnerId) return;
+        const card = ev.currentTarget.closest(".addr_card");
+        const partnerId = card.dataset.partnerId;
+        const addressType = card.dataset.addressType;
+        // Defense in depth — the fallback (company-profile) card never
+        // renders a delete button, but never act on it even if one exists.
+        if (!partnerId || card.dataset.fallback === "1") return;
 
         const confirmed = window.confirm(
-            type === "invoice"
+            addressType === "invoice"
                 ? "Delete this invoice address?"
                 : "Delete this delivery address?"
         );
@@ -270,43 +251,127 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             {
                 access_token: this.orderDetail.token,
                 partner_id:   parseInt(partnerId),
-                address_type: type,
+                address_type: addressType,
             }
         );
+        if (!result || !result.success) return;
 
-        if (result && result.success) {
-            const card = document.querySelector(
-                `#${containerId} .addr_card[data-partner-id="${partnerId}"]`
-            );
-            if (card) card.remove();
+        const container = document.getElementById(this._containerId(addressType));
+        card.remove();
 
-            this._onCloseInlineEdit();
+        const remaining = container?.querySelectorAll(".addr_card[data-partner-id]").length || 0;
 
-            const remaining = container?.querySelectorAll(".addr_card[data-partner-id]").length || 0;
+        if (result.was_selected && remaining > 0) {
+            const firstCard = container.querySelector(".addr_card[data-partner-id]");
+            firstCard?.classList.add("current");
+            const newId = parseInt(firstCard.dataset.partnerId);
+            const route = addressType === "invoice"
+                ? "/my/orders/" + this.orderDetail.orderId + "/select_invoice_address"
+                : "/my/orders/" + this.orderDetail.orderId + "/select_delivery_address";
+            jsonrpc(route, { partner_id: newId, access_token: this.orderDetail.token });
+        }
 
-            if (result.was_selected && remaining > 0) {
-                const firstCard = container.querySelector(".addr_card[data-partner-id]");
-                firstCard?.classList.add("current");
-                const newId = parseInt(firstCard.dataset.partnerId);
-                const route = type === "invoice"
-                    ? "/my/orders/" + this.orderDetail.orderId + "/select_invoice_address"
-                    : "/my/orders/" + this.orderDetail.orderId + "/select_delivery_address";
-                jsonrpc(route, { partner_id: newId, access_token: this.orderDetail.token });
-            }
-
-            if (remaining === 0) {
-                const defaultCard = this._buildDefaultCard(container, type);
-                if (defaultCard) this._insertCard(container, defaultCard);
-            }
+        if (remaining === 0) {
+            const fallback = this._buildFallbackCard(container, addressType);
+            if (fallback) this._insertCard(container, fallback);
         }
     },
 
-    // ── Build card DOM helpers ────────────────────────────────────────────────
+    // ── Card DOM builder — used for both a blank "add" card and the
+    //    fallback card rebuilt after the last saved address is deleted ──────
 
-    // Cards live in the same scrollable row as the "Add Address" tile, which
-    // must always stay last — so new/rebuilt cards are inserted before it.
+    _buildCardShell({ addressType, partnerId, isFallback, isCurrent, data, startMode }) {
+        const card = document.createElement("div");
+        card.className = "addr_card" + (isCurrent ? " current" : "");
+        card.dataset.addressType = addressType;
+        if (partnerId) card.dataset.partnerId = partnerId;
+        if (isFallback) card.dataset.fallback = "1";
+        card.dataset.name      = data?.name || "";
+        card.dataset.street    = data?.street || "";
+        card.dataset.city      = data?.city || "";
+        card.dataset.zip       = data?.zip || "";
+        card.dataset.countryId = data?.countryId || "";
+        card.dataset.stateId   = data?.stateId || "";
+
+        const view = document.createElement("div");
+        view.className = "addr_card_view";
+        view.innerHTML =
+            '<div class="addr_card_actions">' +
+                '<button class="addr_action_btn addr_edit_btn" title="' + this._labels.editTitle + '">' + ICON_EDIT + '</button>' +
+                (isFallback ? "" : '<button class="addr_action_btn addr_delete_btn" title="' + this._labels.deleteTitle + '">' + ICON_DELETE + '</button>') +
+            '</div>' +
+            (isFallback ? '<span class="addr_badge"></span>' : "") +
+            '<div class="name"></div>' +
+            '<div class="lines"></div>';
+        if (isFallback) view.querySelector(".addr_badge").textContent = this._labels.defaultBadge;
+        if (data) {
+            view.querySelector(".name").textContent = data.name || "";
+            view.querySelector(".lines").innerHTML = this._formatLines(data);
+        }
+
+        const edit = document.createElement("div");
+        edit.className = "addr_card_edit";
+        edit.style.display = "none";
+        edit.innerHTML =
+            '<div class="addr_card_actions">' +
+                '<button class="addr_action_btn addr_save_btn" title="' + this._labels.saveTitle + '">' + ICON_SAVE + '</button>' +
+                '<button class="addr_action_btn addr_cancel_btn" title="' + this._labels.cancelTitle + '">' + ICON_CANCEL + '</button>' +
+            '</div>' +
+            '<div class="edit_row"><input type="text" class="edit-name" placeholder="' + this._labels.name + '"/></div>' +
+            '<div class="edit_row"><input type="text" class="edit-street" placeholder="' + this._labels.street + '"/></div>' +
+            '<div class="edit_row"><input type="text" class="edit-city" placeholder="' + this._labels.city + '"/></div>' +
+            '<div class="edit_row edit_row--split">' +
+                '<select class="edit-country"></select>' +
+                '<select class="edit-state"></select>' +
+            '</div>' +
+            '<div class="edit_row"><input type="text" class="edit-zip" placeholder="' + this._labels.zip + '"/></div>';
+
+        this._cloneOptionsInto(edit.querySelector(".edit-country"), "addr-country-options-template");
+        this._cloneOptionsInto(edit.querySelector(".edit-state"),   "addr-state-options-template");
+        edit.querySelector(".edit-name").value    = data?.name || "";
+        edit.querySelector(".edit-street").value  = data?.street || "";
+        edit.querySelector(".edit-city").value    = data?.city || "";
+        edit.querySelector(".edit-zip").value     = data?.zip || "";
+        edit.querySelector(".edit-country").value = data?.countryId || "";
+        edit.querySelector(".edit-state").value   = data?.stateId || "";
+
+        card.appendChild(view);
+        card.appendChild(edit);
+        this._filterCardStates(card);
+        this._setCardMode(card, startMode || "view");
+        return card;
+    },
+
+    _buildFallbackCard(container, addressType) {
+        const d = container?.dataset;
+        if (!d || !d.defaultPartnerId) return null;
+        return this._buildCardShell({
+            addressType,
+            partnerId: d.defaultPartnerId,
+            isFallback: true,
+            isCurrent: true,
+            startMode: "view",
+            data: {
+                name: d.defaultName,
+                street: d.defaultStreet,
+                city: d.defaultCity,
+                zip: d.defaultZip,
+                country: d.defaultCountry,
+                state: d.defaultState,
+                countryId: d.defaultCountryId,
+                stateId: d.defaultStateId,
+            },
+        });
+    },
+
+    _cloneOptionsInto(select, templateId) {
+        const tpl = document.getElementById(templateId);
+        if (tpl && select) select.innerHTML = tpl.innerHTML;
+    },
+
     _insertCard(container, card) {
         if (!container) return;
+        // The "Add Address" tile must always stay last in the row.
         const addTile = container.querySelector(".add_card");
         if (addTile) {
             container.insertBefore(card, addTile);
@@ -315,144 +380,78 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         }
     },
 
-    _buildAddressCard(data, addressType) {
-        const lines = [
+    _formatLines(data) {
+        const parts = [
             data.street,
             [data.city, data.state, data.zip].filter(Boolean).join(", "),
             data.country,
-        ].filter(Boolean).join("\n");
-
-        const card = document.createElement("div");
-        card.className = "addr_card current";
-        card.dataset.partnerId   = String(data.partner_id);
-        card.dataset.addressType = addressType;
-
-        const actions = document.createElement("div");
-        actions.className = "addr_card_actions";
-        actions.innerHTML = `
-            <button class="addr_action_btn addr_edit_btn"
-                    data-partner-id="${data.partner_id}"
-                    data-address-type="${addressType}"
-                    data-name="${data.name || ""}"
-                    data-street="${data.street || ""}"
-                    data-city="${data.city || ""}"
-                    data-zip="${data.zip || ""}"
-                    data-state-id="0"
-                    data-country-id="0"
-                    title="Edit">
-                <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
-            <button class="addr_action_btn addr_delete_btn"
-                    data-partner-id="${data.partner_id}"
-                    data-address-type="${addressType}"
-                    title="Delete">
-                <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>`;
-
-        const nameEl = document.createElement("div");
-        nameEl.className = "name";
-        nameEl.textContent = data.name || "";
-
-        const linesEl = document.createElement("div");
-        linesEl.className = "lines";
-        linesEl.textContent = lines;
-
-        card.appendChild(actions);
-        card.appendChild(nameEl);
-        card.appendChild(linesEl);
-        return card;
+        ].filter(Boolean);
+        // Build each line through textContent so any user-entered text is
+        // escaped, then join with a literal <br> — the only real markup.
+        return parts.map(p => {
+            const d = document.createElement("div");
+            d.textContent = p;
+            return d.innerHTML;
+        }).join("<br>");
     },
 
-    _buildDefaultCard(container, addressType) {
-        const d = container?.dataset;
-        if (!d || !d.defaultPartnerId) return null;
-
-        const lines = [
-            d.defaultStreet,
-            [d.defaultCity, d.defaultState, d.defaultZip].filter(Boolean).join(", "),
-            d.defaultCountry,
-        ].filter(Boolean).join("\n");
-
-        const card = document.createElement("div");
-        card.className = "addr_card current";
-        card.dataset.partnerId   = d.defaultPartnerId;
-        card.dataset.addressType = addressType;
-
-        const actions = document.createElement("div");
-        actions.className = "addr_card_actions";
-        actions.innerHTML = `
-            <button class="addr_action_btn addr_edit_btn"
-                    data-partner-id="${d.defaultPartnerId}"
-                    data-address-type="${addressType}"
-                    data-name="${d.defaultName || ""}"
-                    data-street="${d.defaultStreet || ""}"
-                    data-city="${d.defaultCity || ""}"
-                    data-zip="${d.defaultZip || ""}"
-                    data-state-id="0"
-                    data-country-id="0"
-                    title="Edit">
-                <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
-            <button class="addr_action_btn addr_delete_btn"
-                    data-partner-id="${d.defaultPartnerId}"
-                    data-address-type="${addressType}"
-                    title="Delete">
-                <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>`;
-
-        const badge = document.createElement("span");
-        badge.className = "addr_badge mb-1";
-        badge.textContent = "Default";
-
-        const nameEl = document.createElement("div");
-        nameEl.className = "name";
-        nameEl.textContent = d.defaultName || "";
-
-        const linesEl = document.createElement("div");
-        linesEl.className = "lines";
-        linesEl.textContent = lines;
-
-        card.appendChild(actions);
-        card.appendChild(badge);
-        card.appendChild(nameEl);
-        card.appendChild(linesEl);
-        return card;
+    _containerId(addressType) {
+        return addressType === "invoice" ? "invoice-address-cards" : "delivery-address-cards";
     },
 
-    // ── Country/state filtering ───────────────────────────────────────────────
+    // ── Country/state filtering, scoped to whichever card is being edited ──
 
+    _onEditCountryChange(ev) {
+        const card = ev.target.closest(".addr_card");
+        if (card) this._filterCardStates(card);
+    },
 
-    _filterStatesByCountry(countryId, stateId) {
-        const countryEl = document.getElementById(countryId);
-        const stateEl   = document.getElementById(stateId);
+    _filterCardStates(card) {
+        const countryEl = card.querySelector(".edit-country");
+        const stateEl   = card.querySelector(".edit-state");
         if (!countryEl || !stateEl) return;
         const selected = countryEl.value;
-        const active   = selected && selected !== "0";
         Array.from(stateEl.options).forEach(opt => {
             if (!opt.value) return;
-            opt.hidden = !!(active && opt.dataset.countryId != selected);
+            opt.hidden = !!(selected && opt.dataset.countryId !== selected);
         });
-        const sel = stateEl.options[stateEl.selectedIndex];
-        if (sel?.value && active && sel.dataset.countryId != selected) {
+        const cur = stateEl.options[stateEl.selectedIndex];
+        if (cur?.value && selected && cur.dataset.countryId !== selected) {
             stateEl.value = "";
         }
     },
 
-    _onInlineEditCountryChange() { this._filterStatesByCountry("inline-edit-country", "inline-edit-state"); },
-    _onNewModalCountryChange() { this._filterStatesByCountry("new-modal-country",   "new-modal-state");  },
+    // ── Keyboard shortcuts while editing a card ─────────────────────────────
 
-    // ── DOM helpers ───────────────────────────────────────────────────────────
+    _onEditKeydown(ev) {
+        if (ev.key === "Enter" && ev.target.tagName !== "SELECT") {
+            ev.preventDefault();
+            ev.currentTarget.querySelector(".addr_save_btn")?.click();
+        } else if (ev.key === "Escape") {
+            ev.currentTarget.querySelector(".addr_cancel_btn")?.click();
+        }
+    },
 
-    _setVal(id, val) {
-        const el = document.getElementById(id);
-        if (el) el.value = val;
+    // ── Localized strings, read once from the server-rendered markup so
+    //    JS-built cards (add / rebuilt fallback) match the portal's language
+    //    without duplicating the translation logic here ─────────────────────
+
+    _readLabels() {
+        const anyCard = document.querySelector("#rental-address-section .addr_card:not(.add_card)");
+        const editDiv  = anyCard?.querySelector(".addr_card_edit");
+        const editBtn  = anyCard?.querySelector(".addr_edit_btn");
+        const deleteBtn = document.querySelector("#rental-address-section .addr_delete_btn");
+        const badge     = document.querySelector("#rental-address-section .addr_badge");
+        return {
+            name:   editDiv?.querySelector(".edit-name")?.placeholder   || "Name",
+            street: editDiv?.querySelector(".edit-street")?.placeholder || "Street",
+            city:   editDiv?.querySelector(".edit-city")?.placeholder   || "City",
+            zip:    editDiv?.querySelector(".edit-zip")?.placeholder    || "Zip/Postal Code",
+            editTitle:    editBtn?.title    || "Edit",
+            saveTitle:    editDiv?.querySelector(".addr_save_btn")?.title   || "Save",
+            cancelTitle:  editDiv?.querySelector(".addr_cancel_btn")?.title || "Cancel",
+            deleteTitle:  deleteBtn?.title || "Delete",
+            defaultBadge: badge?.textContent || "Default",
+        };
     },
 });

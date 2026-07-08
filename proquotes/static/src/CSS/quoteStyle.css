@@ -3,8 +3,8 @@
 	padding-left: 20px;
 }
 
-/* The full address-selector feature (card grid + editor forms) lives in
-   proquotes/static/src/CSS/address_selector.css. */
+/* The full address-selector feature (card grid + in-place edit mode) lives
+   in proquotes/static/src/CSS/address_selector.css. */
 
 /* rental dates section */
 .rental_info {
