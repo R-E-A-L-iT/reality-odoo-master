@@ -45,9 +45,6 @@
     flex-wrap: nowrap;
     gap: 14px;
     overflow-x: auto;
-    /* overflow-x: auto implicitly turns overflow-y into auto too (per spec,
-       since it isn't set to visible here), which clips the hover state's
-       translateY lift + box-shadow glow at the very top without this. */
     padding-top: 8px;
     padding-bottom: 16px;
     scrollbar-width: thin;
