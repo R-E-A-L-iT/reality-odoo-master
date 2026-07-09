@@ -680,6 +680,56 @@
                 padding-left: 20px;
                 }
 
+                /* ── Stacked scroll cards ──
+                   The hero and the three sections below it (Quotation,
+                   Configuration, Conditions) all use position:sticky with the
+                   same top:0 anchor and increasing z-index — the standard
+                   CSS-only "sticky card stack" trick: once two sticky
+                   siblings are simultaneously pinned at the same offset, the
+                   later one in DOM order paints over the earlier one
+                   automatically, no JS/scroll-jacking needed. Each card's own
+                   natural, unconstrained height is what determines how long
+                   it stays pinned before the next one begins sliding up to
+                   cover it — so a long products table naturally holds the
+                   Quotation card in place until you've actually scrolled
+                   through all of it, rather than a fixed/clipped duration.
+                   The Discussion/Comments area deliberately isn't part of
+                   this stack and scrolls normally, per instruction to leave
+                   it alone — it lives outside this template entirely (in
+                   sale.sale_order_portal_template), so it was never at risk
+                   of being swept in regardless.
+
+                   The hero needs !important specifically because the vimeo
+                   variant's inline style already sets position:relative
+                   directly on the element — inline styles normally beat
+                   external stylesheets, but !important flips that against a
+                   plain (non-!important) inline declaration. */
+                .quote-hero-cover {
+                position: sticky !important;
+                top: 0;
+                z-index: 1;
+                }
+
+                .quote-stack-card {
+                position: sticky;
+                top: 0;
+                z-index: 2;
+                background: #0c0c0d;
+                border-radius: 28px;
+                box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.55);
+                padding: 8px clamp(16px, 4vw, 48px) 32px;
+                }
+
+                #rental-info-section.quote-stack-card {
+                z-index: 3;
+                }
+
+                .quote-terms-card {
+                position: sticky;
+                top: 0;
+                z-index: 4;
+                }
+
             </style>
 
             <t t-set="company_name" t-value="sale_order.company_id.name"/>
@@ -2054,6 +2104,20 @@
             </td>
         </xpath>
 
+        <!-- Stacked scroll cards: mark the "Quotation" card (see the
+             .quote-stack-card / .quote-hero-cover CSS above). Targeted by
+             class rather than adding an id since table-responsive is a stock
+             Bootstrap wrapper div with no id of its own. -->
+        <xpath expr="//div[hasclass('table-responsive')]" position="attributes">
+            <attribute name="class" add="quote-stack-card" separator=" "/>
+        </xpath>
+
+        <!-- Mark the "Configuration" card — #rental-info-section is defined
+             further up in this same template (the xpath before section#terms),
+             so this has to run after it, which placing it here guarantees. -->
+        <xpath expr="//div[@id=&quot;rental-info-section&quot;]" position="attributes">
+            <attribute name="class">quote-stack-card</attribute>
+        </xpath>
 
     </template>
 
