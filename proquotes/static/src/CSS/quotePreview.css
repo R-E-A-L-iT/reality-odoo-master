@@ -1,0 +1,1245 @@
+@import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=Roboto&family=Source+Sans+Pro:wght@200&display=swap');
+
+/* Everything below is prefixed with `body:has(.quote-hero-cover)` wherever
+   the bare selector is a generic Bootstrap/Odoo-portal name (.pt-3,
+   .text-info, #wrap, #informations, #portalTotal, etc.) that also exists on
+   other pages/doc types sitewide — this file previously only ever rendered
+   as an inline <style> tag inside this one page's own template output, so
+   none of it could leak elsewhere; now that it's a real, sitewide asset,
+   that scoping has to be explicit instead of implicit. Selectors built from
+   this page's own custom-coined classes/ids (.quote-*, #quote-nav-*, etc.)
+   are left unprefixed since those strings can't collide with anything else
+   by construction. */
+
+/* old styles from view (actually important ones) */
+body:has(.quote-hero-cover) .quoteConfig {
+display: none !important;
+}
+
+body:has(.quote-hero-cover) .pt-3 {
+    padding-top: initial !important;
+}
+
+body:has(.quote-hero-cover) #quotesDownloadButton {
+border-width: 2px !important;
+border-color: #dc3545;
+}
+
+/*
+header - font-family: 'Bakbak One', system-ui;
+normal - font-family: 'Roboto', sans-serif;
+small - font-family: 'Source Sans Pro', sans-serif;
+*/
+
+/* quote */
+
+body:has(.quote-hero-cover) #informations {
+display: none;
+}
+
+body:has(.quote-hero-cover) #introduction {
+display: none;
+}
+
+body:has(.quote-hero-cover) #portal_sale_content {
+border: none !important;
+}
+
+body:has(.quote-hero-cover) #portalTotal > div > div.d-print-none.col-lg-3.col-xl-4 {
+position: absolute !important;
+display: none !important;
+}
+
+body:has(.quote-hero-cover) #details > div.quote-address > video {
+width: 100vw !important;
+}
+
+body:has(.quote-hero-cover) #details > div:nth-child(2) > span {
+display: none;
+}
+
+body:has(.quote-hero-cover) .text-info {
+color: #db0d0d !important;;
+}
+
+
+body:has(.quote-hero-cover) .quoteLineRow {
+color: black;
+width: 100% !important;
+background-color: white;
+}
+
+body:has(.quote-hero-cover) #wrap > div {
+width: 100vw !important;
+max-width: 100vw !important;
+}
+
+body:has(.quote-hero-cover) #quote_content {
+width: 100%
+}
+
+body:has(.quote-hero-cover) #bottom {
+   display: none;
+}
+
+.o_portal_chatter_message > .flex-grow-1 {
+   max-width: 100%;
+   overflow-y: hidden;
+}
+
+/* ── Full-bleed hero + overlaid breadcrumb/preview banner ──
+   .quote-hero-cover marks the two s_cover section variants
+   below (vimeo / static image). It escapes the portal's
+   Bootstrap container to true 100vw/100vh regardless of how
+   deep it sits in the DOM, same full-bleed trick used by the
+   prowebsite hero pages (rtc_series.css / multimapper.css).
+   position:relative + isolation:isolate give it its own local
+   stacking context so the ::after fade band and the quick-nav
+   below (z-index 4/5) always land above its own bg/video/filter
+   layers (z-index 0-2) regardless of DOM order. */
+.quote-hero-cover {
+width: 100vw !important;
+max-width: 100vw !important;
+margin-left: calc(50% - 50vw) !important;
+margin-right: calc(50% - 50vw) !important;
+min-height: 100vh !important;
+position: relative;
+isolation: isolate;
+}
+
+/* Odoo's own o_we_bg_filter dark overlay (bg-black-50 / bg-black-25
+   on the two variants) reads very dark once the hero is a full
+   100vh — lighten it so the photo itself stays visible, and add a
+   matching text-shadow to the title/subtitle so legibility doesn't
+   depend on the overlay being dark. */
+.quote-hero-cover .o_we_bg_filter {
+background-color: rgba(0, 0, 0, 0.18) !important;
+}
+
+.quote-hero-cover h1,
+.quote-hero-cover p.lead {
+text-shadow: 0 4px 26px rgba(0, 0, 0, 0.6);
+}
+
+/* The breadcrumb ("Home / Quotations / ...") and the internal-
+   only "preview of the customer portal" banner are NOT inside
+   #wrap — actual rendered markup puts both in their own
+   div.container.mt-3 siblings directly under the main element,
+   before #wrap. main is their nearest common ancestor with
+   the hero (which sits deep inside #wrap), so that's the anchor
+   position:relative goes on. :has(.quote-hero-cover) scopes all
+   of this to pages that actually render our hero — every other
+   portal record type (invoices, tickets, etc.) shares these same
+   base templates and is left completely untouched since it never
+   carries that class. Taking them out of flow here also lets the
+   hero itself reclaim that vertical space, so it starts flush
+   under the site header.
+
+   Both float as independent cards (breadcrumb top-left, preview
+   notification top-right) rather than a full-width bar, sized to
+   their own content instead of stretching a tint across the
+   screen. --quote-hero-header-h is written onto this same main
+   element by quote_hero_overlay.js, which measures the real (fixed,
+   height-varying) site header via getBoundingClientRect() —
+   the same technique prowebsite's header_dropdowns.js already
+   uses for its own dropdown bar — so both sit reliably below the
+   header instead of a hardcoded pixel guess. The 72px fallback
+   only matters for the instant before the JS measurement lands. */
+main:has(.quote-hero-cover) {
+position: relative;
+--quote-hero-top: calc(var(--quote-hero-header-h, 72px) + 22px);
+}
+
+/* ── Breadcrumb: removed ── not needed on this page. */
+main:has(.quote-hero-cover) .breadcrumb {
+display: none !important;
+}
+
+/* ── Preview notification: reusable liquid-glass card, top-right ──
+   The actual glass material (blur/tint/highlight/shadow) lives in
+   proquotes/static/src/CSS/liquid_glass.css as a reusable
+   .o_liquid_glass component, along with a pointer-tilt widget in
+   liquid_glass.js — this is meant to be the first of several
+   notifications using that same look sitewide, not a one-off
+   built into this page. quote_hero_overlay.js adds the class +
+   wires up the tilt at runtime, since this specific element
+   comes from core Odoo's own template rather than anything we
+   render, so it can't carry the class from the start. Everything
+   here is just this instance's position/size/content styling,
+   plus a couple of --o_lg_* token overrides to keep this
+   specific card's tint on the darker side (its default is tuned
+   more neutral for reuse across both light and dark contexts). */
+/* Entrance animation on page load. Uses the standalone
+   `translate` property (not `transform`) specifically so it
+   doesn't fight with liquid_glass.js's own pointer-tilt,
+   which drives `transform` directly via the .o_liquid_glass
+   rule's perspective/rotate/translate3d chain — `translate`
+   composites with that independently instead of overriding
+   it, so the tilt still works immediately once the slide-in
+   finishes. */
+@keyframes quoteNoticeSlideIn {
+from { opacity: 0; translate: 48px 0; }
+to { opacity: 1; translate: 0 0; }
+}
+
+/* position:fixed (not absolute) so it stays pinned to the
+   viewport as the page scrolls, like the header — it used to
+   be position:absolute relative to the main element, which
+   is itself a normal in-flow element, so the notice
+   scrolled away with the page's content instead of
+   persisting over it. z-index:40 already sits comfortably
+   under the header's 1001 (see header_dropdowns.css) and
+   above the cards/quicknav (1-2), so it stays under the
+   header and over everything else. */
+main:has(.quote-hero-cover) .alert.css_editable_mode_hidden {
+position: fixed !important;
+top: var(--quote-hero-top);
+left: auto !important;
+right: clamp(16px, 3vw, 40px);
+z-index: 40;
+/* A fixed width (not fit-content) so both this and .quote-confirmed-
+   notice below render at the same size regardless of how much text
+   each one actually has — fit-content let the shorter one shrink-
+   wrap noticeably smaller than the other. */
+width: min(380px, calc(100vw - 32px));
+margin: 0 !important;
+padding: 18px 20px !important;
+border: none;
+color: #ffffff;
+font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+font-size: 13.5px;
+line-height: 1.55;
+/* --quote-notice-delay is set per-notice by quote_hero_overlay.js —
+   3s for whichever notice is actually first in the stack, then +0.5s
+   per notice after that, rather than every notice independently
+   using the same flat 3s (which made a 3-notice stack take a full
+   3 separate 3-second waits to finish appearing, one after another,
+   instead of a quick staggered cascade). */
+animation: quoteNoticeSlideIn 1.2s ease-out var(--quote-notice-delay, 3s) both;
+
+/* Lets the close badge (positioned slightly outside the card,
+   see .btn-close below) actually poke past the edge instead of
+   being clipped by .o_liquid_glass's own overflow:hidden — safe
+   to override per-instance since the sheen layer rounds its own
+   background independently now (border-radius:inherit in
+   liquid_glass.css), so this doesn't bring back square corners. */
+overflow: visible !important;
+
+--o_lg_tint: rgba(30, 28, 30, 0.4);
+--o_lg_radius: 22px;
+--o_lg_blur: 14px;
+}
+
+main:has(.quote-hero-cover) .alert.css_editable_mode_hidden .text-center {
+text-align: left !important;
+}
+
+/* ── Shared notice button style ──
+   Used by every button-like link inside any of the three notices —
+   "Back to edit mode" (core Odoo's own .alert-link, tagged with this
+   class by quote_hero_overlay.js since that markup isn't ours to add
+   a class to directly) and the shipped notice's tracking-number link
+   below. Restyled to match the header dropdown's submenu links
+   (.o_hdd_menu_link in prowebsite's header_dropdowns.css) — muted
+   text that brightens on hover, a soft background pill on hover, and
+   an arrow that slides in from the left on hover rather than sitting
+   there always. display:inline-flex (not flex) is what actually
+   keeps this shrink-wrapped to its own content instead of stretching
+   full-width — flex alone is still a block-level box, and width:auto
+   on a block element means "fill the available width", the opposite
+   of what a fit-content button needs. font-family is repeated
+   explicitly rather than just relying on inheriting it from the
+   notice text above, in case Bootstrap's own .alert-link rule (or
+   anything else) sets something else on it directly. */
+main:has(.quote-hero-cover) .quote-notice-link {
+display: inline-flex;
+align-items: center;
+gap: 10px;
+width: auto;
+margin: 10px 0 0;
+padding: 7px 14px 7px 10px;
+border-radius: 8px;
+background: rgba(255, 255, 255, 0.045);
+color: rgba(255, 255, 255, 0.72) !important;
+font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+font-size: 13.5px;
+font-weight: 360;
+text-decoration: none !important;
+transition: background 0.18s ease, color 0.18s ease;
+}
+
+main:has(.quote-hero-cover) .quote-notice-link:hover {
+background: rgba(255, 255, 255, 0.1);
+color: #ffffff !important;
+}
+
+/* The "Back to edit mode" link's oi-arrow-right icon sits before the
+   text in the markup (core Odoo's own layout, can't reorder the DOM
+   itself) — order:2 visually moves it after the text instead. The
+   tracking-number link's own arrow (added directly in our markup, see
+   quote_preview.xml) is already last in source order, so this is a
+   harmless no-op for it. */
+main:has(.quote-hero-cover) .quote-notice-link .oi-arrow-right {
+order: 2;
+flex-shrink: 0;
+margin: 0 !important;
+opacity: 0;
+transform: translateX(-4px);
+transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+main:has(.quote-hero-cover) .quote-notice-link:hover .oi-arrow-right {
+opacity: 1;
+transform: translateX(0);
+}
+
+/* Close button: small circular badge sitting on the card's
+   corner border (slightly outside it), hidden until the card
+   itself is hovered — a quiet affordance rather than a
+   permanently-visible X competing with the message. Kept
+   visible on :focus-visible too, so it doesn't disappear on
+   keyboard-only users tabbing to it. */
+/* Bootstrap's own X icon is a black background-image SVG,
+   normally flipped white here via filter:invert() — but filter
+   applies to the whole rendered box, not just that image, so it
+   would also invert the new dark circle background below (into
+   a light one) rather than just the icon. Supplying a white X
+   directly (Bootstrap's own close-icon path, just recolored)
+   avoids that: it's the one thing being layered onto the
+   background shorthand alongside the circle's fill color. */
+main:has(.quote-hero-cover) .alert.css_editable_mode_hidden .btn-close {
+position: absolute;
+top: -9px;
+right: -9px;
+width: 22px;
+height: 22px;
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+border-radius: 50%;
+border: 1px solid rgba(255, 255, 255, 0.2);
+background: rgba(28, 26, 28, 0.95) url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%23fff' d='M.235.235a.75.75 0 0 1 1.06 0L8 6.94 14.705.235a.75.75 0 1 1 1.06 1.06L9.06 8l6.705 6.705a.75.75 0 1 1-1.06 1.06L8 9.06l-6.705 6.705a.75.75 0 0 1-1.06-1.06L6.94 8 .235 1.295a.75.75 0 0 1 0-1.06z'/%3e%3c/svg%3e") center / 9px 9px no-repeat !important;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+opacity: 0;
+transform: scale(0.85);
+transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+}
+
+main:has(.quote-hero-cover) .alert.css_editable_mode_hidden:hover .btn-close,
+main:has(.quote-hero-cover) .alert.css_editable_mode_hidden .btn-close:focus-visible {
+opacity: 1;
+transform: scale(1);
+}
+
+main:has(.quote-hero-cover) .alert.css_editable_mode_hidden .btn-close:hover {
+background-color: rgba(45, 42, 45, 0.95);
+}
+
+/* ── "Confirmed order" / "Order shipped" notices ──
+   Same liquid-glass family/positioning as the preview banner above,
+   just rendered by us directly (see the markup comments in
+   quote_preview.xml for why). --quote-notice-stack-offset is written
+   by quote_hero_overlay.js for each notice individually — the summed
+   height (+ gap) of every other notice ahead of it in the stack that's
+   currently visible, 0 if none are — and the transition on `top` is
+   what makes a notice glide smoothly into a freed-up spot once
+   something ahead of it is dismissed, instead of jump-cutting there. */
+main:has(.quote-hero-cover) .quote-confirmed-notice,
+main:has(.quote-hero-cover) .quote-shipped-notice {
+position: fixed !important;
+top: calc(var(--quote-hero-top) + var(--quote-notice-stack-offset, 0px));
+left: auto !important;
+right: clamp(16px, 3vw, 40px);
+z-index: 40;
+/* Fixed width, matching the preview banner above — see the comment
+   on that rule. */
+width: min(380px, calc(100vw - 32px));
+margin: 0 !important;
+padding: 18px 20px !important;
+border: none;
+color: #ffffff;
+font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+font-size: 13.5px;
+line-height: 1.55;
+transition: top 0.4s ease;
+/* See the comment on the preview-banner rule above for
+   --quote-notice-delay. */
+animation: quoteNoticeSlideIn 1.2s ease-out var(--quote-notice-delay, 3s) both;
+overflow: visible !important;
+
+--o_lg_tint: rgba(30, 28, 30, 0.4);
+--o_lg_radius: 22px;
+--o_lg_blur: 14px;
+}
+
+main:has(.quote-hero-cover) .quote-confirmed-notice p,
+main:has(.quote-hero-cover) .quote-shipped-notice p {
+margin: 0;
+padding-right: 18px;
+}
+
+main:has(.quote-hero-cover) .quote-confirmed-notice .btn-close,
+main:has(.quote-hero-cover) .quote-shipped-notice .btn-close {
+position: absolute;
+top: -9px;
+right: -9px;
+width: 22px;
+height: 22px;
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+border-radius: 50%;
+border: 1px solid rgba(255, 255, 255, 0.2);
+background: rgba(28, 26, 28, 0.95) url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%23fff' d='M.235.235a.75.75 0 0 1 1.06 0L8 6.94 14.705.235a.75.75 0 1 1 1.06 1.06L9.06 8l6.705 6.705a.75.75 0 1 1-1.06 1.06L8 9.06l-6.705 6.705a.75.75 0 0 1-1.06-1.06L6.94 8 .235 1.295a.75.75 0 0 1 0-1.06z'/%3e%3c/svg%3e") center / 9px 9px no-repeat !important;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+opacity: 0;
+transform: scale(0.85);
+transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+}
+
+main:has(.quote-hero-cover) .quote-confirmed-notice:hover .btn-close,
+main:has(.quote-hero-cover) .quote-confirmed-notice .btn-close:focus-visible,
+main:has(.quote-hero-cover) .quote-shipped-notice:hover .btn-close,
+main:has(.quote-hero-cover) .quote-shipped-notice .btn-close:focus-visible {
+opacity: 1;
+transform: scale(1);
+}
+
+main:has(.quote-hero-cover) .quote-confirmed-notice .btn-close:hover,
+main:has(.quote-hero-cover) .quote-shipped-notice .btn-close:hover {
+background-color: rgba(45, 42, 45, 0.95);
+}
+
+/* ── Hero bottom: progressive blur fade + quick-jump nav ──
+   A backdrop-filter layer (not a duplicated/blurred copy of the
+   background image) so this works identically for both hero
+   variants — the static image AND the vimeo iframe background —
+   without needing a second video element just to blur it.
+   mask-image fades the layer's own opacity from transparent at
+   its top edge to fully opaque partway down, so the blur (and the
+   darkening gradient underneath it, for the nav text's contrast)
+   visually "grows in" out of the sharp image above it instead of
+   starting with a hard edge. */
+.quote-hero-cover::after {
+content: "";
+position: absolute;
+left: 0;
+right: 0;
+bottom: 0;
+height: clamp(170px, 24vh, 320px);
+z-index: 4;
+pointer-events: none;
+backdrop-filter: blur(28px);
+-webkit-backdrop-filter: blur(28px);
+background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.5) 65%, rgba(0, 0, 0, 0.68));
+-webkit-mask-image: linear-gradient(to bottom, transparent, #000 42%);
+mask-image: linear-gradient(to bottom, transparent, #000 42%);
+}
+
+/* Smooth-scrolls anchor jumps (like the quicknav links below) instead of
+   snapping instantly to the target. This has to go on #wrapwrap
+   specifically, not html/body — the theme scrolls #wrapwrap internally
+   rather than the window itself (same reason quote_hero_overlay.js listens
+   on #wrapwrap instead of window for its own scroll-driven effects), and
+   scroll-behavior only affects whichever element is actually the scroll
+   container. */
+body:has(.quote-hero-cover) #wrapwrap {
+scroll-behavior: smooth;
+}
+
+/* position:fixed (viewport-anchored, matching the hero being
+   fixed too) rather than position:absolute-within-the-hero —
+   it's now a top-level sibling of the hero and the cards
+   (see the xpath markup in quote_preview.xml), specifically so
+   its z-index is compared directly against .quote-stack-card/etc's
+   z-index:1 instead of being trapped inside the hero's own
+   (unavoidable, since it's position:fixed) stacking context,
+   which is what made it unclickable shortly after any
+   scrolling. Fades out with the hero title/address on scroll
+   (same --quote-hero-text-fade var) since it stops making
+   sense to interact with quote sections nav once the cards
+   are covering the hero anyway. */
+.quote-hero-quicknav {
+position: fixed;
+left: 50%;
+bottom: clamp(26px, 4vh, 46px);
+transform: translateX(-50%);
+z-index: 2;
+opacity: var(--quote-hero-text-fade, 1);
+pointer-events: var(--quote-hero-nav-pe, auto);
+display: flex;
+align-items: center;
+--qhqn-gap: clamp(10px, 2.4vw, 34px);
+gap: var(--qhqn-gap);
+font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+}
+
+.quote-hero-quicknav-link {
+position: relative;
+color: rgba(255, 255, 255, 0.75);
+font-size: 13px;
+font-weight: 600;
+letter-spacing: 0.04em;
+text-transform: uppercase;
+text-decoration: none !important;
+white-space: nowrap;
+transition: color 0.2s ease;
+}
+
+.quote-hero-quicknav-link:hover {
+color: #ffffff;
+}
+
+.quote-hero-quicknav-link + .quote-hero-quicknav-link::before {
+content: "";
+position: absolute;
+left: calc(var(--qhqn-gap) / -2 - 1.5px);
+top: 50%;
+transform: translateY(-50%);
+width: 3px;
+height: 3px;
+border-radius: 50%;
+background: rgba(255, 255, 255, 0.4);
+}
+
+@media (max-width: 600px) {
+.quote-hero-quicknav {
+--qhqn-gap: 14px;
+max-width: calc(100vw - 32px);
+flex-wrap: wrap;
+justify-content: center;
+}
+}
+
+body:has(.quote-hero-cover) #sales_order_table > tbody > tr.quoteLineRowSection > td {
+padding: 20px !important;
+}
+
+body:has(.quote-hero-cover) .is-subtotal {
+display: none !important;
+}
+
+body:has(.quote-hero-cover) .quoteLineRow > #product_name {
+padding: 20px !important;
+padding-top: 20px !important;
+padding-bottom: 20px !important;
+}
+
+body:has(.quote-hero-cover) #footer-img {
+padding-bottom: 30px;
+}
+
+/* ── Terms and Conditions card ──
+   White card (unlike #rental-info-section's dark red, per the
+   ask for a "white section"), same rounded-card language as the
+   rest of the page. Inner .quote-terms-body is a separate
+   thin-bordered box holding the actual terms text, collapsed by
+   default to a fixed max-height (~4-5 lines of this content's
+   mix of headings/paragraphs) with a bottom fade signalling more
+   content, and smoothly expands via a plain max-height
+   transition — CSS can't transition to height:auto, so this
+   targets a max-height comfortably larger than any real terms
+   text instead. Reuses the same checkbox+label pattern the old
+   +/× toggle used (input before label in source order, so the
+   general sibling combinator can react to :checked), just
+   re-skinned with .quote-folding-icon — the same expand/collapse
+   icon already used on the product-line sections — instead of
+   text characters. */
+.quote-terms-card {
+position: relative;
+background: #ffffff;
+border-radius: 20px;
+padding: 26px 30px;
+margin: 0 0 28px;
+box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1);
+/* Clips the full-width footer image (see .quote-terms-acceptance
+   #footer-img below) to this card's own rounded bottom corners,
+   since that image now intentionally overflows the card's
+   horizontal/bottom padding to reach edge-to-edge. */
+overflow: hidden;
+}
+
+.quote-terms-toggle-input {
+display: none !important;
+}
+
+.quote-terms-toggle {
+display: flex;
+align-items: center;
+gap: 12px;
+margin: 0;
+cursor: pointer;
+-webkit-user-select: none;
+user-select: none;
+}
+
+.quote-terms-title {
+margin: 0;
+font-size: 1.15rem;
+font-weight: 700;
+color: #17171a;
+}
+
+/* .quote-folding-icon's own base rules (quoteStyle.css) are tuned
+   for a dark background (white bars on a translucent border) —
+   recolor for a light card so it's visible, keep the same
+   structure/animation. */
+.quote-terms-card .quote-folding-icon {
+border-color: rgba(0, 0, 0, 0.32);
+}
+
+.quote-terms-card .quote-folding-icon::before,
+.quote-terms-card .quote-folding-icon::after {
+background: #17171a;
+}
+
+.quote-terms-toggle-input:checked ~ .quote-terms-toggle .quote-folding-icon {
+border-color: #db0d0d;
+background: #db0d0d;
+transform: rotate(45deg);
+}
+
+.quote-terms-toggle-input:checked ~ .quote-terms-toggle .quote-folding-icon::before,
+.quote-terms-toggle-input:checked ~ .quote-terms-toggle .quote-folding-icon::after {
+background: #ffffff;
+}
+
+.quote-terms-body {
+position: relative;
+margin-top: 18px;
+padding: 16px 18px;
+border: 1px solid #e2e2e2;
+border-radius: 12px;
+background: #fafafa;
+overflow: hidden;
+max-height: 132px;
+transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quote-terms-toggle-input:checked ~ .quote-terms-body {
+max-height: 3000px;
+}
+
+/* Bottom fade signalling truncated content — fades out once expanded.
+   Taller, and reaching full opacity earlier (55% vs the previous
+   75%), so the "there's more below" cue reads more clearly against
+   the collapsed box's short 132px height. */
+.quote-terms-body::after {
+content: "";
+position: absolute;
+left: 0;
+right: 0;
+bottom: 0;
+height: 72px;
+border-radius: 0 0 12px 12px;
+background: linear-gradient(to bottom, rgba(250, 250, 250, 0), rgba(250, 250, 250, 0.97) 55%);
+pointer-events: none;
+opacity: 1;
+transition: opacity 0.35s ease;
+}
+
+.quote-terms-toggle-input:checked ~ .quote-terms-body::after {
+opacity: 0;
+}
+
+/* The terms content (proquotes.rental_terms / normal_terms) is
+   plain semantic HTML with no styling of its own — it inherits
+   white/grey text from this page's dark theme elsewhere. Force
+   dark, smaller text here since it now sits on a white card. */
+.quote-terms-body,
+.quote-terms-body * {
+color: #333333 !important;
+text-shadow: none !important;
+}
+
+/* quoteStyle.css has an older #rental-terms > ol > li > p rule
+   (color: rgba(255,255,255,.7) !important — white, tuned for the
+   old dark background) that outranks the class-only rule above:
+   both are !important, so it comes down to specificity, and an
+   ID selector always beats a class selector regardless of how
+   many elements/universal selectors ride along with it. Add the
+   same ID into this selector so the class+ID combination here
+   has strictly higher specificity and actually wins. */
+.quote-terms-body #rental-terms p {
+color: #333333 !important;
+}
+
+.quote-terms-body h3,
+.quote-terms-body h4,
+.quote-terms-body strong {
+color: #131313 !important;
+font-size: 13px !important;
+font-weight: 700 !important;
+}
+
+.quote-terms-body p,
+.quote-terms-body li {
+font-size: 12.5px !important;
+line-height: 1.65 !important;
+}
+
+.quote-terms-body ol {
+padding-left: 20px;
+}
+
+/* Payment terms — a second, non-collapsible set of terms
+   underneath the main (collapsible) terms body, inside the
+   same Conditions card. Folded in from the base template's
+   own separate "Payment terms" section, which is deleted
+   further down so it doesn't also render on its own. */
+.quote-terms-payment {
+margin-top: 18px;
+padding-top: 16px;
+border-top: 1px solid #e2e2e2;
+}
+
+.quote-terms-payment-title {
+margin: 0 0 8px;
+font-size: 0.95rem;
+font-weight: 700;
+color: #17171a;
+}
+
+.quote-terms-payment-body {
+font-size: 12.5px;
+line-height: 1.6;
+color: #333333;
+}
+
+/* Customer acceptance + accept/sign/reject/download buttons +
+   footer image — third section inside the Conditions card,
+   below Terms and Payment Terms (see quote_terms_acceptance,
+   t-called from both terms branches). */
+.quote-terms-acceptance {
+margin-top: 18px;
+padding-top: 16px;
+border-top: 1px solid #e2e2e2;
+text-align: center;
+}
+
+.quote-terms-acceptance h4 {
+margin: 0 0 8px;
+font-size: 0.95rem;
+font-weight: 700;
+color: #17171a;
+}
+
+.quote-terms-acceptance p {
+margin: 0 auto 14px;
+max-width: 46em;
+font-size: 12.5px;
+line-height: 1.6;
+color: #333333;
+}
+
+/* Cancels .quote-terms-card's own 30px horizontal / 26px bottom
+   padding so the image reaches the card's actual edges instead of
+   stopping at its padding box — .quote-terms-card's overflow:hidden
+   (above) then clips the image's square bottom corners into the
+   card's own rounded ones instead of them poking out past it. */
+.quote-terms-acceptance #footer-img {
+display: block;
+width: calc(100% + 60px);
+max-width: none;
+height: auto;
+margin: 18px -30px -26px;
+padding-bottom: 0;
+}
+
+/* ── Product table: compact, white-card redesign ──
+   Scoped under #quote-nav-quotation (the id added to
+   table-responsive — doubling as both the sticky "Quotation"
+   card and the quicknav anchor now that the redundant
+   standalone "Quotation" h1 is gone) so none of this touches
+   .quote-head/.quoteLineRow/etc anywhere else — they're only
+   ever used on this page anyway, but keeping the scope tight
+   makes that an invariant rather than an assumption. Doesn't
+   touch the custom $hardware/$software/$omnigo/etc special
+   row blocks at all — those set their own inline styles
+   directly, none of the selectors below reach them. Extra id
+   in each selector (2 ids vs the older rules' 1) is what lets
+   these safely outrank the older, more spacious rules earlier
+   in this same style block and in quoteStyle.css, without
+   needing to delete or edit those older rules directly. */
+#quote-nav-quotation.quote-stack-card {
+background: #ffffff;
+color: #17171a;
+padding: 0px 0px 0px;
+}
+
+#sales_order_table > tbody > tr.quote-head > td:nth-child(1) {
+   border-top-left-radius: 20px;
+}
+
+#sales_order_table > tbody > tr.quote-head > td:last-child {
+   border-top-right-radius: 20px;
+}
+
+#quote-nav-quotation #sales_order_table {
+margin: 0;
+}
+
+/* $block header row — was a solid dark bar, big centered
+   padding; now a quiet light-gray label row, left-aligned,
+   compact, small-caps-style labels. */
+#quote-nav-quotation .quote-head,
+#quote-nav-quotation .quote-head * {
+background-color: #f4f4f5 !important;
+color: #55555a !important;
+text-align: left !important;
+padding-top: 18px !important;
+padding-bottom: 18px !important;
+text-shadow: none !important;
+}
+
+#quote-nav-quotation .quote-head > td.text-left {
+padding-left: 16px !important;
+}
+
+#quote-nav-quotation .cHead {
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 0.04em;
+text-transform: uppercase;
+}
+
+/* Section header rows (e.g. a kit/bundle's own title bar) —
+   lighter, dark text, no shadow (the shadow was there for
+   legibility against the old dark page, not needed here). */
+#quote-nav-quotation tr.quoteLineRowSection {
+background-color: #eef0f2 !important;
+color: #1a1a1a !important;
+}
+
+#quote-nav-quotation tr.quoteLineRowSection * {
+color: #1a1a1a !important;
+text-shadow: none !important;
+}
+
+#quote-nav-quotation #sales_order_table > tbody > tr.quoteLineRowSection > td {
+padding: 14px 16px !important;
+}
+
+/* Section fold icon (the +/× circle toggling a kit/bundle section
+   open/closed) inherits quoteStyle.css's base styling — white bars
+   on a translucent border, tuned for the page's old dark
+   background — which reads as low-contrast white-on-light-grey
+   here on the white product card. Same recolor already applied to
+   .quote-terms-card's own folding icon below, just scoped to the
+   product table instead. */
+#quote-nav-quotation .quote-folding-icon {
+border-color: rgba(0, 0, 0, 0.32);
+}
+
+#quote-nav-quotation .quote-folding-icon::before,
+#quote-nav-quotation .quote-folding-icon::after {
+background: #17171a;
+}
+
+/* quoteStyle.css's own .is-open variant (red fill, white bars —
+   the same open/expanded look .quote-terms-card's icon uses below)
+   needs re-declaring here with matching specificity: the resting-
+   state override just above (1 id + 1 class) already outranks the
+   base .quote-folding-icon.is-open rule (0 id + 2 classes) since an
+   id always wins regardless of class count, which was silently
+   keeping this icon black even while open instead of switching to
+   red/white like the Conditions card's version does. */
+#quote-nav-quotation .quote-folding-icon.is-open {
+border-color: #db0d0d;
+background: #db0d0d;
+}
+
+#quote-nav-quotation .quote-folding-icon.is-open::before,
+#quote-nav-quotation .quote-folding-icon.is-open::after {
+background: #ffffff;
+}
+
+/* Regular product rows — already dark-text-on-white from the
+   original base styling (.quoteLineRow), just tightened up
+   and given a hairline separator instead of the old spacing. */
+#quote-nav-quotation .quoteLineRow {
+border-bottom: 1px solid #eeeeee;
+}
+
+#quote-nav-quotation .quoteLineRow > td.text-left,
+#quote-nav-quotation .quoteLineRow > #product_name {
+padding: 14px 16px !important;
+}
+
+/* Note rows keep their bold red accent as-is — it's meant as
+   a callout, not something that needs to blend in. */
+#quote-nav-quotation .quoteLineRowNote > td {
+padding: 12px 16px !important;
+border-radius: 8px;
+}
+
+/* Totals table, now rendered as the last child of this same
+   card (see the card-marking xpath block further down) —
+   dark text mostly falls out of color:#17171a
+   inheriting down from the card itself above, this just adds
+   breathing room so it doesn't look glued to the last row. */
+#quote-nav-quotation #total {
+margin-top: 12px;
+padding: 0 16px 8px;
+}
+
+/* ── Fixed hero background + normal-flow cards ──
+   The hero is pinned to the viewport for the whole page
+   (position:fixed, not sticky) instead of the earlier
+   sticky-stack scheme — no dependency on any ancestor's own
+   height/containing-block, which is what made the sticky
+   version only stay stuck through whichever card happened to
+   share its immediate parent. The three cards below it
+   (Quotation, Configuration, Conditions) are back to plain,
+   normal-flow elements — they don't stick or rise to cover
+   each other, they just scroll, each with an opaque
+   background so it visually covers the fixed hero while it's
+   in view, with the hero showing through the gaps between
+   cards. .quote-hero-spacer (a plain block sized to the
+   hero's own height, added right after both hero section
+   variants) replaces the flow-height the hero itself no
+   longer contributes now that it's taken out of flow —
+   without it every card would jump straight to the top of
+   the page immediately on load instead of appearing below an
+   initial hero-only view.
+
+   Nothing needs to explicitly "release" the hero at the
+   bottom of the last card — it stays fixed for the entire
+   page, including past the footer, but that's invisible in
+   practice: once ordinary (opaque-background) page content
+   scrolls up to fill the whole viewport, it simply paints
+   over the fixed hero sitting behind it at a lower z-index.
+
+   The hero needs !important specifically because the vimeo
+   variant's inline style already sets position:relative
+   directly on the element — inline styles normally beat
+   external stylesheets, but !important flips that against a
+   plain (non-!important) inline declaration. */
+.quote-hero-cover {
+position: fixed !important;
+inset: 0;
+z-index: 0;
+}
+
+.quote-hero-spacer {
+height: 100vh;
+}
+
+/* --quote-hero-text-fade is written continuously on scroll by
+   quote_hero_overlay.js (0 = fully faded, 1 = fully opaque)
+   since the hero itself no longer moves (position:fixed) —
+   without JS driving it there's no scroll position for pure
+   CSS to react to. */
+.quote-hero-text {
+opacity: var(--quote-hero-text-fade, 1);
+}
+
+.quote-hero-text h1,
+.quote-hero-text p.lead {
+color: #ffffff;
+text-shadow: 0 4px 22px rgba(0, 0, 0, 0.75);
+}
+
+/* ── Footer: removed entirely on this page ──
+   portal_footer (in quote_preview.xml) inserts the site footer
+   (all the EQUIPMENT/SOFTWARE/ACCESSORIES/USEFUL LINKS columns)
+   via t-call right after #wrap, sitewide, for every portal page —
+   it read as low-contrast (light text over the still-visible hero
+   photo behind it) and isn't needed on a quote. Using the general
+   sibling combinator (~), not adjacent (+), since the t-call's
+   template can expand into more than one root node — the actual
+   footer markup isn't guaranteed to be the literal first element
+   after #wrap. */
+body:has(.quote-hero-cover) #wrap ~ * {
+display: none !important;
+}
+
+.quote-stack-card {
+position: relative;
+z-index: 1;
+background: #0c0c0d;
+border-radius: 20px;
+box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.25);
+padding: 8px clamp(16px, 4vw, 48px) 32px;
+margin-bottom: 24px;
+}
+
+.quote-terms-card {
+position: relative;
+z-index: 1;
+}
+
+/* ── Plain card ──
+   Discussion/Comments gets the same rounded-card treatment as
+   everything else on the page — an ordinary in-flow card,
+   same as the other three now. Kept dark rather than
+   switched to white/light like the
+   Quotation and Conditions cards: it's a stock Odoo chatter
+   widget with its own internal styling that already assumes a
+   dark page (message bubbles, timestamps, etc.), and there's
+   no full inventory of its classes here to safely re-theme
+   for a light background without risking illegible text
+   somewhere inside it. */
+.quote-plain-card {
+position: relative;
+z-index: 1;
+background: #141414;
+border-radius: 20px;
+padding: 22px 26px;
+margin: 0 0 24px;
+box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+color: #ffffff;
+}
+
+/* ── Wider cards ──
+   Direct full-bleed breakout on the cards themselves — the same
+   technique .quote-hero-cover already uses above — instead of
+   trying to widen whatever Bootstrap container/column wraps them.
+   A percentage-padding tweak on that container previously had no
+   visible effect, most likely because the cards actually sit
+   inside a narrower nested Bootstrap column (a .col-lg-* sized as
+   a fraction of the container, alongside a sidebar column that
+   still reserves its own grid space even with its content hidden)
+   rather than being bound by the container's own width directly.
+   This technique sidesteps needing to know that nesting at all:
+   width:98vw + a margin computed from the viewport centers the
+   card at that width regardless of what contains it, as long as
+   that ancestor is itself horizontally centered on the page (true
+   of Bootstrap containers/columns generally). box-sizing so the
+   cards' own padding counts inside that declared 98vw instead of
+   pushing the rendered box past it. Only margin-left/right are
+   touched — margin-top/bottom stay whatever each card's own rule
+   above already set, so vertical spacing between cards is
+   unaffected. */
+.quote-stack-card,
+.quote-terms-card,
+.quote-plain-card {
+box-sizing: border-box;
+width: 96vw !important;
+margin-left: calc(50% - 48vw) !important;
+margin-right: calc(50% - 48vw) !important;
+}
+
+/* Whatever sale.sale_order_portal_template renders between
+   the Conditions card and the Discussion/Comments card
+   (e.g. the signature section when unsigned, or the approve-
+   financing wrapper when not applicable to this order)
+   still occupies its own margin/padding as an empty
+   container even with no visible content — stacking with
+   .quote-terms-card's own bottom margin above and
+   #sale_order_communication's own top margin/padding below,
+   three margins compounding into a much bigger gap here
+   than between any other pair of cards. Collapsed
+   generically via the sibling combinator instead of
+   guessing at exactly which element(s) are responsible. */
+#quote-nav-conditions ~ *:not(#sale_order_communication) {
+margin: 0 !important;
+padding: 0 !important;
+}
+
+#sale_order_communication.quote-plain-card {
+margin-top: 0 !important;
+}
+
+#sale_order_communication.quote-plain-card > *:first-child {
+margin-top: 0 !important;
+}
+
+/* Message composer: the textarea/input itself was rendering
+   much smaller than its own outer container — force it to
+   actually fill the width and take a reasonable height
+   instead of whatever compact default Odoo's portal chatter
+   composer ships with. The textarea's own rows="4" only
+   determines its *intrinsic* height — it doesn't stretch to fill
+   the taller flex-grow-1 wrapper around it on its own, which is
+   what still left it visibly smaller than that wrapper even with
+   width/min-height set. */
+
+#discussion > div > div:nth-child(1) > div.o_portal_chatter_composer > div > div.d-flex > div > div.o_portal_chatter_composer_input > div.o_portal_chatter_composer_body.d-flex.flex-nowrap.align-items-start.flex-grow-1.mb-4 > div > div.position-relative.flex-grow-1 {
+   width: 100%;
+   height: 100%;
+}
+
+#discussion > div > div:nth-child(1) > div.o_portal_chatter_composer > div > div.d-flex > div > div.o_portal_chatter_composer_input > div.o_portal_chatter_composer_body.d-flex.flex-nowrap.align-items-start.flex-grow-1.mb-4 > div {
+   background-color: black !important;
+}
+
+#portal_sale_content {
+   padding-bottom: initial !important;
+}
+
+#sale_order_communication textarea,
+#sale_order_communication .o_portal_chatter_composer_input,
+#sale_order_communication .o_composer_text_field {
+width: 100% !important;
+height: 100% !important;
+min-height: 90px !important;
+box-sizing: border-box !important;
+}
+
+/* Message bodies (a long unbroken URL/word, or just wide inline
+   content) were overflowing past the card's own edges instead of
+   wrapping — box-sizing so any padding/border on these elements
+   counts inside their own declared width rather than adding to it,
+   which is what actually let content push past the card boundary. */
+#sale_order_communication * {
+box-sizing: border-box;
+}
+
+#sale_order_communication,
+#sale_order_communication p,
+#sale_order_communication span,
+#sale_order_communication div {
+overflow-wrap: break-word;
+word-break: break-word;
+}
+
+/* Fallback for content break-word can't help with — email-sourced
+   comments often carry a fixed-width <table>/<img> or a <pre> block
+   (white-space:pre disables wrapping outright) that's wider than
+   the card regardless. Rather than letting that push past the
+   card's edge, the message body scrolls horizontally on its own. */
+#sale_order_communication .o_portal_chatter_message_body {
+max-width: 100%;
+overflow-x: auto;
+}
+
+#sale_order_communication img,
+#sale_order_communication table {
+max-width: 100%;
+}
+
+#sale_order_communication pre {
+max-width: 100%;
+overflow-x: auto;
+white-space: pre-wrap;
+}
+
+/* ── Communication messages: avatar, author line, repeat badge ──
+   The classes/elements below (.quote-message-avatar,
+   .quote-message-author-*, .quote-message-repeat-badge) are added at
+   runtime by quote_communication.js, which post-processes the stock
+   portal chatter widget's rendered messages — that widget is a core
+   Odoo OWL component we don't control the markup of directly, so
+   this can't be done via QWeb view inheritance the way the rest of
+   this page is. */
+#sale_order_communication .quote-message-avatar {
+border-radius: 50% !important;
+}
+
+/* Wraps just the avatar <img> (added by quote_communication.js) so the
+   repeat badge below can be positioned relative to it specifically,
+   without affecting the avatar's own size/margin in the message row's
+   flex layout. align-self has to live here rather than on the avatar
+   <img> itself — the img is no longer a *direct* child of the flex row
+   now that it's wrapped, and align-self only has any effect on direct
+   flex items, which is why avatars stopped aligning to the top of their
+   message once this wrap was introduced. */
+.quote-message-avatar-wrap {
+position: relative;
+flex-shrink: 0;
+align-self: flex-start;
+}
+
+/* Outline around each message row so consecutive ones are easier to
+   tell apart at a glance, instead of relying on spacing alone. */
+#sale_order_communication .o_portal_chatter_message {
+border: 1px solid rgba(255, 255, 255, 0.1);
+border-radius: 12px;
+padding: 14px;
+}
+
+.quote-message-author-name {
+font-weight: 700;
+}
+
+.quote-message-author-sub {
+display: flex;
+align-items: center;
+gap: 6px;
+margin-top: 2px;
+font-size: 11.5px;
+font-weight: 400;
+color: rgba(255, 255, 255, 0.55);
+}
+
+.quote-message-author-date::before {
+content: "•";
+margin-right: 6px;
+opacity: 0.6;
+}
+
+/* Repeat count badge — a small notification-style pill overlapping the
+   avatar's top-right corner, rather than sitting inline in the message
+   text. The dark border matches .quote-plain-card's own background so it
+   reads as a "cutout" ring against the avatar underneath it, the same
+   visual trick app icon notification badges use. */
+.quote-message-repeat-badge {
+position: absolute;
+top: -4px;
+right: -4px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+min-width: 20px;
+height: 20px;
+padding: 0 5px;
+border-radius: 999px;
+background: rgba(219, 13, 13, 0.95);
+color: #ffffff;
+font-size: 10.5px;
+font-weight: 700;
+line-height: 1;
+border: 2px solid #141414;
+}
+
+/* Currency disclaimer now renders inside the (white)
+   Quotation card, right after the totals table, instead of
+   as its own standalone card between Quotation and
+   Configuration. */
+#quote-nav-quotation #quote_disclaimer {
+margin: 4px 16px 4px;
+padding: 16px;
+border-top: 1px solid #eeeeee;
+font-size: 12.5px;
+line-height: 1.6;
+color: #555555;
+}
+
+/* "Request dates" button — Bootstrap's own btn-outline-secondary default
+   (grey border/text) read as low-contrast against the red Configuration
+   card background. Light, faintly red-tinted translucent fill instead,
+   with a dark grey label that stays readable against that light fill. */
+#request-dates-btn {
+background-color: rgba(255, 240, 240, 0.16) !important;
+border-color: rgba(255, 255, 255, 0.4) !important;
+color: #3a3a3a !important;
+font-weight: 600;
+transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+#request-dates-btn:hover {
+background-color: rgba(255, 240, 240, 0.32) !important;
+border-color: rgba(255, 255, 255, 0.6) !important;
+transform: translateY(-1px);
+}
+
+#request-dates-btn:active {
+transform: translateY(0);
+}
+
+/* ── "Last Delivery Orders" / "Returns" — hidden ──
+   Rendered by a separate view ("Orders Shipping Followup") that also
+   inherits sale.sale_order_portal_content independently of this
+   module, inserting its content as a plain Bootstrap column right
+   after #sale_invoices — wherever that id happens to land in the
+   base template, outside every card this page defines. Previously
+   restyled to fit the page's card language; now just hidden outright
+   and replaced by the simpler .quote-shipped-notice notification
+   instead (see quote_preview.xml). #sale_invoices is a real, base-
+   template id (not something this module adds), so anchoring off it
+   via the general sibling combinator is reliable even without
+   knowing that other view's exact source location. */
+body:has(.quote-hero-cover) #sale_invoices ~ .col-12.col-lg-6.mb-4 {
+display: none !important;
+}

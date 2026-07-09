@@ -161,527 +161,69 @@
         </nav>
     </template>
 
+    <!-- Customer acceptance heading, the accept/sign/reject/download buttons,
+         and the footer image — all used to render plain, outside any card,
+         further down the page (in sale.sale_order_portal_template, via the
+         ba_sale_order_portal_template override). Pulled into a shared
+         template here instead of leaving that content where it was, since
+         it now needs to render a second time, unchanged, inside the
+         Conditions card (t-called from both proquotes.rental_terms /
+         proquotes.normal_terms branches in sale_order_portal_content) — a
+         t-call keeps it in exactly one place rather than copy-pasted twice.
+         Relies on `sale_order` and `language` already being in scope from
+         the caller, same as quote_hero_quicknav above. -->
+    <template id="quote_terms_acceptance" name="Quote Terms Acceptance">
+        <div class="quote-terms-acceptance">
+            <h4 t-if="language == 'fr_CA'">Acceptation du client</h4>
+            <h4 t-elif="language == 'es_ES'">Aceptación del cliente</h4>
+            <h4 t-else="">Customer Acceptance</h4>
+            <p t-if="language == 'fr_CA'">Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous confirmez que vous êtes autorisé à le faire.</p>
+            <p t-elif="language == 'es_ES'">Con su firma, acepta nuestra oferta en nombre de su empresa como se indica arriba y confirma que está autorizado para hacerlo.</p>
+            <p t-else="">With your signature you accept our offer on behalf of your company as above and you confirm, that you are authorized to do so.</p>
+
+            <div t-if="sale_order._has_to_be_signed() or sale_order._has_to_be_paid()" class="d-flex flex-wrap justify-content-center gap-2 d-print-none mt-3">
+                <t t-if="sale_order._has_to_be_signed()">
+                    <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalaccept" href="#">
+                        <i class="fa fa-check me-1"/>
+                        Accept &amp; Sign
+                    </a>
+                    <a role="button" class="btn btn-primary" href="#discussion">
+                        <i class="fa fa-comment me-1"/>
+                        Feedback
+                    </a>
+                    <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modaldecline" href="#">
+                        <i class="fa fa-times me-1"/>
+                        Reject
+                    </a>
+                    <a role="button" class="btn btn-primary" t-att-href="sale_order.get_portal_url(report_type='pdf')" target="_blank">
+                        <i class="fa fa-download me-1"/>
+                        Download
+                    </a>
+                </t>
+                <t t-elif="sale_order._has_to_be_paid()">
+                    <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalaccept" href="#">
+                        <i class="fa fa-check me-1"/>
+                        <t t-if="not sale_order.signature">Accept &amp; Pay</t>
+                        <t t-else="">Pay Now</t>
+                    </a>
+                    <a role="button" class="btn btn-primary" href="#discussion">
+                        <i class="fa fa-comment me-1"/>
+                        Feedback
+                    </a>
+                    <a role="button" class="btn btn-primary" t-att-href="sale_order.get_portal_url(report_type='pdf')" target="_blank">
+                        <i class="fa fa-download me-1"/>
+                        Download
+                    </a>
+                </t>
+            </div>
+
+            <img id="footer-img" alt="Footer Img" t-attf-src="{{sale_order.footer_id.url}}"/>
+        </div>
+    </template>
+
     <template id="sale_order_portal_content" name="Sales Order Portal Content" inherit_id="sale.sale_order_portal_content" priority="17">
         <!-- Address -->
         <xpath expr="//t[@t-if=&quot;product_documents&quot;]" position="replace">
-            <style>
-                /* old styles from view (actually important ones) */
-                .quoteConfig {
-                display: none !important;
-                }
-
-                .pt-3 {
-                    padding-top: initial !important;
-                }
-
-                #quotesDownloadButton {
-                border-width: 2px !important;
-                border-color: #dc3545;
-                }
-
-                /* import */
-
-                @import url('https://fonts.googleapis.com/css2?family=Bakbak+One&amp;family=Roboto&amp;family=Source+Sans+Pro:wght@200&amp;display=swap');
-
-                /*
-                header - font-family: 'Bakbak One', system-ui;
-                normal - font-family: 'Roboto', sans-serif;
-                small - font-family: 'Source Sans Pro', sans-serif;
-                */
-
-                /* quote */
-
-                #informations {
-                display: none;
-                }
-
-                #introduction {
-                display: none;
-                }
-
-                #portal_sale_content {
-                border: none !important;
-                }
-
-                #portalTotal > div > div.d-print-none.col-lg-3.col-xl-4 {
-                position: absolute !important;
-                display: none !important;
-                }
-
-                #details > div.quote-address > video {
-                width: 100vw !important;
-                }
-
-                #details > div:nth-child(2) > span {
-                display: none;
-                }
-
-                .text-info {
-                color: #db0d0d !important;;
-                }
-
-                #wrap.o_portal_wrap > div.container {
-                padding-right: 0px !important;
-                padding-left: 0px !important;
-                margin-right: 0px !important;
-                margin-left: 0px !important;
-                }
-
-                .quoteLineRow {
-                color: black;
-                width: 100% !important;
-                background-color: white;
-                }
-
-                #wrap > div {
-                width: 100vw !important;
-                max-width: 100vw !important;
-                }
-
-                #quote_content {
-                width: 100%
-                }
-
-                /* ── Full-bleed hero + overlaid breadcrumb/preview banner ──
-                   .quote-hero-cover marks the two s_cover section variants
-                   below (vimeo / static image). It escapes the portal's
-                   Bootstrap container to true 100vw/100vh regardless of how
-                   deep it sits in the DOM, same full-bleed trick used by the
-                   prowebsite hero pages (rtc_series.css / multimapper.css).
-                   position:relative + isolation:isolate give it its own local
-                   stacking context so the ::after fade band and the quick-nav
-                   below (z-index 4/5) always land above its own bg/video/filter
-                   layers (z-index 0-2) regardless of DOM order. */
-                .quote-hero-cover {
-                width: 100vw !important;
-                max-width: 100vw !important;
-                margin-left: calc(50% - 50vw) !important;
-                margin-right: calc(50% - 50vw) !important;
-                min-height: 100vh !important;
-                position: relative;
-                isolation: isolate;
-                }
-
-                /* Odoo's own o_we_bg_filter dark overlay (bg-black-50 / bg-black-25
-                   on the two variants) reads very dark once the hero is a full
-                   100vh — lighten it so the photo itself stays visible, and add a
-                   matching text-shadow to the title/subtitle so legibility doesn't
-                   depend on the overlay being dark. */
-                .quote-hero-cover .o_we_bg_filter {
-                background-color: rgba(0, 0, 0, 0.18) !important;
-                }
-
-                .quote-hero-cover h1,
-                .quote-hero-cover p.lead {
-                text-shadow: 0 4px 26px rgba(0, 0, 0, 0.6);
-                }
-
-                /* The breadcrumb ("Home / Quotations / ...") and the internal-
-                   only "preview of the customer portal" banner are NOT inside
-                   #wrap — actual rendered markup puts both in their own
-                   div.container.mt-3 siblings directly under the main element,
-                   before #wrap. main is their nearest common ancestor with
-                   the hero (which sits deep inside #wrap), so that's the anchor
-                   position:relative goes on. :has(.quote-hero-cover) scopes all
-                   of this to pages that actually render our hero — every other
-                   portal record type (invoices, tickets, etc.) shares these same
-                   base templates and is left completely untouched since it never
-                   carries that class. Taking them out of flow here also lets the
-                   hero itself reclaim that vertical space, so it starts flush
-                   under the site header.
-
-                   Both float as independent cards (breadcrumb top-left, preview
-                   notification top-right) rather than a full-width bar, sized to
-                   their own content instead of stretching a tint across the
-                   screen. --quote-hero-header-h is written onto this same main
-                   element by quote_hero_overlay.js, which measures the real (fixed,
-                   height-varying) site header via getBoundingClientRect() —
-                   the same technique prowebsite's header_dropdowns.js already
-                   uses for its own dropdown bar — so both sit reliably below the
-                   header instead of a hardcoded pixel guess. The 72px fallback
-                   only matters for the instant before the JS measurement lands. */
-                main:has(.quote-hero-cover) {
-                position: relative;
-                --quote-hero-top: calc(var(--quote-hero-header-h, 72px) + 22px);
-                }
-
-                /* ── Breadcrumb: removed ── not needed on this page. */
-                main:has(.quote-hero-cover) .breadcrumb {
-                display: none !important;
-                }
-
-                /* ── Preview notification: reusable liquid-glass card, top-right ──
-                   The actual glass material (blur/tint/highlight/shadow) lives in
-                   proquotes/static/src/CSS/liquid_glass.css as a reusable
-                   .o_liquid_glass component, along with a pointer-tilt widget in
-                   liquid_glass.js — this is meant to be the first of several
-                   notifications using that same look sitewide, not a one-off
-                   built into this page. quote_hero_overlay.js adds the class +
-                   wires up the tilt at runtime, since this specific element
-                   comes from core Odoo's own template rather than anything we
-                   render, so it can't carry the class from the start. Everything
-                   here is just this instance's position/size/content styling,
-                   plus a couple of --o_lg_* token overrides to keep this
-                   specific card's tint on the darker side (its default is tuned
-                   more neutral for reuse across both light and dark contexts). */
-                main:has(.quote-hero-cover) .alert.css_editable_mode_hidden {
-                position: absolute !important;
-                top: var(--quote-hero-top);
-                left: auto !important;
-                right: clamp(16px, 3vw, 40px);
-                z-index: 40;
-                width: fit-content;
-                max-width: min(380px, calc(100vw - 32px));
-                margin: 0 !important;
-                padding: 18px 20px !important;
-                border: none;
-                color: #ffffff;
-                font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
-                font-size: 13.5px;
-                line-height: 1.55;
-
-                /* Lets the close badge (positioned slightly outside the card,
-                   see .btn-close below) actually poke past the edge instead of
-                   being clipped by .o_liquid_glass's own overflow:hidden — safe
-                   to override per-instance since the sheen layer rounds its own
-                   background independently now (border-radius:inherit in
-                   liquid_glass.css), so this doesn't bring back square corners. */
-                overflow: visible !important;
-
-                --o_lg_tint: rgba(30, 28, 30, 0.4);
-                --o_lg_radius: 22px;
-                }
-
-                main:has(.quote-hero-cover) .alert.css_editable_mode_hidden .text-center {
-                text-align: left !important;
-                }
-
-                /* "Back to edit mode" restyled to match the header dropdown's
-                   submenu links (.o_hdd_menu_link in prowebsite's
-                   header_dropdowns.css) — muted text that brightens on hover,
-                   a soft background pill on hover, and an arrow that slides in
-                   from the left on hover rather than sitting there always. The
-                   oi-arrow-right icon already exists in the markup but before
-                   the text (core Odoo's own layout); flexbox `order` visually
-                   moves it after the text without touching the DOM. */
-                main:has(.quote-hero-cover) .alert.css_editable_mode_hidden .alert-link {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 10px;
-                width: auto;
-                margin: 10px -8px 0;
-                padding: 7px 10px 7px 8px;
-                border-radius: 8px;
-                background: rgba(255, 255, 255, 0.045);
-                color: rgba(255, 255, 255, 0.72) !important;
-                font-weight: 360;
-                text-decoration: none !important;
-                transition: background 0.18s ease, color 0.18s ease;
-                }
-
-                main:has(.quote-hero-cover) .alert.css_editable_mode_hidden .alert-link:hover {
-                background: rgba(255, 255, 255, 0.1);
-                color: #ffffff !important;
-                }
-
-                main:has(.quote-hero-cover) .alert.css_editable_mode_hidden .alert-link .oi-arrow-right {
-                order: 2;
-                flex-shrink: 0;
-                margin: 0 !important;
-                opacity: 0;
-                transform: translateX(-4px);
-                transition: opacity 0.18s ease, transform 0.18s ease;
-                }
-
-                main:has(.quote-hero-cover) .alert.css_editable_mode_hidden .alert-link:hover .oi-arrow-right {
-                opacity: 1;
-                transform: translateX(0);
-                }
-
-                /* Close button: small circular badge sitting on the card's
-                   corner border (slightly outside it), hidden until the card
-                   itself is hovered — a quiet affordance rather than a
-                   permanently-visible X competing with the message. Kept
-                   visible on :focus-visible too, so it doesn't disappear on
-                   keyboard-only users tabbing to it. */
-                /* Bootstrap's own X icon is a black background-image SVG,
-                   normally flipped white here via filter:invert() — but filter
-                   applies to the whole rendered box, not just that image, so it
-                   would also invert the new dark circle background below (into
-                   a light one) rather than just the icon. Supplying a white X
-                   directly (Bootstrap's own close-icon path, just recolored)
-                   avoids that: it's the one thing being layered onto the
-                   background shorthand alongside the circle's fill color. */
-                main:has(.quote-hero-cover) .alert.css_editable_mode_hidden .btn-close {
-                position: absolute;
-                top: -9px;
-                right: -9px;
-                width: 22px;
-                height: 22px;
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                border-radius: 50%;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                background: rgba(28, 26, 28, 0.95) url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%23fff' d='M.235.235a.75.75 0 0 1 1.06 0L8 6.94 14.705.235a.75.75 0 1 1 1.06 1.06L9.06 8l6.705 6.705a.75.75 0 1 1-1.06 1.06L8 9.06l-6.705 6.705a.75.75 0 0 1-1.06-1.06L6.94 8 .235 1.295a.75.75 0 0 1 0-1.06z'/%3e%3c/svg%3e") center / 9px 9px no-repeat !important;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
-                opacity: 0;
-                transform: scale(0.85);
-                transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
-                }
-
-                main:has(.quote-hero-cover) .alert.css_editable_mode_hidden:hover .btn-close,
-                main:has(.quote-hero-cover) .alert.css_editable_mode_hidden .btn-close:focus-visible {
-                opacity: 1;
-                transform: scale(1);
-                }
-
-                main:has(.quote-hero-cover) .alert.css_editable_mode_hidden .btn-close:hover {
-                background-color: rgba(45, 42, 45, 0.95);
-                }
-
-                /* ── Hero bottom: progressive blur fade + quick-jump nav ──
-                   A backdrop-filter layer (not a duplicated/blurred copy of the
-                   background image) so this works identically for both hero
-                   variants — the static image AND the vimeo iframe background —
-                   without needing a second video element just to blur it.
-                   mask-image fades the layer's own opacity from transparent at
-                   its top edge to fully opaque partway down, so the blur (and the
-                   darkening gradient underneath it, for the nav text's contrast)
-                   visually "grows in" out of the sharp image above it instead of
-                   starting with a hard edge. */
-                .quote-hero-cover::after {
-                content: "";
-                position: absolute;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                height: clamp(170px, 24vh, 320px);
-                z-index: 4;
-                pointer-events: none;
-                backdrop-filter: blur(28px);
-                -webkit-backdrop-filter: blur(28px);
-                background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.5) 65%, rgba(0, 0, 0, 0.68));
-                -webkit-mask-image: linear-gradient(to bottom, transparent, #000 42%);
-                mask-image: linear-gradient(to bottom, transparent, #000 42%);
-                }
-
-                .quote-hero-quicknav {
-                position: absolute;
-                left: 50%;
-                bottom: clamp(26px, 4vh, 46px);
-                transform: translateX(-50%);
-                z-index: 5;
-                display: flex;
-                align-items: center;
-                --qhqn-gap: clamp(10px, 2.4vw, 34px);
-                gap: var(--qhqn-gap);
-                font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
-                }
-
-                .quote-hero-quicknav-link {
-                position: relative;
-                color: rgba(255, 255, 255, 0.75);
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: 0.04em;
-                text-transform: uppercase;
-                text-decoration: none !important;
-                white-space: nowrap;
-                transition: color 0.2s ease;
-                }
-
-                .quote-hero-quicknav-link:hover {
-                color: #ffffff;
-                }
-
-                .quote-hero-quicknav-link + .quote-hero-quicknav-link::before {
-                content: "";
-                position: absolute;
-                left: calc(var(--qhqn-gap) / -2 - 1.5px);
-                top: 50%;
-                transform: translateY(-50%);
-                width: 3px;
-                height: 3px;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.4);
-                }
-
-                @media (max-width: 600px) {
-                .quote-hero-quicknav {
-                --qhqn-gap: 14px;
-                max-width: calc(100vw - 32px);
-                flex-wrap: wrap;
-                justify-content: center;
-                }
-                }
-
-                #sales_order_table > tbody > tr.quoteLineRowSection > td {
-                padding: 20px !important;
-                }
-
-                .is-subtotal {
-                display: none !important;
-                }
-
-                .quoteLineRow > #product_name {
-                padding: 20px !important;
-                padding-top: 20px !important;
-                padding-bottom: 20px !important;
-                }
-
-                #footer-img {
-                padding-bottom: 30px;
-                }
-
-                /* ── Terms and Conditions card ──
-                   White card (unlike #rental-info-section's dark red, per the
-                   ask for a "white section"), same rounded-card language as the
-                   rest of the page. Inner .quote-terms-body is a separate
-                   thin-bordered box holding the actual terms text, collapsed by
-                   default to a fixed max-height (~4-5 lines of this content's
-                   mix of headings/paragraphs) with a bottom fade signalling more
-                   content, and smoothly expands via a plain max-height
-                   transition — CSS can't transition to height:auto, so this
-                   targets a max-height comfortably larger than any real terms
-                   text instead. Reuses the same checkbox+label pattern the old
-                   +/× toggle used (input before label in source order, so the
-                   general sibling combinator can react to :checked), just
-                   re-skinned with .quote-folding-icon — the same expand/collapse
-                   icon already used on the product-line sections — instead of
-                   text characters. */
-                .quote-terms-card {
-                position: relative;
-                background: #ffffff;
-                border-radius: 20px;
-                padding: 26px 30px;
-                margin: 0 0 28px;
-                box-shadow: 0 10px 32px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.15);
-                }
-
-                .quote-terms-toggle-input {
-                display: none !important;
-                }
-
-                .quote-terms-toggle {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                margin: 0;
-                cursor: pointer;
-                -webkit-user-select: none;
-                user-select: none;
-                }
-
-                .quote-terms-title {
-                margin: 0;
-                font-size: 1.15rem;
-                font-weight: 700;
-                color: #17171a;
-                }
-
-                /* .quote-folding-icon's own base rules (quoteStyle.css) are tuned
-                   for a dark background (white bars on a translucent border) —
-                   recolor for a light card so it's visible, keep the same
-                   structure/animation. */
-                .quote-terms-card .quote-folding-icon {
-                border-color: rgba(0, 0, 0, 0.32);
-                }
-
-                .quote-terms-card .quote-folding-icon::before,
-                .quote-terms-card .quote-folding-icon::after {
-                background: #17171a;
-                }
-
-                .quote-terms-toggle-input:checked ~ .quote-terms-toggle .quote-folding-icon {
-                border-color: #db0d0d;
-                background: #db0d0d;
-                transform: rotate(45deg);
-                }
-
-                .quote-terms-toggle-input:checked ~ .quote-terms-toggle .quote-folding-icon::before,
-                .quote-terms-toggle-input:checked ~ .quote-terms-toggle .quote-folding-icon::after {
-                background: #ffffff;
-                }
-
-                .quote-terms-body {
-                position: relative;
-                margin-top: 18px;
-                padding: 16px 18px;
-                border: 1px solid #e2e2e2;
-                border-radius: 12px;
-                background: #fafafa;
-                overflow: hidden;
-                max-height: 132px;
-                transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-
-                .quote-terms-toggle-input:checked ~ .quote-terms-body {
-                max-height: 3000px;
-                }
-
-                /* Bottom fade signalling truncated content — fades out once expanded. */
-                .quote-terms-body::after {
-                content: "";
-                position: absolute;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                height: 46px;
-                border-radius: 0 0 12px 12px;
-                background: linear-gradient(to bottom, rgba(250, 250, 250, 0), rgba(250, 250, 250, 0.97) 75%);
-                pointer-events: none;
-                opacity: 1;
-                transition: opacity 0.35s ease;
-                }
-
-                .quote-terms-toggle-input:checked ~ .quote-terms-body::after {
-                opacity: 0;
-                }
-
-                /* The terms content (proquotes.rental_terms / normal_terms) is
-                   plain semantic HTML with no styling of its own — it inherits
-                   white/grey text from this page's dark theme elsewhere. Force
-                   dark, smaller text here since it now sits on a white card. */
-                .quote-terms-body,
-                .quote-terms-body * {
-                color: #333333 !important;
-                text-shadow: none !important;
-                }
-
-                /* quoteStyle.css has an older #rental-terms > ol > li > p rule
-                   (color: rgba(255,255,255,.7) !important — white, tuned for the
-                   old dark background) that outranks the class-only rule above:
-                   both are !important, so it comes down to specificity, and an
-                   ID selector always beats a class selector regardless of how
-                   many elements/universal selectors ride along with it. Add the
-                   same ID into this selector so the class+ID combination here
-                   has strictly higher specificity and actually wins. */
-                .quote-terms-body #rental-terms p {
-                color: #333333 !important;
-                }
-
-                .quote-terms-body h3,
-                .quote-terms-body h4,
-                .quote-terms-body strong {
-                color: #131313 !important;
-                font-size: 13px !important;
-                font-weight: 700 !important;
-                }
-
-                .quote-terms-body p,
-                .quote-terms-body li {
-                font-size: 12.5px !important;
-                line-height: 1.65 !important;
-                }
-
-                .quote-terms-body ol {
-                padding-left: 20px;
-                }
-
-            </style>
-
             <t t-set="company_name" t-value="sale_order.company_id.name"/>
 
             <!--
@@ -733,43 +275,108 @@
                 </div>
 
                 <div class="o_we_bg_filter bg-black-25" style="position: absolute; inset: 0; z-index: 1;"></div>
-                <div class="container s_allow_columns" style="position: relative; z-index: 2;">
-                    <div class="row o_grid_mode" data-row-count="6">
-                        <div class="o_colored_level o_grid_item g-height-5 g-col-lg-12 col-lg-12"
-                             style="z-index: 2; grid-row-start: 2; grid-column-start: 1; grid-row-end: 7; grid-column-end: 13;">
-                            <h1 style="text-align: center;">
-                                <span class="display-1-fs">
-                                    <strong>
-                                        <font class="text-o-color-5">
-                                            <t t-out="title"/>
-                                        </font>
-                                    </strong>
-                                </span>
-                            </h1>
-                            <p class="lead" style="text-align: center;">
-                                <span class="h3-fs">
-                                    <font class="text-o-color-5">
-                                        <t t-out="address"/>
-                                    </font>
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <t t-call="proquotes.quote_hero_quicknav"/>
-            </section>
-            <section t-else="" class="s_cover bg-black-50 o_full_screen_height pt0 o_colored_level pb0 s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box quote-hero-cover" data-scroll-background-ratio="0" data-snippet="s_cover" data-name="Cover" t-att-style="'background-image: url(' + str(sale_order.header_id.url) + '); min-height: 100vh !important;'">
-                <div class="o_we_bg_filter bg-black-50"></div>
-                <div class="container s_allow_columns">
-                    <h1 class="display-3" style="text-align: center; font-weight: bold;">
+                <div class="container s_allow_columns quote-hero-text" style="position: relative; z-index: 2;">
+                    <h1 style="text-align: center;">
                         <t t-out="title"/>
                     </h1>
                     <p class="lead" style="text-align: center;">
                         <t t-out="address"/>
                     </p>
                 </div>
-                <t t-call="proquotes.quote_hero_quicknav"/>
             </section>
+            <section t-else="" class="s_cover bg-black-50 o_full_screen_height pt0 o_colored_level pb0 s_parallax_no_overflow_hidden oe_img_bg o_bg_img_center o_bg_img_origin_border_box quote-hero-cover" data-scroll-background-ratio="0" data-snippet="s_cover" data-name="Cover" t-att-style="'background-image: url(' + str(sale_order.header_id.url) + '); min-height: 100vh !important;'">
+                <div class="o_we_bg_filter bg-black-50"></div>
+                <div class="container s_allow_columns quote-hero-text">
+                    <h1 style="text-align: center;">
+                        <t t-out="title"/>
+                    </h1>
+                    <p class="lead" style="text-align: center;">
+                        <t t-out="address"/>
+                    </p>
+                </div>
+            </section>
+
+            <!-- Replaces the flow-height the hero itself would otherwise
+                 contribute — see the .quote-hero-spacer comment in the
+                 fixed-hero CSS above. -->
+            <div class="quote-hero-spacer"></div>
+
+            <!-- Quicknav moved out here, as a sibling of both hero sections
+                 rather than a child of either — position:fixed always
+                 creates its own stacking context (regardless of z-index or
+                 isolation), so as long as it stayed nested inside
+                 .quote-hero-cover it could never out-rank a *sibling* of the
+                 hero, like the cards, no matter what z-index it was given
+                 internally: once two elements are compared as whole
+                 stacking-context units, the descendant's local z-index is
+                 irrelevant next to its own container's. That's what made it
+                 effectively unclickable within ~26px of scrolling — the
+                 Quotation card's box already reaches the quicknav's on-
+                 screen position (bottom of the viewport) at that point, and
+                 being a true top-level sibling now, its own z-index (see the
+                 CSS below) is what decides it, not the hero's. -->
+            <t t-call="proquotes.quote_hero_quicknav"/>
+
+            <!-- "Confirmed order" notice — same liquid-glass family as the
+                 internal-only "preview of the customer portal" banner
+                 (core Odoo's own template, rendered elsewhere entirely),
+                 but rendered directly here since sale_order is in scope in
+                 this template and isn't in that one. Real customers only
+                 ever see this one; the preview banner is internal-editor-
+                 only regardless of order state. Stacking/positioning
+                 relative to that banner is handled in quote_hero_overlay.js
+                 and a CSS custom property in quotePreview.css. Reuses
+                 Bootstrap's native data-bs-dismiss (already loaded
+                 sitewide, same as the accept/sign modals below) rather
+                 than a custom dismiss handler — its event-delegation
+                 approach works on elements added after page load without
+                 needing separate JS init. -->
+            <div t-if="sale_order.state == 'sale'" class="quote-confirmed-notice alert o_liquid_glass" role="alert">
+                <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+                <p class="mb-0">
+                    <t t-if="language == 'fr_CA'">Cette commande est confirmée et ne peut plus être modifiée.</t>
+                    <t t-elif="language == 'es_ES'">Este pedido está confirmado y ya no se puede editar.</t>
+                    <t t-else="">This is a confirmed order and can no longer be edited.</t>
+                </p>
+            </div>
+
+            <!-- "Order shipped" notice — third tier of the same stack,
+                 replacing the old "Last Delivery Orders" listing (see the
+                 comment where that used to sit, before the products
+                 table) with a single, simpler notice carrying just the
+                 latest shipped picking's tracking link. Same
+                 carrier-tracking-URL fallback chain that listing used:
+                 get_multiple_carrier_tracking() first (handles multi-
+                 package shipments), then the picking's own single
+                 carrier_tracking_url/_ref directly. -->
+            <t t-set="quote_shipped_picking"
+               t-value="sale_order.picking_ids
+                            .filtered(lambda p: p.picking_type_id.code == 'outgoing' and p.state == 'done' and p.carrier_tracking_ref)
+                            .sorted('date', reverse=True)[:1]"/>
+            <div t-if="quote_shipped_picking" class="quote-shipped-notice alert o_liquid_glass" role="alert">
+                <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+                <t t-set="shipped_picking" t-value="quote_shipped_picking[0]"/>
+                <t t-set="shipped_tracking" t-value="shipped_picking.get_multiple_carrier_tracking()"/>
+                <p class="mb-2">
+                    <t t-if="language == 'fr_CA'">Cette commande a été expédiée.</t>
+                    <t t-elif="language == 'es_ES'">Este pedido ha sido enviado.</t>
+                    <t t-else="">This order has been shipped.</t>
+                </p>
+                <a t-if="shipped_tracking" t-att-href="shipped_tracking[0][1]" target="_blank" class="quote-notice-link">
+                    <t t-if="language == 'fr_CA'">Numéro de suivi : </t>
+                    <t t-elif="language == 'es_ES'">Número de seguimiento: </t>
+                    <t t-else="">Tracking number: </t>
+                    <t t-out="shipped_tracking[0][0]"/>
+                    <i class="oi oi-arrow-right"/>
+                </a>
+                <a t-elif="shipped_picking.carrier_tracking_url" t-att-href="shipped_picking.carrier_tracking_url" target="_blank" class="quote-notice-link">
+                    <t t-if="language == 'fr_CA'">Numéro de suivi : </t>
+                    <t t-elif="language == 'es_ES'">Número de seguimiento: </t>
+                    <t t-else="">Tracking number: </t>
+                    <t t-esc="shipped_picking.carrier_tracking_ref"/>
+                    <i class="oi oi-arrow-right"/>
+                </a>
+            </div>
         </xpath>
 
         <!-- Hide Total On Rental Quotes -->
@@ -785,116 +392,18 @@
             </attribute>
         </tr>
 
-        <!-- Quote Label -->
-        <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="before">
-            <h1 id="quote-nav-quotation">Quotation</h1>
-
-            <!-- shipping/delivery info section -->
-            <div class="delivery-section" style="margin-top: 10px; margin-bottom: 10px;">
-                <t t-set="delivery_orders"
-                   t-value="sale_order.picking_ids
-                                .filtered(lambda p: p.picking_type_id.code == 'outgoing')
-                                .filtered(lambda p: not (p.hide_on_portal or False))
-                                .sorted('date', reverse=True)[:3]"/>
-                <div t-if="delivery_orders" class="col-12 col-lg-6 mb-4">
-                    <h4 class="mb-1">Last Delivery Orders</h4>
-                    <hr class="mt-1 mb-2"/>
-                    <div>
-                        <t t-foreach="delivery_orders" t-as="picking">
-                            <t t-set="delivery_report_url" t-value="'/my/picking/pdf/%s?%s' % (picking.id, keep_query())"/>
-                            <div name="delivery_order" class="d-flex flex-column">
-                                <div name="delivery_details" class="d-flex align-items-center justify-content-between">
-                                    <a t-att-href="delivery_report_url">
-                                        <span t-esc="picking.name"/>
-                                    </a>
-                                    <div t-if="picking.state == 'done'">
-                                        <span class="small badge text-bg-success orders_label_text_align">
-                                            <i class="fa fa-fw fa-truck"/>
-                                            Shipped
-                                        </span>
-                                        <a class="badge text-bg-secondary orders_label_text_align" target="_blank" t-att-href="'/my/picking/return/pdf/%s?%s' % (picking.id, keep_query())">
-                                            RETURN
-                                        </a>
-                                    </div>
-                                    <span t-elif="picking.state == 'cancel'" class="small badge text-bg-danger orders_label_text_align">
-                                        <i class="fa fa-fw fa-times"/>Cancelled
-                                    </span>
-                                    <span t-elif="picking.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="small badge text-bg-info orders_label_text_align">
-                                        <i class="fa fa-fw fa-clock-o"/>Preparation
-                                    </span>
-                                </div>
-                                <div t-if="picking.carrier_tracking_ref" class="small d-lg-inline-block">
-                                    Tracking:
-                                    <t t-set="multiple_carrier_tracking" t-value="picking.get_multiple_carrier_tracking()"/>
-                                    <t t-if="multiple_carrier_tracking">
-                                        <t t-foreach="multiple_carrier_tracking" t-as="line">
-                                            <a t-att-href="line[1]" target="_blank">
-                                                <span t-esc="line[0]"/>
-                                            </a>
-                                            <span t-if="not line_last">+</span>
-                                        </t>
-                                    </t>
-                                    <t t-elif="picking.carrier_tracking_url">
-                                        <a t-att-href="picking.carrier_tracking_url" target="_blank">
-                                            <span t-field="picking.carrier_tracking_ref"/>
-                                        </a>
-                                    </t>
-                                    <t t-else="">
-                                        <span t-field="picking.carrier_id.name"/>
-                                        <span t-field="picking.carrier_tracking_ref"/>
-                                    </t>
-                                </div>
-                                <div t-if="picking.carrier_id.get_return_label_from_portal and picking.return_label_ids">
-                                    <a class="ms-3" t-attf-href="/web/content/#{picking.return_label_ids[:1].id}?access_token=#{picking.return_label_ids[:1].access_token}" target="_blank">
-                                        Print Return Label
-                                    </a>
-                                </div>
-                                <div class="small d-lg-inline-block" t-if="picking.date_done or picking.scheduled_date">
-                                    Date:
-                                    <span class="text-muted" t-field="picking.date_done" t-options="{'date_only': True}"/>
-                                    <span t-if="picking.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="text-muted" t-field="picking.scheduled_date" t-options="{'date_only': True}"/>
-                                </div>
-                            </div>
-                        </t>
-                    </div>
-                </div>
-                <t t-set="returns"
-                   t-value="sale_order.picking_ids
-                                .filtered(lambda p: p.picking_type_id.code == 'incoming')
-                                .filtered(lambda p: not (p.hide_on_portal or False))"/>
-                <div t-if="returns" class="col-12 col-lg-6 mb-4">
-                    <h4 class="mb-1">Returns</h4>
-                    <hr class="mt-1 mb-2"/>
-                    <t t-foreach="returns" t-as="picking">
-                        <t t-set="delivery_report_url" t-value="'/my/picking/pdf/%s?%s' % (picking.id, keep_query())"/>
-                        <div name="return">
-                            <div name="return_details" class="d-flex justify-content-between align-items-center">
-                                <a t-att-href="delivery_report_url">
-                                    <span t-esc="picking.name"/>
-                                </a>
-                                <span t-if="picking.state == 'done'" class="small badge text-bg-success orders_label_text_align">
-                                    <i class="fa fa-fw fa-truck"/>
-                                    Received
-                                </span>
-                                <span t-elif="picking.state == 'cancel'" class="small badge text-bg-danger orders_label_text_align">
-                                    <i class="fa fa-fw fa-times"/>
-                                    Cancelled
-                                </span>
-                                <span t-elif="picking.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="small badge text-bg-info orders_label_text_align">
-                                    <i class="fa fa-fw fa-clock-o"/>
-                                    Awaiting arrival
-                                </span>
-                            </div>
-                            <div class="small d-lg-inline-block">
-                                Date:
-                                <span class="text-muted" t-field="picking.date_done" t-options="{'date_only': True}"/>
-                                <span t-if="picking.state in ['draft', 'waiting', 'confirmed', 'assigned']" class="text-muted" t-field="picking.scheduled_date" t-options="{'date_only': True}"/>
-                            </div>
-                        </div>
-                    </t>
-                </div>
-            </div>
-        </xpath>
+        <!-- Quote Label: the "Quotation" h1 itself is gone (redundant heading,
+             per request) — id="quote-nav-quotation" moves to the card wrapper
+             itself (table-responsive, in the card-marking xpath block below)
+             so the quicknav link still has something to anchor to. -->
+        <!-- The "Last Delivery Orders" / "Returns" listing that used to
+             render here (before the products table) is gone — it rendered
+             outside every card on this page (this xpath sits before the
+             table itself, not before the table's parent, which is what
+             actually gets the .quote-stack-card treatment), so it always
+             showed up unstyled. Replaced by a single "order shipped"
+             notification instead — see the .quote-shipped-notice markup
+             further up this template, alongside the other notifications. -->
 
         <!-- Add order state to table data attributes for JavaScript access -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="attributes">
@@ -1647,13 +1156,18 @@
             </td>
         </xpath>
 
-        <xpath expr="//div[@id='total']" position="replace">
-            <div id="total" name="total" style="page-break-inside: avoid;">
-                <div class="col-xs-7 col-md-5 ms-auto">
-                    <t t-call="sale.sale_order_portal_content_totals_table"/>
-                </div>
-            </div>
-        </xpath>
+        <!-- #total used to just be re-declared in place here (a no-op replace,
+             literally reproducing the same id/content) as a spot to hook into
+             later — now deleted outright, since it's re-created as a child of
+             the Quotation card (table-responsive) instead, in the "Stacked
+             scroll cards" xpath block further down. It used to sit AFTER
+             table-responsive as its own sibling, meaning once table-responsive
+             became a tall, sticky element, #total's own normal-flow position
+             only ever became visible for a sliver of scroll right as
+             table-responsive was already unsticking and the next card was
+             about to cover it — practically invisible in normal use, which is
+             the "totals table went missing" bug. -->
+        <xpath expr="//div[@id='total']" position="replace"/>
 
         <!--Enable Variable Quantities-->
         <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
@@ -1709,35 +1223,11 @@
             </attribute>
         </xpath> -->
 
-        <!-- Quote Info -->
+        <!-- Quote Info: the currency disclaimer used to render here as its
+             own standalone card between Quotation and Configuration — now
+             rendered inside the Quotation card itself, right after the
+             totals table (see the card-marking xpath block further down). -->
         <xpath expr="//section[@id=&quot;terms&quot;]" position="before">
-            <div id="quote_disclaimer">
-                <t t-set="currency_label" t-if="language == 'fr_CA' and sale_order.currency_id.name == 'CAD'"
-                   t-value="'canadiens'"/>
-                <t t-set="currency_label" t-elif="language == 'fr_CA' and sale_order.currency_id.name == 'USD'"
-                   t-value="'américains'"/>
-                <t t-set="currency_label" t-elif="language == 'es_ES' and sale_order.currency_id.name == 'USD'"
-                   t-value="'americanos'"/>
-                <t t-set="currency_label" t-elif="language == 'es_ES' and sale_order.currency_id.name == 'CAD'"
-                   t-value="'canadienses'"/>
-                <t t-set="currency_label" t-else="" t-value="sale_order.currency_id.name"/>
-                <span t-if="language == 'en_CA' or language == 'en_US'">All prices in
-                    <t t-out="currency_label"/>
-                    dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already
-                    showing). The quote is valid for 30 days after submittal date.
-                </span>
-                <span t-elif="language == 'fr_CA'">Tous les prix sont en dollars<t t-out="currency_label"/>. Les taxes
-                    de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà
-                    affichés). Cette soumission est valide pour 30 jours après la date soumise.
-                </span>
-                <span t-elif="language == 'es_ES'">Todos los precios están en dólares<t t-out="currency_label"/>. Los
-                    impuestos sobre las ventas locales y los costos de entrega se agregarán a la factura final (si no se
-                    muestran ya). La cotización es válida por 30 días después de la fecha de presentación.
-                </span>
-                <br />
-                <br />
-            </div>
-
             <!-- ===== NEW: RENTAL INFO SECTION (rental orders only) - 2026-02-25 - Brainecrew Apps =====
                  Moved here (after the products table, just before the terms/conditions
                  block below) instead of before the table — see quote_hero_quicknav's
@@ -1746,60 +1236,12 @@
 
             <div id="rental-info-section" style="padding: 25px 25px 15px;">
 
-                <!-- Row 1: PO Number | Rental Start | Rental End -->
-                <div class="row mb-3">
-                    <div class="col-md-4 mb-2">
-                        <label for="portal-po-number" class="form-label fw-bold">
-                            <t t-if="language == 'fr_CA'">N° de bon de commande (optionnel)</t>
-                            <t t-else="">PO Number / Reference (optional)</t>
-                        </label>
-                        <input id="portal-po-number" class="poNumber form-control"
-                               type="text"
-                               t-attf-value="{{sale_order.customer_po_number or ''}}"/>
-                    </div>
-                    <t t-if="sale_order.is_rental_order">
-                        <div class="col-md-4 mb-2">
-                            <label for="rental-start" class="form-label fw-bold">
-                                <t t-if="language == 'fr_CA'">Début de la location</t>
-                                <t t-else="">Rental Start Date</t>
-                            </label>
-                            <input id="rental-start"
-                                   type="date"
-                                   class="form-control"
-                                   t-att-value="sale_order.rental_start_date and sale_order.rental_start_date.strftime('%Y-%m-%d') or ''"/>
-                        </div>
-
-                        <div class="col-md-4 mb-2">
-                            <label for="rental-end" class="form-label fw-bold">
-                                <t t-if="language == 'fr_CA'">Fin estimée de la location</t>
-                                <t t-else="">Rental End Date</t>
-                            </label>
-                            <input id="rental-end"
-                                   type="date"
-                                   class="form-control"
-                                   t-att-value="sale_order.rental_return_date and sale_order.rental_return_date.strftime('%Y-%m-%d') or ''"/>
-                        </div>
-
-                    </t>
-                </div>
-                <div class="row mb-3" t-if="sale_order.is_rental_order">
-                    <div class="col-12">
-                        <p class="rental_dates_explain" t-if="language == 'en_CA' or language == 'en_US'">
-                            * The final rental cost will be calculated once the equipement is returned. Weekly rental cost is equivalent to 4x the daily rental rate. Monthly (30 days) rental cost is equivalent to 12x the daily rental rate.<br/>
-                            * Please upload your proof of insurance for the total amount in the comments below.
-                        </p>
-                        <p class="rental_dates_explain" t-elif="language == 'fr_CA'">
-                            * Le coût final de location sera calculé une fois que l'équipement sera retourné. Le coût de location hebdomadaire est équivalent à 4x le taux de location journalier. Le coût de location mensuel (30 jours) est équivalent à 12x le taux de location journalier.<br/>
-                            * Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous.
-                        </p>
-                        <p class="rental_dates_explain" t-elif="language == 'es_ES'">
-                            * Lo costo final del alquiler se calculará una vez que el equipo sea devuelto. El costo de alquiler semanal es equivalente a 4 veces la tarifa diaria. El costo de alquiler mensual (30 días) es equivalente a 12 veces la tarifa diaria.<br/>
-                            * Por favor, cargue su prueba de seguro para el monto total en los comentarios de abajo.
-                        </p>
-                    </div>
-                </div>
-
                 <!-- ================= ADDRESS SECTION ================= -->
+                <!-- Moved ahead of the PO/rental-dates fields below, per
+                     request — address selection reads as the more
+                     fundamental "what/where" decision, with the
+                     PO/date reference fields following as secondary
+                     details about that same order. -->
 
                 <div id="rental-address-section">
 
@@ -1931,6 +1373,74 @@
 
                 </div>
 
+                <!-- Rental Start | Rental End | Request Dates button, all
+                     on one line — the button doesn't do anything yet, per
+                     request, just a placeholder trigger for a future
+                     date-request flow. -->
+                <div class="row mb-3" t-if="sale_order.is_rental_order">
+                    <div class="col-md-4 mb-2">
+                        <label for="rental-start" class="form-label fw-bold">
+                            <t t-if="language == 'fr_CA'">Début de la location</t>
+                            <t t-else="">Rental Start Date</t>
+                        </label>
+                        <input id="rental-start"
+                               type="date"
+                               class="form-control"
+                               t-att-value="sale_order.rental_start_date and sale_order.rental_start_date.strftime('%Y-%m-%d') or ''"/>
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <label for="rental-end" class="form-label fw-bold">
+                            <t t-if="language == 'fr_CA'">Fin estimée de la location</t>
+                            <t t-else="">Rental End Date</t>
+                        </label>
+                        <input id="rental-end"
+                               type="date"
+                               class="form-control"
+                               t-att-value="sale_order.rental_return_date and sale_order.rental_return_date.strftime('%Y-%m-%d') or ''"/>
+                    </div>
+
+                    <!-- <div class="col-md-4 mb-2 d-flex align-items-end">
+                        <button type="button" id="request-dates-btn" class="btn btn-outline-secondary w-100">
+                            <t t-if="language == 'fr_CA'">Demander des dates</t>
+                            <t t-elif="language == 'es_ES'">Solicitar fechas</t>
+                            <t t-else="">Request dates</t>
+                        </button>
+                    </div> -->
+                </div>
+
+                <div class="row mb-3" t-if="sale_order.is_rental_order">
+                    <div class="col-12">
+                        <p class="rental_dates_explain" t-if="language == 'en_CA' or language == 'en_US'">
+                            * The final rental cost will be calculated once the equipement is returned. Weekly rental cost is equivalent to 4x the daily rental rate. Monthly (30 days) rental cost is equivalent to 12x the daily rental rate.<br/>
+                            * Please upload your proof of insurance for the total amount in the comments below.
+                        </p>
+                        <p class="rental_dates_explain" t-elif="language == 'fr_CA'">
+                            * Le coût final de location sera calculé une fois que l'équipement sera retourné. Le coût de location hebdomadaire est équivalent à 4x le taux de location journalier. Le coût de location mensuel (30 jours) est équivalent à 12x le taux de location journalier.<br/>
+                            * Veuillez télécharger votre preuve d'assurance pour le montant total dans les commentaires ci-dessous.
+                        </p>
+                        <p class="rental_dates_explain" t-elif="language == 'es_ES'">
+                            * Lo costo final del alquiler se calculará una vez que el equipo sea devuelto. El costo de alquiler semanal es equivalente a 4 veces la tarifa diaria. El costo de alquiler mensual (30 días) es equivalente a 12 veces la tarifa diaria.<br/>
+                            * Por favor, cargue su prueba de seguro para el monto total en los comentarios de abajo.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- PO Number — underneath the rental-dates asterisk notes,
+                     since those only ever show for rental orders and this
+                     applies regardless of order type. -->
+                <div class="row mb-3">
+                    <div class="col-md-4 mb-2">
+                        <label for="portal-po-number" class="form-label fw-bold">
+                            <t t-if="language == 'fr_CA'">N° de bon de commande (optionnel)</t>
+                            <t t-else="">PO Number / Reference (optional)</t>
+                        </label>
+                        <input id="portal-po-number" class="poNumber form-control"
+                               type="text"
+                               t-attf-value="{{sale_order.customer_po_number or ''}}"/>
+                    </div>
+                </div>
+
             </div>
             <!-- ===== END RENTAL INFO SECTION ===== -->
 
@@ -1970,6 +1480,19 @@
                     <div class="quote-terms-body">
                         <t t-call="proquotes.rental_terms"/>
                     </div>
+                    <div t-if="sale_order.payment_term_id" class="quote-terms-payment">
+                        <input id="payment-terms-checkbox" type="checkbox" class="quote-terms-toggle-input"/>
+                        <label for="payment-terms-checkbox" class="quote-terms-toggle">
+                            <span class="quote-folding-icon"></span>
+                            <h4 class="quote-terms-payment-title">
+                                <t t-if="language == 'fr_CA'">Modalités de paiement</t>
+                                <t t-elif="language == 'es_ES'">Condiciones de pago</t>
+                                <t t-else="">Payment Terms</t>
+                            </h4>
+                        </label>
+                        <div class="quote-terms-body quote-terms-payment-body" t-field="sale_order.payment_term_id.note"/>
+                    </div>
+                    <t t-call="proquotes.quote_terms_acceptance"/>
                 </div>
             </t>
             <t t-else="">
@@ -1986,21 +1509,34 @@
                     <div class="quote-terms-body">
                         <t t-call="proquotes.normal_terms"/>
                     </div>
+                    <div t-if="sale_order.payment_term_id" class="quote-terms-payment">
+                        <input id="payment-terms-checkbox" type="checkbox" class="quote-terms-toggle-input"/>
+                        <label for="payment-terms-checkbox" class="quote-terms-toggle">
+                            <span class="quote-folding-icon"></span>
+                            <h4 class="quote-terms-payment-title">
+                                <t t-if="language == 'fr_CA'">Modalités de paiement</t>
+                                <t t-elif="language == 'es_ES'">Condiciones de pago</t>
+                                <t t-else="">Payment Terms</t>
+                            </h4>
+                        </label>
+                        <div class="quote-terms-body quote-terms-payment-body" t-field="sale_order.payment_term_id.note"/>
+                    </div>
+                    <t t-call="proquotes.quote_terms_acceptance"/>
                 </div>
             </t>
         </xpath>
-        <xpath expr="//section[@id='signature']" position="replace">
-            <section t-if="sale_order.signature" id="signature" name="Signature">
-                <div class="row mt-4" name="signature">
-                    <div t-attf-class="#{'col-3' if report_type != 'html' else 'col-sm-7 col-md-4'} ml-auto text-center">
-                        <h5>Signature</h5>
-                        <img t-att-src="image_data_uri(sale_order.signature)"
-                             style="max-height: 6rem; max-width: 100%;background-color:white !important;"/>
-                        <p t-field="sale_order.signed_by"/>
-                    </div>
-                </div>
-            </section>
-        </xpath>
+
+        <!-- The base template's own separate "Payment terms" section is now
+             folded into the Conditions card above as a second set of terms —
+             delete the original standalone one so it doesn't render twice. -->
+        <xpath expr="//section[@t-if=&quot;sale_order.payment_term_id&quot;]" position="replace"/>
+        <!-- The signature section used to render here, standalone, between
+             the Quotation and Configuration cards — see the "Re-create
+             #total" xpath further down this same template, which now
+             renders it as the last child of the Quotation card instead,
+             right after the currency disclaimer. Deleted from its old spot
+             here so it doesn't render twice. -->
+        <xpath expr="//section[@id='signature']" position="replace"/>
 
 
         <!-- table align -->
@@ -2056,6 +1592,80 @@
             </td>
         </xpath>
 
+        <!-- Mark the "Quotation" card (see .quote-stack-card / the fixed
+             .quote-hero-cover CSS above). Anchored off
+             //table[@id="sales_order_table"] (already proven reliable —
+             used by the "Add order state" xpath above) and navigated to its
+             parent via /.. rather than matching the table-responsive wrapper
+             directly by class — some other module inheriting this same base
+             view apparently restructures that wrapper before priority-17
+             views like this one run, since matching it by class name/tag
+             failed to locate any node during a module upgrade even though
+             the table itself was still exactly where expected. -->
+        <xpath expr="//table[@id=&quot;sales_order_table&quot;]/.." position="attributes">
+            <attribute name="id">quote-nav-quotation</attribute>
+            <attribute name="class" add="quote-stack-card" separator=" "/>
+        </xpath>
+
+        <!-- Mark the "Configuration" card — #rental-info-section is defined
+             further up in this same template (the xpath before section#terms),
+             so this has to run after it, which placing it here guarantees. -->
+        <xpath expr="//div[@id=&quot;rental-info-section&quot;]" position="attributes">
+            <attribute name="class">quote-stack-card</attribute>
+        </xpath>
+
+        <!-- Re-create #total (deleted from its old standalone spot above) as
+             the last child of the Quotation card instead, so it's part of the
+             same card as the product lines rather than a separate sibling. -->
+        <xpath expr="//table[@id=&quot;sales_order_table&quot;]/.." position="inside">
+            <div id="total" name="total" style="page-break-inside: avoid;">
+                <div class="col-xs-7 col-md-5 ms-auto">
+                    <t t-call="sale.sale_order_portal_content_totals_table"/>
+                </div>
+            </div>
+
+            <!-- Currency disclaimer, folded in here (used to be its own
+                 standalone card between Quotation and Configuration). -->
+            <div id="quote_disclaimer">
+                <t t-set="currency_label" t-if="language == 'fr_CA' and sale_order.currency_id.name == 'CAD'"
+                   t-value="'canadiens'"/>
+                <t t-set="currency_label" t-elif="language == 'fr_CA' and sale_order.currency_id.name == 'USD'"
+                   t-value="'américains'"/>
+                <t t-set="currency_label" t-elif="language == 'es_ES' and sale_order.currency_id.name == 'USD'"
+                   t-value="'americanos'"/>
+                <t t-set="currency_label" t-elif="language == 'es_ES' and sale_order.currency_id.name == 'CAD'"
+                   t-value="'canadienses'"/>
+                <t t-set="currency_label" t-else="" t-value="sale_order.currency_id.name"/>
+                <span t-if="language == 'en_CA' or language == 'en_US'">All prices in
+                    <t t-out="currency_label"/>
+                    dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already
+                    showing). The quote is valid for 30 days after submittal date.
+                </span>
+                <span t-elif="language == 'fr_CA'">Tous les prix sont en dollars<t t-out="currency_label"/>. Les taxes
+                    de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà
+                    affichés). Cette soumission est valide pour 30 jours après la date soumise.
+                </span>
+                <span t-elif="language == 'es_ES'">Todos los precios están en dólares<t t-out="currency_label"/>. Los
+                    impuestos sobre las ventas locales y los costos de entrega se agregarán a la factura final (si no se
+                    muestran ya). La cotización es válida por 30 días después de la fecha de presentación.
+                </span>
+            </div>
+
+            <!-- Signature — used to render standalone between the
+                 Quotation and Configuration cards (see the deleted
+                 #signature xpath further up this same template) — now the
+                 last child of the Quotation card instead, right after the
+                 currency disclaimer above. -->
+            <section t-if="sale_order.signature" id="signature" name="Signature">
+                <div class="row mt-4" name="signature">
+                    <div t-attf-class="#{'col-3' if report_type != 'html' else 'col-sm-7 col-md-4'} ml-auto text-center">
+                        <h5>Signature</h5>
+                        <img t-att-src="image_data_uri(sale_order.signature)"
+                             style="max-height: 6rem; max-width: 100%;background-color:white !important;"/>
+                    </div>
+                </div>
+            </section>
+        </xpath>
 
     </template>
 
@@ -2176,64 +1786,12 @@
             <t t-set="language" t-value="request.lang.code"/>
             <t t-set="sale_order" t-value="sale_order.with_context(lang=language)"/>
 
-            <div t-if="language == 'fr_CA'" id="customer-acceptance">
-                <h1 class="white-text">Acceptation du client</h1>
-                <p>Avec votre signature, vous acceptez notre offre au nom de votre entreprise comme ci-dessus et vous
-                    confirmez que vous êtes autorisé à le faire.
-                </p>
-            </div>
-            <div t-elif="language == 'es_ES'" id="customer-acceptance">
-                <h1 class="white-text">Aceptación del cliente</h1>
-                <p>Con su firma, acepta nuestra oferta en nombre de su empresa como se indica arriba y confirma que está
-                    autorizado para hacerlo.
-                </p>
-            </div>
-            <div t-else="" id="customer-acceptance">
-                <h1 class="white-text">Customer Acceptance</h1>
-                <p>With your signature you accept our offer on behalf of your company as above and you confirm, that you
-                    are authorized to do so.
-                </p>
-            </div>
-
-            <!-- bottom actions with unified button appearance -->
-            <div t-if="sale_order._has_to_be_signed() or sale_order._has_to_be_paid()" class="d-flex flex-wrap justify-content-center gap-2 d-print-none mt-4">
-
-                <t t-if="sale_order._has_to_be_signed()">
-                    <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalaccept" href="#">
-                        <i class="fa fa-check me-1"/>
-                        Accept &amp; Sign
-                    </a>
-                    <a role="button" class="btn btn-primary" href="#discussion">
-                        <i class="fa fa-comment me-1"/>
-                        Feedback
-                    </a>
-                    <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modaldecline" href="#">
-                        <i class="fa fa-times me-1"/>
-                        Reject
-                    </a>
-                    <a role="button" class="btn btn-primary" t-att-href="sale_order.get_portal_url(report_type='pdf')" target="_blank">
-                        <i class="fa fa-download me-1"/>
-                        Download
-                    </a>
-                </t>
-
-                <t t-elif="sale_order._has_to_be_paid()">
-                    <a role="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalaccept" href="#">
-                        <i class="fa fa-check me-1"/>
-                        <t t-if="not sale_order.signature">Accept &amp; Pay</t>
-                        <t t-else="">Pay Now</t>
-                    </a>
-                    <a role="button" class="btn btn-primary" href="#discussion">
-                        <i class="fa fa-comment me-1"/>
-                        Feedback
-                    </a>
-                    <a role="button" class="btn btn-primary" t-att-href="sale_order.get_portal_url(report_type='pdf')" target="_blank">
-                        <i class="fa fa-download me-1"/>
-                        Download
-                    </a>
-                </t>
-
-            </div>
+            <!-- Customer acceptance heading + the accept/sign/reject/download
+                 buttons used to render here, plain, outside any card. Both
+                 are now rendered instead inside the Conditions card, in
+                 sale_order_portal_content (both terms branches), as a third
+                 section after Terms and Payment Terms — see
+                 #quote-nav-conditions there. -->
 
         </xpath>
 
@@ -2247,9 +1805,22 @@
             <t t-set="default_name" t-value="env.user.name"/>
         </xpath>
 
-        <!-- <img id="footer-img" alt="Footer Img" t-attf-src="{{sale_order.footer_id.url}}"/> -->
-        <xpath expr="//div[@id=&quot;sale_order_communication&quot;]" position="before">
-            <img id="footer-img" alt="Footer Img" t-attf-src="{{sale_order.footer_id.url}}"/>
+        <!-- The footer image used to render here, standalone, right before
+             the Discussion/Comments area. It's now rendered inside the
+             Conditions card instead, in sale_order_portal_content (both terms
+             branches) — see #quote-nav-conditions there. -->
+
+        <!-- Cardify the Discussion/Comments area — same .quote-plain-card
+             treatment as the currency disclaimer, just visual consistency
+             (this section is intentionally left scrolling normally, not
+             part of the fixed-hero card stack, per instruction). The CSS
+             for this class lives in proquotes/static/src/CSS/quotePreview.css,
+             loaded sitewide via the web.assets_frontend bundle and scoped
+             with body:has(.quote-hero-cover) — applies fine here regardless
+             of which template (this one vs sale.sale_order_portal_template)
+             actually renders the element. -->
+        <xpath expr="//div[@id=&quot;sale_order_communication&quot;]" position="attributes">
+            <attribute name="class" add="quote-plain-card" separator=" "/>
         </xpath>
     </template>
 
