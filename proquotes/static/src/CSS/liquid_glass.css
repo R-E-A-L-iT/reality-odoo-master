@@ -1,12 +1,24 @@
 /* ════════════════════════════════════════════════════════════════════════════
    .o_liquid_glass — reusable "liquid glass" notification/card surface.
    Apply this class to any floating card-like element (see liquid_glass.js for
-   the accompanying pointer-tilt behavior) to get the same glass material
-   everywhere it's used, rather than each page hand-rolling its own blur/tint/
-   shadow recipe. Tunable per-instance via the --o_lg_* custom properties
-   below (set them on the element itself, or a page-specific selector that
-   targets it) instead of overriding the shorthand properties directly, so
-   every instance stays built from the same recipe as this one changes.
+   the accompanying pointer-tilt behavior and the SVG lens-filter injection)
+   to get the same glass material everywhere it's used, rather than each page
+   hand-rolling its own blur/tint/shadow recipe. Tunable per-instance via the
+   --o_lg_* custom properties below (set them on the element itself, or a
+   page-specific selector that targets it) instead of overriding the
+   shorthand properties directly, so every instance stays built from the same
+   recipe as this one changes.
+
+   The actual glass recipe (three stacked layers — a distorted/blurred
+   backdrop, a tint + specular highlight, then the real content on top) is
+   adapted from a CodePen "liquid glass dock" demo the user found and asked
+   to match, replacing this component's previous single-layer backdrop-
+   filter + radial-gradient approach. Reworked onto ::before/::after instead
+   of the demo's own extra wrapper <div>s specifically so it keeps working as
+   a class droppable onto markup this module doesn't control the structure
+   of — the "preview of the customer portal" banner (core Odoo's own
+   template) only ever gets this class added via JS, never a full markup
+   rewrite, so the recipe can't depend on extra child elements existing.
    ════════════════════════════════════════════════════════════════════════════ */
 
 :root {
@@ -15,6 +27,7 @@
     --o_lg_blur: 26px;
     --o_lg_saturate: 1.8;
     --o_lg_radius: 24px;
+    --o_lg_highlight: rgba(255, 255, 255, 0.75);
 
     /* Written by liquid_glass.js on pointer move; fall back to a neutral
        resting pose so the element looks correct before JS runs / on
@@ -37,23 +50,15 @@
     isolation: isolate;
     overflow: hidden;
     border-radius: var(--o_lg_radius) !important;
-    background: var(--o_lg_tint) !important;
+    /* The tint now lives on ::after (see below) so it can composite above
+       the distorted backdrop layer instead of being the backdrop-filtered
+       layer itself — this element's own background stays transparent. */
+    background: transparent !important;
     border: 1px solid var(--o_lg_border) !important;
-    backdrop-filter: blur(var(--o_lg_blur)) saturate(var(--o_lg_saturate)) !important;
-    -webkit-backdrop-filter: blur(var(--o_lg_blur)) saturate(var(--o_lg_saturate)) !important;
 
-    /* Layered shadow: a soft wide ambient shadow + a tighter contact shadow
-       give it real "floating above the page" depth, and the two inset lines
-       (bright top edge, faint dark bottom edge) plus the two side inset
-       lines are what read as light catching a curved glass edge — the same
-       trick used for glass/skeuomorphic UI generally. */
     box-shadow:
-        0 32px 64px rgba(0, 0, 0, 0.4),
-        0 8px 22px rgba(0, 0, 0, 0.28),
-        inset 0 1px 0 rgba(255, 255, 255, 0.65),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-        inset 1px 0 0 rgba(255, 255, 255, 0.14),
-        inset -1px 0 0 rgba(0, 0, 0, 0.08) !important;
+        0 6px 6px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(0, 0, 0, 0.1) !important;
 
     transform:
         perspective(900px)
@@ -64,27 +69,54 @@
     will-change: transform;
 }
 
-/* Specular sheen — a soft highlight positioned by --o_lg_glint_x/y, which
-   liquid_glass.js nudges opposite the tilt so it reads as one light source
-   catching the glass from a fixed angle as the card leans, rather than a
-   static gradient painted on top. border-radius:inherit rounds its own
-   background to match the card even without the card's own overflow:hidden
-   clipping it — instances that need something (like a corner badge) to
-   visibly poke outside the card can safely override overflow to visible
-   without this sheen suddenly showing square corners. */
+/* Layer 1 — the actual "glass": blurs and optically distorts whatever's
+   behind the card. #o_lg_lens_filter (injected once into the page by
+   liquid_glass.js, since it has to exist as real SVG markup somewhere in
+   the DOM — CSS alone can't define an SVG filter) is what produces the
+   subtle warp/lens look on top of the plain blur, the same feComponent
+   Transfer/feGaussianBlur/feDisplacementMap trick the CodePen reference
+   used. Safari doesn't reliably support url() filter references on HTML
+   elements, hence the separate -webkit- fallback below with just the
+   blur/saturate — degrades to the old flat-glass look there instead of
+   breaking outright. */
 .o_liquid_glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    backdrop-filter: blur(var(--o_lg_blur)) url(#o_lg_lens_filter) saturate(var(--o_lg_saturate));
+    -webkit-backdrop-filter: blur(var(--o_lg_blur)) saturate(var(--o_lg_saturate));
+}
+
+/* Layer 2 — tint + specular highlight + the pointer-reactive sheen, all
+   composited together above the distorted backdrop layer. Combines what
+   the CodePen reference split across two separate elements
+   (.glass-overlay's flat tint and .glass-specular's inset highlight)
+   since background-color and box-shadow can coexist on the same layer
+   without conflict — plus this component's own pointer-tilt sheen
+   (liquid_glass.js nudges --o_lg_glint_x/y opposite the tilt so it reads
+   as one light source catching the glass from a fixed angle as the card
+   leans, rather than a static gradient painted on top), layered in via a
+   second background-image rather than needing a third pseudo-element. */
+.o_liquid_glass::after {
     content: "";
     position: absolute;
     inset: 0;
     z-index: 1;
     pointer-events: none;
     border-radius: inherit;
-    background: radial-gradient(120% 90% at var(--o_lg_glint_x) var(--o_lg_glint_y), rgba(255, 255, 255, 0.5), transparent 55%);
-    mix-blend-mode: overlay;
+    background-color: var(--o_lg_tint) !important;
+    background-image: radial-gradient(120% 90% at var(--o_lg_glint_x) var(--o_lg_glint_y), rgba(255, 255, 255, 0.5), transparent 55%);
+    background-blend-mode: overlay;
+    box-shadow:
+        inset 1px 1px 0 var(--o_lg_highlight),
+        inset 0 0 5px var(--o_lg_highlight) !important;
     transition: background-position 0.6s ease;
 }
 
-/* Everything else in the card paints above the sheen layer. */
+/* Everything else in the card paints above both glass layers. */
 .o_liquid_glass > * {
     position: relative;
     z-index: 2;

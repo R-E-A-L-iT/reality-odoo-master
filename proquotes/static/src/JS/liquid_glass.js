@@ -27,6 +27,61 @@ function resetTilt(el) {
     el.style.setProperty("--o_lg_glint_y", "-10%");
 }
 
+// #o_lg_lens_filter has to exist as real SVG markup somewhere in the page —
+// CSS's `filter: url(#id)` can only reference a filter that's actually
+// present in the DOM, there's no way to define one purely in a .css file.
+// Injected once into <body>, hidden and zero-sized, the first time any
+// .o_liquid_glass element initializes, so every instance across every page
+// this class gets used on can rely on it being there without each one
+// needing its own copy in its own template. Values (stdDeviation/scale)
+// match the CodePen "liquid glass dock" demo this recipe is adapted from.
+let lensFilterInjected = false;
+function ensureLensFilter() {
+    if (lensFilterInjected || document.getElementById("o_lg_lens_filter")) {
+        lensFilterInjected = true;
+        return;
+    }
+    lensFilterInjected = true;
+
+    const svgNs = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNs, "svg");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("style", "position:absolute; width:0; height:0; overflow:hidden;");
+
+    const filter = document.createElementNS(svgNs, "filter");
+    filter.setAttribute("id", "o_lg_lens_filter");
+    filter.setAttribute("x", "0%");
+    filter.setAttribute("y", "0%");
+    filter.setAttribute("width", "100%");
+    filter.setAttribute("height", "100%");
+    filter.setAttribute("filterUnits", "objectBoundingBox");
+
+    const componentTransfer = document.createElementNS(svgNs, "feComponentTransfer");
+    componentTransfer.setAttribute("in", "SourceAlpha");
+    componentTransfer.setAttribute("result", "alpha");
+    const funcA = document.createElementNS(svgNs, "feFuncA");
+    funcA.setAttribute("type", "identity");
+    componentTransfer.appendChild(funcA);
+
+    const blur = document.createElementNS(svgNs, "feGaussianBlur");
+    blur.setAttribute("in", "alpha");
+    blur.setAttribute("stdDeviation", "50");
+    blur.setAttribute("result", "blur");
+
+    const displacement = document.createElementNS(svgNs, "feDisplacementMap");
+    displacement.setAttribute("in", "SourceGraphic");
+    displacement.setAttribute("in2", "blur");
+    displacement.setAttribute("scale", "50");
+    displacement.setAttribute("xChannelSelector", "A");
+    displacement.setAttribute("yChannelSelector", "A");
+
+    filter.appendChild(componentTransfer);
+    filter.appendChild(blur);
+    filter.appendChild(displacement);
+    svg.appendChild(filter);
+    document.body.appendChild(svg);
+}
+
 // Exported (not just registered as a widget) because some .o_liquid_glass
 // instances get their class added dynamically after publicWidget's own
 // selector-based scan already ran (e.g. the quote-preview banner in
@@ -38,6 +93,11 @@ export function initLiquidGlassTilt(el) {
         return;
     }
     el.__liquidGlassTiltInit = true;
+
+    // The glass background effect itself (unlike the tilt below) isn't
+    // pointer/motion-dependent — needs to exist for every instance
+    // regardless of the reduced-motion/coarse-pointer checks just below.
+    ensureLensFilter();
 
     if (prefersReducedMotion() || !isFinePointer()) {
         return;
