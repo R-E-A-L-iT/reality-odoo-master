@@ -8,7 +8,7 @@
             <t t-if="o and 'footer_id' in o._fields and o.footer_id and o.footer_id.url">
                 <img t-att-src="o.footer_id.url"
                     alt="Footer Image"
-                    style="display: block; width: 100%; max-height: 90px; object-fit: contain;"/>
+                    style="display: block; height: 90px; width: auto; max-width: 100%; margin: 0 auto; object-fit: contain;"/>
 
                 <span>Test6</span>
 
@@ -43,7 +43,7 @@
                 <t t-if="source and 'footer_id' in source._fields and source.footer_id and source.footer_id.url">
                     <br/>
                     <img t-att-src="source.footer_id.url"
-                        style="width: 100%; max-height: 90px; object-fit: contain; display: block;"/>
+                        style="display: block; height: 90px; width: auto; max-width: 100%; margin: 0 auto; object-fit: contain;"/>
                 </t>
             </div>
         </xpath>
