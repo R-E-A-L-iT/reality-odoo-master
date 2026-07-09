@@ -2105,10 +2105,16 @@
         </xpath>
 
         <!-- Stacked scroll cards: mark the "Quotation" card (see the
-             .quote-stack-card / .quote-hero-cover CSS above). Targeted by
-             class rather than adding an id since table-responsive is a stock
-             Bootstrap wrapper div with no id of its own. -->
-        <xpath expr="//div[hasclass('table-responsive')]" position="attributes">
+             .quote-stack-card / .quote-hero-cover CSS above). Anchored off
+             //table[@id="sales_order_table"] (already proven reliable —
+             used by the "Add order state" xpath above) and navigated to its
+             parent via /.. rather than matching the table-responsive wrapper
+             directly by class — some other module inheriting this same base
+             view apparently restructures that wrapper before priority-17
+             views like this one run, since matching it by class name/tag
+             failed to locate any node during a module upgrade even though
+             the table itself was still exactly where expected. -->
+        <xpath expr="//table[@id=&quot;sales_order_table&quot;]/.." position="attributes">
             <attribute name="class" add="quote-stack-card" separator=" "/>
         </xpath>
 
