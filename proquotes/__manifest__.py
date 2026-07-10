@@ -125,6 +125,7 @@
         "views/Other/renewalText.xml",
         "views/Other/rental_order_wizard_form.xml",
         "views/Other/rental_date_response_wizard.xml",
+        "views/Other/res_users_activity_pref.xml",
         # "views/Quote/quoteRentalAddress.xml",
         "views/Quote/ccp_selection_form.xml",
         "views/Other/mail.xml",

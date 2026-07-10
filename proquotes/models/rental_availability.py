@@ -163,6 +163,12 @@ class SaleOrder(models.Model):
     rental_request_activity_id = fields.Many2one(
         "mail.activity", string="Rental Request To-Do", copy=False, ondelete="set null",
     )
+    rental_request_note_id = fields.Many2one(
+        "mail.message", string="Rental Request Availability Note", copy=False,
+        ondelete="set null",
+        help="The last availability note posted for a date request; deleted and "
+             "replaced when a new request/update comes in, to avoid clutter.",
+    )
 
     # ------------------------------------------------------------------
     # Requirements (real shipped products, phantom-BOM kits exploded)
@@ -350,16 +356,21 @@ class SaleOrder(models.Model):
 
     def _post_rental_availability_note(self, is_update=False):
         self.ensure_one()
+        # Replace the previous availability note so they don't pile up.
+        if self.rental_request_note_id:
+            self.rental_request_note_id.sudo().unlink()
+
         body = self._rental_availability_message_html(is_update=is_update)
         salesperson = self.user_id
         author = self.env.ref("base.user_root").partner_id
         partner_ids = salesperson.partner_id.ids if (salesperson and salesperson.partner_id) else []
         subject = (_("Rental date request updated by customer") if is_update
                    else _("Rental dates requested by customer"))
-        self.message_post(
+        message = self.message_post(
             body=body, subject=subject, message_type="comment",
             subtype_xmlid="mail.mt_note", author_id=author.id, partner_ids=partner_ids,
         )
+        self.rental_request_note_id = message.id
 
     def _rental_request_refresh_activity(self, is_update=False):
         """(Re)create the pinned to-do for the salesperson."""
