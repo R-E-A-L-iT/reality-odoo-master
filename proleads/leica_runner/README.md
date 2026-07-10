@@ -53,6 +53,7 @@ the runner behind a tunnel for testing — e.g. `cloudflared tunnel`, `ngrok htt
 | `LEICA_RUNNER_HEADLESS` | `0` | `1` hides the browser window |
 | `LEICA_RUNNER_SCREENSHOTS` | `./screenshots` | filled-form screenshots (audit trail) |
 | `LEICA_RUNNER_HOLD_SECONDS` | `20` | keep the browser open after filling (test mode, headful only) |
+| `LEICA_RUNNER_NAV_TIMEOUT` | `60000` | ms to wait for a page/element (the portal never stops its spinner, so we wait for elements, not full page load) |
 
 ## Flow
 

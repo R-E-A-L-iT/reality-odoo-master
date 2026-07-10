@@ -202,7 +202,7 @@ class CrmLead(models.Model):
             )
             if not company_id:
                 company_id = self.env["res.company"].sudo().search([
-                    ("name", "=", "R-E-A-L.iT U.S. Inc.")
+                    ("name", "=", "R-E-A-L.iT Solutions FL L.L.C.")
                 ], limit=1).id
 
         return self.env["res.company"].browse(company_id) if company_id else self.env["res.company"]

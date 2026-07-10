@@ -44,7 +44,7 @@ import unicodedata
 from datetime import datetime
 
 from flask import Flask, jsonify, request
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, TimeoutError as PWTimeoutError
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -60,6 +60,14 @@ HOST = os.environ.get("LEICA_RUNNER_HOST", "0.0.0.0")
 HEADLESS = os.environ.get("LEICA_RUNNER_HEADLESS", "0") == "1"
 SCREENSHOT_DIR = os.environ.get("LEICA_RUNNER_SCREENSHOTS", "./screenshots")
 HOLD_SECONDS = int(os.environ.get("LEICA_RUNNER_HOLD_SECONDS", "20"))
+
+# The portal is an old ColdFusion site that keeps a spinner going forever (a
+# resource that never finishes loading), so the "load"/"domcontentloaded"
+# lifecycle events may never fire. We therefore navigate with wait_until="commit"
+# (resolves as soon as the server returns the HTML) and then wait for the
+# specific element we need to appear. This is how long we'll wait for that
+# element / for a navigation to commit.
+NAV_TIMEOUT = int(os.environ.get("LEICA_RUNNER_NAV_TIMEOUT", "60000"))
 
 logging.basicConfig(
     level=logging.INFO,
@@ -132,6 +140,31 @@ def select_by_visible_text(page, select_name, text):
     page.select_option(f'select[name="{select_name}"]', value=value)
 
 
+def safe_goto(page, url, attempts=4):
+    """page.goto that tolerates net::ERR_ABORTED.
+
+    On this portal a navigation often collides with an in-flight one (e.g. the
+    login POST's index.cfm -> main.cfm redirect still settling), which aborts
+    our goto. That's transient — retrying after a short pause succeeds once the
+    competing navigation has finished.
+    """
+    last_err = None
+    for i in range(attempts):
+        try:
+            resp = page.goto(url, wait_until="commit", timeout=NAV_TIMEOUT)
+            if resp is not None:
+                log.info("goto %s -> HTTP %s", url, resp.status)
+            return resp
+        except Exception as e:
+            last_err = e
+            if "ERR_ABORTED" in str(e):
+                log.info("goto %s aborted (attempt %d), retrying ...", url, i + 1)
+                page.wait_for_timeout(1500)
+                continue
+            raise
+    raise last_err
+
+
 def resolve_state_label(payload):
     """Figure out which portal state/province label to select."""
     code = (payload.get("state_code") or "").strip().upper()
@@ -173,49 +206,136 @@ def register_lead(payload):
         browser = p.chromium.launch(headless=HEADLESS)
         context = browser.new_context()
         page = context.new_page()
-        page.set_default_timeout(30000)
-        page.on("dialog", lambda d: (dialogs.append(d.message), d.dismiss()))
+        page.set_default_timeout(NAV_TIMEOUT)
+
+        def _on_dialog(d):
+            # Accept "leave page?" (beforeunload) prompts, otherwise dismissing
+            # them cancels our navigation and we get stuck on the page. Capture
+            # and dismiss the portal's own validation alert()s.
+            if d.type == "beforeunload":
+                d.accept()
+            else:
+                dialogs.append(d.message)
+                d.dismiss()
+
+        page.on("dialog", _on_dialog)
 
         try:
             # --- 1. Login page -------------------------------------------------
+            # wait_until="commit" so we don't hang on the portal's never-ending
+            # spinner; then wait for the actual username field to appear.
             log.info("Opening portal login page ...")
-            page.goto(PORTAL_URL, wait_until="domcontentloaded")
+            safe_goto(page, PORTAL_URL)
+            # Fail fast (and clearly) if the portal serves a blank page instead
+            # of the login form — that's typically a soft rate-limit / block.
+            try:
+                page.wait_for_selector('form[name="LoginForm"] input[name="username"]', timeout=25000)
+            except PWTimeoutError:
+                body_len = page.evaluate(
+                    "() => (document.body ? document.body.innerText.trim().length : 0)"
+                )
+                if not body_len:
+                    return False, (
+                        "The portal returned a blank login page (empty body). This usually means "
+                        "portal.leicaus.com is temporarily rate-limiting or blocking automated "
+                        "logins after too many attempts. Wait ~20-30 minutes, then try again — and "
+                        "avoid rapid repeated runs."
+                    )
+                return False, "The portal login form did not appear (unexpected page content)."
 
-            # Cookie banner, if present
+            # Cookie banner, if present (force=True: skip the actionability
+            # checks that hang on this perpetually-loading portal)
             try:
                 banner = page.locator("a.wpcc-btn")
                 if banner.count() and banner.first.is_visible():
-                    banner.first.click()
+                    banner.first.click(force=True)
             except Exception:
                 pass
 
-            if not page.locator('form[name="LoginForm"] input[name="username"]').count():
-                return False, "Login form not found on the portal landing page."
-
             log.info("Logging in as %s (%s) ...", payload["portal_username"], sales_region_label)
-            page.fill('form[name="LoginForm"] input[name="username"]', payload["portal_username"])
-            page.fill('form[name="LoginForm"] input[name="password"]', payload["portal_password"])
-            page.click('form[name="LoginForm"] input[name="CheckLogin"]')
-            page.wait_for_load_state("domcontentloaded")
 
-            # Still seeing a password box => credentials rejected
-            if page.locator('input[name="password"]').count():
-                return False, "Portal login failed — check the credentials configured in Odoo."
+            # Submit the login form directly in the page. This bypasses two
+            # things that were stopping the login:
+            #   1. Playwright's click() — its actionability checks (stable,
+            #      hit-testable) spin forever because this portal never stops
+            #      loading.
+            #   2. The form's onsubmit="return CheckForm(this)" handler, which
+            #      calls jQuery ($.trim); if jQuery hasn't finished loading the
+            #      handler throws and cancels the submit.
+            # We add a hidden CheckLogin field so the button's value is still
+            # POSTed even though form.submit() has no "submitter", then call
+            # submit() (which does not run onsubmit).
+            #
+            # The submit's POST navigation is sometimes aborted by the login
+            # page's own perpetual loading, silently leaving us on the login
+            # page — so we retry, re-filling the fields each time, until a Log
+            # Out link appears (or the login form is gone). We're logged in when
+            # either happens; wait_for_function survives the navigation.
+            logged_in = False
+            for attempt in range(3):
+                if attempt > 0:
+                    # Gentle spacing between attempts so we don't hammer the
+                    # portal (which appears to soft-block rapid automated logins).
+                    page.wait_for_timeout(3000)
+                # If the login form has disappeared, either we're already in or
+                # the portal served a blank page — stop resubmitting either way.
+                if not page.locator('form[name="LoginForm"] input[name="username"]').count():
+                    break
+                page.fill('form[name="LoginForm"] input[name="username"]', payload["portal_username"])
+                page.fill('form[name="LoginForm"] input[name="password"]', payload["portal_password"])
+                log.info("Submitting login form (attempt %d) ...", attempt + 1)
+                page.evaluate(
+                    """() => {
+                        const f = document.forms['LoginForm'];
+                        if (!f) return;
+                        if (!f.querySelector('input[type=hidden][name=CheckLogin]')) {
+                            const h = document.createElement('input');
+                            h.type = 'hidden'; h.name = 'CheckLogin'; h.value = 'Logon';
+                            f.appendChild(h);
+                        }
+                        f.submit();
+                    }"""
+                )
+                try:
+                    page.wait_for_function(
+                        """() => !!document.querySelector('a[href*="logout.cfm"]')
+                                || !document.querySelector('form[name="LoginForm"] input[name="password"]')""",
+                        timeout=15000,
+                    )
+                    logged_in = True
+                    break
+                except PWTimeoutError:
+                    log.info("Still on the login page after attempt %d; retrying ...", attempt + 1)
+                    continue
+
+            if not logged_in:
+                if page.locator('input[name="password"]').count():
+                    return False, ("Login did not complete after several tries — the portal kept "
+                                   "returning to the sign-in page. Check the credentials in Odoo.")
+                return False, "Login did not complete after several tries."
 
             # --- 2. Navigate to the Add Sales Lead form ------------------------
-            log.info("Navigating to Reality Capture Sales Leads ...")
-            page.goto(SALES_LEADS_MAIN, wait_until="domcontentloaded")
+            log.info("Logged in. Navigating to Reality Capture Sales Leads ...")
+            safe_goto(page, SALES_LEADS_MAIN)
 
-            add_link = page.locator('a[href*="lead_add.cfm"]')
-            if add_link.count():
-                add_link.first.click()
-                page.wait_for_load_state("domcontentloaded")
-            else:
-                # Fallback: go straight to the form
-                page.goto(LEAD_ADD_URL, wait_until="domcontentloaded")
+            # Follow the real "Add Sales Lead" link via a native JS click (same
+            # reasoning as the login button). The CompanyName field only exists
+            # on the form page, so it confirms we arrived; fall back to the
+            # known form URL if the link path doesn't land.
+            try:
+                log.info("Waiting for the Add Sales Lead link ...")
+                page.wait_for_selector('a[href*="lead_add.cfm"]', timeout=NAV_TIMEOUT)
+                log.info("Clicking Add Sales Lead ...")
+                page.eval_on_selector('a[href*="lead_add.cfm"]', "el => el.click()")
+                page.wait_for_selector('input[name="CompanyName"]', timeout=NAV_TIMEOUT)
+            except PWTimeoutError:
+                log.info("Add Sales Lead link path did not land; going to the form URL directly ...")
+                safe_goto(page, LEAD_ADD_URL)
+                page.wait_for_selector('input[name="CompanyName"]', timeout=NAV_TIMEOUT)
 
             if not page.locator('input[name="CompanyName"]').count():
                 return False, "Could not reach the Add Sales Lead form (session or permissions problem?)."
+            log.info("Reached the Add Sales Lead form.")
 
             # --- 3. Fill the form ----------------------------------------------
             log.info("Filling the Sales Lead form ...")
@@ -255,12 +375,14 @@ def register_lead(payload):
             if payload.get("media_category"):
                 select_by_visible_text(page, "Question2", payload["media_category"])
 
+            # force=True skips the hit-test actionability checks that hang on
+            # this perpetually-loading portal.
             if payload.get("demo_requested"):
-                page.check('input[name="Answer2"]')
+                page.check('input[name="Answer2"]', force=True)
             if payload.get("pricing_requested"):
-                page.check('input[name="Answer3"]')
+                page.check('input[name="Answer3"]', force=True)
             if payload.get("meeting_requested"):
-                page.check('input[name="Answer4"]')
+                page.check('input[name="Answer4"]', force=True)
 
             if payload.get("discussion_notes"):
                 page.fill('textarea[name="DiscussionNotes"]', payload["discussion_notes"])
@@ -277,8 +399,11 @@ def register_lead(payload):
             # !!! DISABLED FOR TESTING — DO NOT ENABLE UNTIL VERIFIED !!!
             # Uncomment the block below to actually submit leads to Leica.
             # =====================================================================
-            # page.click('input[name="Add"]')
-            # page.wait_for_load_state("domcontentloaded")
+            # # Native JS click (same reasoning as the login button) so we don't
+            # # hang on actionability. This runs the portal's CheckForm(), which
+            # # may alert() and stay on the page if it dislikes a field.
+            # page.eval_on_selector('input[name="Add"]', "el => el.click()")
+            # page.wait_for_timeout(2000)
             #
             # # The portal's CheckForm() alert()s and stays on the page when it
             # # rejects the form; the dialog handler above captured the message.

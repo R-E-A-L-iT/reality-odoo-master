@@ -2,7 +2,7 @@
 {
     'name': 'ProLeads',
     'author': 'Ezekiel J. deBlois',
-    'version': '1.2',
+    'version': '1.3',
     "license": "LGPL-3",
     'summary': 'Adds automation for lead registration',
     'description': ' ',
@@ -13,6 +13,7 @@
         "views/crm_stage.xml",
         "views/leica_register_wizard.xml",
         "views/res_config_settings.xml",
+        "views/lead2opportunity_views.xml",
     ],
     'assets': {
         'web.assets_backend': [

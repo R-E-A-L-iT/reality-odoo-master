@@ -64,8 +64,8 @@ class CrmLead(models.Model):
             us_country = self.env.ref('base.us', raise_if_not_found=False)
 
             if us_country and visitor_country.id == us_country.id:
-                # US visitor → assign to R-E-A-L.iT U.S. Inc.
-                company_to_assign = self.env['res.company'].search([('name', '=', 'R-E-A-L.iT U.S. Inc.')], limit=1)
+                # US visitor → assign to R-E-A-L.iT Solutions FL L.L.C.
+                company_to_assign = self.env['res.company'].search([('name', '=', 'R-E-A-L.iT Solutions FL L.L.C.')], limit=1)
                 _logger.info('>>>>>>>Assigning US company: %s', company_to_assign.name if company_to_assign else None)
             else:
                 # Non-US visitor → assign to R-E-A-L.iT Solutions
