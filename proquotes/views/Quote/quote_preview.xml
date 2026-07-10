@@ -1374,9 +1374,9 @@
                 </div>
 
                 <!-- Rental Start | Rental End | Request Dates button, all
-                     on one line — the button doesn't do anything yet, per
-                     request, just a placeholder trigger for a future
-                     date-request flow. -->
+                     on one line. The button has no backend action yet: pressing
+                     it locks it into a pressed/disabled state until the rental
+                     dates are changed (handled in rental.js). -->
                 <div class="row mb-3" t-if="sale_order.is_rental_order">
                     <div class="col-md-4 mb-2">
                         <label for="rental-start" class="form-label fw-bold">
@@ -1400,13 +1400,14 @@
                                t-att-value="sale_order.rental_return_date and sale_order.rental_return_date.strftime('%Y-%m-%d') or ''"/>
                     </div>
 
-                    <!-- <div class="col-md-4 mb-2 d-flex align-items-end">
-                        <button type="button" id="request-dates-btn" class="btn btn-outline-secondary w-100">
+                    <div class="col-md-4 mb-2 d-flex align-items-end">
+                        <button type="button" id="request-dates-btn"
+                                class="btn btn-outline-secondary w-100" aria-pressed="false">
                             <t t-if="language == 'fr_CA'">Demander des dates</t>
                             <t t-elif="language == 'es_ES'">Solicitar fechas</t>
                             <t t-else="">Request dates</t>
                         </button>
-                    </div> -->
+                    </div>
                 </div>
 
                 <div class="row mb-3" t-if="sale_order.is_rental_order">

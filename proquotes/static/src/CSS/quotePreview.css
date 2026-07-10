@@ -1228,6 +1228,30 @@ transform: translateY(-1px);
 transform: translateY(0);
 }
 
+/* Pressed / "requested" state — the button stays visually pushed in and is
+   disabled after it's pressed, until the rental dates change (rental.js
+   toggles .is-requested and the disabled attribute). Inset shadow + a small
+   downward shift read as "held down"; not-allowed cursor signals it's locked.
+   opacity override keeps the label readable (Bootstrap dims disabled buttons). */
+#request-dates-btn.is-requested,
+#request-dates-btn:disabled {
+background-color: rgba(0, 0, 0, 0.20) !important;
+border-color: rgba(255, 255, 255, 0.25) !important;
+color: #2a2a2a !important;
+box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.30) !important;
+transform: translateY(1px) !important;
+cursor: not-allowed !important;
+opacity: 1 !important;
+}
+
+/* No hover lift while pressed/disabled. */
+#request-dates-btn.is-requested:hover,
+#request-dates-btn:disabled:hover {
+background-color: rgba(0, 0, 0, 0.20) !important;
+border-color: rgba(255, 255, 255, 0.25) !important;
+transform: translateY(1px) !important;
+}
+
 /* ── "Last Delivery Orders" / "Returns" — hidden ──
    Rendered by a separate view ("Orders Shipping Followup") that also
    inherits sale.sale_order_portal_content independently of this
