@@ -84,7 +84,7 @@
         ],
     },
 
-    "version": "17.0",
+    "version": "17.0.1.1",
 
     # always loaded
     "data": [
