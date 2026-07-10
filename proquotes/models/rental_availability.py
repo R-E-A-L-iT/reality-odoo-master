@@ -195,7 +195,7 @@ class SaleOrder(models.Model):
         )
 
         parts.append(
-            '<table style="border-collapse:collapse;font-size:12px;width:100%;max-width:640px;">'
+            '<table style="border-collapse:collapse;font-size:12px;width:100%%;max-width:640px;">'
             '<tr>'
             '<th %s>Component (shipped)</th>'
             '<th %s>Need</th><th %s>In stock</th>'
