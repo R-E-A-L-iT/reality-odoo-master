@@ -1206,39 +1206,45 @@ line-height: 1.6;
 color: #555555;
 }
 
-/* "Request dates" button — Bootstrap's own btn-outline-secondary default
-   (grey border/text) read as low-contrast against the red Configuration
-   card background. Light, faintly red-tinted translucent fill instead,
-   with a dark grey label that stays readable against that light fill. */
+/* "Request dates" button — a clean floating button on the red Configuration
+   card, à la the "Inquire Now" CTA. Near-white but slightly translucent (so
+   the red tints it a touch and it doesn't read as stark pure white), dark
+   high-contrast label, soft drop shadow so it lifts off the card. */
 #request-dates-btn {
-background-color: rgba(255, 240, 240, 0.16) !important;
-border-color: rgba(255, 255, 255, 0.4) !important;
-color: #3a3a3a !important;
-font-weight: 600;
-transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+background-color: rgba(255, 255, 255, 0.86) !important;
+border: 1px solid rgba(255, 255, 255, 0.55) !important;
+border-radius: 10px !important;
+color: #232323 !important;
+font-weight: 700;
+-webkit-backdrop-filter: blur(6px);
+backdrop-filter: blur(6px);
+box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28), 0 2px 4px rgba(0, 0, 0, 0.16) !important;
+transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 }
 
 #request-dates-btn:hover {
-background-color: rgba(255, 240, 240, 0.32) !important;
-border-color: rgba(255, 255, 255, 0.6) !important;
-transform: translateY(-1px);
+background-color: rgba(255, 255, 255, 0.96) !important;
+box-shadow: 0 10px 22px rgba(0, 0, 0, 0.34), 0 3px 6px rgba(0, 0, 0, 0.18) !important;
+transform: translateY(-2px);
 }
 
 #request-dates-btn:active {
-transform: translateY(0);
+transform: translateY(-1px);
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.26), 0 1px 3px rgba(0, 0, 0, 0.16) !important;
 }
 
-/* Pressed / "requested" state — the button stays visually pushed in and is
-   disabled after it's pressed, until the rental dates change (rental.js
-   toggles .is-requested and the disabled attribute). Inset shadow + a small
-   downward shift read as "held down"; not-allowed cursor signals it's locked.
-   opacity override keeps the label readable (Bootstrap dims disabled buttons). */
+/* Pressed / "requested" state — after it's pressed the button settles down
+   onto the card and is disabled until the rental dates change (rental.js
+   toggles .is-requested and the disabled attribute). It drops flush (little
+   shadow) and dims slightly so it clearly reads as locked; not-allowed cursor
+   reinforces it. opacity override keeps the label readable (Bootstrap dims
+   disabled buttons). */
 #request-dates-btn.is-requested,
 #request-dates-btn:disabled {
-background-color: rgba(0, 0, 0, 0.20) !important;
-border-color: rgba(255, 255, 255, 0.25) !important;
-color: #2a2a2a !important;
-box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.30) !important;
+background-color: rgba(238, 238, 238, 0.78) !important;
+border-color: rgba(255, 255, 255, 0.4) !important;
+color: #5a5a5a !important;
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18) !important;
 transform: translateY(1px) !important;
 cursor: not-allowed !important;
 opacity: 1 !important;
@@ -1247,8 +1253,9 @@ opacity: 1 !important;
 /* No hover lift while pressed/disabled. */
 #request-dates-btn.is-requested:hover,
 #request-dates-btn:disabled:hover {
-background-color: rgba(0, 0, 0, 0.20) !important;
-border-color: rgba(255, 255, 255, 0.25) !important;
+background-color: rgba(238, 238, 238, 0.78) !important;
+border-color: rgba(255, 255, 255, 0.4) !important;
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18) !important;
 transform: translateY(1px) !important;
 }
 
