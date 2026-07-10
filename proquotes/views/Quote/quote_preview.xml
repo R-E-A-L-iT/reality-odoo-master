@@ -1402,7 +1402,8 @@
 
                     <div class="col-md-4 mb-2 d-flex align-items-end">
                         <button type="button" id="request-dates-btn"
-                                class="btn btn-outline-secondary w-100" aria-pressed="false">
+                                class="btn btn-outline-secondary w-100" aria-pressed="false"
+                                t-att-data-requested-label="'Dates demandées' if language == 'fr_CA' else ('Fechas solicitadas' if language == 'es_ES' else 'Dates requested')">
                             <t t-if="language == 'fr_CA'">Demander des dates</t>
                             <t t-elif="language == 'es_ES'">Solicitar fechas</t>
                             <t t-else="">Request dates</t>

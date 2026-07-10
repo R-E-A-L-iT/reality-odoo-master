@@ -59,3 +59,27 @@ class RentalCustomerPortal(cPortal):
                 order_sudo.sudo()._recompute_rental_prices()
 
         return {"success": True}
+
+    @http.route(
+        ["/my/orders/<int:order_id>/request_rental_dates"],
+        type="json",
+        auth="public",
+        website=True,
+    )
+    def request_rental_dates(self, order_id, access_token=None, **post):
+        """Customer pressed "Request dates": post the salesperson-tagged
+        availability note on the order's chatter."""
+        try:
+            order_sudo = self._document_check_access(
+                "sale.order", order_id, access_token=access_token
+            )
+        except (AccessError, MissingError):
+            return {"error": "Access Denied"}
+
+        if not order_sudo.is_rental_order:
+            return {"error": "This is not a rental order."}
+        if not (order_sudo.rental_start_date and order_sudo.rental_return_date):
+            return {"error": "Please set both rental dates first."}
+
+        order_sudo.sudo()._notify_rental_dates_requested()
+        return {"success": True}

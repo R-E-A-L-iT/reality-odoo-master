@@ -1211,20 +1211,22 @@ color: #555555;
    the red tints it a touch and it doesn't read as stark pure white), dark
    high-contrast label, soft drop shadow so it lifts off the card. */
 #request-dates-btn {
-background-color: rgba(255, 255, 255, 0.86) !important;
-border: 1px solid rgba(255, 255, 255, 0.55) !important;
+background-color: rgba(248, 246, 246, 0.72) !important;
+border: 1px solid rgba(255, 255, 255, 0.45) !important;
 border-radius: 10px !important;
-color: #232323 !important;
-font-weight: 700;
+color: #3a3a3a !important;
+font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif !important;
+font-size: 13.5px !important;
+font-weight: 600 !important;
 -webkit-backdrop-filter: blur(6px);
 backdrop-filter: blur(6px);
-box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28), 0 2px 4px rgba(0, 0, 0, 0.16) !important;
+box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22), 0 2px 4px rgba(0, 0, 0, 0.14) !important;
 transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 }
 
 #request-dates-btn:hover {
-background-color: rgba(255, 255, 255, 0.96) !important;
-box-shadow: 0 10px 22px rgba(0, 0, 0, 0.34), 0 3px 6px rgba(0, 0, 0, 0.18) !important;
+background-color: rgba(250, 249, 249, 0.85) !important;
+box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28), 0 3px 6px rgba(0, 0, 0, 0.16) !important;
 transform: translateY(-2px);
 }
 
