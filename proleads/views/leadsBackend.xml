@@ -6,13 +6,12 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form" />
         <field name="arch" type="xml">
-            <!-- <xpath expr="//header" position="inside">
+            <xpath expr="//header" position="inside">
                 <button name="action_leica_register" type="object" string="Register with Leica"
                         class="oe_highlight"
-                        invisible="not leica_can_register or leica_registered"/>
-                <button name="action_leica_register" type="object" string="Register with Leica"
-                        readonly="1" invisible="not leica_registered"/>
-            </xpath> -->
+                        invisible="not leica_can_register or leica_registered"
+                        help="Opens a confirmation window showing exactly what will be sent to the Leica portal."/>
+            </xpath>
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="partner_company_id" />
             </xpath>
@@ -42,8 +41,8 @@
                     <group string="Leica Lead Details" colspan="2">
                         <group string="Leica registration details">
                             <field name="leica_registered" string="Has the lead been registered already?" readonly="1"/>
-                            <!-- <field name="leica_registration_number" readonly="1"/>
-                            <field name="leica_registration_date" readonly="1"/> -->
+                            <field name="leica_registration_date" readonly="1" invisible="not leica_registered"/>
+                            <field name="leica_registration_error" readonly="1" invisible="not leica_registration_error or leica_registered"/>
                             <field name="leica_representative_id" />
                         </group>
                         <group string="End-user Requests">
@@ -58,9 +57,18 @@
                         </group>
 
                         <group string="Extra Details">
+                            <field name="leica_sales_region" readonly="1"/>
                             <field name="leica_market_segment"/>
+                            <field name="leica_media_category" invisible="leica_market_segment != 'media_ent'" required="leica_market_segment == 'media_ent'"/>
                             <field name="leica_product_interest"/>
+                            <field name="leica_blk_arc_carrier" invisible="leica_product_interest != 'blk_arc'" required="leica_product_interest == 'blk_arc'"/>
                             <field name="leica_is_rfp"/>
+                            <field name="website" string="Company Website" widget="url"/>
+                        </group>
+
+                        <group string="Discussion Notes" colspan="2">
+                            <field name="leica_discussion_notes" nolabel="1" colspan="2"
+                                   placeholder="Sent to Leica's Discussion Notes field. If this lead is part of an RFP, enter the end-user contact info here."/>
                         </group>
 
                         <!-- (Optional) Show partner address (read-through) so users can fix it on the Contact) -->

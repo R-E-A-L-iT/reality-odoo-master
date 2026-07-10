@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="leica_register_confirm_wizard_view_form" model="ir.ui.view">
+        <field name="name">leica.register.confirm.wizard.form</field>
+        <field name="model">leica.register.confirm.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Confirm Leica Lead Registration">
+                <field name="lead_id" invisible="1"/>
+                <field name="is_blk_arc" invisible="1"/>
+                <field name="is_media_segment" invisible="1"/>
+                <div class="alert alert-warning" role="alert">
+                    <strong>Please verify this information carefully.</strong>
+                    The data below will be entered on the Leica lead registration portal
+                    exactly as shown. A lead can only be registered <strong>once</strong> —
+                    if anything is wrong, cancel and correct it on the lead first.
+                </div>
+                <group>
+                    <group string="Lead">
+                        <field name="sales_region"/>
+                        <field name="market_segment"/>
+                        <field name="product_interest"/>
+                        <field name="blk_arc_carrier" invisible="not is_blk_arc"/>
+                        <field name="media_category" invisible="not is_media_segment"/>
+                        <field name="quantity"/>
+                        <field name="expected_purchase_date"/>
+                        <field name="is_rfp"/>
+                    </group>
+                    <group string="Contact">
+                        <field name="first_name"/>
+                        <field name="last_name"/>
+                        <field name="email"/>
+                        <field name="phone"/>
+                    </group>
+                    <group string="Company">
+                        <field name="company_name"/>
+                        <field name="address"/>
+                        <field name="city"/>
+                        <field name="state_name"/>
+                        <field name="zip_code"/>
+                        <field name="company_website"/>
+                    </group>
+                    <group string="End-user Requests">
+                        <field name="demo_requested"/>
+                        <field name="pricing_requested"/>
+                        <field name="meeting_requested"/>
+                    </group>
+                </group>
+                <group string="Discussion Notes">
+                    <field name="discussion_notes" nolabel="1" colspan="2"/>
+                </group>
+                <footer>
+                    <button name="action_confirm_register" type="object"
+                            string="Confirm &amp; Register with Leica"
+                            class="btn-primary"
+                            confirm="This will submit the lead to the Leica portal. This action cannot be undone. Continue?"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

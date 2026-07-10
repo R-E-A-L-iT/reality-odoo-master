@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_proleads" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.proleads.leica</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="20"/>
+        <field name="inherit_id" ref="crm.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='convert_visitor_setting_container']" position="after">
+                <h2>Leica Lead Registration</h2>
+                <div class="row mt16 o_settings_container" name="leica_lead_registration_container">
+                    <div class="col-lg-6 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Runner Webhook</span>
+                            <div class="text-muted">
+                                The machine running the Leica portal automation script.
+                                The secret must match the runner's <code>LEICA_RUNNER_SECRET</code>.
+                            </div>
+                            <div class="content-group mt16">
+                                <div class="row">
+                                    <label for="proleads_leica_webhook_url" class="col-lg-4 o_light_label"/>
+                                    <field name="proleads_leica_webhook_url" placeholder="https://runner.example.com/leica/register-lead"/>
+                                </div>
+                                <div class="row">
+                                    <label for="proleads_leica_webhook_secret" class="col-lg-4 o_light_label"/>
+                                    <field name="proleads_leica_webhook_secret" password="True"/>
+                                </div>
+                                <div class="row">
+                                    <label for="proleads_leica_webhook_timeout" class="col-lg-4 o_light_label"/>
+                                    <field name="proleads_leica_webhook_timeout"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Leica Portal Credentials</span>
+                            <div class="text-muted">
+                                Logins for portal.leicaus.com. The Canadian credentials are used
+                                for leads in Canada, the American ones for leads in the United States.
+                            </div>
+                            <div class="content-group mt16">
+                                <div class="row">
+                                    <label for="proleads_leica_ca_username" string="Canada — Username" class="col-lg-4 o_light_label"/>
+                                    <field name="proleads_leica_ca_username"/>
+                                </div>
+                                <div class="row">
+                                    <label for="proleads_leica_ca_password" string="Canada — Password" class="col-lg-4 o_light_label"/>
+                                    <field name="proleads_leica_ca_password" password="True"/>
+                                </div>
+                                <div class="row">
+                                    <label for="proleads_leica_us_username" string="U.S. — Username" class="col-lg-4 o_light_label"/>
+                                    <field name="proleads_leica_us_username"/>
+                                </div>
+                                <div class="row">
+                                    <label for="proleads_leica_us_password" string="U.S. — Password" class="col-lg-4 o_light_label"/>
+                                    <field name="proleads_leica_us_password" password="True"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
