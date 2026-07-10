@@ -61,6 +61,12 @@
                 </li>
                 <li>
                     <h4>
+                        <strong>Retention of Title</strong>
+                    </h4>
+                    <p>Title to, ownership of, and legal property rights in any products, hardware, or equipment (collectively, the "Products") delivered by <t t-esc="company_name"/> to the Buyer shall remain strictly vested in <t t-esc="company_name"/> and shall not pass to the Buyer until all invoices, bills, and outstanding sums due to <t t-esc="company_name"/> have been paid in full. Until such time as title passes, the Buyer shall hold the Products on a fiduciary basis as <t t-esc="company_name"/>'s bailee, must store the Products safely, and must not sell, pledge, or encumber them.</p><br/>
+                </li>
+                <li>
+                    <h4>
                         <strong>Limitation of Liability for Errors</strong>
                     </h4>
                     <p t-if="sale_order.partner_id.country_id.code == 'US'">The seller is not liable for any technical, typographical, or clerical errors or omissions in quotations, invoices, or other documents. The seller reserves the right to correct such errors and reissue documents as necessary.</p>
@@ -134,6 +140,12 @@
                 </li>
                 <li>
                     <h4>
+                        <strong>Réserve de propriété</strong>
+                    </h4>
+                    <p>Le titre, la propriété et les droits de propriété légale sur tout produit, matériel ou équipement (collectivement, les « Produits ») livrés par <t t-esc="company_name"/> à l’Acheteur demeurent strictement dévolus à <t t-esc="company_name"/> et ne sont transférés à l’Acheteur qu’une fois que toutes les factures et sommes dues à <t t-esc="company_name"/> ont été payées intégralement. Jusqu’au transfert du titre, l’Acheteur détient les Produits à titre fiduciaire, à titre de dépositaire de <t t-esc="company_name"/>, doit les entreposer en toute sécurité et ne doit ni les vendre, ni les mettre en gage, ni les grever d’une sûreté.</p><br/>
+                </li>
+                <li>
+                    <h4>
                         <strong>Limitation de responsabilité pour erreurs</strong>
                     </h4>
                     <p>Le vendeur n’est pas responsable de toute erreur technique ou humaine, omission ou erreur de calcul contenue dans la facture ou le devis. En cas d’erreur, le vendeur se réserve le droit de corriger et de réémettre le document.</p><br/>
@@ -201,6 +213,12 @@
                         <strong>Propiedad y riesgo</strong>
                     </h4>
                     <p>El título de todos los bienes permanece con el vendedor hasta que se reciba el pago completo. El riesgo de pérdida o daño se transfiere al comprador al momento de la entrega.</p><br/>
+                </li>
+                <li>
+                    <h4>
+                        <strong>Reserva de dominio</strong>
+                    </h4>
+                    <p>El título, la propiedad y los derechos legales de propiedad sobre cualesquiera productos, equipos o hardware (colectivamente, los "Productos") entregados por <t t-esc="company_name"/> al Comprador permanecerán estrictamente conferidos a <t t-esc="company_name"/> y no se transferirán al Comprador hasta que todas las facturas y sumas pendientes adeudadas a <t t-esc="company_name"/> hayan sido pagadas en su totalidad. Hasta que se produzca dicha transferencia de título, el Comprador conservará los Productos a título fiduciario, como depositario de <t t-esc="company_name"/>, deberá almacenarlos de forma segura y no podrá venderlos, pignorarlos ni gravarlos.</p><br/>
                 </li>
                 <li>
                     <h4>
