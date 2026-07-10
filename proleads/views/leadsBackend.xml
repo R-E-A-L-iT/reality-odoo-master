@@ -38,6 +38,19 @@
             </xpath>
             <xpath expr="//sheet/notebook" position="inside">
                 <page string="Leica Information" name="leica_information">
+                    <field name="leica_missing_summary" invisible="1"/>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="leica_can_register or leica_registered">
+                        <strong>Not ready to register with Leica.</strong>
+                        The "Register with Leica" button stays hidden until everything the
+                        portal requires is filled in. Still missing:
+                        <field name="leica_missing_summary" nolabel="1" class="oe_inline"/>
+                    </div>
+                    <div class="alert alert-success" role="alert"
+                         invisible="not leica_can_register or leica_registered">
+                        <strong>Ready to register.</strong>
+                        Use the "Register with Leica" button in the header at the top of this lead.
+                    </div>
                     <group string="Leica Lead Details" colspan="2">
                         <group string="Leica registration details">
                             <field name="leica_registered" string="Has the lead been registered already?" readonly="1"/>

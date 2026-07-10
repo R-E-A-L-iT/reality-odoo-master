@@ -63,6 +63,13 @@ class CrmLead(models.Model):
         compute="_compute_leica_can_register",
         store=False,
     )
+    leica_missing_summary = fields.Char(
+        string="Missing for Leica Registration",
+        compute="_compute_leica_can_register",
+        store=False,
+        help="Human-readable list of what still needs to be filled in before "
+             "this lead can be registered with Leica."
+    )
 
     leica_market_segment = fields.Selection(
         selection=LEICA_MARKET_SEGMENT_SEL,
@@ -386,7 +393,9 @@ class CrmLead(models.Model):
     )
     def _compute_leica_can_register(self):
         for lead in self:
-            lead.leica_can_register = not lead._leica_missing_requirements()
+            missing = lead._leica_missing_requirements()
+            lead.leica_can_register = not missing
+            lead.leica_missing_summary = "; ".join(missing)
 
     # helper for compiling/sending information to leica webhook
     def _post_to_leica_webhook(self, payload: dict):
