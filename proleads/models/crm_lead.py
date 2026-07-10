@@ -109,8 +109,6 @@ class CrmLead(models.Model):
     leica_has_pricing_request = fields.Boolean(string="Has the end-user requested pricing?")
     leica_has_meeting_request = fields.Boolean(string="Has the end-user requested a meeting?")
 
-    leica_representative_id = fields.Many2one('res.partner', string="Leica Representative", help="Leica representative associated with this lead.")
-
     partner_street = fields.Char(related='partner_id.street', string="Street (Partner)")
     partner_city = fields.Char(related='partner_id.city', string="City (Partner)")
     partner_zip = fields.Char(related='partner_id.zip', string="ZIP/Postal (Partner)")
@@ -308,9 +306,14 @@ class CrmLead(models.Model):
                 lead.quotation_amount = 0.00
                 lead.expected_revenue = 0.00
 
-    def _leica_split_contact_name(self):
-        """Split the lead's contact name into (first, last) for the Leica portal."""
+    def _leica_get_contact_names(self):
+        """Return (first, last) for the Leica portal, preferring the partner's
+        first_name/last_name fields (procontact). Falls back to splitting the
+        lead-level contact name when no partner is linked yet."""
         self.ensure_one()
+        partner = self.partner_id
+        if partner and (partner.first_name or "").strip() and (partner.last_name or "").strip():
+            return (partner.first_name.strip(), partner.last_name.strip())
         parts = (self.contact_name or "").strip().split()
         if len(parts) < 2:
             return (parts[0] if parts else "", "")
@@ -323,9 +326,9 @@ class CrmLead(models.Model):
         self.ensure_one()
         missing = []
 
-        first, last = self._leica_split_contact_name()
+        first, last = self._leica_get_contact_names()
         if not first or not last:
-            missing.append(_("Contact full name (first and last name)"))
+            missing.append(_("Contact first and last name"))
         if not (self.partner_name or "").strip():
             missing.append(_("Company name"))
 
@@ -376,7 +379,7 @@ class CrmLead(models.Model):
     # can the lead be registered with leica
     @api.depends(
         "contact_name", "partner_name", "email_from", "phone", "website",
-        "partner_id.street", "partner_id.city", "partner_id.state_id",
+        "partner_id.name", "partner_id.street", "partner_id.city", "partner_id.state_id",
         "partner_id.zip", "partner_id.country_id", "country_id",
         "leica_market_segment", "leica_product_interest", "leica_blk_arc_carrier",
         "leica_quantity", "date_deadline",
@@ -450,7 +453,7 @@ class CrmLead(models.Model):
         Single source of truth for both the confirmation wizard and the webhook
         payload."""
         self.ensure_one()
-        first, last = self._leica_split_contact_name()
+        first, last = self._leica_get_contact_names()
         partner = self.partner_id
         state = partner.state_id if partner else False
         return {

@@ -43,7 +43,6 @@
                             <field name="leica_registered" string="Has the lead been registered already?" readonly="1"/>
                             <field name="leica_registration_date" readonly="1" invisible="not leica_registered"/>
                             <field name="leica_registration_error" readonly="1" invisible="not leica_registration_error or leica_registered"/>
-                            <field name="leica_representative_id" />
                         </group>
                         <group string="End-user Requests">
                             <field name="leica_has_demo_request"/>
