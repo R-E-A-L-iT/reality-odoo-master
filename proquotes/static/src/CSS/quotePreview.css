@@ -1243,3 +1243,19 @@ transform: translateY(0);
 body:has(.quote-hero-cover) #sale_invoices ~ .col-12.col-lg-6.mb-4 {
 display: none !important;
 }
+
+/* ── Hardware/Software/Subscription CCP renewal blocks ──
+   The $hardware/$software/$subscription special rows (renewal-text.xml)
+   t-call proquotes.renewal-hardware/-software/-subscription, whose
+   #renewal-text * rule (quoteHeaderText.css, loaded sitewide) forces
+   white text — tuned for this page's old all-dark background. These
+   blocks keep their own light background regardless (deliberately
+   untouched, like the other $hardware/$software/etc special rows —
+   see the "Product table" comment further up), so white-on-light here
+   reads as invisible now that the surrounding card is white instead
+   of dark. Overridden back to dark text just on this page rather than
+   editing that sitewide rule, which still needs to stay white for
+   wherever else it's used with a dark background behind it. */
+body:has(.quote-hero-cover) #renewal-text * {
+color: #17171a !important;
+}
