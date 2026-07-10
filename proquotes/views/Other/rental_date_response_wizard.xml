@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rental_date_response_wizard_form" model="ir.ui.view">
+        <field name="name">rental.date.response.wizard.form</field>
+        <field name="model">rental.date.response.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Respond to Rental Date Request">
+                <field name="order_id" invisible="1"/>
+                <p>
+                    Choose the response to send the customer. It will be emailed to them
+                    and shown on their quote, and the requested dates will be marked as answered.
+                </p>
+                <group>
+                    <field name="response_type" widget="radio"/>
+                </group>
+                <separator string="Preview"/>
+                <field name="preview_html" nolabel="1" readonly="1"/>
+                <footer>
+                    <button name="action_send" type="object" string="Send Response"
+                            class="btn-primary"
+                            confirm="Send this response to the customer by email?"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

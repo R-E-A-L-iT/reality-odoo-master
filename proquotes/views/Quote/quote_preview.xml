@@ -1403,11 +1403,24 @@
                     <div class="col-md-4 mb-2 d-flex align-items-end">
                         <button type="button" id="request-dates-btn"
                                 class="btn btn-outline-secondary w-100" aria-pressed="false"
-                                t-att-data-requested-label="'Dates demandées' if language == 'fr_CA' else ('Fechas solicitadas' if language == 'es_ES' else 'Dates requested')">
+                                t-att-data-request-state="sale_order.rental_request_state or 'none'"
+                                t-att-data-requested-start="sale_order.rental_requested_start and sale_order.rental_requested_start.strftime('%Y-%m-%d') or ''"
+                                t-att-data-requested-end="sale_order.rental_requested_end and sale_order.rental_requested_end.strftime('%Y-%m-%d') or ''"
+                                t-att-data-label-request="'Demander des dates' if language == 'fr_CA' else ('Solicitar fechas' if language == 'es_ES' else 'Request dates')"
+                                t-att-data-label-requested="'Dates demandées' if language == 'fr_CA' else ('Fechas solicitadas' if language == 'es_ES' else 'Dates requested')"
+                                t-att-data-label-update="'Mettre à jour la demande' if language == 'fr_CA' else ('Actualizar solicitud' if language == 'es_ES' else 'Update request')">
                             <t t-if="language == 'fr_CA'">Demander des dates</t>
                             <t t-elif="language == 'es_ES'">Solicitar fechas</t>
                             <t t-else="">Request dates</t>
                         </button>
+                    </div>
+                </div>
+
+                <!-- Salesperson's response to the date request, shown once answered. -->
+                <div class="row mb-3"
+                     t-if="sale_order.is_rental_order and sale_order.rental_request_state == 'answered' and sale_order.rental_request_response_html">
+                    <div class="col-12">
+                        <t t-out="sale_order.rental_request_response_html"/>
                     </div>
                 </div>
 

@@ -17,6 +17,16 @@
                 </button>
             </xpath>
 
+            <!-- Respond to a pending customer rental-date request -->
+            <xpath expr="//header" position="inside">
+                <field name="rental_request_state" invisible="1"/>
+                <button name="action_open_rental_response_wizard"
+                        type="object"
+                        string="Respond to Date Request"
+                        class="btn-primary"
+                        invisible="rental_request_state != 'pending'"/>
+            </xpath>
+
             <xpath expr="//field[@name=&quot;partner_id&quot;]" position="attributes">
                 <attribute name="string">Business</attribute>
             </xpath>

@@ -81,5 +81,5 @@ class RentalCustomerPortal(cPortal):
         if not (order_sudo.rental_start_date and order_sudo.rental_return_date):
             return {"error": "Please set both rental dates first."}
 
-        order_sudo.sudo()._notify_rental_dates_requested()
-        return {"success": True}
+        order_sudo.sudo()._handle_rental_dates_request()
+        return {"success": True, "state": "pending"}
