@@ -1296,7 +1296,7 @@ class QuoCall(models.Model):
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
-                        partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
+                        partner_ids=to_ping.ids if to_ping else False,
                     )
 
                 # Post to quotes
@@ -1307,7 +1307,7 @@ class QuoCall(models.Model):
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
-                        partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
+                        partner_ids=to_ping.ids if to_ping else False,
                     )
 
                 for rec in tickets:
@@ -1317,7 +1317,7 @@ class QuoCall(models.Model):
                         message_type="comment",
                         subtype_xmlid="mail.mt_note",
                         author_id=quo_author.id,
-                        partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
+                        partner_ids=to_ping.ids if to_ping else False,
                     )
 
                 # Post to the partner record as well (always, for external partners)
@@ -1327,7 +1327,7 @@ class QuoCall(models.Model):
                     message_type="comment",
                     subtype_xmlid="mail.mt_note",
                     author_id=quo_author.id,
-                    partner_ids=[(6, 0, to_ping.ids)] if to_ping else False,
+                    partner_ids=to_ping.ids if to_ping else False,
                 )
 
             # Create follow-up activities ONLY on the latest opportunity.
