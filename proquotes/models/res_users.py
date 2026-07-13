@@ -11,24 +11,6 @@ class ResUsers(models.Model):
         string="Company Default Footers",
     )
 
-    activity_send_email = fields.Boolean(
-        string="Activity Email Notifications",
-        default=True,
-        help="When enabled, you receive an email whenever an activity is assigned "
-             "to you. Disable to stop activity-assignment emails — activities still "
-             "appear in your Activities menu.",
-    )
-
-    @property
-    def SELF_READABLE_FIELDS(self):
-        # Let users read this preference on their own record.
-        return super().SELF_READABLE_FIELDS + ["activity_send_email"]
-
-    @property
-    def SELF_WRITEABLE_FIELDS(self):
-        # Let users toggle this preference on their own record.
-        return super().SELF_WRITEABLE_FIELDS + ["activity_send_email"]
-
     def get_default_footer_for_company(self, company=False):
         self.ensure_one()
         company = company or self.env.company

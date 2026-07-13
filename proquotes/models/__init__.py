@@ -8,7 +8,6 @@ from . import crm_lead
 from . import header_footer
 from . import helpdesk_ticket
 from . import ir_ui_view
-from . import mail_activity
 from . import mail_compose_message
 from . import mail_thread
 from . import mail_wizard_invite
