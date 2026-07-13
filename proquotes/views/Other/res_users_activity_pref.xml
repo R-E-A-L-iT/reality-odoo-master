@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Per-user activity-email preference on the user form. This instance does
-         NOT have base.view_users_form_simple_modify, so we extend the main user
-         form (base.view_users_form) — which the "My Preferences" dialog uses
-         here too. Anchored on company_id, a field proven present in this
-         deployment (see proquotes/views/Other/res_user.xml). -->
+    <!-- User's own "My Preferences" dialog. Anchor on tz (Timezone), which is
+         always present in this form, rather than notification_type (added by the
+         mail module and not guaranteed to be in the simple form). -->
+    <record id="view_users_form_simple_modify_activity_email" model="ir.ui.view">
+        <field name="name">res.users.preferences.activity.email</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modify"/>
+        <field name="arch" type="xml">
+            <field name="tz" position="after">
+                <field name="activity_send_email"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Full user form (admin) -->
     <record id="view_users_form_activity_email" model="ir.ui.view">
         <field name="name">res.users.form.activity.email</field>
         <field name="model">res.users</field>
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
-            <field name="company_id" position="after">
+            <field name="tz" position="after">
                 <field name="activity_send_email"/>
             </field>
         </field>
