@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- User's own "My Preferences" dialog. Anchor on tz (Timezone), which is
-         always present in this form, rather than notification_type (added by the
-         mail module and not guaranteed to be in the simple form). -->
+    <!-- User's own "My Preferences" dialog -->
     <record id="view_users_form_simple_modify_activity_email" model="ir.ui.view">
         <field name="name">res.users.preferences.activity.email</field>
         <field name="model">res.users</field>
         <field name="inherit_id" ref="base.view_users_form_simple_modify"/>
         <field name="arch" type="xml">
-            <field name="tz" position="after">
+            <field name="notification_type" position="after">
                 <field name="activity_send_email"/>
             </field>
         </field>
@@ -20,7 +18,7 @@
         <field name="model">res.users</field>
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
-            <field name="tz" position="after">
+            <field name="notification_type" position="after">
                 <field name="activity_send_email"/>
             </field>
         </field>
