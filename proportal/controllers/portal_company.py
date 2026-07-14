@@ -44,6 +44,8 @@ class ProportalCompanySettings(CustomerPortal):
 
         invoice_addresses  = company.child_ids.filtered(lambda r: r.type == 'invoice'  and r.active)
         delivery_addresses = company.child_ids.filtered(lambda r: r.type == 'delivery' and r.active)
+        followup_addresses = company.child_ids.filtered(lambda r: r.type == 'followup' and r.active)
+        renewal_addresses  = company.child_ids.filtered(lambda r: r.type == 'renewal'  and r.active)
 
         ca_codes = ['CA', 'US']
         priority_countries = sorted(
@@ -62,8 +64,8 @@ class ProportalCompanySettings(CustomerPortal):
             'default_partner':     company,
             'invoice_addresses':   invoice_addresses,
             'delivery_addresses':  delivery_addresses,
-            'followup_partner':    company,
-            'renewal_partner':     company,
+            'followup_addresses':  followup_addresses,
+            'renewal_addresses':   renewal_addresses,
             'priority_countries':  priority_countries,
             'other_countries':     other_countries,
             'ca_states':           ca_states,
@@ -82,7 +84,7 @@ class ProportalCompanySettings(CustomerPortal):
         company = self._get_company_partner(partner_id)
         if not company:
             return {'error': 'Access denied'}
-        if address_type not in ('invoice', 'delivery'):
+        if address_type not in ('invoice', 'delivery', 'followup', 'renewal'):
             return {'error': 'Invalid address_type'}
 
         vals = {

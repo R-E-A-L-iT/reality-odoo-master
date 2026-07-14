@@ -22,6 +22,8 @@ publicWidget.registry.companyAddressSelector = publicWidget.Widget.extend({
         "click .addr_delete_btn":              "_onDeleteClick",
         "click #new-address-trigger-invoice":  "_onAddTrigger",
         "click #new-address-trigger-delivery": "_onAddTrigger",
+        "click #new-address-trigger-followup": "_onAddTrigger",
+        "click #new-address-trigger-renewal":  "_onAddTrigger",
         "change .edit-country":                "_onEditCountryChange",
         "keydown .addr_card_edit":             "_onEditKeydown",
     },
@@ -39,7 +41,7 @@ publicWidget.registry.companyAddressSelector = publicWidget.Widget.extend({
 
     _onAddTrigger(ev) {
         ev.stopImmediatePropagation();
-        const addressType = ev.currentTarget.id === "new-address-trigger-invoice" ? "invoice" : "delivery";
+        const addressType = ev.currentTarget.id.replace("new-address-trigger-", "");
         const container = document.getElementById(this._containerId(addressType));
         if (!container) return;
 
@@ -284,7 +286,7 @@ publicWidget.registry.companyAddressSelector = publicWidget.Widget.extend({
     },
 
     _containerId(addressType) {
-        return addressType === "invoice" ? "invoice-address-cards" : "delivery-address-cards";
+        return `${addressType}-address-cards`;
     },
 
     // ── Country/state filtering, scoped to the card being edited ───────────

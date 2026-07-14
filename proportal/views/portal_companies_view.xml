@@ -281,88 +281,205 @@
       </div>
       <!-- ===== END ADDRESS CARD SELECTOR ===== -->
 
-      <div class="row gy-4">
-
-        <!-- 3) Follow-up Address -->
-        <div class="col-12">
-          <div class="card shadow-sm">
-            <div class="card-header fw-bold">Follow-up Address</div>
-            <div class="card-body">
-              <form onsubmit="return false;">
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <label class="form-label">Contact Name</label>
-                    <input class="form-control" type="text" t-att-value="company.name or ''"/>
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label">Email</label>
-                    <input class="form-control" type="email" t-att-value="company.email or ''"/>
-                  </div>
-
-                  <div class="col-md-6">
-                    <label class="form-label">Phone</label>
-                    <input class="form-control" type="text" t-att-value="company.phone or ''"/>
-                  </div>
-
-                  <div class="col-md-6">
-                    <label class="form-label">Street</label>
-                    <input class="form-control" type="text" t-att-value="company.street or ''"/>
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label">Street 2</label>
-                    <input class="form-control" type="text" t-att-value="company.street2 or ''"/>
-                  </div>
-                  <div class="col-md-4">
-                    <label class="form-label">City</label>
-                    <input class="form-control" type="text" t-att-value="company.city or ''"/>
-                  </div>
-                  <div class="col-md-4">
-                    <label class="form-label">State/Province</label>
-                    <input class="form-control" type="text"
-                      t-att-value="company.state_id and company.state_id.name or ''"/>
-                  </div>
-                  <div class="col-md-4">
-                    <label class="form-label">ZIP/Postal Code</label>
-                    <input class="form-control" type="text" t-att-value="company.zip or ''"/>
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label">Country</label>
-                    <input class="form-control" type="text"
-                      t-att-value="company.country_id and company.country_id.name or ''"/>
-                  </div>
+      <!-- ===== FOLLOW-UP ADDRESS ===== -->
+      <div class="addr_matrix">
+        <div class="addr_hdr">
+          <h4 t-if="language == 'fr_CA'">Adresse de suivi</h4>
+          <h4 t-elif="language == 'es_ES'">Dirección de seguimiento</h4>
+          <h4 t-else="">Follow-up Address</h4>
+        </div>
+        <div class="addr_cards" id="followup-address-cards">
+          <t t-set="followup_list" t-value="default_partner + followup_addresses"/>
+          <t t-foreach="followup_list" t-as="addr">
+            <t t-set="is_fallback"  t-value="addr.id == default_partner.id"/>
+            <t t-set="address_type" t-value="'followup'"/>
+            <div t-attf-class="addr_card"
+                 t-att-data-partner-id="addr.id"
+                 t-att-data-address-type="address_type"
+                 t-att-data-fallback="'1' if is_fallback else None"
+                 t-att-data-name="addr.name or ''"
+                 t-att-data-street="addr.street or ''"
+                 t-att-data-city="addr.city or ''"
+                 t-att-data-zip="addr.zip or ''"
+                 t-att-data-country-id="addr.country_id.id or ''"
+                 t-att-data-state-id="addr.state_id.id or ''">
+              <div class="addr_card_view">
+                <div class="addr_card_actions">
+                  <button class="addr_action_btn addr_edit_btn" t-att-title="lbl_edit_title">
+                    <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                  <button t-if="not is_fallback" class="addr_action_btn addr_delete_btn" t-att-title="lbl_delete_title">
+                    <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
                 </div>
-                <div class="mt-3 text-end">
-                  <button class="btn btn-secondary" disabled="disabled">Save</button>
+                <span class="addr_badge" t-if="is_fallback" t-esc="lbl_default_badge"/>
+                <div class="name" t-esc="addr.name"/>
+                <div class="lines">
+                  <t t-if="addr.street"><t t-esc="addr.street"/><br/></t>
+                  <t t-if="addr.city or addr.state_id or addr.zip">
+                    <t t-if="addr.city"><t t-esc="addr.city"/><t t-if="addr.state_id or addr.zip">, </t></t>
+                    <t t-if="addr.state_id"><t t-esc="addr.state_id.name"/> </t>
+                    <t t-if="addr.zip"><t t-esc="addr.zip"/></t><br/>
+                  </t>
+                  <t t-if="addr.country_id"><t t-esc="addr.country_id.name"/></t>
                 </div>
-              </form>
+              </div>
+              <div class="addr_card_edit" style="display:none;">
+                <div class="addr_card_actions">
+                  <button class="addr_action_btn addr_save_btn" t-att-title="lbl_save_title">
+                    <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <polyline points="1.5 6.5 4.5 9.5 10.5 2.5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                  <button class="addr_action_btn addr_cancel_btn" t-att-title="lbl_cancel_title">
+                    <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="edit_row"><input type="text" class="edit-name"   t-att-value="addr.name or ''"   t-att-placeholder="lbl_name"/></div>
+                <div class="edit_row"><input type="text" class="edit-street" t-att-value="addr.street or ''" t-att-placeholder="lbl_street"/></div>
+                <div class="edit_row"><input type="text" class="edit-city"   t-att-value="addr.city or ''"   t-att-placeholder="lbl_city"/></div>
+                <div class="edit_row edit_row--split">
+                  <select class="edit-country">
+                    <option value=""><t t-esc="lbl_country"/></option>
+                    <t t-foreach="priority_countries" t-as="c">
+                      <option t-att-value="c.id" t-esc="c.name" t-att-selected="c.id == addr.country_id.id"/>
+                    </t>
+                    <option value="" disabled="disabled">──────────</option>
+                    <t t-foreach="other_countries" t-as="c">
+                      <option t-att-value="c.id" t-esc="c.name" t-att-selected="c.id == addr.country_id.id"/>
+                    </t>
+                  </select>
+                  <select class="edit-state">
+                    <option value=""><t t-esc="lbl_state"/></option>
+                    <t t-foreach="ca_states" t-as="s">
+                      <option t-att-value="s.id" t-att-data-country-id="s.country_id.id" t-esc="s.name" t-att-selected="s.id == addr.state_id.id"/>
+                    </t>
+                    <option value="" disabled="disabled">──────────</option>
+                    <t t-foreach="us_states" t-as="s">
+                      <option t-att-value="s.id" t-att-data-country-id="s.country_id.id" t-esc="s.name" t-att-selected="s.id == addr.state_id.id"/>
+                    </t>
+                    <option value="" disabled="disabled">──────────</option>
+                    <t t-foreach="other_states" t-as="s">
+                      <option t-att-value="s.id" t-att-data-country-id="s.country_id.id" t-esc="s.name" t-att-selected="s.id == addr.state_id.id"/>
+                    </t>
+                  </select>
+                </div>
+                <div class="edit_row"><input type="text" class="edit-zip" t-att-value="addr.zip or ''" t-att-placeholder="lbl_zip"/></div>
+              </div>
+            </div>
+          </t>
+          <div class="addr_card add_card" id="new-address-trigger-followup">
+            <div class="add_inner">
+              <i class="fa fa-plus"/>
+              <span class="add_label" t-esc="lbl_add"/>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- 4) Renewal Contact -->
-        <div class="col-12">
-          <div class="card shadow-sm">
-            <div class="card-header fw-bold">Renewal Contact</div>
-            <div class="card-body">
-              <form onsubmit="return false;">
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <label class="form-label">Contact Name</label>
-                    <input class="form-control" type="text" t-att-value="company.name or ''"/>
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label">Email</label>
-                    <input class="form-control" type="email" t-att-value="company.email or ''"/>
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label">Phone</label>
-                    <input class="form-control" type="text" t-att-value="company.phone or ''"/>
-                  </div>
+      <!-- ===== RENEWAL CONTACT ===== -->
+      <div class="addr_matrix">
+        <div class="addr_hdr">
+          <h4 t-if="language == 'fr_CA'">Contact de renouvellement</h4>
+          <h4 t-elif="language == 'es_ES'">Contacto de renovación</h4>
+          <h4 t-else="">Renewal Contact</h4>
+        </div>
+        <div class="addr_cards" id="renewal-address-cards">
+          <t t-set="renewal_list" t-value="default_partner + renewal_addresses"/>
+          <t t-foreach="renewal_list" t-as="addr">
+            <t t-set="is_fallback"  t-value="addr.id == default_partner.id"/>
+            <t t-set="address_type" t-value="'renewal'"/>
+            <div t-attf-class="addr_card"
+                 t-att-data-partner-id="addr.id"
+                 t-att-data-address-type="address_type"
+                 t-att-data-fallback="'1' if is_fallback else None"
+                 t-att-data-name="addr.name or ''"
+                 t-att-data-street="addr.street or ''"
+                 t-att-data-city="addr.city or ''"
+                 t-att-data-zip="addr.zip or ''"
+                 t-att-data-country-id="addr.country_id.id or ''"
+                 t-att-data-state-id="addr.state_id.id or ''">
+              <div class="addr_card_view">
+                <div class="addr_card_actions">
+                  <button class="addr_action_btn addr_edit_btn" t-att-title="lbl_edit_title">
+                    <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                  <button t-if="not is_fallback" class="addr_action_btn addr_delete_btn" t-att-title="lbl_delete_title">
+                    <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
                 </div>
-                <div class="mt-3 text-end">
-                  <button class="btn btn-secondary" disabled="disabled">Save</button>
+                <span class="addr_badge" t-if="is_fallback" t-esc="lbl_default_badge"/>
+                <div class="name" t-esc="addr.name"/>
+                <div class="lines">
+                  <t t-if="addr.street"><t t-esc="addr.street"/><br/></t>
+                  <t t-if="addr.city or addr.state_id or addr.zip">
+                    <t t-if="addr.city"><t t-esc="addr.city"/><t t-if="addr.state_id or addr.zip">, </t></t>
+                    <t t-if="addr.state_id"><t t-esc="addr.state_id.name"/> </t>
+                    <t t-if="addr.zip"><t t-esc="addr.zip"/></t><br/>
+                  </t>
+                  <t t-if="addr.country_id"><t t-esc="addr.country_id.name"/></t>
                 </div>
-              </form>
+              </div>
+              <div class="addr_card_edit" style="display:none;">
+                <div class="addr_card_actions">
+                  <button class="addr_action_btn addr_save_btn" t-att-title="lbl_save_title">
+                    <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <polyline points="1.5 6.5 4.5 9.5 10.5 2.5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                  <button class="addr_action_btn addr_cancel_btn" t-att-title="lbl_cancel_title">
+                    <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="edit_row"><input type="text" class="edit-name"   t-att-value="addr.name or ''"   t-att-placeholder="lbl_name"/></div>
+                <div class="edit_row"><input type="text" class="edit-street" t-att-value="addr.street or ''" t-att-placeholder="lbl_street"/></div>
+                <div class="edit_row"><input type="text" class="edit-city"   t-att-value="addr.city or ''"   t-att-placeholder="lbl_city"/></div>
+                <div class="edit_row edit_row--split">
+                  <select class="edit-country">
+                    <option value=""><t t-esc="lbl_country"/></option>
+                    <t t-foreach="priority_countries" t-as="c">
+                      <option t-att-value="c.id" t-esc="c.name" t-att-selected="c.id == addr.country_id.id"/>
+                    </t>
+                    <option value="" disabled="disabled">──────────</option>
+                    <t t-foreach="other_countries" t-as="c">
+                      <option t-att-value="c.id" t-esc="c.name" t-att-selected="c.id == addr.country_id.id"/>
+                    </t>
+                  </select>
+                  <select class="edit-state">
+                    <option value=""><t t-esc="lbl_state"/></option>
+                    <t t-foreach="ca_states" t-as="s">
+                      <option t-att-value="s.id" t-att-data-country-id="s.country_id.id" t-esc="s.name" t-att-selected="s.id == addr.state_id.id"/>
+                    </t>
+                    <option value="" disabled="disabled">──────────</option>
+                    <t t-foreach="us_states" t-as="s">
+                      <option t-att-value="s.id" t-att-data-country-id="s.country_id.id" t-esc="s.name" t-att-selected="s.id == addr.state_id.id"/>
+                    </t>
+                    <option value="" disabled="disabled">──────────</option>
+                    <t t-foreach="other_states" t-as="s">
+                      <option t-att-value="s.id" t-att-data-country-id="s.country_id.id" t-esc="s.name" t-att-selected="s.id == addr.state_id.id"/>
+                    </t>
+                  </select>
+                </div>
+                <div class="edit_row"><input type="text" class="edit-zip" t-att-value="addr.zip or ''" t-att-placeholder="lbl_zip"/></div>
+              </div>
+            </div>
+          </t>
+          <div class="addr_card add_card" id="new-address-trigger-renewal">
+            <div class="add_inner">
+              <i class="fa fa-plus"/>
+              <span class="add_label" t-esc="lbl_add"/>
             </div>
           </div>
         </div>

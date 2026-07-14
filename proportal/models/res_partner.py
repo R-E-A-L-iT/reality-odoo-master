@@ -37,8 +37,11 @@ class ResPartner(models.Model):
     )
 
     type = fields.Selection(
-        selection_add=[("renewal", "Renewal contact")],
-        ondelete={"renewal": "set default"},  # fallback if removed
+        selection_add=[
+            ("renewal", "Renewal contact"),
+            ("followup", "Follow-up contact"),
+        ],
+        ondelete={"renewal": "set default", "followup": "set default"},
     )
 
     def get_portal_company_ids(self):
