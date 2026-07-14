@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- User's own "Preferences" dialog (My Profile) -->
+    <record id="view_users_form_simple_modif_activity_notify" model="ir.ui.view">
+        <field name="name">res.users.preferences.activity.notify</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='email']" position="after">
+                <field name="activity_email_notify"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Full Settings > Users form (admin) -->
+    <record id="view_users_form_activity_notify" model="ir.ui.view">
+        <field name="name">res.users.form.activity.notify</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="activity_email_notify"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
