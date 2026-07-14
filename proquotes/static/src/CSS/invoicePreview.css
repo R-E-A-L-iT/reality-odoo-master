@@ -1,20 +1,17 @@
 /* ── Invoice portal page: card layout ──
    Mirrors the quote page's card language (rounded dark cards, red #db0d0d
    accent, box-shadow) but without the hero. The invoice_preview.xml override
-   moves the old left sidebar (amount / Pay Now / Download / salesperson) into
-   the top of a single "main card", with the invoice PDF rendered underneath it
-   in that same card; the communication chatter becomes a second card.
+   splits the page into three stacked cards:
+     • a thin, centered "summary" card  — amount + Pay Now / Download,
+     • a full-width card holding the invoice PDF,
+     • a full-width "communication" card.
 
    Everything is scoped under .inv-portal (a marker class added onto the
    invoice page's .o_portal_invoice_sidebar row by the override) so none of
    these generic Bootstrap/Odoo-portal selector overrides leak onto other
    portal record types that share the same base templates. */
 
-/* Full-width content column (the sidebar column is gone). Cards cap their own
-   width and center, so the invoice reads like a document rather than stretching
-   edge to edge. */
 .inv-portal.o_portal_invoice_sidebar {
-    --inv-card-max: 1000px;
     --inv-accent: #db0d0d;
 }
 
@@ -23,32 +20,39 @@
     padding-right: 0;
 }
 
-/* ── Card shell ── */
+/* ── Card shell (shared) ── */
 .inv-portal .inv-card {
     box-sizing: border-box;
-    width: 100%;
-    max-width: var(--inv-card-max);
-    margin: 0 auto 24px;
     background: #0c0c0d;
     border-radius: 20px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     overflow: hidden;
     color: #ffffff;
+    margin-bottom: 24px;
 }
 
-/* ── Main card: summary header + PDF ── */
-.inv-portal .inv-main-card {
-    padding: 0;
+/* PDF + communication cards break out to the same full-bleed width as the
+   quote page's cards (96vw, centered), regardless of the Bootstrap column
+   they nest in — same technique the quote cards use. */
+.inv-portal .inv-pdf-card,
+.inv-portal .inv-comm-card {
+    width: 96vw !important;
+    margin-left: calc(50% - 48vw) !important;
+    margin-right: calc(50% - 48vw) !important;
 }
 
-.inv-portal .inv-summary {
-    padding: 26px clamp(18px, 3vw, 34px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+/* ── Summary card: thin, centered, its own card ── */
+.inv-portal .inv-summary-card {
+    width: 100%;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 28px clamp(20px, 4vw, 34px);
 }
 
 /* Neutralize the moved portal_record_sidebar wrappers: kill its grid-column
-   width, its sticky positioning and its own padding, and lay the content out
-   as a centered stack instead of a narrow rail. */
+   width, its sticky positioning and its own padding, then lay the content out
+   as a centered stack. */
 .inv-portal .inv-summary > div {
     width: 100% !important;
     max-width: 100% !important;
@@ -63,7 +67,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 18px;
+    gap: 20px;
     width: 100%;
     margin: 0 !important;
     padding: 0 !important;
@@ -78,7 +82,7 @@
 
 .inv-portal .inv-summary h2 {
     margin: 0;
-    font-size: 2.4rem;
+    font-size: 2.3rem;
     font-weight: 800;
     letter-spacing: 0.4px;
     color: #ffffff;
@@ -88,34 +92,29 @@
     color: rgba(255, 255, 255, 0.55);
 }
 
-/* The empty grid spacer the base markup drops in front of the amount. */
 .inv-portal .inv-summary .d-grid:empty {
     display: none !important;
 }
 
-/* Buttons row (Pay Now + Download) */
+/* Buttons: Pay Now + Download side by side, equal width. */
 .inv-portal .inv-summary .flex-basis-100 {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+    flex-direction: row;
+    gap: 12px;
     width: 100%;
-    max-width: 420px;
-    margin: 0 auto;
 }
 
 .inv-portal .inv-summary .flex-basis-100 > * {
-    flex: 1 1 165px;
+    flex: 1 1 0;
+    min-width: 0;
     margin: 0 !important;
 }
 
-.inv-portal .inv-summary .o_download_pdf {
-    display: flex;
-    gap: 10px;
-}
-
+.inv-portal .inv-summary .o_download_pdf,
 .inv-portal .inv-summary .o_download_pdf > div {
+    display: flex;
     flex: 1;
+    margin: 0;
 }
 
 .inv-portal .inv-summary .btn {
@@ -125,7 +124,7 @@
     justify-content: center;
     gap: 8px;
     margin: 0 !important;
-    padding: 12px 18px;
+    padding: 13px 18px;
     border-radius: 10px;
     font-weight: 600;
 }
@@ -150,54 +149,23 @@
     color: #ffffff;
 }
 
-/* Salesperson block */
-.inv-portal .inv-summary .flex-grow-1 {
-    width: 100%;
-    max-width: 420px;
-    margin: 0 auto;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.inv-portal .inv-summary .flex-grow-1 h6 .text-muted,
-.inv-portal .inv-summary .flex-grow-1 .text-muted {
-    color: rgba(255, 255, 255, 0.5) !important;
-}
-
-.inv-portal .inv-summary .o_portal_contact_details {
-    align-items: center;
-}
-
-.inv-portal .inv-summary .flex-grow-1 h6 {
-    color: #ffffff;
-}
-
-.inv-portal .inv-summary .flex-grow-1 a {
-    color: #ff6b6b;
-}
-
-.inv-portal .inv-summary .o_portal_address,
-.inv-portal .inv-summary .o_portal_address * {
-    color: rgba(255, 255, 255, 0.72) !important;
-}
-
-/* ── PDF viewer, sitting in the bottom of the main card ── */
-.inv-portal .inv-main-card .o_portal_html_view {
+/* ── PDF card ── */
+.inv-portal .inv-pdf-card .o_portal_html_view {
     margin: 0;
-    padding: clamp(10px, 2vw, 20px);
+    padding: clamp(10px, 2vw, 22px);
     background: #ffffff;
     border-radius: 0;
     box-shadow: none !important;
 }
 
-.inv-portal .inv-main-card #invoice_html {
+.inv-portal .inv-pdf-card #invoice_html {
     border-radius: 6px;
 }
 
 /* ── Communication card ── */
 .inv-portal .inv-comm-card {
     background: #141414;
-    padding: 24px clamp(18px, 3vw, 28px);
+    padding: 24px clamp(18px, 3vw, 30px);
 }
 
 .inv-portal .inv-comm-card h3 {
@@ -207,8 +175,6 @@
     color: #ffffff;
 }
 
-/* Keep long message content (URLs, wide tables/images from email) inside the
-   card instead of pushing past its edge. */
 .inv-portal .inv-comm-card * {
     box-sizing: border-box;
 }
@@ -225,7 +191,6 @@
     max-width: 100%;
 }
 
-/* Message composer textarea: fill its wrapper rather than the cramped default. */
 .inv-portal .inv-comm-card textarea,
 .inv-portal .inv-comm-card .o_portal_chatter_composer_input {
     width: 100% !important;
@@ -236,5 +201,8 @@
 @media (max-width: 575px) {
     .inv-portal .inv-summary h2 {
         font-size: 2rem;
+    }
+    .inv-portal .inv-summary .flex-basis-100 {
+        flex-wrap: wrap;
     }
 }
