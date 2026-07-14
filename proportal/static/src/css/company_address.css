@@ -1,129 +1,177 @@
-/* ProPortal — Company Settings Address Cards */
+/* ProPortal — Company Settings Address Cards
+   Copied verbatim from proquotes/static/src/CSS/address_selector.css
+   with #rental-address-section replaced by #company-address-section. */
 
-.addr_scroll_wrap {
-    display: flex;
-    gap: 14px;
-    align-items: stretch;
-}
-
-#invoice-address-cards,
-#delivery-address-cards {
-    flex: 1;
-    min-width: 0;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 0;
-    scrollbar-width: thin;
-    scrollbar-color: #db0d0d #1a1e25;
-}
-#invoice-address-cards::-webkit-scrollbar,
-#delivery-address-cards::-webkit-scrollbar { height: 6px; }
-#invoice-address-cards::-webkit-scrollbar-track,
-#delivery-address-cards::-webkit-scrollbar-track { background: #1a1e25; border-radius: 999px; }
-#invoice-address-cards::-webkit-scrollbar-thumb,
-#delivery-address-cards::-webkit-scrollbar-thumb { background: #db0d0d; border-radius: 999px; }
-
-.addr_scroll_wrap > .addr_card.add_card {
-    flex: 0 0 270px;
-    min-width: 270px;
-    max-width: 270px;
-}
-
-#company-address-section .addr_card {
-    padding: 18px 20px 16px;
-    min-height: 110px;
-    flex: 0 0 270px;
-    min-width: 270px;
-    max-width: 270px;
-}
-#company-address-section .addr_card .name {
-    font-size: 0.97rem;
-    margin-bottom: 6px;
-}
-#company-address-section .addr_card .lines {
-    white-space: normal;
-    line-height: 1.55;
-    font-size: 0.88rem;
-}
-#company-address-section .addr_card .addr_badge {
-    margin-bottom: 6px;
-    display: inline-block;
-}
 #company-address-section .addr_matrix {
+    margin: 0 0 22px;
+}
+#company-address-section .addr_matrix:last-child {
     margin-bottom: 0;
 }
 
-.addr_card_actions {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+#company-address-section .addr_hdr {
     display: flex;
-    gap: 6px;
-    z-index: 2;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
-.addr_action_btn {
-    width: 24px; height: 24px;
+
+#company-address-section .addr_hdr h4 {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.70);
+}
+
+#company-address-section .addr_cards {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    gap: 14px;
+    overflow-x: auto;
+    padding-top: 8px;
+    padding-bottom: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: #db0d0d rgba(255, 255, 255, 0.08);
+}
+#company-address-section .addr_cards::-webkit-scrollbar { height: 6px; }
+#company-address-section .addr_cards::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.06);
     border-radius: 999px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; opacity: 0.65;
-    transition: opacity 0.15s ease, box-shadow 0.15s ease;
-    padding: 0; background: none; border: none;
 }
-.addr_action_btn svg { width: 12px; height: 12px; display: block; pointer-events: none; }
-.addr_card:hover .addr_action_btn { opacity: 1; }
+#company-address-section .addr_cards::-webkit-scrollbar-thumb {
+    background: #db0d0d;
+    border-radius: 999px;
+}
 
-.addr_edit_btn  { border: 1px solid #4b1f1f; background: #231314; color: #db0d0d; }
-.addr_edit_btn:hover  { box-shadow: 0 0 0 2px rgba(219,13,13,0.25) inset; opacity: 1; }
-.addr_delete_btn { border: 1px solid #1f2b4b; background: #131823; color: #5f8dd3; }
-.addr_delete_btn:hover { box-shadow: 0 0 0 2px rgba(95,141,211,0.25) inset; opacity: 1; }
+#company-address-section .addr_card {
+    position: relative;
+    box-sizing: border-box;
+    flex: 0 0 260px;
+    min-width: 260px;
+    max-width: 260px;
+    background: rgba(0, 0, 0, 0.30);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: #e6edf3;
+    scroll-snap-align: start;
+    transition: border-color 0.15s ease, background 0.15s ease,
+        box-shadow 0.15s ease, transform 0.15s ease, flex-basis 0.15s ease;
+}
 
-/* ── Inline edit form ── */
-#addr-inline-editor { margin-top: 14px; }
-#addr-inline-editor select,
-#addr-new-modal-box select {
+#company-address-section .addr_card.editing {
+    flex-basis: 300px;
+    min-width: 300px;
+    max-width: 300px;
+}
+
+#company-address-section .addr_card[data-partner-id]:not(.editing) { cursor: default; }
+
+/* VIEW MODE */
+#company-address-section .addr_card_view {
+    position: relative;
+    padding: 40px 20px 18px;
+    min-height: 118px;
+    box-sizing: border-box;
+}
+#company-address-section .addr_card .name {
+    font-size: 0.95rem; font-weight: 700; margin-bottom: 5px;
+    color: #f2f5f8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#company-address-section .addr_card .lines {
+    white-space: normal; line-height: 1.5; font-size: 0.85rem; color: #9aa4b2;
+}
+#company-address-section .addr_card .addr_badge {
+    position: absolute; top: 16px; left: 20px;
+    display: inline-block; font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.03em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 999px;
+    border: 1px solid rgba(219, 13, 13, 0.4);
+    color: #ff8080; background: rgba(219, 13, 13, 0.08);
+}
+
+/* Action buttons */
+#company-address-section .addr_card_actions {
+    position: absolute; top: 12px; right: 12px;
+    display: flex; gap: 6px; z-index: 2;
+    opacity: 0.55; transition: opacity 0.15s ease;
+}
+#company-address-section .addr_card:hover .addr_card_actions,
+#company-address-section .addr_card_actions:focus-within { opacity: 1; }
+#company-address-section .addr_card_edit .addr_card_actions { opacity: 1; }
+
+#company-address-section .addr_action_btn {
+    width: 24px; height: 24px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0; background: none; border: none;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+#company-address-section .addr_action_btn svg { width: 12px; height: 12px; display: block; pointer-events: none; }
+#company-address-section .addr_action_btn:hover { transform: scale(1.08); }
+#company-address-section .addr_action_btn:focus-visible { outline: 2px solid #3f8cff; outline-offset: 1px; }
+
+#company-address-section .addr_edit_btn   { border: 1px solid #4b1f1f; background: #231314; color: #db0d0d; }
+#company-address-section .addr_edit_btn:hover   { box-shadow: 0 0 0 2px rgba(219, 13, 13, 0.25) inset; }
+#company-address-section .addr_delete_btn { border: 1px solid #1f2b4b; background: #131823; color: #5f8dd3; }
+#company-address-section .addr_delete_btn:hover { box-shadow: 0 0 0 2px rgba(95, 141, 211, 0.25) inset; }
+#company-address-section .addr_save_btn   { border: 1px solid #1f4b2b; background: #132318; color: #2fbf5f; }
+#company-address-section .addr_save_btn:hover   { box-shadow: 0 0 0 2px rgba(47, 191, 95, 0.25) inset; }
+#company-address-section .addr_cancel_btn { border: 1px solid #2b3139; background: #171a1f; color: #9aa4b2; }
+#company-address-section .addr_cancel_btn:hover { box-shadow: 0 0 0 2px rgba(154, 164, 178, 0.25) inset; }
+
+/* EDIT MODE */
+#company-address-section .addr_card_edit { padding: 40px 18px 18px; box-sizing: border-box; }
+#company-address-section .edit_row { margin-bottom: 8px; }
+#company-address-section .edit_row:last-child { margin-bottom: 0; }
+#company-address-section .edit_row--split { display: flex; gap: 8px; }
+#company-address-section .edit_row--split > select { flex: 1; min-width: 0; }
+
+#company-address-section .addr_card_edit input[type="text"],
+#company-address-section .addr_card_edit select {
+    width: 100%; box-sizing: border-box;
+    background: #0a0d11; color: #e6edf3;
+    border: 1px solid #2b3139; border-radius: 6px;
+    padding: 7px 8px; font-size: 0.82rem; line-height: 1.3;
+}
+#company-address-section .addr_card_edit input[type="text"]::placeholder { color: #6b7482; }
+#company-address-section .addr_card_edit input[type="text"]:focus,
+#company-address-section .addr_card_edit select:focus {
+    border-color: #3f8cff;
+    box-shadow: 0 0 0 2px rgba(63, 140, 255, 0.20);
+    outline: none;
+}
+#company-address-section .addr_card_edit select {
     -webkit-appearance: none; -moz-appearance: none; appearance: none;
-    background-color: #0a0d11;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23c9d1d9' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-    background-repeat: no-repeat; background-position: right 10px center; background-size: 14px 10px;
-    color: #e6edf3; border: 1px solid #2b3139; border-radius: 8px;
-    padding: 8px 34px 8px 12px; width: 100%; cursor: pointer;
-    font-size: 0.875rem; line-height: 1.5;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 10'%3E%3Cpath fill='none' stroke='%23c9d1d9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M1 1l7 7 7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center; background-size: 11px 8px;
+    padding-right: 24px;
 }
-#addr-inline-editor select:focus,
-#addr-new-modal-box select:focus {
-    border-color: #3f8cff; box-shadow: 0 0 0 3px rgba(63,140,255,0.20); outline: none;
-}
-#addr-inline-editor select option,
-#addr-new-modal-box select option { background: #0a0d11; color: #e6edf3; }
-#addr-inline-editor .actions,
-#addr-new-modal-box .actions { margin-top: 16px; text-align: right; }
+#company-address-section .addr_card_edit select option { background: #0a0d11; color: #e6edf3; }
 
-/* ── Add new modal ── */
-#addr-new-modal {
-    position: fixed; inset: 0; z-index: 9000;
-    display: flex; align-items: center; justify-content: center;
+/* "Add Address" tile */
+#company-address-section .addr_card.add_card {
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    padding: 16px; cursor: pointer;
+    background: rgba(219, 13, 13, 0.04);
+    border: 1.5px dashed rgba(219, 13, 13, 0.35);
 }
-#addr-new-modal-backdrop {
-    position: absolute; inset: 0;
-    background: rgba(0,0,0,0.72); cursor: pointer;
+#company-address-section .addr_card.add_card:hover {
+    background: rgba(219, 13, 13, 0.09);
+    border-color: rgba(219, 13, 13, 0.6);
+    transform: translateY(-1px);
 }
-#addr-new-modal-box {
-    position: relative; z-index: 1;
-    width: min(500px, 92vw);
-    background: #14171c; border: 1px solid #23272f; border-radius: 14px;
-    padding: 24px; color: #e6edf3; max-height: 85vh; overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+#company-address-section .add_inner {
+    display: flex; flex-direction: column; align-items: center; gap: 8px; color: #e2b9b9;
 }
-#addr-new-modal-box .addr_editor { margin: 0; padding: 0; background: transparent; border: none; color: #e6edf3; }
-#addr-new-modal-box .addr_editor fieldset { min-width: 100%; flex: 1 1 100%; border: none; background: transparent; padding: 0; }
-#addr-new-modal-box .addr_editor legend {
-    font-size: 1.05rem; font-weight: 700; color: #e6edf3;
-    padding: 0 0 10px; margin-bottom: 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.10); width: 100%;
-}
-#addr-new-modal-box .addr_editor input[type="text"] {
-    background: #0a0d11; color: #e6edf3; border: 1px solid #2b3139; border-radius: 8px;
-}
-#addr-new-modal-box .addr_editor input[type="text"]:focus {
-    border-color: #3f8cff; box-shadow: 0 0 0 3px rgba(63,140,255,0.20); outline: none;
+#company-address-section .add_inner .fa-plus { font-size: 1.2rem; color: #db0d0d; }
+#company-address-section .add_label { font-weight: 600; font-size: 0.88rem; }
+
+@media (max-width: 480px) {
+    #company-address-section .addr_card         { flex-basis: 220px; min-width: 220px; max-width: 220px; }
+    #company-address-section .addr_card.editing { flex-basis: 260px; min-width: 260px; max-width: 260px; }
 }

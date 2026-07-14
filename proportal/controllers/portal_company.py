@@ -44,8 +44,16 @@ class ProportalCompanySettings(CustomerPortal):
 
         invoice_addresses  = company.child_ids.filtered(lambda r: r.type == 'invoice'  and r.active)
         delivery_addresses = company.child_ids.filtered(lambda r: r.type == 'delivery' and r.active)
-        all_countries = request.env['res.country'].sudo().search([])
-        all_states    = request.env['res.country.state'].sudo().search([])
+
+        ca_codes = ['CA', 'US']
+        priority_countries = sorted(
+            request.env['res.country'].sudo().search([('code', 'in', ca_codes)]),
+            key=lambda c: ca_codes.index(c.code)
+        )
+        other_countries = request.env['res.country'].sudo().search([('code', 'not in', ca_codes)], order='name asc')
+        ca_states    = request.env['res.country.state'].sudo().search([('country_id.code', '=', 'CA')], order='name asc')
+        us_states    = request.env['res.country.state'].sudo().search([('country_id.code', '=', 'US')], order='name asc')
+        other_states = request.env['res.country.state'].sudo().search([('country_id.code', 'not in', ['CA', 'US'])], order='name asc')
 
         values = self._prepare_portal_layout_values()
         values.update({
@@ -56,8 +64,11 @@ class ProportalCompanySettings(CustomerPortal):
             'delivery_addresses':  delivery_addresses,
             'followup_partner':    company,
             'renewal_partner':     company,
-            'all_countries':       all_countries,
-            'all_states':          all_states,
+            'priority_countries':  priority_countries,
+            'other_countries':     other_countries,
+            'ca_states':           ca_states,
+            'us_states':           us_states,
+            'other_states':        other_states,
         })
         return request.render('proportal.portal_company_settings_detail', values)
 
