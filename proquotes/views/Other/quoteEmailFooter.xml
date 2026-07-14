@@ -3,7 +3,7 @@
     <template id="mail_notification_layout_inherit" inherit_id="mail.mail_notification_layout">
         <!-- Replace the entire header section for CRM leads with simple_email_layout -->
         <xpath expr="//div[@t-if='subtitles or has_button_access or actions or not is_discussion']" position="replace">
-            <div t-if="(record._name != 'crm.lead' or not record.simple_email_layout or subtype_internal) and (subtitles or has_button_access or actions or not is_discussion)"
+            <div t-if="(record._name != 'crm.lead' or not record.simple_email_layout or subtype_internal or has_button_access) and (subtitles or has_button_access or actions or not is_discussion)"
                  summary="o_mail_notification" style="padding: 0px;">
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0"
                        style="width: 100%; margin-top: 5px;">

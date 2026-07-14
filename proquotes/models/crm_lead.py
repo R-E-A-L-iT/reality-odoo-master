@@ -86,8 +86,9 @@ class CrmLead(models.Model):
         group_name = recipients_group.get('notification_group_name')
         _logger.warning(
             'CRM NOTIFY DEBUG: _notify_by_email_render_layout called — '
-            'lead=%s, group=%s, has_button_access=%s',
+            'lead=%s, group=%s, has_button_access=%s, simple_email_layout=%s',
             self.ids, group_name, recipients_group.get('has_button_access'),
+            self.mapped('simple_email_layout') if self else 'N/A',
         )
         if self and group_name not in ('customer', 'portal'):
             self.ensure_one()
