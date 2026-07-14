@@ -278,10 +278,7 @@
           </div>
         </div>
 
-      </div>
-      <!-- ===== END ADDRESS CARD SELECTOR ===== -->
-
-      <!-- ===== FOLLOW-UP ADDRESS ===== -->
+        <!-- ===== FOLLOW-UP ADDRESS ===== -->
       <div class="addr_matrix">
         <div class="addr_hdr">
           <h4 t-if="language == 'fr_CA'">Adresse de suivi</h4>
@@ -484,6 +481,9 @@
           </div>
         </div>
       </div>
+
+      </div>
+      <!-- ===== END ADDRESS CARD SELECTOR ===== -->
 
     </t>
   </template>
