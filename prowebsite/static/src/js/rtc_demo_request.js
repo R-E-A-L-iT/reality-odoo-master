@@ -60,6 +60,20 @@ whenReady(() => {
     const status = form.querySelector(".o_rtc_demo_status");
     const btn = form.querySelector(".o_rtc_demo_btn");
 
+    // ── In-person / virtual toggle: show the address field only for in-person ──
+    const addressWrap = form.querySelector(".o_rtc_demo_address_wrap");
+    function currentMode() {
+        const checked = form.querySelector('[name="location_mode"]:checked');
+        return checked ? checked.value : "in_person";
+    }
+    function syncModeUi() {
+        if (addressWrap) addressWrap.classList.toggle("is-hidden", currentMode() !== "in_person");
+    }
+    form.querySelectorAll('[name="location_mode"]').forEach((r) =>
+        r.addEventListener("change", syncModeUi)
+    );
+    syncModeUi();
+
     function setStatus(msg, kind) {
         if (!status) return;
         status.textContent = msg || "";
@@ -81,26 +95,36 @@ whenReady(() => {
         ev.preventDefault();
         setStatus("", null);
 
+        const inPerson = currentMode() === "in_person";
+        const address = fieldVal("address");
+
         const data = {
             full_name: fieldVal("full_name"),
             company: fieldVal("company"),
             email: fieldVal("email"),
             phone: fieldVal("phone"),
             week: fieldVal("week"),
-            location: fieldVal("location"),
+            location: inPerson ? address : "Virtual demo",
             product: fieldVal("product"),
             notes: fieldVal("notes"),
             lang: document.documentElement.getAttribute("lang") || "",
         };
 
         // ── Client-side validation of required fields ──
-        const required = ["full_name", "company", "email", "phone", "week", "location"];
+        const required = ["full_name", "company", "email", "phone", "week"];
         let firstBad = null;
         required.forEach((name) => {
             const bad = !data[name];
             markInvalid(name, bad);
             if (bad && !firstBad) firstBad = name;
         });
+        // The address is required only for an in-person demo.
+        if (inPerson) {
+            markInvalid("address", !address);
+            if (!address && !firstBad) firstBad = "address";
+        } else {
+            markInvalid("address", false);
+        }
         if (!EMAIL_RE.test(data.email)) {
             markInvalid("email", true);
             if (!firstBad) firstBad = "email";

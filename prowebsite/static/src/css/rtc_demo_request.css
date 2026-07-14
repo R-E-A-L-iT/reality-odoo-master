@@ -137,6 +137,57 @@
     color: #0a0a0a;
 }
 
+/* ── In-person / virtual segmented toggle ── */
+.o_rtc_demo_modes {
+    display: inline-flex;
+    background: #0d0d0d;
+    border: 1px solid #2e2e2e;
+    border-radius: 8px;
+    padding: 4px;
+    gap: 4px;
+}
+
+.o_rtc_demo_mode {
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+}
+
+.o_rtc_demo_mode input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.o_rtc_demo_mode_label {
+    display: block;
+    padding: 9px 22px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #b8b8b8;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.o_rtc_demo_mode input:checked + .o_rtc_demo_mode_label {
+    background: #e00000;
+    color: #fff;
+}
+
+.o_rtc_demo_mode input:focus-visible + .o_rtc_demo_mode_label {
+    box-shadow: 0 0 0 3px rgba(224, 0, 0, 0.18);
+}
+
+/* Collapsed when the visitor chooses a virtual demo */
+.o_rtc_demo_address_wrap.is-hidden {
+    display: none;
+}
+
+.o_rtc_demo_textarea.is-invalid {
+    border-color: #ff6b6b;
+}
+
 /* ── Submit ── */
 .o_rtc_demo_actions {
     margin-top: 28px;
