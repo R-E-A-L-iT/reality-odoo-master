@@ -1,0 +1,240 @@
+/* ── Invoice portal page: card layout ──
+   Mirrors the quote page's card language (rounded dark cards, red #db0d0d
+   accent, box-shadow) but without the hero. The invoice_preview.xml override
+   moves the old left sidebar (amount / Pay Now / Download / salesperson) into
+   the top of a single "main card", with the invoice PDF rendered underneath it
+   in that same card; the communication chatter becomes a second card.
+
+   Everything is scoped under .inv-portal (a marker class added onto the
+   invoice page's .o_portal_invoice_sidebar row by the override) so none of
+   these generic Bootstrap/Odoo-portal selector overrides leak onto other
+   portal record types that share the same base templates. */
+
+/* Full-width content column (the sidebar column is gone). Cards cap their own
+   width and center, so the invoice reads like a document rather than stretching
+   edge to edge. */
+.inv-portal.o_portal_invoice_sidebar {
+    --inv-card-max: 1000px;
+    --inv-accent: #db0d0d;
+}
+
+.inv-portal .inv-content {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* ── Card shell ── */
+.inv-portal .inv-card {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: var(--inv-card-max);
+    margin: 0 auto 24px;
+    background: #0c0c0d;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    color: #ffffff;
+}
+
+/* ── Main card: summary header + PDF ── */
+.inv-portal .inv-main-card {
+    padding: 0;
+}
+
+.inv-portal .inv-summary {
+    padding: 26px clamp(18px, 3vw, 34px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Neutralize the moved portal_record_sidebar wrappers: kill its grid-column
+   width, its sticky positioning and its own padding, and lay the content out
+   as a centered stack instead of a narrow rail. */
+.inv-portal .inv-summary > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: none !important;
+}
+
+.inv-portal .inv-summary .o_portal_sidebar_content {
+    position: static !important;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 18px;
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Amount + overdue */
+.inv-portal .inv-summary .o_portal_sidebar_content > .position-relative {
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.inv-portal .inv-summary h2 {
+    margin: 0;
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    color: #ffffff;
+}
+
+.inv-portal .inv-summary .small {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* The empty grid spacer the base markup drops in front of the amount. */
+.inv-portal .inv-summary .d-grid:empty {
+    display: none !important;
+}
+
+/* Buttons row (Pay Now + Download) */
+.inv-portal .inv-summary .flex-basis-100 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.inv-portal .inv-summary .flex-basis-100 > * {
+    flex: 1 1 165px;
+    margin: 0 !important;
+}
+
+.inv-portal .inv-summary .o_download_pdf {
+    display: flex;
+    gap: 10px;
+}
+
+.inv-portal .inv-summary .o_download_pdf > div {
+    flex: 1;
+}
+
+.inv-portal .inv-summary .btn {
+    width: 100% !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 !important;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.inv-portal .inv-summary .btn-primary {
+    background: var(--inv-accent);
+    border: none;
+}
+
+.inv-portal .inv-summary .btn-primary:hover {
+    background: #b70b0b;
+}
+
+.inv-portal .inv-summary .btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+}
+
+.inv-portal .inv-summary .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+/* Salesperson block */
+.inv-portal .inv-summary .flex-grow-1 {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.inv-portal .inv-summary .flex-grow-1 h6 .text-muted,
+.inv-portal .inv-summary .flex-grow-1 .text-muted {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.inv-portal .inv-summary .o_portal_contact_details {
+    align-items: center;
+}
+
+.inv-portal .inv-summary .flex-grow-1 h6 {
+    color: #ffffff;
+}
+
+.inv-portal .inv-summary .flex-grow-1 a {
+    color: #ff6b6b;
+}
+
+.inv-portal .inv-summary .o_portal_address,
+.inv-portal .inv-summary .o_portal_address * {
+    color: rgba(255, 255, 255, 0.72) !important;
+}
+
+/* ── PDF viewer, sitting in the bottom of the main card ── */
+.inv-portal .inv-main-card .o_portal_html_view {
+    margin: 0;
+    padding: clamp(10px, 2vw, 20px);
+    background: #ffffff;
+    border-radius: 0;
+    box-shadow: none !important;
+}
+
+.inv-portal .inv-main-card #invoice_html {
+    border-radius: 6px;
+}
+
+/* ── Communication card ── */
+.inv-portal .inv-comm-card {
+    background: #141414;
+    padding: 24px clamp(18px, 3vw, 28px);
+}
+
+.inv-portal .inv-comm-card h3 {
+    margin: 0 0 16px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+/* Keep long message content (URLs, wide tables/images from email) inside the
+   card instead of pushing past its edge. */
+.inv-portal .inv-comm-card * {
+    box-sizing: border-box;
+}
+
+.inv-portal .inv-comm-card p,
+.inv-portal .inv-comm-card span,
+.inv-portal .inv-comm-card div {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.inv-portal .inv-comm-card img,
+.inv-portal .inv-comm-card table {
+    max-width: 100%;
+}
+
+/* Message composer textarea: fill its wrapper rather than the cramped default. */
+.inv-portal .inv-comm-card textarea,
+.inv-portal .inv-comm-card .o_portal_chatter_composer_input {
+    width: 100% !important;
+    min-height: 90px !important;
+    box-sizing: border-box !important;
+}
+
+@media (max-width: 575px) {
+    .inv-portal .inv-summary h2 {
+        font-size: 2rem;
+    }
+}

@@ -1,9 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="portal_invoice_payment" inherit_id="account.portal_invoice_page">
+    <!-- priority 100 so this runs AFTER account_payment's own inherited view,
+         which injects the "Pay Now" button + #portal_pay modal into the base
+         invoice portal page. By the time our moves below run, that button is
+         already sitting inside the sidebar's `entries` (inside the
+         portal.portal_record_sidebar t-call) and the modal is already inside
+         #invoice_content — so relocating the whole sidebar node carries Pay Now
+         along with it, and the modal stays put and keeps working. -->
+    <template id="portal_invoice_payment" inherit_id="account.portal_invoice_page" priority="100">
 
+        <!-- Salesperson contact widget: show the email (base shows city/phone). -->
         <xpath expr="//div[@t-field='invoice.invoice_user_id']" position="replace">
             <div t-field="invoice.invoice_user_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;email&quot;]}"/>
+        </xpath>
+
+        <!-- Scope marker for all invoice-portal styling (invoicePreview.css). -->
+        <xpath expr="//div[hasclass('o_portal_invoice_sidebar')]" position="attributes">
+            <attribute name="class" add="inv-portal" separator=" "/>
+        </xpath>
+
+        <!-- Sidebar is gone; the content column now spans the full width. -->
+        <xpath expr="//div[@id='invoice_content']" position="attributes">
+            <attribute name="class">o_portal_content col-12 inv-content</attribute>
+        </xpath>
+
+        <!-- Build the main card (summary header + PDF underneath) right before
+             the invoice PDF viewer, then fill it by moving nodes into it. -->
+        <xpath expr="//div[@id='invoice_content']/div[hasclass('o_portal_html_view')]" position="before">
+            <div class="inv-card inv-main-card">
+                <div class="inv-summary"/>
+            </div>
+        </xpath>
+
+        <!-- Move the sidebar (amount + Pay Now + Download + salesperson) into the
+             card's summary header. This carries account_payment's Pay Now button. -->
+        <xpath expr="//div[hasclass('inv-summary')]" position="inside">
+            <xpath expr="//t[@t-call='portal.portal_record_sidebar']" position="move"/>
+        </xpath>
+
+        <!-- Move the invoice PDF viewer into the same card, under the summary. -->
+        <xpath expr="//div[hasclass('inv-main-card')]" position="inside">
+            <xpath expr="//div[@id='invoice_content']/div[hasclass('o_portal_html_view')]" position="move"/>
+        </xpath>
+
+        <!-- Communication history becomes its own card. -->
+        <xpath expr="//div[@id='invoice_communication']" position="attributes">
+            <attribute name="class">mt-4 inv-card inv-comm-card</attribute>
         </xpath>
 
     </template>

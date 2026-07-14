@@ -59,6 +59,7 @@
             "proquotes/static/src/CSS/address_selector.css",
             "proquotes/static/src/CSS/liquid_glass.css",
             "proquotes/static/src/CSS/quotePreview.css",
+            "proquotes/static/src/CSS/invoicePreview.css",
             "proquotes/static/src/JS/price.js",
             "proquotes/static/src/JS/fold.js",
             "proquotes/static/src/JS/rental.js",
