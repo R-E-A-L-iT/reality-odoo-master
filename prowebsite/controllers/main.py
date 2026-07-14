@@ -234,6 +234,98 @@ class ProwebsiteController(http.Controller):
             _logger.warning("[dereks_red_book] could not post PDF to chatter: %s", e)
         return {'success': True, 'attachment_id': attachment.id}
 
+    # ------------------------------------------------------------------
+    #  RTC demo request — capture a demo booking as a CRM opportunity
+    # ------------------------------------------------------------------
+    def _sales_team(self):
+        """The 'Sales' sales team (its members get the round-robin demo lead).
+
+        Resolved by name so a site-owner rename doesn't silently misroute:
+        exact 'Sales' first, then a fuzzy match, then the first team as a
+        last resort (mirrors _drb_resolve_team's defensiveness).
+        """
+        Team = request.env['crm.team'].sudo()
+        team = Team.search([('name', '=', 'Sales')], limit=1)
+        if not team:
+            team = Team.search([('name', 'ilike', 'sales')], limit=1)
+        if not team:
+            team = Team.search([], order='id', limit=1)
+        return team
+
+    @http.route(
+        '/rtc_demo/submit',
+        type='json',
+        auth='public',
+        website=True,
+        csrf=False,
+    )
+    def rtc_demo_submit(self, **kw):
+        """Create a CRM opportunity from an RTC demo request and assign it
+        round-robin to a member of the Sales sales team."""
+        email = (kw.get('email') or '').strip()
+        if not email or not _EMAIL_RE.match(email):
+            return {'success': False, 'error': 'invalid_email'}
+
+        full_name = (kw.get('full_name') or '').strip()
+        company = (kw.get('company') or '').strip()
+        phone = (kw.get('phone') or '').strip()
+        week = (kw.get('week') or '').strip()
+        location = (kw.get('location') or '').strip()
+        product = (kw.get('product') or 'RTC').strip()
+        notes = (kw.get('notes') or '').strip()
+
+        description = (
+            "<p><b>RTC demo request</b></p>"
+            "<ul>"
+            "<li>Preferred week: %s</li>"
+            "<li>Location: %s</li>"
+            "<li>Product of interest: %s</li>"
+            "<li>Company: %s</li>"
+            "<li>Phone: %s</li>"
+            "<li>Email: %s</li>"
+            "%s"
+            "</ul>"
+        ) % (
+            week or '-', location or '-', product or '-',
+            company or '-', phone or '-', email,
+            ('<li>Notes: %s</li>' % notes) if notes else '',
+        )
+
+        try:
+            team = self._sales_team()
+            user = self._drb_pick_salesperson(team)
+        except Exception as e:
+            _logger.warning("[rtc_demo] team/salesperson resolution failed: %s", e)
+            team = request.env['crm.team']
+            user = request.env['res.users']
+
+        title = 'RTC Demo Request — %s' % (company or full_name or email)
+        if location:
+            title += ' (%s)' % location
+
+        vals = {
+            'name': title,
+            'type': 'opportunity',
+            'contact_name': full_name or False,
+            'partner_name': company or False,
+            'email_from': email,
+            'phone': phone or False,
+            'description': description,
+            'team_id': team.id if team else False,
+            'user_id': user.id if user else False,
+        }
+
+        try:
+            lead = request.env['crm.lead'].sudo().create(vals)
+        except Exception as e:
+            _logger.exception("[rtc_demo] lead creation failed: %s", e)
+            return {'success': False, 'error': 'create_failed'}
+
+        if not team:
+            _logger.warning("[rtc_demo] lead %s created with no sales team resolved", lead.id)
+
+        return {'success': True, 'lead_id': lead.id}
+
     @http.route(
         '/omnigo/get_pricelists',
         type='json',

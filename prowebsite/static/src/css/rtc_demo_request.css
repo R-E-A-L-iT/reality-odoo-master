@@ -1,0 +1,254 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   RTC Demo Request page — rtc_demo_request.css
+   Scoped under .o_rtc_demo_page to avoid collisions with other pages.
+   Palette + typography match the existing prowebsite design language
+   (brand red #e00000, ink #0a0a0a, Montserrat / Arial Black).
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.o_rtc_demo_page {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    background: #0a0a0a;
+    color: #f4f4f4;
+    padding: clamp(64px, 9vw, 120px) clamp(20px, 5vw, 80px);
+    font-family: "Montserrat", sans-serif;
+}
+
+.o_rtc_demo_wrap {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+/* ── Header ── */
+.o_rtc_demo_header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.o_rtc_demo_kicker {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #e00000;
+    margin-bottom: 14px;
+}
+
+.o_rtc_demo_title {
+    margin: 0 0 16px;
+    font-family: "Arial Black", "Montserrat", sans-serif;
+    font-size: clamp(30px, 4.4vw, 52px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+}
+
+.o_rtc_demo_sub {
+    margin: 0 auto;
+    max-width: 520px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #b8b8b8;
+}
+
+/* ── Form card ── */
+.o_rtc_demo_form {
+    background: #141414;
+    border: 1px solid #262626;
+    border-radius: 16px;
+    padding: clamp(24px, 4vw, 44px);
+}
+
+.o_rtc_demo_grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.o_rtc_demo_field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.o_rtc_demo_field--full {
+    grid-column: 1 / -1;
+}
+
+.o_rtc_demo_label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: #d0d0d0;
+}
+
+.o_rtc_demo_label .o_rtc_demo_req {
+    color: #e00000;
+    margin-left: 2px;
+}
+
+.o_rtc_demo_input,
+.o_rtc_demo_select,
+.o_rtc_demo_textarea {
+    width: 100%;
+    background: #0d0d0d;
+    border: 1px solid #2e2e2e;
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: #f4f4f4;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.o_rtc_demo_textarea {
+    resize: vertical;
+    min-height: 96px;
+}
+
+.o_rtc_demo_input::placeholder,
+.o_rtc_demo_textarea::placeholder {
+    color: #6a6a6a;
+}
+
+.o_rtc_demo_input:focus,
+.o_rtc_demo_select:focus,
+.o_rtc_demo_textarea:focus {
+    outline: none;
+    border-color: #e00000;
+    box-shadow: 0 0 0 3px rgba(224, 0, 0, 0.18);
+}
+
+/* native select arrow on dark bg */
+.o_rtc_demo_select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23888' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+}
+
+.o_rtc_demo_select option {
+    color: #0a0a0a;
+}
+
+/* ── Submit ── */
+.o_rtc_demo_actions {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.o_rtc_demo_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #e00000;
+    color: #fff;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 14px 34px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.o_rtc_demo_btn:hover:not(:disabled) {
+    background: #c20000;
+    transform: translateY(-1px);
+}
+
+.o_rtc_demo_btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+/* ── Status / feedback ── */
+.o_rtc_demo_status {
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.5;
+    display: none;
+}
+
+.o_rtc_demo_status.is-error {
+    display: block;
+    color: #ff6b6b;
+}
+
+.o_rtc_demo_status.is-ok {
+    display: block;
+    color: #4ade80;
+}
+
+/* Success state — swap the form for a confirmation panel */
+.o_rtc_demo_form.is-done .o_rtc_demo_grid,
+.o_rtc_demo_form.is-done .o_rtc_demo_actions {
+    display: none;
+}
+
+.o_rtc_demo_done {
+    display: none;
+    text-align: center;
+    padding: 12px 0;
+}
+
+.o_rtc_demo_form.is-done .o_rtc_demo_done {
+    display: block;
+}
+
+.o_rtc_demo_done_icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: rgba(74, 222, 128, 0.12);
+    color: #4ade80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.o_rtc_demo_done_title {
+    font-family: "Arial Black", "Montserrat", sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    color: #fff;
+    margin: 0 0 10px;
+}
+
+.o_rtc_demo_done_text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #b8b8b8;
+    margin: 0;
+}
+
+/* ── Field error highlight ── */
+.o_rtc_demo_input.is-invalid,
+.o_rtc_demo_select.is-invalid {
+    border-color: #ff6b6b;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+    .o_rtc_demo_grid {
+        grid-template-columns: 1fr;
+    }
+    .o_rtc_demo_btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
