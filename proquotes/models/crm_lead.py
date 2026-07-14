@@ -83,7 +83,13 @@ class CrmLead(models.Model):
             _logger.info('>>>>>>>Successfully assigned company %s to lead %s', company_to_assign.name, lead.id)
 
     def _notify_by_email_render_layout(self, message, recipients_group, msg_vals=False, render_values=None):
-        if self and recipients_group.get('notification_group_name') not in ('customer', 'portal'):
+        group_name = recipients_group.get('notification_group_name')
+        _logger.warning(
+            'CRM NOTIFY DEBUG: _notify_by_email_render_layout called — '
+            'lead=%s, group=%s, has_button_access=%s',
+            self.ids, group_name, recipients_group.get('has_button_access'),
+        )
+        if self and group_name not in ('customer', 'portal'):
             self.ensure_one()
             recipients_group = dict(recipients_group)
             recipients_group['has_button_access'] = True
@@ -91,6 +97,10 @@ class CrmLead(models.Model):
                 'url': f'{self.get_base_url()}/web#model=crm.lead&id={self.id}&view_type=form',
                 'title': _('View Opportunity') if self.type == 'opportunity' else _('View Lead'),
             }
+            _logger.warning(
+                'CRM NOTIFY DEBUG: set has_button_access=True for group=%s lead=%s',
+                group_name, self.ids,
+            )
         return super()._notify_by_email_render_layout(
             message, recipients_group, msg_vals=msg_vals, render_values=render_values
         )
