@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Smart button on Sale Order showing total delivery charges -->
+    <record id="sale_order_delivery_charge_button" model="ir.ui.view">
+        <field name="name">sale.order.delivery.charge.button</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="delivery_charge_count" invisible="1"/>
+                <button name="action_view_delivery_charges"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-money"
+                        invisible="delivery_charge_count == 0">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="delivery_charge_total"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                        </span>
+                        <span class="o_stat_text">Delivery Cost</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
