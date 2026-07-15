@@ -60,14 +60,14 @@ whenReady(() => {
     const status = form.querySelector(".o_rtc_demo_status");
     const btn = form.querySelector(".o_rtc_demo_btn");
 
-    // ── In-person / virtual toggle: show the address field only for in-person ──
-    const addressWrap = form.querySelector(".o_rtc_demo_address_wrap");
+    // ── In-person / virtual toggle: show the city field only for in-person ──
+    const cityWrap = form.querySelector(".o_rtc_demo_city_wrap");
     function currentMode() {
         const checked = form.querySelector('[name="location_mode"]:checked');
         return checked ? checked.value : "in_person";
     }
     function syncModeUi() {
-        if (addressWrap) addressWrap.classList.toggle("is-hidden", currentMode() !== "in_person");
+        if (cityWrap) cityWrap.classList.toggle("is-hidden", currentMode() !== "in_person");
     }
     form.querySelectorAll('[name="location_mode"]').forEach((r) =>
         r.addEventListener("change", syncModeUi)
@@ -96,7 +96,7 @@ whenReady(() => {
         setStatus("", null);
 
         const inPerson = currentMode() === "in_person";
-        const address = fieldVal("address");
+        const city = fieldVal("city");
 
         const data = {
             full_name: fieldVal("full_name"),
@@ -104,7 +104,7 @@ whenReady(() => {
             email: fieldVal("email"),
             phone: fieldVal("phone"),
             week: fieldVal("week"),
-            location: inPerson ? address : "Virtual demo",
+            location: inPerson ? city : "Virtual demo",
             product: fieldVal("product"),
             notes: fieldVal("notes"),
             lang: document.documentElement.getAttribute("lang") || "",
@@ -118,12 +118,12 @@ whenReady(() => {
             markInvalid(name, bad);
             if (bad && !firstBad) firstBad = name;
         });
-        // The address is required only for an in-person demo.
+        // The city is required only for an in-person demo.
         if (inPerson) {
-            markInvalid("address", !address);
-            if (!address && !firstBad) firstBad = "address";
+            markInvalid("city", !city);
+            if (!city && !firstBad) firstBad = "city";
         } else {
-            markInvalid("address", false);
+            markInvalid("city", false);
         }
         if (!EMAIL_RE.test(data.email)) {
             markInvalid("email", true);
