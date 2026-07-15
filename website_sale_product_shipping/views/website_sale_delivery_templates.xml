@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Replace Odoo's single "Choose a delivery method" block with a
+        per-product delivery section. Each shippable product gets its own
+        carrier selection box. Products marked no_shipping=True are skipped.
+        Products that pick the same carrier are grouped into one delivery line.
+    -->
+    <template id="payment_delivery_per_product"
+              inherit_id="website_sale.payment_delivery"
+              priority="20">
+        <xpath expr="//div[@id='delivery_carrier']" position="replace">
+            <t t-if="per_product_delivery_info">
+                <t t-foreach="per_product_delivery_info" t-as="pdi">
+                    <div class="o_per_product_delivery mb-3"
+                         t-att-data-line-id="pdi['line'].id">
+                        <h4 class="fs-6 small text-uppercase fw-bolder mb-2">
+                            Delivery for
+                            <t t-esc="pdi['line'].product_id.name"/>
+                        </h4>
+                        <div class="card border-0">
+                            <ul class="list-group list-group-flush">
+                                <t t-foreach="pdi['carriers']" t-as="delivery">
+                                    <li class="list-group-item px-0">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input type="radio"
+                                                    t-att-name="'delivery_type_line_%s' % pdi['line'].id"
+                                                    t-att-value="delivery.id"
+                                                    t-att-data-line-id="pdi['line'].id"
+                                                    t-att-data-carrier-id="delivery.id"
+                                                    t-att-id="'del_%s_line_%s' % (delivery.id, pdi['line'].id)"
+                                                    t-att-checked="pdi['selected_carrier'] and pdi['selected_carrier'].id == delivery.id or None"/>
+                                                <label class="mb-0"
+                                                       t-att-for="'del_%s_line_%s' % (delivery.id, pdi['line'].id)">
+                                                    <t t-esc="delivery.name"/>
+                                                </label>
+                                            </div>
+                                            <span class="o_wsale_delivery_badge_price_line badge text-bg-primary"
+                                                  t-att-data-carrier-id="delivery.id"
+                                                  t-att-data-line-id="pdi['line'].id">
+                                                ...
+                                            </span>
+                                        </div>
+                                    </li>
+                                </t>
+                            </ul>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <!--
+        Mixed-cart notice: shown when the order contains both shippable (physical)
+        and non-shippable (digital/software) products.
+    -->
+    <template id="payment_delivery_mixed_cart_notice"
+              inherit_id="website_sale.payment_delivery">
+        <xpath expr="//div[@id='delivery_carrier']" position="before">
+            <t t-if="has_non_shippable_products and delivery_has_storable">
+                <div class="alert alert-info d-flex align-items-center gap-2 mb-3">
+                    <i class="fa fa-info-circle fa-lg flex-shrink-0"/>
+                    <span>
+                        Shipping applies only to the <strong>physical products</strong>
+                        in your order. Digital products are delivered electronically
+                        at no shipping cost.
+                    </span>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+
+    <!--
+        The base cart_delivery template only shows the delivery row when
+        carrier_id is set. We never set order.carrier_id in per-product mode,
+        so override the condition to also show when amount_delivery > 0.
+    -->
+    <template id="cart_delivery_per_product"
+              inherit_id="website_sale.cart_delivery"
+              priority="20">
+        <xpath expr="//tr[@id='order_delivery']" position="attributes">
+            <attribute name="t-if">
+                website_sale_order and (website_sale_order.carrier_id or website_sale_order.amount_delivery)
+            </attribute>
+        </xpath>
+    </template>
+
+</odoo>

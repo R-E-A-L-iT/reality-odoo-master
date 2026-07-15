@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Delivery carrier form: smart button showing restricted products -->
+    <record id="delivery_carrier_restricted_products_view" model="ir.ui.view">
+        <field name="name">delivery.carrier.restricted.products</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_restricted_products"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-cube">
+                    <field name="restricted_product_count"
+                           widget="statinfo"
+                           string="Restricted&#10;Products"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
