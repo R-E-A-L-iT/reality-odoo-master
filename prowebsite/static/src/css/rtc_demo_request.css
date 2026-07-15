@@ -180,7 +180,7 @@
 }
 
 /* Collapsed when the visitor chooses a virtual demo */
-.o_rtc_demo_address_wrap.is-hidden {
+.o_rtc_demo_city_wrap.is-hidden {
     display: none;
 }
 
