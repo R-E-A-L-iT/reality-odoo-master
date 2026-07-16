@@ -22,6 +22,7 @@
             'prowebsite/static/src/css/three_product.css',
             'prowebsite/static/src/css/rtc_series.css',
             'prowebsite/static/src/css/rtc_series_sections.css',
+            'prowebsite/static/src/css/product_sections.css',
             'prowebsite/static/src/css/product_page.css',
             'prowebsite/static/src/css/shop_page.css',
             'prowebsite/static/src/css/multimapper.css',

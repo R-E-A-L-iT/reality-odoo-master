@@ -478,7 +478,12 @@ function buildSiteHeader(nativeHeaderEl) {
     const wantsOverlay =
         document.getElementById('wrapwrap')?.classList.contains('o_header_overlay')
         || !!document.querySelector('#wrap .s_cover.o_full_screen_height')
-        || OVERLAY_PATHS.includes(window.location.pathname);
+        // Rebuilt product pages (RTC360, and the others being reworked) use a
+        // custom full-bleed hero (.o_rtc_hero) instead of an s_cover, and were
+        // built with the header floating over that hero — treat its presence as
+        // the same "overlay wanted" signal so they don't need the per-page
+        // "Header Over Content" flag toggled by hand.
+        || !!document.querySelector('#wrap .o_rtc_hero');
     header.className = 'o_site_header' + (wantsOverlay ? ' o_site_header--overlay' : '');
     header.innerHTML = `
         <div class="o_site_header_inner">

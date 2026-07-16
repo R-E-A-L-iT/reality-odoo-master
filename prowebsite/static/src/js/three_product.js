@@ -1998,9 +1998,30 @@ whenReady(async () => {
     var stack = document.createElement("div");
     stack.className = "o_promo_stack";
 
+    // Give each promo the shared "liquid glass" material (see proquotes'
+    // liquid_glass.css/js — loaded site-wide via web.assets_frontend) so these
+    // notifications match the floaty glass look used on the quote previews.
+    // The class is added here, before the website's publicWidget scan runs, so
+    // its selector-based tilt widget (selector: ".o_liquid_glass") auto-attaches
+    // to them — no direct import, keeping prowebsite decoupled from proquotes.
     // OmniGO on top, RTC below
-    if (omnigo) { omnigo.parentNode.removeChild(omnigo); stack.appendChild(omnigo); }
-    if (rtc)    { rtc.parentNode.removeChild(rtc);       stack.appendChild(rtc);    }
+    if (omnigo) { omnigo.classList.add("o_liquid_glass"); omnigo.parentNode.removeChild(omnigo); stack.appendChild(omnigo); }
+    if (rtc)    { rtc.classList.add("o_liquid_glass");    rtc.parentNode.removeChild(rtc);       stack.appendChild(rtc);    }
 
     document.body.appendChild(stack);
+
+    // The entry keyframe (omnigo-promo-in) uses fill-mode "both", so it keeps
+    // holding the `transform` it animated even after finishing — which would
+    // pin the card and block the liquid-glass pointer tilt (also transform-
+    // driven). Clear the animation once it ends so the tilt transform can take
+    // over; the final keyframe pose is visually identical to the tilt's resting
+    // pose, so there's no jump.
+    [omnigo, rtc].forEach(function (p) {
+        if (!p) { return; }
+        p.addEventListener("animationend", function onIn(e) {
+            if (e.animationName !== "omnigo-promo-in") { return; }
+            p.style.animation = "none";
+            p.removeEventListener("animationend", onIn);
+        });
+    });
 })();

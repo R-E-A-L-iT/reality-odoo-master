@@ -3103,3 +3103,55 @@ body {
     }
 }
 
+/* ─── Promo popups on the shared liquid-glass material ──────────────────────────
+   three_product.js adds .o_liquid_glass to the OmniGO + RTC promo cards so they
+   match the floaty glass notification used on the quote previews. That component
+   (proquotes/liquid_glass.css) supplies the tint/blur/border/shadow/radius via
+   !important, overriding each card's original white-glass recipe — so all that's
+   left here is to invert the inner content for the darker glass tint and keep the
+   product image + "view page" CTA readable. Same overrides for both cards. */
+.o_omnigo_promo.o_liquid_glass,
+.o_rtc_promo.o_liquid_glass {
+    /* Per-instance glass tuning: tighter radius than the 24px default suits a
+       small corner card, and a hair less blur keeps the product image crisp. */
+    --o_lg_radius: 18px;
+    --o_lg_blur: 22px;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.o_omnigo_promo.o_liquid_glass .o_omnigo_promo_title,
+.o_rtc_promo.o_liquid_glass .o_omnigo_promo_title {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+/* "New Product" badge — light chip instead of the pale-red-on-white version. */
+.o_omnigo_promo.o_liquid_glass .o_omnigo_promo_badge,
+.o_rtc_promo.o_liquid_glass .o_omnigo_promo_badge {
+    color: #ffb3b3;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.24);
+}
+
+/* Dismiss "×" — light on the dark glass. */
+.o_omnigo_promo.o_liquid_glass .o_omnigo_promo_close,
+.o_omnigo_promo.o_liquid_glass .o_rtc_promo_close,
+.o_rtc_promo.o_liquid_glass .o_omnigo_promo_close,
+.o_rtc_promo.o_liquid_glass .o_rtc_promo_close {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.o_omnigo_promo.o_liquid_glass .o_omnigo_promo_close:hover,
+.o_omnigo_promo.o_liquid_glass .o_rtc_promo_close:hover,
+.o_rtc_promo.o_liquid_glass .o_omnigo_promo_close:hover,
+.o_rtc_promo.o_liquid_glass .o_rtc_promo_close:hover {
+    color: #ffffff;
+}
+
+/* Lift the product image onto a soft light disc so it stays legible whatever
+   sits behind the translucent card, and strengthen its float shadow. */
+.o_omnigo_promo.o_liquid_glass .o_omnigo_promo_img,
+.o_rtc_promo.o_liquid_glass .o_omnigo_promo_img {
+    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 8px rgba(224, 0, 0, 0.35));
+}
+
