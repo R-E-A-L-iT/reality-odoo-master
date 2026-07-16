@@ -1,0 +1,562 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   Reusable product-marketing content sections (product_sections.css)
+
+   Generic building blocks for the redesigned prowebsite product pages
+   (RTC360, and the other product pages being reworked). They layer on top of
+   the existing RTC design language:
+     • page wrapper .o_rtc_page — supplies the reset + shared typography and is
+       reused as the common "reality-capture product page" namespace so every
+       block below inherits the same tokens.
+     • section scaffold .o_rtc_sec / .o_rtc_sec_inner / .o_rtc_sec_header /
+       .o_rtc_sec_kicker / .o_rtc_sec_title / .o_rtc_sec_intro  (rtc_series_sections.css)
+     • specs sheet .o_rtc_specs_section, dark tech cards .o_rtc_tech_*  (rtc_series.css)
+
+   Design tokens reused verbatim:
+     kicker  11px / 700 / .16em / uppercase / #e00000
+     title   "Arial Black", clamp, 900, letter-spacing -0.02em
+     accent  #e00000 / #c40000   divider 52px × 4px
+     full-bleed: width 100vw; margin-left calc(50% - 50vw)
+
+   Every block is self-contained — drop it inside a page whose root carries
+   .o_rtc_page and it inherits the styling with no per-page CSS.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Reusable pill button ─────────────────────────────────────────────────────
+   Matches the .o_rtc_buy_btn treatment but generic enough for any section CTA. */
+.o_rtc_page .o_rtc_btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: #e00000;
+    color: #fff !important;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 13px 28px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+    white-space: nowrap;
+}
+
+.o_rtc_page .o_rtc_btn:hover {
+    background: #c20000;
+    transform: translateY(-1px);
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+.o_rtc_page .o_rtc_btn svg { transition: transform 0.15s ease; }
+.o_rtc_page .o_rtc_btn:hover svg { transform: translateX(3px); }
+
+/* Ghost variant — for use on dark/red backgrounds */
+.o_rtc_page .o_rtc_btn--light {
+    background: #fff;
+    color: #1a0000 !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+.o_rtc_page .o_rtc_btn--light:hover {
+    background: #ffe4e4;
+    color: #1a0000 !important;
+}
+
+/* ─── Embedded media panel (Sketchfab / iframe viewers) ────────────────────────
+   Rounds and frames a full-bleed interactive embed so it reads as a deliberate
+   product viewer rather than a raw iframe. */
+.o_rtc_page .o_rtc_embed_frame {
+    max-width: 1100px;
+    margin: 0 auto;
+    border-radius: 24px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #f7f7f8 0%, #ededee 100%);
+    border: 1px solid #e6e6e6;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.08);
+}
+
+.o_rtc_page .o_rtc_embed_frame iframe {
+    display: block;
+    width: 100%;
+    height: 68vh;
+    max-height: 720px;
+    min-height: 420px;
+    border: 0;
+}
+
+/* ─── Feature rows — media on one side, copy on the other, alternating ────────
+   Drop any number of .o_rtc_feature_row inside a .o_rtc_sec_inner. Add
+   --reverse to flip the media to the opposite side. The media slot accepts an
+   Odoo .media_iframe_video (Vimeo), an <img>, or an <iframe>. */
+.o_rtc_page .o_rtc_feature_row {
+    display: flex;
+    align-items: center;
+    gap: clamp(32px, 5vw, 80px);
+}
+
+.o_rtc_page .o_rtc_feature_row--reverse {
+    flex-direction: row-reverse;
+}
+
+.o_rtc_page .o_rtc_feature_row + .o_rtc_feature_row {
+    margin-top: clamp(56px, 7vw, 104px);
+}
+
+.o_rtc_page .o_rtc_feature_media,
+.o_rtc_page .o_rtc_feature_text {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* Rounded media frame. Works with Odoo's .media_iframe_video (absolute iframe
+   inside a padding-ratio box) and with plain <img>/<iframe>. */
+.o_rtc_page .o_rtc_feature_media_frame {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #f3f3f4;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.10);
+}
+
+.o_rtc_page .o_rtc_feature_media_frame > img,
+.o_rtc_page .o_rtc_feature_media_frame > iframe {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Odoo video widget already carries its own 16:9 ratio box — just let it fill. */
+.o_rtc_page .o_rtc_feature_media_frame .media_iframe_video {
+    margin: 0;
+    width: 100%;
+}
+
+.o_rtc_page .o_rtc_feature_kicker {
+    display: block;
+    font-family: "Montserrat", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #e00000;
+    margin: 0 0 14px;
+}
+
+.o_rtc_page .o_rtc_feature_title {
+    margin: 0;
+    font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(26px, 3.2vw, 42px);
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: #0a0a0a;
+}
+
+.o_rtc_page .o_rtc_feature_divider {
+    width: 52px;
+    height: 4px;
+    background: #c40000;
+    border-radius: 999px;
+    margin: 22px 0 24px;
+}
+
+.o_rtc_page .o_rtc_feature_body {
+    margin: 0;
+    font-size: clamp(15px, 1.25vw, 17px);
+    line-height: 1.75;
+    color: #555;
+}
+
+.o_rtc_page .o_rtc_feature_body + .o_rtc_btn {
+    margin-top: 30px;
+}
+
+/* ─── Media-card grid — image on top, title + copy below ──────────────────────
+   Distinct rhythm from the feature rows; good for a "technology at a glance"
+   3-up. Uses .o_rtc_sec / .o_rtc_sec--alt as its section wrapper. */
+.o_rtc_page .o_rtc_media_grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.o_rtc_page .o_rtc_media_card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.o_rtc_page .o_rtc_media_card:hover {
+    border-color: rgba(224, 0, 0, 0.3);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.09);
+    transform: translateY(-3px);
+}
+
+.o_rtc_page .o_rtc_media_card_thumb {
+    aspect-ratio: 16 / 10;
+    background: #f3f3f4;
+    overflow: hidden;
+}
+
+.o_rtc_page .o_rtc_media_card_thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.o_rtc_page .o_rtc_media_card_body {
+    padding: 26px 26px 30px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.o_rtc_page .o_rtc_media_card_title {
+    margin: 0 0 12px;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    color: #111;
+}
+
+.o_rtc_page .o_rtc_media_card_text {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: #666;
+}
+
+/* ─── Use-case grid — editorial image cards with overlaid copy ────────────────
+   Full-bleed photo, dark gradient scrim, headline + paragraph anchored bottom. */
+.o_rtc_page .o_rtc_usecase_grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+}
+
+.o_rtc_page .o_rtc_usecase_card {
+    position: relative;
+    min-height: 420px;
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    background-size: cover;
+    background-position: center;
+    isolation: isolate;
+}
+
+.o_rtc_page .o_rtc_usecase_card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0) 30%,
+        rgba(10, 0, 0, 0.55) 70%,
+        rgba(10, 0, 0, 0.86) 100%
+    );
+    transition: background 0.3s ease;
+}
+
+.o_rtc_page .o_rtc_usecase_card:hover::before {
+    background: linear-gradient(
+        180deg,
+        rgba(80, 0, 0, 0.15) 20%,
+        rgba(10, 0, 0, 0.6) 65%,
+        rgba(10, 0, 0, 0.9) 100%
+    );
+}
+
+.o_rtc_page .o_rtc_usecase_body {
+    position: relative;
+    z-index: 2;
+    padding: clamp(28px, 3vw, 44px);
+    color: #fff;
+}
+
+.o_rtc_page .o_rtc_usecase_title {
+    margin: 0 0 14px;
+    font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(24px, 2.6vw, 34px);
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    color: #fff;
+}
+
+.o_rtc_page .o_rtc_usecase_title::after {
+    content: "";
+    display: block;
+    width: 44px;
+    height: 4px;
+    background: #e00000;
+    border-radius: 999px;
+    margin-top: 16px;
+}
+
+.o_rtc_page .o_rtc_usecase_text {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.82);
+    max-width: 46ch;
+}
+
+/* ─── Client reviews — CSS-only auto-scrolling marquee ────────────────────────
+   Pure-CSS infinite loop: the .o_rtc_reviews_track holds the card set twice,
+   and translateX(-50%) scrolls exactly one set. Hover pauses. No JS needed. */
+.o_rtc_page .o_rtc_reviews {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    background: #fff;
+    padding: 84px 0 96px;
+    overflow: hidden;
+    position: relative;
+    z-index: 3;
+}
+
+.o_rtc_page .o_rtc_reviews_header {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 48px;
+    padding: 0 24px;
+}
+
+.o_rtc_page .o_rtc_reviews_viewport {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0,
+        #000 120px,
+        #000 calc(100% - 120px),
+        transparent 100%
+    );
+    mask-image: linear-gradient(
+        to right,
+        transparent 0,
+        #000 120px,
+        #000 calc(100% - 120px),
+        transparent 100%
+    );
+}
+
+.o_rtc_page .o_rtc_reviews_track {
+    display: flex;
+    gap: 28px;
+    width: max-content;
+    padding: 30px 14px;
+    animation: o_rtc_reviews_scroll 42s linear infinite;
+}
+
+.o_rtc_page .o_rtc_reviews_viewport:hover .o_rtc_reviews_track {
+    animation-play-state: paused;
+}
+
+@keyframes o_rtc_reviews_scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+.o_rtc_page .o_rtc_review_card {
+    width: 340px;
+    min-height: 380px;
+    flex: 0 0 auto;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 24px;
+    padding: 30px 28px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+.o_rtc_page .o_rtc_review_card--up { transform: translateY(-22px); }
+.o_rtc_page .o_rtc_review_card--down { transform: translateY(22px); }
+
+.o_rtc_page .o_rtc_review_logo_wrap {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 22px;
+}
+
+.o_rtc_page .o_rtc_review_logo {
+    max-height: 50px;
+    max-width: 160px;
+    object-fit: contain;
+}
+
+.o_rtc_page .o_rtc_review_company {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+}
+
+.o_rtc_page .o_rtc_review_location {
+    font-size: 13.5px;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.o_rtc_page .o_rtc_review_text {
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: #333;
+    margin: 0 0 24px;
+    flex-grow: 1;
+}
+
+.o_rtc_page .o_rtc_review_author {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding-top: 16px;
+    color: #111;
+}
+
+.o_rtc_page .o_rtc_review_author strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.o_rtc_page .o_rtc_review_author span {
+    display: block;
+    font-size: 12.5px;
+    color: #888;
+}
+
+/* ─── CTA banner — red full-bleed call to action ──────────────────────────────*/
+.o_rtc_page .o_rtc_cta {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+    padding: clamp(56px, 7vw, 96px) clamp(24px, 5vw, 80px);
+    background:
+        radial-gradient(circle at 12% 0%, rgba(255, 90, 90, 0.35), transparent 40%),
+        radial-gradient(circle at 88% 100%, rgba(120, 0, 0, 0.4), transparent 45%),
+        linear-gradient(135deg, #c40000 0%, #8a0000 100%);
+    color: #fff;
+}
+
+.o_rtc_page .o_rtc_cta_inner {
+    max-width: 1160px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(24px, 4vw, 56px);
+    flex-wrap: wrap;
+}
+
+.o_rtc_page .o_rtc_cta_text { flex: 1 1 460px; min-width: 0; }
+
+.o_rtc_page .o_rtc_cta_title {
+    margin: 0 0 10px;
+    font-family: "Arial Black", "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(26px, 3vw, 40px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    color: #fff;
+}
+
+.o_rtc_page .o_rtc_cta_sub {
+    margin: 0;
+    font-size: clamp(15px, 1.3vw, 18px);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 620px;
+}
+
+/* ─── Closing figure — a single centered image/GIF banner ─────────────────────*/
+.o_rtc_page .o_rtc_figure {
+    background: #fff;
+    padding: clamp(40px, 5vw, 72px) clamp(20px, 5vw, 64px);
+}
+
+.o_rtc_page .o_rtc_figure figure {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.o_rtc_page .o_rtc_figure img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    display: block;
+}
+
+/* ─── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 991px) {
+    .o_rtc_page .o_rtc_media_grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 860px) {
+    .o_rtc_page .o_rtc_feature_row,
+    .o_rtc_page .o_rtc_feature_row--reverse {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 28px;
+    }
+
+    .o_rtc_page .o_rtc_feature_row + .o_rtc_feature_row {
+        margin-top: 56px;
+    }
+
+    .o_rtc_page .o_rtc_usecase_grid {
+        grid-template-columns: 1fr;
+    }
+
+    .o_rtc_page .o_rtc_usecase_card {
+        min-height: 340px;
+    }
+}
+
+@media (max-width: 640px) {
+    .o_rtc_page .o_rtc_media_grid {
+        grid-template-columns: 1fr;
+    }
+
+    .o_rtc_page .o_rtc_embed_frame iframe {
+        height: 56vh;
+        min-height: 320px;
+    }
+
+    .o_rtc_page .o_rtc_review_card {
+        width: 290px;
+        min-height: 360px;
+        padding: 24px;
+    }
+
+    .o_rtc_page .o_rtc_review_card--up { transform: translateY(-12px); }
+    .o_rtc_page .o_rtc_review_card--down { transform: translateY(12px); }
+
+    .o_rtc_page .o_rtc_reviews_track { animation-duration: 32s; }
+
+    .o_rtc_page .o_rtc_cta_inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
