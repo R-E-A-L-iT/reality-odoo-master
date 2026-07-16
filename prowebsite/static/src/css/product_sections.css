@@ -104,6 +104,23 @@
     margin-top: clamp(56px, 7vw, 104px);
 }
 
+/* Dark-grey section variant — for feature-row / media sections that should sit
+   on charcoal instead of white. Add .o_rtc_sec--dark to the .o_rtc_sec wrapper;
+   the copy inside inverts to light automatically. */
+.o_rtc_page .o_rtc_sec--dark {
+    background: #232323;
+}
+
+.o_rtc_page .o_rtc_sec--dark .o_rtc_sec_title,
+.o_rtc_page .o_rtc_sec--dark .o_rtc_feature_title {
+    color: #ffffff;
+}
+
+.o_rtc_page .o_rtc_sec--dark .o_rtc_sec_intro,
+.o_rtc_page .o_rtc_sec--dark .o_rtc_feature_body {
+    color: rgba(255, 255, 255, 0.72);
+}
+
 .o_rtc_page .o_rtc_feature_media,
 .o_rtc_page .o_rtc_feature_text {
     flex: 1 1 0;
@@ -489,7 +506,7 @@
 
 /* ─── Closing figure — a single centered image/GIF banner ─────────────────────*/
 .o_rtc_page .o_rtc_figure {
-    background: #fff;
+    background: #000;
     padding: clamp(40px, 5vw, 72px) clamp(20px, 5vw, 64px);
 }
 
