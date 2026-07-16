@@ -208,6 +208,12 @@
     gap: 24px;
 }
 
+/* Two-column variant — for an even count (e.g. 4 tech cards as a tidy 2×2)
+   that would otherwise strand a lone card on a second row in the 3-up grid. */
+.o_rtc_page .o_rtc_media_grid--2col {
+    grid-template-columns: repeat(2, 1fr);
+}
+
 .o_rtc_page .o_rtc_media_card {
     display: flex;
     flex-direction: column;
