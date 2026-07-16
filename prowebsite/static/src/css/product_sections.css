@@ -108,7 +108,7 @@
    on charcoal instead of white. Add .o_rtc_sec--dark to the .o_rtc_sec wrapper;
    the copy inside inverts to light automatically. */
 .o_rtc_page .o_rtc_sec--dark {
-    background: #232323;
+    background: #141414;
 }
 
 .o_rtc_page .o_rtc_sec--dark .o_rtc_sec_title,
@@ -128,13 +128,15 @@
 }
 
 /* Rounded media frame. Works with Odoo's .media_iframe_video (absolute iframe
-   inside a padding-ratio box) and with plain <img>/<iframe>. */
+   inside a padding-ratio box) and with plain <img>/<iframe>. Background is
+   transparent and line-height:0 so no light band shows around the media. */
 .o_rtc_page .o_rtc_feature_media_frame {
     position: relative;
     border-radius: 20px;
     overflow: hidden;
-    background: #f3f3f4;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.10);
+    background: transparent;
+    line-height: 0;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
 }
 
 .o_rtc_page .o_rtc_feature_media_frame > img,
@@ -144,10 +146,17 @@
     height: auto;
 }
 
-/* Odoo video widget already carries its own 16:9 ratio box — just let it fill. */
+/* Odoo video widget already carries its own 16:9 ratio box — just let it fill
+   edge to edge with no default margin/padding/background of its own. */
 .o_rtc_page .o_rtc_feature_media_frame .media_iframe_video {
-    margin: 0;
+    margin: 0 !important;
+    padding: 0 !important;
     width: 100%;
+    background: transparent;
+}
+
+.o_rtc_page .o_rtc_feature_media_frame .media_iframe_video iframe {
+    display: block;
 }
 
 .o_rtc_page .o_rtc_feature_kicker {
