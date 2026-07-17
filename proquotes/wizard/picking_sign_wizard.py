@@ -38,4 +38,10 @@ class PickingSignWizard(models.TransientModel):
             body=message,
             attachments=[('%s.pdf' % filename, report[0])],
         )
-        return {'type': 'ir.actions.act_window_close'}
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'stock.picking',
+            'res_id': picking.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
