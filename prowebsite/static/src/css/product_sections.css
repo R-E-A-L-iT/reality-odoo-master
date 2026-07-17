@@ -274,6 +274,13 @@
     gap: 22px;
 }
 
+/* Wide variant — makes an otherwise-stranded odd card span the full row (e.g.
+   the 3rd of 3, or the 5th of 5, in the 2-column grid). */
+.o_rtc_page .o_rtc_usecase_card--wide {
+    grid-column: 1 / -1;
+    min-height: 360px;
+}
+
 .o_rtc_page .o_rtc_usecase_card {
     position: relative;
     min-height: 420px;
