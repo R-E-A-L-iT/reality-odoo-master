@@ -351,6 +351,56 @@
     max-width: 46ch;
 }
 
+/* ─── Spec variant tabs ───────────────────────────────────────────────────────
+   Pill tab bar for products that ship in several variants, each with its own
+   spec sheet (e.g. Pegasus TRK 500/700 Neo/Evo). Rides on Bootstrap's tab JS
+   (data-bs-toggle="tab"), already present on the Odoo frontend — no custom JS.
+   Drop it inside .o_rtc_specs_wrap, between the header and the tab panes; each
+   pane holds a plain .o_rtc_specs_content (spec groups stacked, no sticky nav). */
+.o_rtc_page .o_rtc_spec_tabs_nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 auto 40px;
+    padding: 0;
+    list-style: none;
+    border: none;
+}
+
+.o_rtc_page .o_rtc_spec_tab {
+    display: inline-block;
+    padding: 10px 24px;
+    border-radius: 999px;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    color: #666;
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.o_rtc_page .o_rtc_spec_tab:hover {
+    border-color: #c9c9c9;
+    color: #111;
+}
+
+.o_rtc_page .o_rtc_spec_tab.active {
+    background: #e00000;
+    border-color: #e00000;
+    color: #fff !important;
+}
+
+/* Fade the pane content in when its tab becomes active. */
+.o_rtc_page .o_rtc_spec_tabs_content > .tab-pane {
+    /* Bootstrap handles display; keep spec groups full-width inside the pane. */
+    padding-top: 4px;
+}
+
 /* ─── Client reviews — CSS-only auto-scrolling marquee ────────────────────────
    Pure-CSS infinite loop: the .o_rtc_reviews_track holds the card set twice,
    and translateX(-50%) scrolls exactly one set. Hover pauses. No JS needed. */
