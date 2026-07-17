@@ -4,6 +4,19 @@
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_open_sign_wizard"
+                        string="Sign"
+                        type="object"
+                        class="btn-primary"
+                        invisible="rental_operation != 'pickup' or state != 'done' or signature"/>
+                <button string="Signed ✓"
+                        type="object"
+                        class="btn-secondary"
+                        disabled="1"
+                        invisible="rental_operation != 'pickup' or not signature"/>
+            </xpath>
+
             <xpath expr="//field[@name='origin']" position="after">
                 <field name="hide_on_portal" string="Hide On Portal"/>
                 <field name="rental_sale_order_id" string="Rental Order"
@@ -12,6 +25,13 @@
                 <field name="rental_operation" string="Rental Operation"
                        invisible="not rental_operation"
                        readonly="state == 'done'"/>
+                <field name="signed_by" string="Signed By" readonly="1"
+                       invisible="not signed_by"/>
+                <field name="signed_on" string="Signed On" readonly="1"
+                       widget="datetime" invisible="not signed_on"/>
+                <field name="signature" widget="image" readonly="1"
+                       invisible="not signature"
+                       options="{'size': [200, 100]}"/>
             </xpath>
 
             <!-- carrier_id and carrier_tracking_ref are locked readonly after
