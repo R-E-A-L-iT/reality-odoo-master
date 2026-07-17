@@ -9,13 +9,13 @@
                         string="Sign"
                         type="object"
                         class="btn-primary"
-                        invisible="rental_operation != 'pickup' or state != 'done' or signature"/>
+                        invisible="rental_operation != 'pickup' or state != 'done' or signed_on"/>
                 <button name="action_open_sign_wizard"
                         string="Signed ✓"
                         type="object"
                         class="btn-secondary"
                         disabled="1"
-                        invisible="rental_operation != 'pickup' or not signature"/>
+                        invisible="rental_operation != 'pickup' or not signed_on"/>
             </xpath>
 
             <xpath expr="//field[@name='origin']" position="after">
@@ -31,7 +31,7 @@
                 <field name="signed_on" string="Signed On" readonly="1"
                        widget="datetime" invisible="not signed_on"/>
                 <field name="signature" widget="image" readonly="1"
-                       invisible="not signature"
+                       invisible="not signed_on"
                        options="{'size': [200, 100]}"/>
             </xpath>
 
