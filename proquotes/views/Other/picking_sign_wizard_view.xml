@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_sign_wizard_form" model="ir.ui.view">
+        <field name="name">proquotes.picking.sign.wizard.form</field>
+        <field name="model">proquotes.picking.sign.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Sign Transfer">
+                <field name="picking_id" invisible="1"/>
+                <group>
+                    <field name="signed_by" string="Signed By"/>
+                </group>
+                <group>
+                    <field name="signature" widget="signature" string="Signature"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Confirm Signature"
+                            type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
