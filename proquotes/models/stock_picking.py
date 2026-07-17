@@ -94,6 +94,20 @@ class StockPicking(models.Model):
         copy=False,
     )
 
+    signature = fields.Binary(string='Customer Signature', attachment=True, copy=False)
+    signed_by = fields.Char(string='Signed By', copy=False)
+    signed_on = fields.Datetime(string='Signed On', copy=False)
+
+    def action_open_sign_wizard(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'proquotes.picking.sign.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_picking_id': self.id},
+        }
+
     def _get_available_footer_domain(self):
         return [
             ("active", "=", True),

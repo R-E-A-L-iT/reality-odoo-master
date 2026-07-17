@@ -139,6 +139,7 @@
         "views/Other/preconfigured_sections.xml",
         "views/Other/res_config_extend_view.xml",
         "views/Other/kit_qty_wizard_view.xml",
+        "views/Other/picking_sign_wizard_view.xml",
         "views/Other/rental_pricing_mode.xml",
         "views/Other/crm_lead.xml",
         "data/thanks_for_payment.xml",
