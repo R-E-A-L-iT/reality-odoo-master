@@ -10,7 +10,8 @@
                         type="object"
                         class="btn-primary"
                         invisible="rental_operation != 'pickup' or state != 'done' or signature"/>
-                <button string="Signed ✓"
+                <button name="action_open_sign_wizard"
+                        string="Signed ✓"
                         type="object"
                         class="btn-secondary"
                         disabled="1"
