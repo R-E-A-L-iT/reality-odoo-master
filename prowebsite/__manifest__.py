@@ -27,6 +27,7 @@
             'prowebsite/static/src/css/shop_page.css',
             'prowebsite/static/src/css/multimapper.css',
             'prowebsite/static/src/css/rtc_demo_request.css',
+            'prowebsite/static/src/css/product_lead.css',
             'prowebsite/static/src/js/header_dropdowns.js',
             'prowebsite/static/src/js/three_product.js',
             'prowebsite/static/src/js/rtc_series.js',
@@ -34,6 +35,7 @@
             'prowebsite/static/src/js/product_page.js',
             'prowebsite/static/src/js/multimapper.js',
             'prowebsite/static/src/js/rtc_demo_request.js',
+            'prowebsite/static/src/js/product_lead.js',
         ],
     }
 }
