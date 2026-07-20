@@ -887,6 +887,17 @@
     letter-spacing: 0.02em;
 }
 
+.o_rtc_table thead th .o_rtc_th_sub {
+    display: block;
+    margin-top: 6px;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    text-transform: none;
+    color: rgba(255,255,255,0.72);
+}
+
 .o_rtc_table thead th:first-child {
     width: 26%;
 }
