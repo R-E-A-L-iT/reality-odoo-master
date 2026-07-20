@@ -15,6 +15,11 @@ from urllib.parse import urlparse
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    # Odoo 19 removed the standard res.partner.mobile field. Re-declared here so
+    # this module's mobile references (reads + onchange) keep working regardless
+    # of module load order.
+    mobile = fields.Char(string="Mobile")
+
     apl_id = fields.Char(
         string='Apollo ID',
         help="The Apollo ID is used for tracking purposes."

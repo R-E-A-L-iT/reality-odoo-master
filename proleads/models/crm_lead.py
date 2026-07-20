@@ -31,6 +31,10 @@ LEICA_PRODUCT_INTEREST_LABEL = dict(LEICA_PRODUCT_INTEREST_SEL)
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
+    # Odoo 19 removed the standard crm.lead.mobile field (leads keep only `phone`).
+    # Re-declared here so the lead form's mobile field keeps working.
+    mobile = fields.Char(string="Mobile")
+
     opportunity_log = fields.Datetime(string="Opportunity Log", help="Timestamp of when this lead was converted to an opportunity.")
     opportunity_answer_date = fields.Date(string="Opportunity Answer Date", help="Date when the lead was accepted or rejected as an opportunity.")
 

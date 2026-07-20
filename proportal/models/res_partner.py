@@ -23,6 +23,10 @@ _logger = logging.getLogger(__name__)
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    # Odoo 19 removed the standard res.partner.mobile field. Re-declared here so
+    # this module's mobile references keep working regardless of module load order.
+    mobile = fields.Char(string="Mobile")
+
     portal_administrator = fields.Boolean(
         string="Portal Administrative User",
         help="If enabled on this contact, the associated portal user sees Company Settings."

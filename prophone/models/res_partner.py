@@ -6,6 +6,12 @@ from odoo import api, fields, models
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    # Odoo 19 removed the standard res.partner.mobile field (contact data was
+    # consolidated onto `phone`). prophone treats mobile as a distinct number for
+    # call/SMS matching and dedup, so we re-declare it here as a custom field to
+    # preserve that behavior across the module.
+    mobile = fields.Char(string="Mobile")
+
     quo_calls_count = fields.Integer(compute="_compute_quo_calls_count")
     quo_texts_count = fields.Integer(compute="_compute_quo_texts_count")
 
