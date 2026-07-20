@@ -5,12 +5,12 @@
         <field name="name">Renewal</field>
         <field name="model">renewal.map</field>
         <field name="priority">4</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="product_id" />
                 <field name="product_offers" widget="many2many_tags" />
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -25,11 +25,11 @@
                 <label for="product_id">Product</label>
                 <field name="product_id" />
                 <field name="product_offers">
-                    <tree>
+                    <list>
                         <field name="order" />
                         <field name="product_id" />
                         <field name="selected" />
-                    </tree>
+                    </list>
                 </field>
             </form>
         </field>
@@ -38,13 +38,13 @@
     <record id="action_renewal_map" model="ir.actions.act_window">
         <field name="name">Renewal Maping</field>
         <field name="res_model">renewal.map</field>
-        <field name="view_mode">tree</field>
+        <field name="view_mode">list</field>
         <field name="view_id" ref="renewal_map_tree" />
     </record>
 
     <record id="action_renewal_map_tree" model="ir.actions.act_window.view">
         <field name="sequence">1</field>
-        <field name="view_mode">tree</field>
+        <field name="view_mode">list</field>
         <field name="view_id" ref="renewal_map_tree" />
         <field name="act_window_id" ref="proquotes.action_renewal_map"></field>
     </record>

@@ -5,7 +5,7 @@
         <record id="action_sync_report_tree" model="ir.actions.act_window">
             <field name="name">Sync Reports</field>
             <field name="res_model">prosync.report</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="context">{'search_default_group_by_type': 1}</field>
         </record>
 
@@ -40,7 +40,7 @@
             <field name="model">prosync.report</field>
             <!-- <field name="context">{'group_by': 'sync_date'}</field> -->
             <field name="arch" type="xml">
-                <tree decoration-success="status == 'success'" 
+                <list decoration-success="status == 'success'" 
                     decoration-warning="status == 'warning'" 
                     decoration-danger="status == 'failure'">
                     <field name="sync_type" string="Type"/>
@@ -50,7 +50,7 @@
                     <field name="start_time" string="Start Date &amp; Time"/>
                     <field name="end_time" string="End Date &amp; Time"/>
                     <field name="duration" string="Sync Duration (minutes)"/>
-                </tree>
+                </list>
             </field>
         </record>
 

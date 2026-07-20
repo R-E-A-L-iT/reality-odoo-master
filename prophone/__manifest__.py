@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "ProPhone",
-    "version": "17.0.1.0.0",
+    "version": "19.0.1.0.0",
     "category": "Tools",
     "summary": "Store Quo (OpenPhone/Quo) call transcripts in Odoo",
     "license": "LGPL-3",

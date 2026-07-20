@@ -33,23 +33,19 @@
         "sale_renting",
     ],
     "assets": {
-        "web.assets_common": [
+        # NOTE: web.assets_common was removed in Odoo 18/19. Its entries were
+        # merged below: frontend-facing CSS into web.assets_frontend and
+        # backend.css into web.assets_backend. The JS it declared (fold, rental,
+        # poNumber, website_preview, ccp_selection) was already duplicated in the
+        # frontend/backend bundles, so nothing new was added there.
+        'web.assets_frontend': [
+            # migrated from web.assets_common:
             "proquotes/static/src/CSS/foldProducts.css",
             "proquotes/static/src/CSS/pdf.css",
             "proquotes/static/src/CSS/user-info.css",
             "proquotes/static/src/CSS/quoteStyle.css",
             "proquotes/static/src/CSS/quoteHeaderText.css",
             # "proquotes/static/src/CSS/rental_fold.css",
-            "proquotes/static/src/CSS/backend.css",
-            "proquotes/static/src/CSS/ccp_selection.css",
-            "proquotes/static/src/JS/fold.js",
-            "proquotes/static/src/JS/rental.js",
-            "proquotes/static/src/JS/poNumber.js",
-            "proquotes/static/src/JS/rental.js",
-            "proquotes/static/src/JS/website_preview.js",
-            "proquotes/static/src/JS/ccp_selection.js",
-        ],
-        'web.assets_frontend': [
             "proquotes/static/src/JS/rental_duration_display.js",
             "proquotes/static/src/JS/rental_form_dropdowns.js",
             "proquotes/static/src/CSS/header.css",
@@ -76,6 +72,7 @@
              'proquotes/static/src/JS/signature_form.js'),
         ],
         'web.assets_backend': [
+            "proquotes/static/src/CSS/backend.css",
             "proquotes/static/src/JS/website_preview.js",
             "proquotes/static/src/JS/composer_confirmation.js",
             "proquotes/static/src/xml/composer_confirmation.xml",
@@ -85,7 +82,7 @@
         ],
     },
 
-    "version": "17.0",
+    "version": "19.0.1.0.0",
 
     # always loaded
     "data": [

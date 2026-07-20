@@ -1,7 +1,7 @@
 /** @odoo-module **/
 // 2026-06-11 - Brainecrew Apps
 
-import { jsonrpc } from "@web/core/network/rpc_service";
+import { rpc } from "@web/core/network/rpc";
 import publicWidget from "@web/legacy/js/public/public_widget";
 
 // Static icon markup only — never interpolate user-controlled text (address
@@ -57,7 +57,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             ? "/my/orders/" + this.orderDetail.orderId + "/select_invoice_address"
             : "/my/orders/" + this.orderDetail.orderId + "/select_delivery_address";
 
-        const result = await jsonrpc(route, {
+        const result = await rpc(route, {
             partner_id:   parseInt(partnerId),
             access_token: this.orderDetail.token,
         });
@@ -189,7 +189,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             params.partner_id = parseInt(card.dataset.partnerId);
         }
 
-        const result = await jsonrpc("/my/orders/" + this.orderDetail.orderId + "/" + route, params);
+        const result = await rpc("/my/orders/" + this.orderDetail.orderId + "/" + route, params);
         delete card.dataset.saving;
 
         if (!result || !result.success) {
@@ -285,7 +285,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const nextSibling = card.nextSibling;
         card.remove();
 
-        const result = await jsonrpc(
+        const result = await rpc(
             "/my/orders/" + this.orderDetail.orderId + "/delete_address",
             {
                 access_token: this.orderDetail.token,

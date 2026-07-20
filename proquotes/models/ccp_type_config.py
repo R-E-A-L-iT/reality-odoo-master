@@ -14,6 +14,10 @@ class CcpTypeConfig(models.Model):
     )
     display_name = fields.Char(
         string='Display Name',
+        compute='_compute_display_name',
+        inverse='_inverse_display_name',
+        store=True,
+        readonly=False,
         help='Optional display label. If not set, uses the Type Code.'
     )
     icon = fields.Selection(
@@ -71,13 +75,22 @@ class CcpTypeConfig(models.Model):
         help='Restrict this CCP type to specific time periods. If empty, all scanner periods are shown.'
     )
 
-    def name_get(self):
-        """Display the display_name if set, otherwise fall back to name"""
-        result = []
+    @api.depends('name')
+    def _compute_display_name(self):
+        """Display the custom label if set, otherwise fall back to the Type Code.
+
+        Odoo 19 removed name_get(); the label is now driven by the standard
+        display_name field. It stays user-editable (inverse below) and only
+        falls back to `name` when no custom label has been entered.
+        """
         for record in self:
-            name = record.display_name or record.name
-            result.append((record.id, name))
-        return result
+            if not record.display_name:
+                record.display_name = record.name
+
+    def _inverse_display_name(self):
+        """Allow the computed display_name to be edited/stored directly."""
+        # The value is persisted by the framework; no extra work required.
+        return
 
     _sql_constraints = [
         ('name_unique', 'unique(name)', 'CCP Type Code must be unique!')

@@ -1,5 +1,5 @@
 /** @odoo-module **/
-import { jsonrpc } from "@web/core/network/rpc_service";
+import { rpc } from "@web/core/network/rpc";
 import { renderToFragment } from "@web/core/utils/render";
 import publicWidget from "@web/legacy/js/public/public_widget";
 
@@ -99,7 +99,7 @@ publicWidget.registry.fold = publicWidget.Widget.extend({
             p = p.parentNode
         }
         var s = p.querySelector(".line_id").id;
-        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/fold/" + s, {
+        return rpc("/my/orders/" + this.orderDetail.orderId + "/fold/" + s, {
             "access_token": this.orderDetail.token,
             "checked": target.checked ,
         });

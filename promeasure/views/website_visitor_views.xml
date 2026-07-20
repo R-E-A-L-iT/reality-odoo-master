@@ -18,7 +18,7 @@
     <field name="inherit_id" ref="website.website_visitor_view_tree"/>
     <field name="arch" type="xml">
       <!-- inject your field into the tree, but keep it hidden by default -->
-      <xpath expr="//tree" position="inside">
+      <xpath expr="//list" position="inside">
         <field name="ip_address"/>
       </xpath>
     </field>

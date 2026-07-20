@@ -47,13 +47,13 @@
             <xpath expr="//sheet/notebook" position="inside">
                 <page string="Branches" invisible="not is_company">
                     <field name="branch_company_ids" nolabel="1" readonly="1">
-                        <tree string="Branches">
+                        <list string="Branches">
                             <field name="name"/>
                             <field name="email"/>
                             <field name="phone"/>
                             <field name="city"/>
                             <field name="country_id"/>
-                        </tree>
+                        </list>
                     </field>
                 </page>
             </xpath>

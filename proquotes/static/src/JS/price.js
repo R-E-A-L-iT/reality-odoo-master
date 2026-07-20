@@ -3,7 +3,7 @@
 //odoo.define("proquotes.price", function (require) {
 //	"use strict";
 
-import { jsonrpc } from "@web/core/network/rpc_service";
+import { rpc } from "@web/core/network/rpc";
 import { renderToFragment } from "@web/core/utils/render";
 import publicWidget from "@web/legacy/js/public/public_widget";
 
@@ -70,7 +70,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
                 //					quantity: qty,
                 //				},
                 //			})
-                return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId, {
+                return rpc("/my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId, {
                         "access_token": this.orderDetail.token,
                         "line_id": lineId,
                         "quantity": qty,
@@ -323,7 +323,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 //					selected: checked,
 //				},
 //			})
-            return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/sectionSelect", {
+            return rpc("/my/orders/" + this.orderDetail.orderId + "/sectionSelect", {
 					access_token: this.orderDetail.token,
 					'section_id': section_id,
 					'line_ids': line_ids,
@@ -349,7 +349,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
             //					selected: targetsChecked,
             //				},
             //			})
-            return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/select", {
+            return rpc("/my/orders/" + this.orderDetail.orderId + "/select", {
 					'access_token': this.orderDetail.token,
 					'line_ids': line_ids,
 					'selected': targetsChecked

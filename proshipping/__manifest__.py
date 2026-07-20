@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "ProShipping",
-    "version": "17.0.1.0.0",
+    "version": "19.0.1.0.0",
     "category": "Operations/Inventory",
     "summary": "Sync Envio IoT packages into Odoo and display them in list/form views.",
     "description": """

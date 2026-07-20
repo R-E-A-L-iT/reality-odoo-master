@@ -1,5 +1,5 @@
 /** @odoo-module **/
-import { jsonrpc } from "@web/core/network/rpc_service";
+import { rpc } from "@web/core/network/rpc";
 import { whenReady } from "@odoo/owl";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -140,7 +140,7 @@ whenReady(() => {
         const original = btn.textContent;
         btn.textContent = "Sending…";
 
-        jsonrpc("/rtc_demo/submit", data)
+        rpc("/rtc_demo/submit", data)
             .then((res) => {
                 if (res && res.success) {
                     form.classList.add("is-done");

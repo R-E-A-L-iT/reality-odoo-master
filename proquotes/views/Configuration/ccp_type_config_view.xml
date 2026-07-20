@@ -5,7 +5,7 @@
         <field name="name">ccp.type.config.view.tree</field>
         <field name="model">ccp.type.config</field>
         <field name="arch" type="xml">
-            <tree string="CCP Types">
+            <list string="CCP Types">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="display_name"/>
@@ -13,7 +13,7 @@
                 <field name="icon"/>
                 <field name="color" widget="color"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -78,7 +78,7 @@
     <record id="ccp_type_config_action" model="ir.actions.act_window">
         <field name="name">CCP Types</field>
         <field name="res_model">ccp.type.config</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

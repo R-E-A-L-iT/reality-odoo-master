@@ -5,13 +5,13 @@
         <field name="name">ccp.scanner.config.view.tree</field>
         <field name="model">ccp.scanner.config</field>
         <field name="arch" type="xml">
-            <tree string="CCP Scanners">
+            <list string="CCP Scanners">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="internal_key"/>
                 <field name="section_name"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -51,23 +51,23 @@
                         </page>
                         <page string="CCP Types" name="types">
                             <field name="type_ids">
-                                <tree>
+                                <list>
                                     <field name="sequence" widget="handle"/>
                                     <field name="name"/>
                                     <field name="display_name"/>
                                     <field name="icon"/>
                                     <field name="color" widget="color"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Time Periods" name="periods">
                             <field name="period_ids">
-                                <tree>
+                                <list>
                                     <field name="sequence" widget="handle"/>
                                     <field name="name"/>
                                     <field name="display_name_en"/>
                                     <field name="display_name_fr"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -98,7 +98,7 @@
     <record id="ccp_scanner_config_action" model="ir.actions.act_window">
         <field name="name">CCP Scanners</field>
         <field name="res_model">ccp.scanner.config</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

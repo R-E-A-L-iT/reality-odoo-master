@@ -3,7 +3,7 @@
     <record id="action_preconfigured_section" model="ir.actions.act_window">
         <field name="name">Preconfigured Sections</field>
         <field name="res_model">preconfigured.section</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p>
                 Create and manage preconfigured sections for sales orders. Each section contains multiple products.
@@ -19,11 +19,11 @@
         <field name="name">preconfigured.section.tree</field>
         <field name="model">preconfigured.section</field>
         <field name="arch" type="xml">
-            <tree string="Preconfigured Sections">
+            <list string="Preconfigured Sections">
                 <field name="section_name"/>
                 <field name="section_description"/>
                 <field name="number_of_products"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -43,7 +43,7 @@
                         </group>
                     </group>
                     <field name="product_line_ids" nolabel="1">
-                        <tree editable="bottom">
+                        <list editable="bottom">
                             <field name="product_id"/>
                             <field name="product_name"/>
                             <field name="optional"/>
@@ -51,7 +51,7 @@
                             <field name="quantity_locked"/>
                             <field name="price_unit"/>
                             <field name="discount"/>
-                        </tree>
+                        </list>
                         <form>
                             <group>
                                 <field name="product_id"/>
@@ -81,11 +81,11 @@
             <xpath expr="//group[@name='sale_header']" position="after">
                 <group string="Preconfigured Sections">
                     <field name="preconfigured_section_ids" widget="many2many_list" nolabel="1" colspan="2">    
-                        <tree editable="bottom">
+                        <list editable="bottom">
                             <field name="section_name"/>
                             <field name="section_description"/>
                             <field name="number_of_products"/>
-                        </tree>
+                        </list>
                     </field>
                 </group>
             </xpath>

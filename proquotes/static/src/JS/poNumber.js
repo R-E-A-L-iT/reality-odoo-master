@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { jsonrpc } from "@web/core/network/rpc_service";
+import { rpc } from "@web/core/network/rpc";
 import { renderToFragment } from "@web/core/utils/render";
 import publicWidget from "@web/legacy/js/public/public_widget";
 
@@ -22,7 +22,7 @@ publicWidget.registry.ponumber = publicWidget.Widget.extend({
     _update_po_number: function (ev) {
         var target = ev.currentTarget;
         var poNumber = target.value;
-        return jsonrpc("/my/orders/" + this.orderDetail.orderId + "/ponumber", {
+        return rpc("/my/orders/" + this.orderDetail.orderId + "/ponumber", {
                         "access_token": this.orderDetail.token,
                         "ponumber": poNumber,
                     });

@@ -6,14 +6,14 @@
         <field name="name">quo.call.tree</field>
         <field name="model">quo.call</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="quo_call_id"/>
                 <field name="direction"/>
                 <field name="phone_number_id"/>
                 <field name="started_at"/>
                 <field name="duration_seconds"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -66,11 +66,11 @@
                     <notebook>
                         <page string="Transcript">
                             <field name="transcript_id" context="{'default_call_id': active_id}">
-                                <tree>
+                                <list>
                                     <field name="created_at"/>
                                     <field name="status"/>
                                     <field name="duration_seconds"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Summary">
@@ -109,7 +109,7 @@
     <record id="action_quo_calls" model="ir.actions.act_window">
         <field name="name">Quo Calls</field>
         <field name="res_model">quo.call</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
 
@@ -118,12 +118,12 @@
         <field name="name">quo.call.transcript.tree</field>
         <field name="model">quo.call.transcript</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="quo_call_id"/>
                 <field name="created_at"/>
                 <field name="status"/>
                 <field name="duration_seconds"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -143,14 +143,14 @@
                     <notebook>
                         <page string="Dialogue">
                             <field name="line_ids">
-                                <tree editable="false">
+                                <list editable="false">
                                     <field name="partner_id"/>
                                     <!-- <field name="sequence"/> -->
                                     <field name="speaker_label" string="Phone #"/>
                                     <field name="start_ms"/>
                                     <field name="end_ms"/>
                                     <field name="content"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
 
@@ -166,7 +166,7 @@
     <record id="action_quo_transcripts" model="ir.actions.act_window">
         <field name="name">Quo Transcripts</field>
         <field name="res_model">quo.call.transcript</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <!-- TEXTS -->
@@ -174,13 +174,13 @@
         <field name="name">quo.text.tree</field>
         <field name="model">quo.text</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="created_at"/>
                 <field name="direction"/>
                 <field name="from_partner_id"/>
                 <field name="to_partner_id"/>
                 <field name="body"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -235,7 +235,7 @@
     <record id="action_quo_texts" model="ir.actions.act_window">
         <field name="name">Quo Texts</field>
         <field name="res_model">quo.text</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
 </odoo>

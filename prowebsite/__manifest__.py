@@ -9,7 +9,7 @@
     "author": "Ézékiel deBlois",
     "license": "LGPL-3",
     "category": "Technical",
-    "version": "0.1",
+    "version": "19.0.1.0.0",
     'application': True,
     "depends": [
         "base",

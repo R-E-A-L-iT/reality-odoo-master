@@ -1,6 +1,6 @@
 {
     'name': 'ProCommissions',
-    'version': '1.0',
+    'version': "19.0.1.0.0",
     'summary': 'Module to manage commission reports',
     'category': 'Hidden',
     'author': 'Ezekiel J. deBlois',

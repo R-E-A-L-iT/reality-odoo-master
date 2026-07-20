@@ -1,5 +1,5 @@
 /** @odoo-module **/
-import { jsonrpc } from "@web/core/network/rpc_service";
+import { rpc } from "@web/core/network/rpc";
 import publicWidget from "@web/legacy/js/public/public_widget";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -341,7 +341,7 @@ export function initHeaderDropdowns(headerEl, iconsUl) {
         if (curCol)     curCol.style.display = 'none';
         if (curDivider) curDivider.style.display = 'none';
     }
-    jsonrpc('/omnigo/get_pricelists', {}).then(list => {
+    rpc('/omnigo/get_pricelists', {}).then(list => {
         if (!Array.isArray(list) || list.length < 2 || !curItems) {
             hideCurrency();   // nothing meaningful to switch between
             return;

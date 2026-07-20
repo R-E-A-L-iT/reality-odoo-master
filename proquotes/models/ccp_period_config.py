@@ -66,17 +66,19 @@ class CcpPeriodConfig(models.Model):
         string='Scanners'
     )
 
-    def name_get(self):
-        """Display the appropriate display_name based on context language, or fall back to name"""
-        result = []
+    @api.depends('name', 'display_name_en', 'display_name_fr')
+    def _compute_display_name(self):
+        """Display the appropriate label based on context language, or fall back to name.
+
+        Odoo 19 removed name_get(); the display label is now driven by the
+        standard computed display_name field.
+        """
         lang = self.env.context.get('lang', 'en_US')
         for record in self:
             if lang in ('fr_CA', 'fr_FR', 'fr_BE'):
-                name = record.display_name_fr or record.display_name_en or record.name
+                record.display_name = record.display_name_fr or record.display_name_en or record.name
             else:
-                name = record.display_name_en or record.name
-            result.append((record.id, name))
-        return result
+                record.display_name = record.display_name_en or record.name
 
     _sql_constraints = [
         ('name_unique', 'unique(name)', 'CCP Period Code must be unique!')

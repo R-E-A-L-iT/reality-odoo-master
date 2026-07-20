@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "ProActivity Notify Preferences",
-    "version": "17.0.1.0.0",
+    "version": "19.0.1.0.0",
     "category": "Productivity",
     "summary": "Let each user choose whether to receive emails for activities assigned to them",
     "description": """

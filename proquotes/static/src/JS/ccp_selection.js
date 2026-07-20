@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { jsonrpc } from "@web/core/network/rpc_service";
+import { rpc } from "@web/core/network/rpc";
 import publicWidget from "@web/legacy/js/public/public_widget";
 
 publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
@@ -238,7 +238,7 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
         nextBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
 
         // Call backend to add product
-        jsonrpc(`/my/orders/${orderId}/add_ccp_line`, {
+        rpc(`/my/orders/${orderId}/add_ccp_line`, {
             access_token: this.orderDetail.token,
             scanner_name: scannerName,
             ccp_type: ccpType,
@@ -302,7 +302,7 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
             btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Clearing...';
         }
 
-        jsonrpc(`/my/orders/${orderId}/remove_ccp_line`, {
+        rpc(`/my/orders/${orderId}/remove_ccp_line`, {
             access_token: this.orderDetail.token,
             line_id: lineId,
             section_name: sectionName,
