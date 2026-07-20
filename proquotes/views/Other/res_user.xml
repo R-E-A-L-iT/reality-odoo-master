@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='company_id']" position="after">
-                <field name="company_footer_line_ids" context="{'default_user_id': active_id}">
+                <field name="company_footer_line_ids" context="{'default_user_id': id}">
                     <list editable="bottom">
                         <field name="company_id"/>
                         <field name="footer_id" domain="[('active', '=', True), ('record_type', '=', 'Footer')]"/>

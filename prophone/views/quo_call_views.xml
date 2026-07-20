@@ -65,7 +65,7 @@
 
                     <notebook>
                         <page string="Transcript">
-                            <field name="transcript_id" context="{'default_call_id': active_id}">
+                            <field name="transcript_id" context="{'default_call_id': id}">
                                 <list>
                                     <field name="created_at"/>
                                     <field name="status"/>
