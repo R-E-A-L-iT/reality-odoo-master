@@ -19,6 +19,9 @@ _RETIRED_VIEW_KEYS = (
     "proquotes.portal_footer",
     # views/Invoice/follow_up_email.xml (Enterprise account_followup report override)
     "proquotes.template_followup_report_custom",
+    # views/Other/tax.xml (inherits removed account.tax_groups_totals + standalone content)
+    "proquotes.proquote_tax_display",
+    "proquotes.tax_group_name_content",
 )
 
 

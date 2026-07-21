@@ -126,7 +126,12 @@
         "views/Other/report_footer.xml",
         "views/Other/mail_templates.xml",
         "views/Other/stock_lot.xml",
-        "views/Other/tax.xml",
+        # Odoo 19 migration: temporarily disabled. Inherits account.tax_groups_totals
+        # (removed in v19) and uses the old amount_by_group data structure (replaced
+        # by the tax_totals rendering). This shows French tax labels (TPS/TVH/TVQ) and
+        # per-company tax registration numbers on documents — IMPORTANT for CA/QC tax
+        # compliance. Rebuild against v19's tax_totals template, then re-enable.
+        # "views/Other/tax.xml",
         "views/Other/rentalTerms.xml",
         "views/Other/normalTerms.xml",
         "views/Other/website_logo.xml",
