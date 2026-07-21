@@ -8,7 +8,9 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 
-class AccountMoveSend(models.TransientModel):
+# Odoo 19: account.move.send is now an AbstractModel (was TransientModel).
+# An _inherit-only extension must match the base model's abstract-ness.
+class AccountMoveSend(models.AbstractModel):
     _inherit = 'account.move.send'
 
     send_mail_readonly = fields.Boolean(compute='_compute_send_mail_extra_fields', readonly=False)
