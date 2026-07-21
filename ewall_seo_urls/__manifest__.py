@@ -10,7 +10,7 @@
                         This feature not only enhances your website's structure but also boosts SEO and improves the overall user experience. 
                         Take charge of your online presence with personalized product page URLs, making navigation smoother for your customers.""",
     "category": "eCommerce",
-    "version": "17.0",
+    "version": "19.0.1.0.0",
     "author": "EWall Solutions Pvt. Ltd.",
     "support": "support@ewallsolutions.com",
     "website": "http://www.ewallsolutions.com",
@@ -21,7 +21,11 @@
     'price':'57.00',
     "depends": ["base", "product","website_sale"],
     "external_dependencies": {"python": [], "bin": []},
-    "data": ["views/product_seo_url.xml","views/product_category_seo_url_template.xml"],
+    # Odoo 19 migration: the SEO breadcrumb/website_sale template overrides in
+    # views/product_category_seo_url_template.xml are disabled — they xpath into
+    # core website_sale markup that changed in v19 and call the removed slug()
+    # QWeb helper. The shop uses standard breadcrumbs until this file is ported.
+    "data": ["views/product_seo_url.xml"],
     'assets': {
         'web.assets_frontend': [
             'ewall_seo_urls/static/src/js/product_attribute.js',
