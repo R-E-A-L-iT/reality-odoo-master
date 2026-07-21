@@ -5,7 +5,7 @@
 import binascii
 from random import sample
 
-from odoo import http, _, registry
+from odoo import http, _
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
 import re
