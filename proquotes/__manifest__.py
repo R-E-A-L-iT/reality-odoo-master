@@ -99,7 +99,12 @@
         "views/Configuration/confirmation_activity_view.xml",
         # quotes
         "views/Quote/quote_report.xml",
-        "views/Quote/quote_preview.xml",
+        # Odoo 19 migration: temporarily disabled. This ~1830-line branded portal
+        # quote page has 38 xpaths into sale/portal templates (sale.sale_order_portal_content,
+        # sale.sale_order_portal_template, portal.portal_sidebar/portal_layout) that were
+        # reworked in v19, so its anchors no longer match. Rebuild it against v19 with
+        # live visual validation in the running database, then re-enable.
+        # "views/Quote/quote_preview.xml",
         "views/Quote/quote_internal.xml",
         "views/Quote/quote_template.xml",
         "views/Quote/quote_wizard.xml",
