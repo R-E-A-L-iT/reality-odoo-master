@@ -5,7 +5,7 @@ from datetime import datetime
 import requests  # still imported in case you want the geoIP logic later
 
 from odoo import fields, http, SUPERUSER_ID, tools, _
-from odoo.addons.http_routing.models.ir_http import slug
+# Odoo 19: module-level slug() was removed; use env['ir.http']._slug().
 from odoo.addons.website.models.ir_http import sitemap_qs2dom
 from odoo.addons.website.controllers.main import QueryURL
 from odoo.addons.website_sale.controllers import main
@@ -129,7 +129,7 @@ class WebsiteSale(main.WebsiteSale):
         dom = sitemap_qs2dom(qs, '/shop/category', Category._rec_name)
         dom += env['website'].get_current_website().website_domain()
         for cat in Category.search(dom):
-            loc = '/shop/category/%s' % slug(cat)
+            loc = '/shop/category/%s' % env['ir.http']._slug(cat)
             if not qs or qs.lower() in loc:
                 yield {'loc': loc}
 
@@ -357,7 +357,7 @@ class WebsiteSale(main.WebsiteSale):
         categs = lazy(lambda: Category.search(categs_domain))
 
         if category:
-            url = "/shop/category/%s" % slug(category)
+            url = "/shop/category/%s" % request.env['ir.http']._slug(category)
 
         pager = website.pager(url=url, total=product_count, page=page, step=ppg, scope=7, url_args=post)
         offset = pager['offset']

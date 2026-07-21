@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 from odoo.addons.website_sale.controllers import main
-from odoo.addons.http_routing.models.ir_http import slug
 from odoo.addons.website.models.ir_http import sitemap_qs2dom
 from odoo import fields, http, SUPERUSER_ID, tools, _
 from odoo.addons.website.controllers.main import QueryURL
