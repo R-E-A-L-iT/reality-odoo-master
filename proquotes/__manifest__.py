@@ -112,7 +112,12 @@
         "views/Invoice/invoice_report.xml",
         "views/Invoice/invoice_preview.xml",
         "views/Invoice/invoice_internal.xml",
-        "views/Invoice/follow_up_email.xml",
+        # Odoo 19 migration: temporarily disabled. Inherits the Enterprise
+        # account_followup.template_followup_report and xpaths into its report
+        # table (o_account_reports_table) / internal sub-templates, which changed
+        # in v19. Rebuild against the v19 followup report (logo header + drop the
+        # Communication column), then re-enable.
+        # "views/Invoice/follow_up_email.xml",
         # purchase
         "views/Purchase/purchase_report.xml",
         "views/Purchase/purchase_preview.xml",

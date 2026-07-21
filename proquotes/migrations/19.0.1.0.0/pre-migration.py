@@ -17,6 +17,8 @@ _RETIRED_VIEW_KEYS = (
     "proquotes.sale_order_portal_content",
     "proquotes.ba_sale_order_portal_template",
     "proquotes.portal_footer",
+    # views/Invoice/follow_up_email.xml (Enterprise account_followup report override)
+    "proquotes.template_followup_report_custom",
 )
 
 
