@@ -24,12 +24,9 @@ from odoo.http import request
 from odoo.http import Response as Responseht
 from odoo.http import FutureResponse as FutureResponseht
 
-from odoo.tools import (
-    clean_context, config, CountingStream, date_utils, discardattr,
-    DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, frozendict,
-    get_lang, LastOrderedSet, lazy_classproperty, OrderedSet, ormcache,
-    partition, populate, Query, ReversedIterable, split_every, unique, SQL,
-)
+# Odoo 19 trimmed odoo.tools (CountingStream, discardattr, LastOrderedSet, etc.
+# were removed). Import only the names this module actually uses.
+from odoo.tools import SQL, OrderedSet, get_lang
 import werkzeug.datastructures
 import werkzeug.exceptions
 import werkzeug.local
