@@ -169,7 +169,7 @@ class SaleOrderLine(models.Model):
     def get_sale_order_line_multiline_description_sale(self, product):
         return product.get_product_multiline_description_sale()
 
-    @api.depends('product_uom_qty', 'selected', 'discount', 'price_unit', 'tax_id')
+    @api.depends('product_uom_qty', 'selected', 'discount', 'price_unit', 'tax_ids')
     def _compute_amount(self):
         """
         Compute the amounts of the SO line.

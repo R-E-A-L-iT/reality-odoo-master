@@ -266,11 +266,11 @@ class order(models.Model):
 
     def _remove_managed_canadian_taxes_from_line(self, line):
         managed_names = self._get_managed_canadian_tax_names()
-        remaining_taxes = line.tax_id.filtered(lambda tax: tax.name not in managed_names)
+        remaining_taxes = line.tax_ids.filtered(lambda tax: tax.name not in managed_names)
 
-        if set(line.tax_id.ids) != set(remaining_taxes.ids):
+        if set(line.tax_ids.ids) != set(remaining_taxes.ids):
             line.with_context(skip_apply_canadian_sales_taxes=True).write({
-                "tax_id": [Command.set(remaining_taxes.ids)]
+                "tax_ids": [Command.set(remaining_taxes.ids)]
             })
 
 
@@ -328,9 +328,9 @@ class order(models.Model):
                     continue
 
                 if tax:
-                    if set(line.tax_id.ids) != set(tax.ids):
+                    if set(line.tax_ids.ids) != set(tax.ids):
                         line.with_context(skip_apply_canadian_sales_taxes=True).write({
-                            "tax_id": [Command.set(tax.ids)]
+                            "tax_ids": [Command.set(tax.ids)]
                         })
                 else:
                     order._remove_managed_canadian_taxes_from_line(line)
@@ -764,7 +764,7 @@ class order(models.Model):
                 # They should not affect the quote/customer total.
                 "price_unit": 0.0,
                 "discount": 0.0,
-                "tax_id": [Command.clear()],
+                "tax_ids": [Command.clear()],
 
                 # Your custom tracking fields.
                 "x_parent_rental_kit_line_id": kit_line.id,
@@ -789,7 +789,7 @@ class order(models.Model):
                     "name": vals["name"],
                     "price_unit": 0.0,
                     "discount": 0.0,
-                    "tax_id": [Command.clear()],
+                    "tax_ids": [Command.clear()],
                 }
 
                 if component_line.product_uom_qty != qty:
@@ -1835,7 +1835,7 @@ class order(models.Model):
             return {"warning": {"title": "Renewal Automation", "message": error_msg}}
 
     @api.depends_context('lang')
-    @api.depends('order_line.tax_id', 'order_line.price_unit', 'amount_total', 'amount_untaxed', 'currency_id')
+    @api.depends('order_line.tax_ids', 'order_line.price_unit', 'amount_total', 'amount_untaxed', 'currency_id')
     def _compute_tax_totals(self):
         for order in self:
             order = order.with_company(order.company_id)
@@ -2023,13 +2023,13 @@ class order(models.Model):
             res = {}
             for line in order.order_line:
                 price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
-                taxes = line.tax_id.compute_all(
+                taxes = line.tax_ids.compute_all(
                     price_reduce,
                     quantity=line.product_uom_qty,
                     product=line.product_id,
                     partner=order.partner_shipping_id,
                 )["taxes"]
-                for tax in line.tax_id:
+                for tax in line.tax_ids:
                     group = tax.tax_group_id
                     res.setdefault(group, {"amount": 0.0, "base": 0.0})
                     for t in taxes:
@@ -2160,7 +2160,7 @@ class SaleOrderTemplateHandler(models.Model):
             order_lines.append((0, 0, data))
 
         self.order_line = order_lines
-        self.order_line._compute_tax_id()
+        self.order_line._compute_tax_ids()
 
 class PreconfigSaleOrder(models.Model):
     _inherit = 'sale.order'
