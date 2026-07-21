@@ -10,7 +10,8 @@ from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
 from odoo.http import Response
 from odoo.addons.website.controllers import form
-from odoo.addons.portal.controllers.mail import _message_post_helper
+# Odoo 19 removed portal.controllers.mail._message_post_helper; post directly on
+# the (sudo) record via message_post() instead.
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.website.controllers.main import Website as WebsiteINH
@@ -534,12 +535,9 @@ class QuotePortalFix(cPortal):
 
         pdf = request.env['ir.actions.report'].sudo()._render_qweb_pdf('sale.action_report_saleorder', [order_sudo.id])[0]
 
-        _message_post_helper(
-            'sale.order',
-            order_sudo.id,
-            _('Order signed by %s', name),
+        order_sudo.message_post(
+            body=_('Order signed by %s', name),
             attachments=[('%s.pdf' % order_sudo.name, pdf)],
-            token=access_token,
         )
 
         query_string = '&message=sign_ok'
