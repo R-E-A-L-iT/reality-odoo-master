@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from . import account_move_line
-from . import account_move_send
+# account_move_send removed for Odoo 19: the account.move.send / account.move.send.wizard
+# invoice-send flow was redesigned (move_id singular, template_id, no checkbox_send_mail/
+# mode/move_ids; _get_mail_move_values removed). The customization needs a rebuild.
+# from . import account_move_send
 from . import account_move
 from . import calendar_event
 from . import crm_lead
