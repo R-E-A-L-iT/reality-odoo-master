@@ -3,7 +3,7 @@
 from odoo import _, api, models
 from odoo.exceptions import ValidationError
 import re
-from odoo.addons.website.models.website import slugify
+# Odoo 19: the module-level slugify() helper was removed; use the ir.http method.
 
 # SEO URL Model
 class SEOURL(models.AbstractModel):
@@ -21,7 +21,7 @@ class SEOURL(models.AbstractModel):
         vals = vals or {}
         value = vals.get(field)
         if value:
-            original_value = slugify(value)
+            original_value = self.env['ir.http']._slugify(value)
             counter = 0
             while True:
                 new_value = "{}-{}".format(original_value, counter) if counter > 0 else original_value

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import fields, models
-from odoo.addons.http_routing.models.ir_http import slug, unslug
+# Odoo 19: module-level slug()/unslug() were removed; use the ir.http methods.
 
 # Product Template Added SEO URL Field
 class ProductTemplate(models.Model):
@@ -23,7 +23,7 @@ class ProductTemplate(models.Model):
             if product.seo_url:
                 product.website_url = "/shop/%s" % (product.seo_url)
             elif product.id:
-                product.website_url = "/shop/%s" % slug(product)
+                product.website_url = "/shop/%s" % self.env['ir.http']._slug(product)
         return res
 
 
