@@ -7,7 +7,6 @@ from odoo.http import request
 from odoo.http import content_disposition, Controller, request, route
 from odoo.addons.payment.controllers import portal as payment_portal
 from odoo.addons.portal.controllers.portal import CustomerPortal
-from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers import portal
 from odoo.addons.portal.controllers.portal import pager as portal_pager, get_records_pager
 from collections import OrderedDict
