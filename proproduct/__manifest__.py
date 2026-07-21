@@ -24,7 +24,13 @@
         "views/wishlist_page.xml",
         "views/website_address.xml",
         "views/maintenance_equipment_views.xml",
-        "views/website_sale_product_renting.xml",
+        # Odoo 19 migration: temporarily disabled. This view inherits the
+        # Enterprise website_sale_renting.rental_product template and its xpaths
+        # (//div[hasclass('js_main_product')]//t[@t-placeholder='select']/... and
+        # //div[@id='product_documents']/preceding-sibling::t[1]) target pre-v19
+        # markup that changed. Re-anchor against the actual v19 rental_product
+        # arch, then re-enable. See views/website_sale_product_renting.xml.
+        # "views/website_sale_product_renting.xml",
         "views/website_cart.xml",
     ],
 }
