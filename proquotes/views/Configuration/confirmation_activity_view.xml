@@ -75,7 +75,7 @@
                 <filter string="Sales Only"   name="type_sale"   domain="[('order_type', '=', 'sale')]"/>
                 <filter string="Rentals Only" name="type_rental" domain="[('order_type', '=', 'rental')]"/>
                 <filter string="Both"         name="type_both"   domain="[('order_type', '=', 'both')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Assigned To"    name="group_user"          context="{'group_by': 'user_id'}"/>
                     <filter string="Activity Type"  name="group_activity_type" context="{'group_by': 'activity_type_id'}"/>
                     <filter string="Apply To"       name="group_order_type"    context="{'group_by': 'order_type'}"/>
