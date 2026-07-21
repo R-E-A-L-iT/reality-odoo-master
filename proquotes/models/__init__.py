@@ -10,7 +10,7 @@ from . import helpdesk_ticket
 from . import ir_ui_view
 from . import mail_compose_message
 from . import mail_thread
-from . import mail_wizard_invite
+# mail_wizard_invite removed for Odoo 19: the mail.wizard.invite model no longer exists.
 from . import models
 from . import preconfigured_section
 from . import product_product

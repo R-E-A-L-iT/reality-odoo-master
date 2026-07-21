@@ -19,16 +19,7 @@
 
             </field>
         </record>
-        <record id="view_mail_wizard_invite_inherit_hide_send_mail" model="ir.ui.view">
-            <field name="name">mail.wizard.invite.form.inherit.hide.send.mail</field>
-            <field name="model">mail.wizard.invite</field>
-            <field name="inherit_id" ref="mail.mail_wizard_invite_form"/>
-            <field name="arch" type="xml">
-                <!-- Remove the option to send invitation email when adding followers to the quote document -->
-                <field name="notify" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </field>
-            </field>
-        </record>
+        <!-- Odoo 19 migration: the mail.wizard.invite record that hid the "notify"
+             option was removed — that model/view no longer exists in v19. -->
     </data>
 </odoo>
