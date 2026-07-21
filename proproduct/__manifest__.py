@@ -19,7 +19,14 @@
         "maintenance",
     ],
     "data": [
-        "views/website_sale_product.xml",
+        # Odoo 19 migration: temporarily disabled. This view inherits
+        # website_sale.product and xpaths into markup that changed in v19 — the
+        # //t[@t-cache] wrapper was removed (the pricelist-forcing/price-lock
+        # blocks worked around a v17 t-cache stale-currency bug that no longer
+        # exists), and //div[@id='o_product_terms_and_share'] was removed. Rebuild
+        # it against the v19 product template — keeping the add-to-cart region
+        # gating and the financing section — then re-enable.
+        # "views/website_sale_product.xml",
         "views/product_template_form.xml",
         "views/wishlist_page.xml",
         "views/website_address.xml",

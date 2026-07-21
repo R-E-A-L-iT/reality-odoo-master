@@ -3,30 +3,31 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-# Name of the inherited view that proproduct previously registered (now removed
-# from the manifest during the Odoo 19 migration — see __manifest__.py and
-# views/website_sale_product_renting.xml).
-_STALE_VIEW_NAME = "Hide rental website elements unless enabled on product"
+# proproduct website_sale product-page customizations that were disabled for the
+# Odoo 19 upgrade (removed from the manifest — see __manifest__.py). Their records
+# persist in the database from the previous install and get re-validated against
+# the changed v19 core markup when proproduct's remaining views load, failing
+# before Odoo's orphan cleanup runs. We drop them here, before load, targeting the
+# module views *and* any website copy-on-write copies (which keep the same `key`).
+_RETIRED_VIEW_KEYS = (
+    "proproduct.website_sale_product_add_section",   # views/website_sale_product.xml
+    "proproduct.rental_product_hide_unless_enabled",  # views/website_sale_product_renting.xml
+)
+_RETIRED_VIEW_NAMES = (
+    "website_sale_product_add_section",
+    "Hide rental website elements unless enabled on product",
+)
 
 
 def migrate(cr, version):
-    """Drop the stale 'rental hide' view left in the database.
-
-    proproduct's views/website_sale_product_renting.xml inherited the Enterprise
-    website_sale_renting.rental_product template with xpaths targeting pre-v19
-    markup (//div[hasclass('js_main_product')]//t[@t-placeholder='select']/...).
-    That view has been removed from the manifest for the v19 upgrade, but the
-    record persists in the database from the previous install and is re-validated
-    when proproduct's other product views load against the same parent — failing
-    before Odoo's orphan cleanup runs. We delete it here (pre-load) so the
-    registry can build. Re-add the view, re-anchored to the v19 rental markup,
-    to restore the feature later.
-    """
     if not version:
         # Fresh install: nothing stored to clean up.
         return
 
-    cr.execute("SELECT id FROM ir_ui_view WHERE name = %s", (_STALE_VIEW_NAME,))
+    cr.execute(
+        "SELECT id FROM ir_ui_view WHERE key IN %s OR name IN %s",
+        (_RETIRED_VIEW_KEYS, _RETIRED_VIEW_NAMES),
+    )
     view_ids = [row[0] for row in cr.fetchall()]
     if not view_ids:
         return
@@ -37,6 +38,6 @@ def migrate(cr, version):
     )
     cr.execute("DELETE FROM ir_ui_view WHERE id IN %s", (tuple(view_ids),))
     _logger.info(
-        "proproduct 19.0 migration: removed %d stale rental-hide view(s) "
-        "incompatible with Odoo 19", len(view_ids),
+        "proproduct 19.0 migration: removed %d retired website_sale product "
+        "view(s) incompatible with Odoo 19", len(view_ids),
     )
