@@ -12,10 +12,12 @@ _logger = logging.getLogger(__name__)
 _RETIRED_VIEW_KEYS = (
     "proproduct.website_sale_product_add_section",   # views/website_sale_product.xml
     "proproduct.rental_product_hide_unless_enabled",  # views/website_sale_product_renting.xml
+    "proproduct.proproduct_website_sale_address_country_restrict",  # views/website_address.xml
 )
 _RETIRED_VIEW_NAMES = (
     "website_sale_product_add_section",
     "Hide rental website elements unless enabled on product",
+    "proproduct_website_sale_address_country_restrict",
 )
 
 

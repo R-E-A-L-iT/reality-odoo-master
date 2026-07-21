@@ -5,9 +5,9 @@
               inherit_id="website_sale.total">
 
         <!-- Taxes row -->
-        <xpath expr="//tr[@id='order_total_taxes']" position="replace">
+        <xpath expr="//tr[@name='o_order_total_taxes']" position="replace">
 
-            <tr id="order_total_taxes">
+            <tr name="o_order_total_taxes">
 
                 <!-- CART PAGE -->
                 <t t-if="request.httprequest.path == '/shop/cart'">
@@ -57,9 +57,9 @@
         </xpath>
 
         <!-- Total row -->
-        <xpath expr="//tr[@id='order_total']" position="replace">
+        <xpath expr="//tr[@name='o_order_total']" position="replace">
 
-            <tr id="order_total" class="border-top">
+            <tr name="o_order_total" class="border-top">
 
                 <!-- CART PAGE -->
                 <t t-if="request.httprequest.path == '/shop/cart'">

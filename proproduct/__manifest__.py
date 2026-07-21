@@ -29,7 +29,12 @@
         # "views/website_sale_product.xml",
         "views/product_template_form.xml",
         "views/wishlist_page.xml",
-        "views/website_address.xml",
+        # Odoo 19 migration: temporarily disabled. Restricts the checkout country
+        # dropdown by xpath-replacing //select[@id='country_id']/t[@t-foreach='countries'],
+        # but v19 rewrote the checkout address form and that static markup is gone.
+        # Reimplement the currency-based country restriction at the controller
+        # level (filter the `countries` passed to the address form), then re-enable.
+        # "views/website_address.xml",
         "views/maintenance_equipment_views.xml",
         # Odoo 19 migration: temporarily disabled. This view inherits the
         # Enterprise website_sale_renting.rental_product template and its xpaths
