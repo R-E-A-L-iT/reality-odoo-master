@@ -26,7 +26,9 @@ from . import sale_order_template_line
 from . import sale_order_template
 from . import sale_order
 from . import sale_renting
-from . import rental_schedule
+# rental_schedule removed for Odoo 19: the sale.rental.schedule model (Enterprise
+# sale_renting) is not present in this registry / was reworked in v19.
+# from . import rental_schedule
 from . import stock_lot
 from . import stock_picking
 from . import res_config_extend
