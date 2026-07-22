@@ -139,7 +139,13 @@
         "views/Other/rental_order_wizard_form.xml",
         # "views/Quote/quoteRentalAddress.xml",
         "views/Quote/ccp_selection_form.xml",
-        "views/Other/mail.xml",
+        # Odoo 19 migration: temporarily disabled. This file wholesale-REDEFINED the
+        # core mail.mail_notification_layout with a stale (pre-v19) copy, which clobbers
+        # v19's own layout and breaks its child views (e.g. mail_notification_invite's
+        # //td[@t-if='subtitles'] xpath). It also removed a row from mail_notification_light.
+        # Rebuild the email-layout branding (logo, signature footer, hide "Powered by Odoo")
+        # as a proper INHERITED customization of the v19 layout, then re-enable.
+        # "views/Other/mail.xml",
         "views/Other/delivery_report.xml",
         "views/Other/project_task.xml",
         "views/Other/section_name.xml",
@@ -149,7 +155,12 @@
         "views/Other/header_footer.xml",
         "views/Invoice/invoice_lot.xml",
         "views/Other/stock_picking.xml",
-        "views/Other/quoteEmailFooter.xml",
+        # Odoo 19 migration: temporarily disabled. Inherits mail.mail_notification_layout
+        # but its xpaths match the exact markup of the stale layout copy in Other/mail.xml
+        # (e.g. //div[@t-if='subtitles or has_button_access or actions or not is_discussion'])
+        # which does not exist in v19's core layout. Rebuild together with the email-layout
+        # branding against the v19 layout, then re-enable.
+        # "views/Other/quoteEmailFooter.xml",
         "views/Other/helpdeskTicket.xml",
         "views/Other/header_footer_values.xml",
         "views/Other/preconfigured_sections.xml",

@@ -22,6 +22,10 @@ _RETIRED_VIEW_KEYS = (
     # views/Other/tax.xml (inherits removed account.tax_groups_totals + standalone content)
     "proquotes.proquote_tax_display",
     "proquotes.tax_group_name_content",
+    # views/Other/mail.xml (removed a row from mail.mail_notification_light)
+    "proquotes.ba_remove_power_override_second_tr",
+    # views/Other/quoteEmailFooter.xml (inherited layout override coupled to Other/mail.xml)
+    "proquotes.mail_notification_layout_inherit",
 )
 
 
