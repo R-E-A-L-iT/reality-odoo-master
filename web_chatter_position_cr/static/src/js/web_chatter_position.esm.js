@@ -7,18 +7,29 @@ patch(FormCompiler.prototype, {
         const res = super.compileForm(el, params);
         if (odoo.web_chatter_position === "sided") {
             const classes = res.getAttribute("t-attf-class");
-            const newClasses = classes.replace('{{ __comp__.uiService.size < 6 ? "flex-column" : "flex-nowrap h-100" }}', 'flex-nowrap h-100')
-            res.setAttribute("t-attf-class", `${newClasses}`);
+            if (classes) {
+                const newClasses = classes.replace('{{ __comp__.uiService.size < 6 ? "flex-column" : "flex-nowrap h-100" }}', 'flex-nowrap h-100')
+                res.setAttribute("t-attf-class", `${newClasses}`);
+            }
             return res;
         }
 
         else if (odoo.web_chatter_position === "bottom") {
             const classes = res.getAttribute("t-attf-class")
+            // Odoo 19 removed jQuery from the web client; use vanilla DOM on the
+            // compiled template node (equivalent to the old $(...).addClass()).
             const formView = res.getElementsByClassName('o_form_sheet_bg')[0]
-            $(formView).addClass('customBottom')
-            $($(formView).parent()).find('.o-mail-Form-chatter').addClass('customBottom')
-            const newClasses = classes.replace('{{ __comp__.uiService.size < 6 ? "flex-column" : "flex-nowrap h-100" }}', 'flex-column')
-            res.setAttribute("t-attf-class", `${newClasses}`);
+            if (formView) {
+                formView.classList.add('customBottom')
+                const chatter = formView.parentElement && formView.parentElement.querySelector('.o-mail-Form-chatter')
+                if (chatter) {
+                    chatter.classList.add('customBottom')
+                }
+            }
+            if (classes) {
+                const newClasses = classes.replace('{{ __comp__.uiService.size < 6 ? "flex-column" : "flex-nowrap h-100" }}', 'flex-column')
+                res.setAttribute("t-attf-class", `${newClasses}`);
+            }
             return res
         }
 
