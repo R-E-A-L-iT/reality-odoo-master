@@ -48,3 +48,38 @@ def migrate(cr, version):
         "proquotes 19.0 migration: removed %d stale quote_preview view(s) "
         "incompatible with Odoo 19", len(view_ids),
     )
+
+    _cleanup_broken_chatter_position_patch(cr)
+
+
+def _cleanup_broken_chatter_position_patch(cr):
+    """Safety net so the backend can render even if web_chatter_position_cr's
+    model isn't loaded.
+
+    That module patches web.webclient_bootstrap to emit
+    `request.env.user.chatter_position`. If its res.users field isn't registered
+    (module not (re)loaded on the v19 upgrade), rendering the web client raises
+    AttributeError and the whole backend is unreachable. When the column is
+    absent, drop the stale inheriting view; if the module does load, it recreates
+    a (now defensive) patch itself and this is a no-op.
+    """
+    cr.execute("""
+        SELECT 1 FROM information_schema.columns
+         WHERE table_name = 'res_users' AND column_name = 'chatter_position'
+    """)
+    if cr.fetchone():
+        return  # field exists -> patch is safe, leave it alone
+
+    cr.execute("""
+        DELETE FROM ir_ui_view
+         WHERE arch_db::text LIKE '%chatter_position%'
+           AND inherit_id IN (
+               SELECT res_id FROM ir_model_data
+                WHERE module = 'web' AND name = 'webclient_bootstrap'
+           )
+    """)
+    if cr.rowcount:
+        _logger.warning(
+            "proquotes 19.0 migration: removed %d stale webclient_bootstrap "
+            "chatter_position patch view(s) (field not present)", cr.rowcount,
+        )
