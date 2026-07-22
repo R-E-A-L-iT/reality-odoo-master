@@ -173,20 +173,28 @@ class SaleOrderLine(models.Model):
     def _compute_amount(self):
         """
         Compute the amounts of the SO line.
+
+        Odoo 19 reworked the tax API: account.tax._compute_taxes() +
+        line._convert_to_tax_base_line_dict() were replaced by per-base-line
+        computation (_prepare_base_line_for_taxes_computation /
+        _add_tax_details_in_base_line / _round_base_lines_tax_details) reading
+        the amounts off base_line['tax_details']. Unselected / zero-qty CCP lines
+        keep contributing 0 to the untaxed subtotal (original behavior).
         """
+        AccountTax = self.env['account.tax']
         for line in self:
-            tax_results = self.env['account.tax'].with_company(line.company_id)._compute_taxes([
-                line._convert_to_tax_base_line_dict()
-            ])
-            totals = list(tax_results['totals'].values())[0]
+            company = line.company_id or self.env.company
+            base_line = line._prepare_base_line_for_taxes_computation()
+            AccountTax._add_tax_details_in_base_line(base_line, company)
+            AccountTax._round_base_lines_tax_details([base_line], company)
+            computed_untaxed = base_line['tax_details']['total_excluded_currency']
+            computed_total = base_line['tax_details']['total_included_currency']
+            amount_tax = computed_total - computed_untaxed
+
             if line.selected == 'false' or line.product_uom_qty == 0:
                 amount_untaxed = 0.00
-                _logger.info('>>>>>>>>>>iff>>>>>>.amount_untaxed: %s,', amount_untaxed)
-
             else:
-                amount_untaxed = totals['amount_untaxed']
-                _logger.info('>>>>>>>>else>>>>>>>>. amount_untaxed: %s,', amount_untaxed)
-            amount_tax = totals['amount_tax']
+                amount_untaxed = computed_untaxed
 
             line.update({
                 'price_subtotal': amount_untaxed,

@@ -1837,15 +1837,24 @@ class order(models.Model):
     @api.depends_context('lang')
     @api.depends('order_line.tax_ids', 'order_line.price_unit', 'amount_total', 'amount_untaxed', 'currency_id')
     def _compute_tax_totals(self):
+        # Odoo 19 reworked the tax-totals API: _convert_to_tax_base_line_dict() +
+        # account.tax._prepare_tax_totals() were replaced by base-line preparation
+        # (_prepare_base_line_for_taxes_computation / _add_tax_details_in_base_lines /
+        # _round_base_lines_tax_details) + _get_tax_totals_summary(), and the result
+        # key `amount_total` became `total_amount_currency`.
+        AccountTax = self.env['account.tax']
         for order in self:
             order = order.with_company(order.company_id)
             order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
-            order.tax_totals = order.env['account.tax']._prepare_tax_totals(
-                [x._convert_to_tax_base_line_dict() for x in order_lines],
-                order.currency_id or order.company_id.currency_id,
+            base_lines = [line._prepare_base_line_for_taxes_computation() for line in order_lines]
+            AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
+            AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
+            order.tax_totals = AccountTax._get_tax_totals_summary(
+                base_lines=base_lines,
+                currency=order.currency_id or order.company_id.currency_id,
+                company=order.company_id,
             )
-            # _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
-            order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
+            order.sudo().update({'amount_total': float(order.tax_totals['total_amount_currency'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Create individual recipient groups with partner-specific tracking URLs, avoiding duplicates. """
