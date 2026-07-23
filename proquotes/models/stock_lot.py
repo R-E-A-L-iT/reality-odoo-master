@@ -38,10 +38,16 @@ class StockLot(models.Model):
 
     @api.depends("name")
     def _compute_rental_income(self):
-        SaleOrderLine = self.env["sale.order.line"].sudo()
+        MoveLine = self.env["stock.move.line"].sudo()
         for lot in self:
-            lines = SaleOrderLine.search([("pickedup_lot_ids", "in", lot.id)])
-            orders = lines.order_id.filtered(lambda o: o.state != "cancel")
+            move_lines = MoveLine.search([
+                ("lot_id", "=", lot.id),
+                ("state", "=", "done"),
+                ("picking_id.rental_sale_order_id", "!=", False),
+            ])
+            orders = move_lines.picking_id.rental_sale_order_id.filtered(
+                lambda o: o.state != "cancel"
+            )
             lot.rental_order_ids = orders
             lot.rental_order_count = len(orders)
             lot.rental_income_total = sum(orders.mapped("amount_total"))
