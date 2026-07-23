@@ -6,10 +6,26 @@ _logger = logging.getLogger(__name__)
 # Stale ir.ui.view records that persist from the previous install and get
 # re-validated against v19's changed core markup when proquotes' views load,
 # failing before Odoo's orphan cleanup runs. We drop them here, before load,
-# targeting the module views and any website copy-on-write copies (same `key`).
-# NOTE: quote_preview.xml has been RE-ENABLED (re-anchored to v19), so its 7
-# templates are intentionally NOT listed here anymore.
+# targeting the module views AND any website copy-on-write copies (same `key`).
+#
+# Two kinds are listed:
+#   1. Views whose source file is still disabled (retired until rebuilt).
+#   2. quote_preview.xml's templates — that file has been RE-ENABLED and
+#      re-anchored to v19, but its old arch survives in the DB as a website COW
+#      copy which the module update does NOT rewrite (COW copies have no
+#      ir_model_data link), so it kept failing on the removed
+#      //div[@id="quote_content"]//b[1] xpath. Deleting them here (pre-load)
+#      purges the stale arch; the module's data load then recreates them fresh
+#      from the re-anchored file.
 _RETIRED_VIEW_KEYS = (
+    # views/Quote/quote_preview.xml — purged so the re-anchored file recreates them
+    "proquotes.sale_order_total",
+    "proquotes.address_card_tile",
+    "proquotes.quote_hero_quicknav",
+    "proquotes.quote_terms_acceptance",
+    "proquotes.sale_order_portal_content",
+    "proquotes.ba_sale_order_portal_template",
+    "proquotes.portal_footer",
     # views/Invoice/follow_up_email.xml (Enterprise account_followup report override)
     "proquotes.template_followup_report_custom",
     # views/Other/tax.xml (inherits removed account.tax_groups_totals + standalone content)
