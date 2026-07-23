@@ -3,20 +3,13 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-# Templates defined in proquotes/views/Quote/quote_preview.xml, which was disabled
-# for the Odoo 19 upgrade (its xpaths inherit sale/portal templates reworked in v19
-# — see __manifest__.py). Their ir.ui.view records persist from the previous install
-# and get re-validated against the changed core markup when proquotes' views load,
+# Stale ir.ui.view records that persist from the previous install and get
+# re-validated against v19's changed core markup when proquotes' views load,
 # failing before Odoo's orphan cleanup runs. We drop them here, before load,
 # targeting the module views and any website copy-on-write copies (same `key`).
+# NOTE: quote_preview.xml has been RE-ENABLED (re-anchored to v19), so its 7
+# templates are intentionally NOT listed here anymore.
 _RETIRED_VIEW_KEYS = (
-    "proquotes.sale_order_total",
-    "proquotes.address_card_tile",
-    "proquotes.quote_hero_quicknav",
-    "proquotes.quote_terms_acceptance",
-    "proquotes.sale_order_portal_content",
-    "proquotes.ba_sale_order_portal_template",
-    "proquotes.portal_footer",
     # views/Invoice/follow_up_email.xml (Enterprise account_followup report override)
     "proquotes.template_followup_report_custom",
     # views/Other/tax.xml (inherits removed account.tax_groups_totals + standalone content)
