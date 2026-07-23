@@ -1,6 +1,6 @@
 {
     'name': 'LiveChat CRM Enhanced',
-    'version': '17.0.2.0.0',
+    'version': '19.0.2.0.0',
     'category': 'Sales/CRM',
     'summary': 'Enhanced LiveChat integration with CRM lead creation',
     'description': """

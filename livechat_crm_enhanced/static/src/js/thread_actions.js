@@ -2,6 +2,8 @@
 
 import { threadActionsRegistry } from "@mail/core/common/thread_actions";
 import { useService } from "@web/core/utils/hooks";
+// Odoo 19 removed the "rpc" service; use the rpc function directly.
+import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
 
 console.log("LiveChat CRM Enhanced: JavaScript loaded");
@@ -45,7 +47,6 @@ threadActionsRegistry.add("create-lead", {
     },
     setup(action) {
         console.log("Create Lead Button: Setup called");
-        action.rpc = useService("rpc");
         action.notification = useService("notification");
         action.actionService = useService("action");
     },
@@ -59,7 +60,7 @@ threadActionsRegistry.add("create-lead", {
         (async () => {
             try {
                 // Get current lead status
-                const statusResult = await action.rpc("/web/dataset/call_kw", {
+                const statusResult = await rpc("/web/dataset/call_kw", {
                     model: "discuss.channel",
                     method: "get_livechat_lead_status",
                     args: [component.thread.id],
@@ -91,7 +92,7 @@ threadActionsRegistry.add("create-lead", {
                 }
                 
                 // Execute the action
-                const result = await action.rpc("/web/dataset/call_kw", {
+                const result = await rpc("/web/dataset/call_kw", {
                     model: "discuss.channel",
                     method: method,
                     args: [component.thread.id],
