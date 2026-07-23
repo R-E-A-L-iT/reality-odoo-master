@@ -400,7 +400,11 @@
 
         <!-- Add order state to table data attributes for JavaScript access -->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]" position="attributes">
-            <attribute name="data-order-state" t-att-data-order-state="sale_order.state"/>
+            <!-- Odoo 19 validates <attribute> strictly: it may only carry
+                 name/add/remove/separator. To set a dynamic attribute, the
+                 t-att-* attribute name goes in name= and its expression in the
+                 element's text (renders as data-order-state="<state>"). -->
+            <attribute name="t-att-data-order-state">sale_order.state</attribute>
         </xpath>
 
         <!-- Remove Original Table Header-->
