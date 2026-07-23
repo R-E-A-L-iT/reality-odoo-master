@@ -896,6 +896,8 @@ class order(models.Model):
                 continue
             if not line.product_id:
                 continue
+            if line.product_id.type not in ('consu', 'product'):
+                continue
 
             bom = self._get_phantom_bom_for_line(line)
             if bom:
@@ -943,6 +945,8 @@ class order(models.Model):
             if line.display_type or line.x_is_rental_kit_component:
                 continue
             if line.selected != 'true' or not line.product_id:
+                continue
+            if line.product_id.type not in ('consu', 'product'):
                 continue
 
             bom = self._get_phantom_bom_for_line(line)
