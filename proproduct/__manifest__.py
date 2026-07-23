@@ -28,7 +28,8 @@
         # gating and the financing section — then re-enable.
         # "views/website_sale_product.xml",
         "views/product_template_form.xml",
-        "views/wishlist_page.xml",
+        # Odoo 19 migration: temporarily disabled to show the default store.
+        # "views/wishlist_page.xml",
         # Odoo 19 migration: temporarily disabled. Restricts the checkout country
         # dropdown by xpath-replacing //select[@id='country_id']/t[@t-foreach='countries'],
         # but v19 rewrote the checkout address form and that static markup is gone.
@@ -43,6 +44,7 @@
         # markup that changed. Re-anchor against the actual v19 rental_product
         # arch, then re-enable. See views/website_sale_product_renting.xml.
         # "views/website_sale_product_renting.xml",
-        "views/website_cart.xml",
+        # Odoo 19 migration: temporarily disabled to show the default store cart.
+        # "views/website_cart.xml",
     ],
 }

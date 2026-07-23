@@ -13,6 +13,8 @@ _RETIRED_VIEW_KEYS = (
     "proproduct.website_sale_product_add_section",   # views/website_sale_product.xml
     "proproduct.rental_product_hide_unless_enabled",  # views/website_sale_product_renting.xml
     "proproduct.proproduct_website_sale_address_country_restrict",  # views/website_address.xml
+    "proproduct.wishlist_page_add_to_cart",         # views/wishlist_page.xml (disabled for default store)
+    "proproduct.website_sale_total_cart_only_override",  # views/website_cart.xml (disabled for default store)
 )
 _RETIRED_VIEW_NAMES = (
     "website_sale_product_add_section",

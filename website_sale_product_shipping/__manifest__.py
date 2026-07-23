@@ -18,7 +18,9 @@
     ],
     'assets': {
         'web.assets_frontend': [
-            'website_sale_product_shipping/static/src/js/website_sale_per_product_delivery.js',
+            # Odoo 19 migration: temporarily disabled (per-product checkout delivery
+            # UI is neutralized until rebuilt for the v19 checkout).
+            # 'website_sale_product_shipping/static/src/js/website_sale_per_product_delivery.js',
         ],
     },
     'installable': True,
