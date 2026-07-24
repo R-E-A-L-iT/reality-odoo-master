@@ -12,6 +12,27 @@ TWITTER_VIDEO_CHUNK_SIZE = 4 * 1024 * 1024
 TWITTER_STATUS_MAX_ATTEMPTS = 30
 
 
+def _extract_twitter_error(result):
+    """Twitter's media/upload error payloads aren't consistent across versions/status codes
+    (sometimes a top-level 'error', sometimes an 'errors' array with 'message'/'code',
+    sometimes plain text) - try each shape so real permission/quota errors surface to the user
+    instead of an empty string."""
+    try:
+        payload = result.json()
+    except ValueError:
+        return result.text[:300]
+    if isinstance(payload, dict):
+        if payload.get('error'):
+            return payload['error']
+        errors = payload.get('errors')
+        if errors:
+            first = errors[0]
+            return '%s (code %s)' % (first.get('message', ''), first.get('code', '')) if isinstance(first, dict) else str(first)
+        if payload.get('title') or payload.get('detail'):
+            return '%s: %s' % (payload.get('title', ''), payload.get('detail', ''))
+    return result.text[:300]
+
+
 class SocialAccountTwitter(models.Model):
     _inherit = 'social.account'
 
@@ -40,10 +61,8 @@ class SocialAccountTwitter(models.Model):
             timeout=5
         )
         if not result.ok:
-            # unfortunately Twitter does not return a proper error code so we have to rely on the error message
             # last known max file size for the API is 20MB for images, 512MB for videos
-            generic_api_error = result.json().get('error', '')
-            raise UserError(_("We could not upload your attachment, it may be corrupted, it may exceed size limit or API may have send improper response (error: %s).", generic_api_error))
+            raise UserError(_("We could not upload your attachment, it may be corrupted, it may exceed size limit, or your API access tier may not support media upload (error: %s).", _extract_twitter_error(result)))
 
         return result.json().get('media_id_string')
 
@@ -73,7 +92,7 @@ class SocialAccountTwitter(models.Model):
                 timeout=30
             )
             if not result.ok:
-                raise UserError(_("We could not upload your video, it may be corrupted or exceed the size limit."))
+                raise UserError(_("We could not upload your video, it may be corrupted or exceed the size limit (error: %s).", _extract_twitter_error(result)))
 
     def _format_images_twitter(self, image_ids):
         """ Twitter needs a special kind of uploading to process images/videos.

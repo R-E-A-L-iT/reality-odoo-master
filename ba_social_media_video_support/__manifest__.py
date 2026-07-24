@@ -8,6 +8,7 @@
     'depends': ['social', 'social_twitter', 'social_linkedin'],
     'data': [
         'views/social_twitter_templates.xml',
+        'views/social_linkedin_templates.xml',
     ],
     'auto_install': False,
     'license': 'LGPL-3',

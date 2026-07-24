@@ -6,6 +6,13 @@
                 <attribute name="t-esc">message</attribute>
             </xpath>
             <xpath expr="//span[@t-if='is_twitter_post_limit_exceed']" position="replace"/>
+            <xpath expr="//div[hasclass('o_social_stream_post_image')]" position="after">
+                <div class="o_social_stream_post_video w-75 mt-2" t-if="video_urls">
+                    <t t-foreach="video_urls" t-as="video_url">
+                        <video t-att-src="video_url" controls="controls" class="w-100 rounded"/>
+                    </t>
+                </div>
+            </xpath>
         </template>
     </data>
 </odoo>

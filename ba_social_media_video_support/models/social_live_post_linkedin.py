@@ -121,11 +121,23 @@ class SocialLivePostLinkedin(models.Model):
             headers=account_id._linkedin_bearer_headers(),
             json=data, timeout=10)
 
+        try:
+            response_json = response.json()
+        except ValueError:
+            response_json = {}
+
         if not response.ok:
             _logger.error('Could not upload the video: %r.', response.text)
+            # LinkedIn's video upload endpoint requires Marketing Developer Platform approval,
+            # separate from the basic image-posting scopes - a 403 here usually means that
+            # approval is missing rather than a code/data problem.
+            raise UserError(_(
+                "We could not register your video upload with LinkedIn (error: %s). "
+                "If this is a permission error, your LinkedIn app may not be approved for video upload (Marketing Developer Platform access).",
+                response_json.get('message') or response.text[:300]
+            ))
 
-        response = response.json()
-        upload_value = response.get('value') or {}
+        upload_value = response_json.get('value') or {}
         upload_instructions = upload_value.get('uploadInstructions')
         video_urn = upload_value.get('video')
         upload_token = upload_value.get('uploadToken', '')
@@ -143,7 +155,8 @@ class SocialLivePostLinkedin(models.Model):
             chunk = video_bytes[part['firstByte']:part['lastByte'] + 1]
             part_response = requests.put(part['uploadUrl'], data=chunk, headers=headers, timeout=60)
             if not part_response.ok:
-                raise UserError(_("We could not upload your video, try reducing its size and posting it again."))
+                _logger.error('Could not upload video part: %r.', part_response.text)
+                raise UserError(_("We could not upload your video, try reducing its size and posting it again (error: %s).", part_response.text[:300]))
             uploaded_part_ids.append(part_response.headers.get('etag'))
 
         finalize_response = requests.post(
@@ -159,6 +172,7 @@ class SocialLivePostLinkedin(models.Model):
             timeout=15)
 
         if not finalize_response.ok:
-            raise UserError(_("We could not finalize your video upload, try posting it again."))
+            _logger.error('Could not finalize video upload: %r.', finalize_response.text)
+            raise UserError(_("We could not finalize your video upload, try posting it again (error: %s).", finalize_response.text[:300]))
 
         return video_urn

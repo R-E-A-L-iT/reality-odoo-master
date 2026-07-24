@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="linkedin_preview_video" inherit_id="social_linkedin.linkedin_preview">
+            <xpath expr="//div[hasclass('o_social_stream_post_image')]" position="after">
+                <div class="o_social_stream_post_video mx-n3" t-if="video_urls">
+                    <t t-foreach="video_urls" t-as="video_url">
+                        <video t-att-src="video_url" controls="controls" class="w-100"/>
+                    </t>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>
