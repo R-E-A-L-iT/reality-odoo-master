@@ -1823,7 +1823,13 @@
 
     <template name="portal_footer" id="portal_footer" inherit_id="portal.portal_layout">
         <xpath expr="//div[@id=&quot;wrap&quot;]" position="after">
-            <t t-call="custom.custom-footer"/>
+            <!-- Odoo 19: 'custom.custom-footer' was a Studio/DB-only template that no
+                 longer exists; calling it unconditionally raised "Template not found"
+                 on EVERY portal page (portal.portal_layout). Render it only when it's
+                 actually present, so the portal is safe whether or not it's recreated. -->
+            <t t-if="env.ref('custom.custom-footer', raise_if_not_found=False)">
+                <t t-call="custom.custom-footer"/>
+            </t>
         </xpath>
     </template>
 
