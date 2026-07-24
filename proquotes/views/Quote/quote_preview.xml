@@ -410,9 +410,16 @@
         <!-- Remove Original Table Header-->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/>
 
-        <t t-set="lines_to_report" position="replace">
+        <!-- Report ALL order lines (incl. the custom $-marker / CCP section lines)
+             instead of the filtered _get_order_lines_to_report(). Do NOT replace
+             the core <t t-set="lines_to_report"> node: other modules (e.g.
+             sale_subscription) locate that exact node by its t-value, and replacing
+             it breaks their inheritance. Instead insert our override right AFTER it —
+             the later t-set wins at render, and the original node stays intact for
+             the other inheritors to match. -->
+        <xpath expr="//t[@t-set='lines_to_report']" position="after">
             <t t-set="lines_to_report" t-value="sale_order.order_line"/>
-        </t>
+        </xpath>
 
         <!-- Info Sections -->
         <xpath expr="//t[@t-foreach=&quot;lines_to_report&quot;]/t[@t-if=&quot;not line.collapse_composition&quot;]" position="before">
