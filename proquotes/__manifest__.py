@@ -46,7 +46,10 @@
             "proquotes/static/src/CSS/quoteStyle.css",
             "proquotes/static/src/CSS/quoteHeaderText.css",
             # "proquotes/static/src/CSS/rental_fold.css",
-            "proquotes/static/src/JS/rental_duration_display.js",
+            # rental_duration_display.js was removed from the repo but left in the
+            # bundle — a missing asset file breaks the whole web.assets_frontend
+            # bundle ("Could not get content for ..."), which stops ALL frontend JS
+            # (incl. the quote hero/scroll logic) from initializing. Dropped.
             "proquotes/static/src/JS/rental_form_dropdowns.js",
             "proquotes/static/src/CSS/header.css",
             "proquotes/static/src/CSS/store.css",

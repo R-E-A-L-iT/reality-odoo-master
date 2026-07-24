@@ -28,7 +28,13 @@
     "data": ["views/product_seo_url.xml"],
     'assets': {
         'web.assets_frontend': [
-            'ewall_seo_urls/static/src/js/product_attribute.js',
+            # Odoo 19 migration: disabled. This SEO-URL variant-hash tweak imports
+            # WebsiteSale from @website_sale/js/website_sale and uses the removed
+            # .include({...}) widget pattern + jQuery — all reworked in v19, so it
+            # fails to load and breaks the frontend bundle. The module is already
+            # neutralized; re-add against the v19 website_sale JS if the feature is
+            # rebuilt.
+            # 'ewall_seo_urls/static/src/js/product_attribute.js',
         ],
     },
     'images': [
