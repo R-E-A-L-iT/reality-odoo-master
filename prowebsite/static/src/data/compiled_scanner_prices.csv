@@ -50,7 +50,66 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2019-09-09,P30,Leica ScanStation P30 Standard Package,104891.60,80981.87,Interpolated,(smoothing point)
 2019-07-01,P40,Leica ScanStation P40 Standard Package,130754.8,100949.64,Extrapolated,2019-11-13 HDS pricelist - EN.xlsx
 2019-07-01,P50,Leica ScanStation P50 Standard Package,148731.8,114828.83,Extrapolated,2019-11-13 HDS pricelist - EN.xlsx
-2019-07-01,RTC360,RTC360 Scanner Package,101007.1,77982.83,Extrapolated,2019-11-13 HDS pricelist - EN.xlsx
+2019-07-01,RTC360,RTC360 Package with RCS,101007.00,77983.00,Interpolated,(smoothed curve)
+2019-10-29,RTC360,RTC360 Package with RCS,101030.43,77998.48,Interpolated,(smoothed curve)
+2020-02-26,RTC360,RTC360 Package with RCS,101096.80,78042.33,Interpolated,(smoothed curve)
+2020-06-25,RTC360,RTC360 Package with RCS,101195.01,78107.22,Interpolated,(smoothed curve)
+2020-10-23,RTC360,RTC360 Package with RCS,101308.61,78182.28,Interpolated,(smoothed curve)
+2021-02-20,RTC360,RTC360 Package with RCS,101418.59,78254.95,Interpolated,(smoothed curve)
+2021-06-20,RTC360,RTC360 Package with RCS,101506.55,78313.06,Interpolated,(smoothed curve)
+2021-10-18,RTC360,RTC360 Package with RCS,101557.77,78346.90,Interpolated,(smoothed curve)
+2022-01-01,RTC360,RTC360 Package with RCS,101567.00,78353.00,Interpolated,(smoothed curve)
+2022-03-02,RTC360,RTC360 Package with RCS,102363.95,78952.44,Interpolated,(smoothed curve)
+2022-05-01,RTC360,RTC360 Package with RCS,103965.81,80157.32,Interpolated,(smoothed curve)
+2022-06-30,RTC360,RTC360 Package with RCS,104786.76,80774.82,Interpolated,(smoothed curve)
+2022-07-01,RTC360,RTC360 Package with RCS,104787.00,80775.00,Interpolated,(smoothed curve)
+2022-08-29,RTC360,RTC360 Package with RCS,105177.61,81070.76,Interpolated,(smoothed curve)
+2022-10-28,RTC360,RTC360 Package with RCS,106309.28,81927.64,Interpolated,(smoothed curve)
+2022-12-27,RTC360,RTC360 Package with RCS,107989.82,83200.11,Interpolated,(smoothed curve)
+2023-02-25,RTC360,RTC360 Package with RCS,109933.68,84671.97,Interpolated,(smoothed curve)
+2023-04-26,RTC360,RTC360 Package with RCS,111810.57,86093.11,Interpolated,(smoothed curve)
+2023-06-25,RTC360,RTC360 Package with RCS,113301.55,87222.05,Interpolated,(smoothed curve)
+2023-08-24,RTC360,RTC360 Package with RCS,114153.29,87866.98,Interpolated,(smoothed curve)
+2023-09-28,RTC360,RTC360 Package with RCS,114292.00,87972.00,Interpolated,(smoothed curve)
+2023-10-23,RTC360,RTC360 Package with RCS,114372.55,88034.19,Interpolated,(smoothed curve)
+2023-12-22,RTC360,RTC360 Package with RCS,115159.09,88641.39,Interpolated,(smoothed curve)
+2024-02-20,RTC360,RTC360 Package with RCS,116458.09,89644.21,Interpolated,(smoothed curve)
+2024-04-20,RTC360,RTC360 Package with RCS,117690.91,90595.94,Interpolated,(smoothed curve)
+2024-06-19,RTC360,RTC360 Package with RCS,118308.34,91072.60,Interpolated,(smoothed curve)
+2024-07-01,RTC360,RTC360 Package with RCS,118327.00,91087.00,Interpolated,(smoothed curve)
+2024-08-15,RTC360,RTC360 Package with RCS,118716.08,91377.97,Interpolated,(smoothed curve)
+2024-09-29,RTC360,RTC360 Package with RCS,119675.58,92095.54,Interpolated,(smoothed curve)
+2024-11-13,RTC360,RTC360 Package with RCS,120693.24,92856.60,Interpolated,(smoothed curve)
+2024-12-28,RTC360,RTC360 Package with RCS,121225.72,93254.83,Interpolated,(smoothed curve)
+2025-01-06,RTC360,RTC360 Package with RCS,121242.00,93267.00,Interpolated,(smoothed curve)
+2025-02-11,RTC360,RTC360 Package with RCS,121297.18,93470.23,Interpolated,(smoothed curve)
+2025-03-28,RTC360,RTC360 Package with RCS,121504.87,94235.11,Interpolated,(smoothed curve)
+2025-05-12,RTC360,RTC360 Package with RCS,121812.10,95366.58,Interpolated,(smoothed curve)
+2025-06-26,RTC360,RTC360 Package with RCS,122135.34,96557.02,Interpolated,(smoothed curve)
+2025-08-10,RTC360,RTC360 Package with RCS,122386.72,97482.79,Interpolated,(smoothed curve)
+2025-09-24,RTC360,RTC360 Package with RCS,122497.88,97892.21,Interpolated,(smoothed curve)
+2025-10-01,RTC360,RTC360 Package with RCS,122500.00,97900.00,Interpolated,(smoothed curve)
+2025-10-15,RTC360,RTC360 Package with RCS,122794.13,98109.49,Interpolated,(smoothed curve)
+2025-10-29,RTC360,RTC360 Package with RCS,123610.58,98690.97,Interpolated,(smoothed curve)
+2025-11-12,RTC360,RTC360 Package with RCS,124766.27,99514.07,Interpolated,(smoothed curve)
+2025-11-26,RTC360,RTC360 Package with RCS,126002.06,100394.22,Interpolated,(smoothed curve)
+2025-12-10,RTC360,RTC360 Package with RCS,127040.85,101134.07,Interpolated,(smoothed curve)
+2025-12-24,RTC360,RTC360 Package with RCS,127649.71,101567.71,Interpolated,(smoothed curve)
+2026-01-01,RTC360,RTC360 Package with RCS,127747.00,101637.00,Interpolated,(smoothed curve)
+2026-01-07,RTC360,RTC360 Package with RCS,127593.00,101504.76,Interpolated,(smoothed curve)
+2026-01-21,RTC360,RTC360 Package with RCS,126052.54,100181.98,Interpolated,(smoothed curve)
+2026-02-04,RTC360,RTC360 Package with RCS,122948.83,97516.85,Interpolated,(smoothed curve)
+2026-02-18,RTC360,RTC360 Package with RCS,118476.91,93676.83,Interpolated,(smoothed curve)
+2026-03-04,RTC360,RTC360 Package with RCS,112917.74,88903.21,Interpolated,(smoothed curve)
+2026-03-18,RTC360,RTC360 Package with RCS,106620.65,83495.93,Interpolated,(smoothed curve)
+2026-04-01,RTC360,RTC360 Package with RCS,99981.28,77794.75,Interpolated,(smoothed curve)
+2026-04-15,RTC360,RTC360 Package with RCS,93416.83,72157.90,Interpolated,(smoothed curve)
+2026-04-29,RTC360,RTC360 Package with RCS,87339.76,66939.56,Interpolated,(smoothed curve)
+2026-05-13,RTC360,RTC360 Package with RCS,82131.92,62467.61,Interpolated,(smoothed curve)
+2026-05-27,RTC360,RTC360 Package with RCS,78120.52,59023.05,Interpolated,(smoothed curve)
+2026-06-10,RTC360,RTC360 Package with RCS,75557.63,56822.31,Interpolated,(smoothed curve)
+2026-06-24,RTC360,RTC360 Package with RCS,74604.28,56003.68,Interpolated,(smoothed curve)
+2026-06-25,RTC360,RTC360 Package with RCS,74600.00,56000.00,Interpolated,(smoothed curve)
 2019-10-14,BLK360,BLK360,24050.0,18567.87,Extrapolated,2019-10-14 HDS pricelist.xls
 2019-10-14,P30,Leica ScanStation P30 Standard Package,100460.0,77560.44,Extrapolated,2019-10-14 HDS pricelist.xls
 2019-10-24,P30,Leica ScanStation P30 Standard Package,104889.93,80980.58,Interpolated,(smoothing point)
@@ -59,46 +118,38 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2019-10-14,P50,Leica ScanStation P50 Standard Package,160620.0,124007.15,Extrapolated,2019-10-14 HDS pricelist.xls
 2019-11-13,P30,Package Leica ScanStation P30,113749.8,87820.87,Extrapolated,2019-11-13 HDS pricelist.xlsx
 2019-11-13,P40,Package Leica ScanStation P40,130749.8,100945.78,Extrapolated,2019-11-13 HDS pricelist.xlsx
-2019-11-13,RTC360,RTC360 Package,101002.1,77978.97,Extrapolated,2019-11-13 HDS pricelist.xlsx
 2020-01-01,BLK360,BLK360 System Package,24500.0,18915.3,Extrapolated,2020-01-09 HDS pricelist EN.xlsx
 2020-01-01,P30,Leica ScanStation P30 Standard Package,113749.8,87820.87,Extrapolated,2020-01-09 HDS pricelist EN.xlsx
 2020-01-01,P40,Leica ScanStation P40 Standard Package,130749.8,100945.78,Extrapolated,2020-01-09 HDS pricelist EN.xlsx
 2020-01-01,P50,Leica ScanStation P50 Standard Package,148749.8,114842.73,Extrapolated,2020-01-09 HDS pricelist EN.xlsx
-2020-01-01,RTC360,RTC360 Scanner Package,101002.1,77978.97,Extrapolated,2020-01-09 HDS pricelist EN.xlsx
 2020-01-01,RTC360 LT,RTC360 LT Scanner Package,87348.0,67437.29,Extrapolated,2020-01-09 HDS pricelist EN.xlsx
 2020-04-24,BLK2GO,BLK2GO System Package,78500.0,60606.16,Extrapolated,2020-04-24 HDS pricelist EN.xlsx
 2020-04-24,P30,Leica ScanStation P30 Standard Package,113749.8,87820.87,Extrapolated,2020-04-24 HDS pricelist EN.xlsx
 2020-04-24,P40,Leica ScanStation P40 Standard Package,130749.8,100945.78,Extrapolated,2020-04-24 HDS pricelist EN.xlsx
 2020-04-24,P50,Leica ScanStation P50 Standard Package,148749.8,114842.73,Extrapolated,2020-04-24 HDS pricelist EN.xlsx
-2020-04-24,RTC360,RTC360 Scanner Package,101002.1,77978.97,Extrapolated,2020-04-24 HDS pricelist EN.xlsx
 2020-04-24,RTC360 LT,RTC360 LT Scanner Package,85748.0,66202.0,Extrapolated,2020-04-24 HDS pricelist EN.xlsx
 2020-07-01,BLK2GO,BLK2GO System Package,78500.0,60606.16,Extrapolated,2020-07-01 HDS pricelist EN.xlsx
 2020-07-01,P40,Leica ScanStation P40 Standard Package,130936.8,101090.15,Extrapolated,2020-07-01 HDS pricelist EN.xlsx
 2020-07-01,P50,Leica ScanStation P50 Standard Package,148936.8,114987.1,Extrapolated,2020-07-01 HDS pricelist EN.xlsx
-2020-07-01,RTC360,RTC360 Scanner Package,101232.1,78156.55,Extrapolated,2020-07-01 HDS pricelist EN.xlsx
 2020-07-01,RTC360 LT,RTC360 LT Scanner Package,85978.0,66379.57,Extrapolated,2020-07-01 HDS pricelist EN.xlsx
 2021-01-01,BLK2GO,BLK2GO System Package,78500.0,60606.16,Extrapolated,2021-01-01 HDS pricelist EN.xlsx
 2021-01-01,BLK360,BLK360 System Package,25027.5,19322.56,Extrapolated,2021-01-01 HDS pricelist EN.xlsx
 2021-01-01,P30,Leica ScanStation P30 Standard Package,114019.85,88029.37,Extrapolated,2021-01-01 HDS pricelist EN.xlsx
 2021-01-01,P40,Leica ScanStation P40 Standard Package,131019.85,101154.27,Extrapolated,2021-01-01 HDS pricelist EN.xlsx
 2021-01-01,P50,Leica ScanStation P50 Standard Package,149019.85,115051.22,Extrapolated,2021-01-01 HDS pricelist EN.xlsx
-2021-01-01,RTC360,RTC360 Scanner Package,101242.1,78164.27,Extrapolated,2021-01-01 HDS pricelist EN.xlsx
 2021-01-01,RTC360 LT,RTC360 LT Scanner Package,86388.0,66696.11,Extrapolated,2021-04-07 HDS pricelist EN.xlsx
 2021-07-01,BLK360,BLK360 System Package,25257.5,18537.0,Actual,2021-07-01 HDS pricelist EN.xlsx
 2021-07-01,P30,Leica ScanStation P30 Standard Package,114152.35,88054.95,Actual,2021-07-01 HDS pricelist EN.xlsx
 2021-07-01,P40,Leica ScanStation P40 Standard Package,131152.35,101554.95,Actual,2021-07-01 HDS pricelist EN.xlsx
 2021-07-01,P50,Leica ScanStation P50 Standard Package,149152.35,115554.95,Actual,2021-07-01 HDS pricelist EN.xlsx
-2021-07-01,RTC360,RTC360 Scanner Package,101377.1,78336.65,Actual,2021-07-01 HDS pricelist EN.xlsx
 2021-07-01,RTC360 LT,RTC360 LT Scanner Package,86773.0,66790.5,Actual,2021-07-01 HDS pricelist EN.xlsx
 2022-01-01,BLK360,BLK360 System Package,25257.5,19484.75,Interpolated,2022-01-01 HDS pricelist EN.xlsx
 2022-01-01,P40,Leica ScanStation P40 Standard Package,108507.55,83707.5,Interpolated,2022-01-01 HDS pricelist EN.xlsx
 2022-01-01,P50,Leica ScanStation P50 Standard Package,115257.55,88914.75,Interpolated,2022-01-01 HDS pricelist EN.xlsx
-2022-01-01,RTC360,RTC360 Scanner Package,101567.3,78353.48,Interpolated,2022-01-01 HDS pricelist EN.xlsx
 2022-01-01,RTC360 LT,RTC360 LT Scanner Package,87906.35,67814.83,Interpolated,2022-01-01 HDS pricelist EN.xlsx
 2022-07-01,BLK360,BLK360 System Package,25272.5,19481.15,Interpolated,2022-07-01 HDS pricelist EN.xlsx
 2022-07-01,P40,Leica ScanStation P40 Standard Package,108708.85,83797.56,Interpolated,2022-07-01 HDS pricelist EN.xlsx
 2022-07-01,P50,Leica ScanStation P50 Standard Package,115458.85,89000.76,Interpolated,2022-07-01 HDS pricelist EN.xlsx
-2022-07-01,RTC360,RTC360 Scanner Package,104787.1,80774.51,Interpolated,2022-07-01 HDS pricelist EN.xlsx
 2022-07-01,RTC360 LT,RTC360 LT Scanner Package,88126.15,67931.51,Interpolated,2022-07-01 HDS pricelist EN.xlsx
 2023-07-01,BLK ARC,Leica BLK ARC Integrator System Package,66937.0,51495.0,Actual,2023-09-28/CAD/NL_CAN_LR1_0000008038_2023-07-03_13-59-49_CAD_EN (BLK ARC).xlsx
 2023-09-28,BLK2FLY,Leica BLK2FLY Starter Package,83355.0,63555.0,Actual,2023-09-28/CAD/NL_CAN_LR1_0000389876_2023-09-28_23-43-55_CAD_EN.xlsx
@@ -107,9 +158,7 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2023-09-28,BLK360 G2,Leica BLK360 G2 Field Package,35260.0,27130.0,Actual,2023-09-28/CAD/NL_CAN_LA2_0000389876_2023-09-28_23-43-13_CAD_EN.xlsx
 2023-09-28,P40,Leica ScanStation P40 Standard Package,114049.35,87786.95,Actual,2023-09-28/CAD/NL_CAN_LA2_0000389876_2023-09-28_23-43-13_CAD_EN.xlsx
 2023-09-28,P50,Leica ScanStation P50 Standard Package,120549.35,92786.95,Actual,2023-09-28/CAD/NL_CAN_LA2_0000389876_2023-09-28_23-43-13_CAD_EN.xlsx
-2023-09-28,RTC360,RTC360 Scanner Package,114292.1,87971.65,Actual,2023-09-28/CAD/NL_CAN_LA2_0000389876_2023-09-28_23-43-13_CAD_EN.xlsx
 2023-09-28,RTC360 LT,RTC360 LT Scanner Package,93713.65,72088.49,Actual,2023-09-28/CAD/NL_CAN_LA2_0000389876_2023-09-28_23-43-13_CAD_EN.xlsx
-2023-10-17,RTC360,RTC360 Package,114292.1,87971.65,Actual,2023-10-17/CAD/NL_CAN_LA2_0000389876_2023-10-17_16-04-16_CAD_EN.xlsx
 2023-10-17,RTC360 LT,RTC360 LT Package NAFTA,93713.65,72088.49,Actual,2023-10-17/CAD/NL_CAN_LA2_0000389876_2023-10-17_16-04-16_CAD_EN.xlsx
 2024-01-01,BLK ARC,Leica BLK ARC Integrator System Package,66937.0,51495.0,Actual,2024-01-01/CAD/NL_CAN_LR1_0000389876_2023-12-13_13-17-59_CAD_EN.xlsx
 2024-01-01,BLK2FLY,Leica BLK2FLY Starter Package,83505.0,63655.0,Actual,2024-01-01/CAD/NL_CAN_LR1_0000389876_2023-12-13_13-17-59_CAD_EN.xlsx
@@ -117,7 +166,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2024-01-01,BLK360 G2,Leica BLK360 G2 Field Package,36100.0,27780.0,Actual,2024-01-01/CAD/NL_CAN_LA2_0000389876_2023-12-13_13-18-37_CAD_EN.xlsx
 2024-01-01,P40,Leica ScanStation P40 Standard Package,114140.35,87872.45,Actual,2024-01-01/CAD/NL_CAN_LA2_0000389876_2023-12-13_13-18-37_CAD_EN.xlsx
 2024-01-01,P50,Leica ScanStation P50 Standard Package,120640.35,92872.45,Actual,2024-01-01/CAD/NL_CAN_LA2_0000389876_2023-12-13_13-18-37_CAD_EN.xlsx
-2024-01-01,RTC360,RTC360 Scanner Package,114392.1,88066.65,Actual,2024-01-01/CAD/NL_CAN_LA2_0000389876_2023-12-13_13-18-37_CAD_EN.xlsx
 2024-01-01,RTC360 LT,RTC360 LT Scanner Package,93813.65,72183.49,Actual,2024-01-01/CAD/NL_CAN_LA2_0000389876_2023-12-13_13-18-37_CAD_EN.xlsx
 2024-01-19,BLK ARC,Leica BLK ARC Integrator System Package,66937.0,51495.0,Actual,2024-01-19/CAD/NL_CAN_LR1_0000389876_2024-01-19_23-39-29_CAD_EN.xlsx
 2024-01-19,BLK2FLY,Leica BLK2FLY Starter Package,83505.0,63655.0,Actual,2024-01-19/CAD/NL_CAN_LR1_0000389876_2024-01-19_23-39-29_CAD_EN.xlsx
@@ -126,7 +174,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2024-01-19,BLK360 G2,Leica BLK360 G2 Field Package,36100.0,27780.0,Actual,2024-01-19/CAD/NL_CAN_LA2_0000389876_2024-01-19_23-38-42_CAD_EN.xlsx
 2024-01-19,P40,Leica ScanStation P40 Standard Package,114140.35,87872.45,Actual,2024-01-19/CAD/NL_CAN_LA2_0000389876_2024-01-19_23-38-42_CAD_EN.xlsx
 2024-01-19,P50,Leica ScanStation P50 Standard Package,120640.35,92872.45,Actual,2024-01-19/CAD/NL_CAN_LA2_0000389876_2024-01-19_23-38-42_CAD_EN.xlsx
-2024-01-19,RTC360,RTC360 Scanner Package,114392.1,88066.65,Actual,2024-01-19/CAD/NL_CAN_LA2_0000389876_2024-01-19_23-38-42_CAD_EN.xlsx
 2024-01-19,RTC360 LT,RTC360 LT Scanner Package,86535.09,66539.48,Actual,2024-01-19/CAD/NL_CAN_LA2_0000389876_2024-01-19_23-38-42_CAD_EN.xlsx
 2024-02-05,RTC360 LT,RTC360 LT Scanner Package,90004.09,69381.87,Interpolated,(smoothing point)
 2024-02-21,RTC360 LT,RTC360 LT Scanner Package,93473.10,72224.26,Interpolated,(smoothing point)
@@ -138,7 +185,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2024-03-09,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,33670.0,25900.0,Actual,2024-03-09/CAD/NL_CAN_LA2_0000389876_2024-03-09_17-29-21_CAD_EN.xlsx
 2024-03-09,P40,Leica ScanStation P40 Scanning System with RCS Package,114140.35,87872.45,Actual,2024-03-09/CAD/NL_CAN_LA2_0000389876_2024-03-09_17-29-21_CAD_EN.xlsx
 2024-03-09,P50,Leica ScanStation P50 Scanning System with RCS Package,120640.35,92872.45,Actual,2024-03-09/CAD/NL_CAN_LA2_0000389876_2024-03-09_17-29-21_CAD_EN.xlsx
-2024-03-09,RTC360,RTC360 Package with RCS,114392.1,88066.65,Actual,2024-03-09/CAD/NL_CAN_LA2_0000389876_2024-03-09_17-29-21_CAD_EN.xlsx
 2024-03-09,RTC360 LT,RTC360 LT Package with RCS,96942.1,75066.65,Actual,2024-03-09/CAD/NL_CAN_LA2_0000389876_2024-03-09_17-29-21_CAD_EN.xlsx
 2024-04-01,BLK ARC,Leica BLK ARC on Spot with RCS System Package,67275.0,51750.0,Actual,2024-04-01/CAD/NL_CAN_LR1_0000389876_2024-03-14_17-27-34_CAD_EN.xlsx
 2024-04-01,BLK2FLY,Leica BLK2FLY Hardware Package with RCS,81610.0,62155.0,Actual,2024-04-01/CAD/NL_CAN_LR1_0000389876_2024-03-14_17-27-34_CAD_EN.xlsx
@@ -148,7 +194,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2024-04-01,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,34850.0,26805.0,Actual,2024-04-01/CAD/NL_CAN_LA2_0000389876_2024-03-14_17-26-56_CAD_EN.xlsx
 2024-04-01,P40,Leica ScanStation P40 Scanning System with RCS Package,118086.85,90893.95,Actual,2024-04-01/CAD/NL_CAN_LA2_0000389876_2024-03-14_17-26-56_CAD_EN.xlsx
 2024-04-01,P50,Leica ScanStation P50 Scanning System with RCS Package,124811.85,96068.95,Actual,2024-04-01/CAD/NL_CAN_LA2_0000389876_2024-03-14_17-26-56_CAD_EN.xlsx
-2024-04-01,RTC360,RTC360 Package with RCS,118327.1,91086.65,Actual,2024-04-01/CAD/NL_CAN_LA2_0000389876_2024-03-14_17-26-56_CAD_EN.xlsx
 2024-04-01,RTC360 LT,RTC360 LT Package with RCS,100172.1,77731.65,Actual,2024-04-01/CAD/NL_CAN_LA2_0000389876_2024-03-14_17-26-56_CAD_EN.xlsx
 2024-07-01,BLK ARC,Leica BLK ARC on Spot with RCS System Package,67275.0,51750.0,Actual,2024-07-01/CAD/NL_CAN_LR1_0000389876_2024-06-06_22-43-08_CAD_EN.xlsx
 2024-07-01,BLK2FLY,Leica BLK2FLY Hardware Package with RCS,81610.0,62155.0,Actual,2024-07-01/CAD/NL_CAN_LR1_0000389876_2024-06-06_22-43-08_CAD_EN.xlsx
@@ -157,7 +202,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2024-07-01,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,34850.0,26805.0,Actual,2024-07-01/CAD/NL_CAN_LA2_0000389876_2024-06-06_22-42-09_CAD_EN.xlsx
 2024-07-01,P40,Leica ScanStation P40 Scanning System with RCS Package,118086.85,90893.95,Actual,2024-07-01/CAD/NL_CAN_LA2_0000389876_2024-06-06_22-42-09_CAD_EN.xlsx
 2024-07-01,P50,Leica ScanStation P50 Scanning System with RCS Package,124811.85,96068.95,Actual,2024-07-01/CAD/NL_CAN_LA2_0000389876_2024-06-06_22-42-09_CAD_EN.xlsx
-2024-07-01,RTC360,RTC360 Package with RCS,118327.1,91086.65,Actual,2024-07-01/CAD/NL_CAN_LA2_0000389876_2024-06-06_22-42-09_CAD_EN.xlsx
 2024-07-01,RTC360 LT,RTC360 LT Package with RCS,100172.1,77731.65,Actual,2024-07-01/CAD/NL_CAN_LA2_0000389876_2024-06-06_22-42-09_CAD_EN.xlsx
 2024-11-16,BLK ARC,Leica BLK ARC on Spot with RCS System Package,67275.0,51750.0,Actual,2024-11-16/CAD/NL_CAN_LR1_0000389876_2024-11-16_19-36-56_CAD_EN.xlsx
 2024-11-16,BLK2FLY,Leica BLK2FLY Hardware Package with RCS,81610.0,62155.0,Actual,2024-11-16/CAD/NL_CAN_LR1_0000389876_2024-11-16_19-36-56_CAD_EN.xlsx
@@ -166,7 +210,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2024-11-16,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,34850.0,26805.0,Actual,2024-11-16/CAD/NL_CAN_LA2_0000389876_2024-11-16_19-36-10_CAD_EN.xlsx
 2024-11-16,P40,Leica ScanStation P40 Scanning System with RCS Package,118086.85,90893.95,Actual,2024-11-16/CAD/NL_CAN_LA2_0000389876_2024-11-16_19-36-10_CAD_EN.xlsx
 2024-11-16,P50,Leica ScanStation P50 Scanning System with RCS Package,124811.85,96068.95,Actual,2024-11-16/CAD/NL_CAN_LA2_0000389876_2024-11-16_19-36-10_CAD_EN.xlsx
-2024-11-16,RTC360,RTC360 Package with RCS,118327.1,91086.65,Actual,2024-11-16/CAD/NL_CAN_LA2_0000389876_2024-11-16_19-36-10_CAD_EN.xlsx
 2024-11-16,RTC360 LT,RTC360 LT Package with RCS,100172.1,77731.65,Actual,2024-11-16/CAD/NL_CAN_LA2_0000389876_2024-11-16_19-36-10_CAD_EN.xlsx
 2025-01-06,BLK ARC,Leica BLK ARC on Spot with RCS System Package,68950.0,52785.0,Actual,2025-01-01/CAN/NL_CAN_LR1_0000389876_2025-01-06_21-34-06_CAD_EN.xlsx
 2025-01-06,BLK2FLY,Leica BLK2FLY Hardware Package with RCS,83240.0,63400.0,Actual,2025-01-01/CAN/NL_CAN_LR1_0000389876_2025-01-06_21-34-06_CAD_EN.xlsx
@@ -175,7 +218,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2025-01-06,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,35545.0,27300.0,Actual,2025-01-01/CAN/NL_CAN_LA2_0000389876_2025-01-06_21-32-57_CAD_EN.xlsx
 2025-01-06,P40,Leica ScanStation P40 Scanning System with RCS Package,120495.85,92745.95,Actual,2025-01-01/CAN/NL_CAN_LA2_0000389876_2025-01-06_21-32-57_CAD_EN.xlsx
 2025-01-06,P50,Leica ScanStation P50 Scanning System with RCS Package,127355.85,98025.95,Actual,2025-01-01/CAN/NL_CAN_LA2_0000389876_2025-01-06_21-32-57_CAD_EN.xlsx
-2025-01-06,RTC360,RTC360 Package with RCS,121242.1,93266.65,Actual,2025-01-01/CAN/NL_CAN_LA2_0000389876_2025-01-06_21-32-57_CAD_EN.xlsx
 2025-01-06,RTC360 LT,RTC360 LT Package with RCS,103392.1,79726.65,Actual,2025-01-01/CAN/NL_CAN_LA2_0000389876_2025-01-06_21-32-57_CAD_EN.xlsx
 2025-05-05,BLK ARC,Leica BLK ARC on Spot with RCS System Package,68950.0,55625.0,Actual,2025-05-01/CAN/NL_CAN_LR1_0000389876_2025-05-05_13-41-45_CAD_EN.xlsx
 2025-05-05,BLK2FLY,Leica BLK2FLY Hardware Package with RCS,83240.0,66770.0,Actual,2025-05-01/CAN/NL_CAN_LR1_0000389876_2025-05-05_13-41-45_CAD_EN.xlsx
@@ -184,7 +226,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2025-05-05,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,35545.0,28865.0,Actual,2025-05-01/CAN/NL_CAN_LA2_0000389876_2025-05-05_13-38-05_CAD_EN.xlsx
 2025-05-05,P40,Leica ScanStation P40 Scanning System with RCS Package,120495.85,97825.0,Actual,2025-05-01/CAN/NL_CAN_LA2_0000389876_2025-05-05_13-38-05_CAD_EN.xlsx
 2025-05-05,P50,Leica ScanStation P50 Scanning System with RCS Package,127355.85,103370.0,Actual,2025-05-01/CAN/NL_CAN_LA2_0000389876_2025-05-05_13-38-05_CAD_EN.xlsx
-2025-05-05,RTC360,RTC360 Package with RCS,121242.1,98326.7,Actual,2025-05-01/CAN/NL_CAN_LA2_0000389876_2025-05-05_13-38-05_CAD_EN.xlsx
 2025-05-05,RTC360 LT,RTC360 LT Package with RCS,103392.1,83486.7,Actual,2025-05-01/CAN/NL_CAN_LA2_0000389876_2025-05-05_13-38-05_CAD_EN.xlsx
 2025-07-10,BLK ARC,Leica BLK ARC on Spot with RCS System Package,,55425.0,Actual,2025-07-10/USA/NL_USA_LR1_0000390656_2025-07-10_21-45-27_USD_EN.xlsx
 2025-07-10,BLK2FLY,Leica BLK2FLY Hardware Package with RCS,,66570.0,Actual,2025-07-10/USA/NL_USA_LR1_0000390656_2025-07-10_21-45-27_USD_EN.xlsx
@@ -193,7 +234,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2025-07-10,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,,28665.0,Actual,2025-07-10/USA/NL_USA_LA2_0000390656_2025-07-10_21-42-48_USD_EN.xlsx
 2025-07-10,P40,Leica ScanStation P40 Scanning System with RCS Package,,97375.0,Actual,2025-07-10/USA/NL_USA_LA2_0000390656_2025-07-10_21-42-48_USD_EN.xlsx
 2025-07-10,P50,Leica ScanStation P50 Scanning System with RCS Package,,102920.0,Actual,2025-07-10/USA/NL_USA_LA2_0000390656_2025-07-10_21-42-48_USD_EN.xlsx
-2025-07-10,RTC360,RTC360 Package with RCS,,97876.7,Actual,2025-07-10/USA/NL_USA_LA2_0000390656_2025-07-10_21-42-48_USD_EN.xlsx
 2025-07-10,RTC360 LT,RTC360 LT Package with RCS,,83036.7,Actual,2025-07-10/USA/NL_USA_LA2_0000390656_2025-07-10_21-42-48_USD_EN.xlsx
 2025-10-02,BLK ARC,Leica BLK ARC on Spot with RCS System Package,68950.0,55425.0,Actual,2025-10-02/CAD/NL_CAN_LR1_0000389876_2025-10-02_19-36-34_CAD_EN.xlsx
 2025-10-02,BLK2FLY,Leica BLK2FLY Hardware Package with RCS,83240.0,66570.0,Actual,2025-10-02/CAD/NL_CAN_LR1_0000389876_2025-10-02_19-36-34_CAD_EN.xlsx
@@ -202,7 +242,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2025-10-02,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,35545.0,28665.0,Actual,2025-10-02/CAD/NL_CAN_LA2_0000389876_2025-10-02_19-31-49_CAD_EN.xlsx
 2025-10-02,P40,Leica ScanStation P40 Scanning System with RCS Package,120495.85,97375.0,Actual,2025-10-02/CAD/NL_CAN_LA2_0000389876_2025-10-02_19-31-49_CAD_EN.xlsx
 2025-10-02,P50,Leica ScanStation P50 Scanning System with RCS Package,127355.85,102920.0,Actual,2025-10-02/CAD/NL_CAN_LA2_0000389876_2025-10-02_19-31-49_CAD_EN.xlsx
-2025-10-02,RTC360,RTC360 Package with RCS,121242.1,97876.7,Actual,2025-10-02/CAD/NL_CAN_LA2_0000389876_2025-10-02_19-31-49_CAD_EN.xlsx
 2025-10-02,RTC360 LT,RTC360 LT Package with RCS,103392.1,83036.7,Actual,2025-10-02/CAD/NL_CAN_LA2_0000389876_2025-10-02_19-31-49_CAD_EN.xlsx
 2025-10-08,BLK ARC,Leica BLK ARC on Spot with RCS System Package,68950.0,55425.0,Actual,2025-10-08/CAD/NL_CAN_LR1_0000389876_2025-10-08_14-38-15_CAD_EN.xlsx
 2025-10-08,BLK2FLY,Leica BLK2FLY Hardware Package with RCS,83240.0,66570.0,Actual,2025-10-08/CAD/NL_CAN_LR1_0000389876_2025-10-08_14-38-15_CAD_EN.xlsx
@@ -213,12 +252,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2025-10-08,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,35545.0,28665.0,Actual,2025-10-08/CAD/NL_CAN_LA2_0000389876_2025-10-08_14-32-02_CAD_EN.xlsx
 2025-10-08,P40,Leica ScanStation P40 Scanning System with RCS Package,120495.85,97375.0,Actual,2025-10-08/CAD/NL_CAN_LA2_0000389876_2025-10-08_14-32-02_CAD_EN.xlsx
 2025-10-08,P50,Leica ScanStation P50 Scanning System with RCS Package,127355.85,102920.0,Actual,2025-10-08/CAD/NL_CAN_LA2_0000389876_2025-10-08_14-32-02_CAD_EN.xlsx
-2025-10-08,RTC360,RTC360 Package with RCS,121242.1,97876.7,Actual,2025-10-08/CAD/NL_CAN_LA2_0000389876_2025-10-08_14-32-02_CAD_EN.xlsx
-2025-10-25,RTC360,RTC360 Package with RCS,122543.10,98628.70,Interpolated,(smoothing point)
-2025-11-08,RTC360,RTC360 Package with RCS,123614.51,99247.99,Interpolated,(smoothing point)
-2025-11-22,RTC360,RTC360 Package with RCS,124685.92,99867.29,Interpolated,(smoothing point)
-2025-12-06,RTC360,RTC360 Package with RCS,125757.34,100486.58,Interpolated,(smoothing point)
-2025-12-20,RTC360,RTC360 Package with RCS,126828.75,101105.88,Interpolated,(smoothing point)
 2025-10-08,RTC360 LT,RTC360 LT Package with RCS,103392.1,83036.7,Actual,2025-10-08/CAD/NL_CAN_LA2_0000389876_2025-10-08_14-32-02_CAD_EN.xlsx
 2025-12-09,BLK ARC,Leica BLK ARC on Spot with RCS System Package,68950.0,55425.0,Actual,2025-12-09/CAD/NL_CAN_LR1_0000389876_2025-12-09_17-01-04_CAD_EN.xlsx
 2025-12-09,BLK2FLY,Leica BLK2FLY Hardware Package with RCS,83240.0,66570.0,Actual,2025-12-09/CAD/NL_CAN_LR1_0000389876_2025-12-09_17-01-04_CAD_EN.xlsx
@@ -227,7 +260,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2025-12-09,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,35545.0,28665.0,Actual,2025-12-09/CAD/NL_CAN_LA2_0000389876_2025-12-09_17-00-18_CAD_EN.xlsx
 2025-12-09,P40,Leica ScanStation P40 Scanning System with RCS Package,120495.85,97375.0,Actual,2025-12-09/CAD/NL_CAN_LA2_0000389876_2025-12-09_17-00-18_CAD_EN.xlsx
 2025-12-09,P50,Leica ScanStation P50 Scanning System with RCS Package,127355.85,102920.0,Actual,2025-12-09/CAD/NL_CAN_LA2_0000389876_2025-12-09_17-00-18_CAD_EN.xlsx
-2025-12-09,RTC360,RTC360 Package with RCS,125986.92,100619.29,Actual,2025-12-09/CAD/NL_CAN_LA2_0000389876_2025-12-09_17-00-18_CAD_EN.xlsx
 2025-12-09,RTC360 LT,RTC360 LT Package with RCS,103392.1,83036.7,Actual,2025-12-09/CAD/NL_CAN_LA2_0000389876_2025-12-09_17-00-18_CAD_EN.xlsx
 2026-01-01,BLK ARC,Leica BLK ARC on Spot with RCS System Package,69650.0,55625.0,Actual,2026-01-01/CAD/2026-01-01-CAN_LR1.xlsx
 2026-01-01,BLK2FLY,Leica BLK2FLY Hardware Package with RCS,83940.0,66770.0,Actual,2026-01-01/CAD/2026-01-01-CAN_LR1.xlsx
@@ -236,7 +268,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2026-01-01,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,36245.0,28865.0,Actual,2026-01-01/CAD/2026-01-01-CAN_LA2.xlsx
 2026-01-01,P40,Leica ScanStation P40 Scanning System with RCS Package,126991.85,101125.0,Actual,2026-01-01/CAD/2026-01-01-CAN_LA2.xlsx
 2026-01-01,P50,Leica ScanStation P50 Scanning System with RCS Package,133851.85,106670.0,Actual,2026-01-01/CAD/2026-01-01-CAN_LA2.xlsx
-2026-01-01,RTC360,RTC360 Package with RCS,127747.1,101636.7,Actual,2026-01-01/CAD/2026-01-01-CAN_LA2.xlsx
 2026-01-01,RTC360 LT,RTC360 LT Package with RCS,109397.1,86796.7,Actual,2026-01-01/CAD/2026-01-01-CAN_LA2.xlsx
 2026-01-05,BLK ARC,Leica BLK ARC on Spot with RCS System Package,74850.0,59825.0,Actual,2026-01-05/CAD/NL_CAN_LR1_0000389876_2026-01-05_15-02-35_CAD_EN.xlsx
 2026-01-05,BLK2FLY,Leica BLK2FLY Hardware Package with RCS,89140.0,70970.0,Actual,2026-01-05/CAD/NL_CAN_LR1_0000389876_2026-01-05_15-02-35_CAD_EN.xlsx
@@ -252,9 +283,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2026-01-05,P50,Leica ScanStation P50 Scanning System with RCS Package,133851.85,106670.0,Actual,2026-01-05/CAD/NL_CAN_LA2_0000389876_2026-01-05_15-02-06_CAD_EN.xlsx
 2026-01-12,P50,Leica ScanStation P50 Scanning System with RCS Package,127951.85,102270.00,Interpolated,(smoothing point)
 2026-01-19,P50,Leica ScanStation P50 Scanning System with RCS Package,122051.86,97870.01,Interpolated,(smoothing point)
-2026-01-05,RTC360,RTC360 Package with RCS,127747.1,101636.7,Actual,2026-01-05/CAD/NL_CAN_LA2_0000389876_2026-01-05_15-02-06_CAD_EN.xlsx
-2026-01-12,RTC360,RTC360 Package with RCS,119673.77,95403.37,Interpolated,(smoothing point)
-2026-01-19,RTC360,RTC360 Package with RCS,111600.44,89170.04,Interpolated,(smoothing point)
 2026-01-05,RTC360 LT,RTC360 LT Package with RCS,109397.1,86796.7,Actual,2026-01-05/CAD/NL_CAN_LA2_0000389876_2026-01-05_15-02-06_CAD_EN.xlsx
 2026-01-12,RTC360 LT,RTC360 LT Package with RCS,101323.77,80563.37,Interpolated,(smoothing point)
 2026-01-19,RTC360 LT,RTC360 LT Package with RCS,93250.44,74330.04,Interpolated,(smoothing point)
@@ -265,7 +293,6 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2026-01-26,BLK360 G2,Leica BLK360 G2 Hardware Package with RCS,35545.01,28665.01,Actual,2026-01-26/CAD/2026-01-26-CAN_LA2.xlsx
 2026-01-26,P40,Leica ScanStation P40 Scanning System with RCS Package,109291.86,87925.01,Actual,2026-01-26/CAD/2026-01-26-CAN_LA2.xlsx
 2026-01-26,P50,Leica ScanStation P50 Scanning System with RCS Package,116151.86,93470.01,Actual,2026-01-26/CAD/2026-01-26-CAN_LA2.xlsx
-2026-01-26,RTC360,RTC360 Package with RCS,103527.11,82936.71,Actual,2026-01-26/CAD/2026-01-26-CAN_LA2.xlsx
 2026-01-26,RTC360 LT,RTC360 LT Package with RCS,85177.11,68096.71,Actual,2026-01-26/CAD/2026-01-26-CAN_LA2.xlsx
 2026-04-30,BLK ARC,Leica BLK ARC on Spot with HGC System Package,68950.01,55425.01,Actual,2026-04-30/CAD/NL_CAN_LR1_0000389876_2026-04-30_15-52-48_CAD_EN.xlsx
 2026-04-30,BLK2FLY,Leica BLK2FLY Hardware Package with HGC,83240.01,66570.01,Actual,2026-04-30/CAD/NL_CAN_LR1_0000389876_2026-04-30_15-52-48_CAD_EN.xlsx
@@ -273,8 +300,4 @@ Effective Date,Model,Package Description,List Price CAD,List Price USD,USD Sourc
 2026-04-30,BLK2GO PULSE,Leica BLK2GO PULSE Hardware Package with HGC,53000.01,42800.01,Actual,2026-04-30/CAD/NL_CAN_LR1_0000389876_2026-04-30_15-52-48_CAD_EN.xlsx
 2026-04-30,P40,Leica ScanStation P40 Scanning System with HGC Package,109291.86,87925.01,Actual,2026-04-30/CAD/NL_CAN_LA2_0000389876_2026-04-30_15-52-18_CAD_EN.xlsx
 2026-04-30,P50,Leica ScanStation P50 Scanning System with HGC Package,116151.86,93470.01,Actual,2026-04-30/CAD/NL_CAN_LA2_0000389876_2026-04-30_15-52-18_CAD_EN.xlsx
-2026-04-30,RTC360,RTC360 Package with HGC,103527.11,82936.71,Actual,2026-04-30/CAD/NL_CAN_LA2_0000389876_2026-04-30_15-52-18_CAD_EN.xlsx
-2026-05-19,RTC360,RTC360 Package with HGC,93884.74,73957.81,Interpolated,(smoothing point)
-2026-06-06,RTC360,RTC360 Package with HGC,84242.37,64978.90,Interpolated,(smoothing point)
 2026-04-30,RTC360 LT,RTC360 LT Package with HGC,85177.11,68096.71,Actual,2026-04-30/CAD/NL_CAN_LA2_0000389876_2026-04-30_15-52-18_CAD_EN.xlsx
-2026-06-25,RTC360,RTC360 Package with RCS,74600.0,56000.0,Actual,(manual entry)
