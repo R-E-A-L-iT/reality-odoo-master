@@ -6,7 +6,9 @@
     'author': 'Braincrew Apps',
     'website': 'www.braincrewapps.com',
     'depends': ['social', 'social_twitter', 'social_linkedin'],
-    'data': [],
+    'data': [
+        'views/social_twitter_templates.xml',
+    ],
     'auto_install': False,
     'license': 'LGPL-3',
 }

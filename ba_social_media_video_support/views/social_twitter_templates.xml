@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="twitter_preview_no_limit" inherit_id="social_twitter.twitter_preview">
+            <xpath expr="//span[@t-esc='message[:limit]']" position="attributes">
+                <attribute name="t-esc">message</attribute>
+            </xpath>
+            <xpath expr="//span[@t-if='is_twitter_post_limit_exceed']" position="replace"/>
+        </template>
+    </data>
+</odoo>
