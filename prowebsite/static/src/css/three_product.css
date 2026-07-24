@@ -2,15 +2,22 @@
 /* Carousel peek slides and 100vw viewport-escape sections both push past the
    page boundary. #wrapwrap is Odoo's main content wrapper — clipping there
    is more reliable than html/body which Odoo's own CSS can override.
-   position:fixed and position:sticky elements are unaffected by this.          */
+   position:fixed and position:sticky elements are unaffected by this.
+
+   IMPORTANT — use `overflow-x: clip`, NOT `overflow-x: hidden`. With `hidden`,
+   the spec forces the other axis to compute to `overflow-y: auto`, turning
+   html/body/#wrapwrap into height-less scroll *containers* — which, in Odoo 19's
+   scroll model, clamps the document to the viewport and kills vertical scrolling
+   entirely (e.g. the fixed-hero quote page). `clip` still clips the horizontal
+   overflow but does NOT establish a scroll container, so vertical scroll works. */
 html,
 body {
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100%;
 }
 
 #wrapwrap {
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     max-width: 100% !important;
 }
 
