@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
 import logging
+import random
 
 from odoo import api, fields, models, SUPERUSER_ID, _, tools, Command
 from odoo.exceptions import AccessError, UserError, ValidationError
@@ -1181,6 +1182,30 @@ class order(models.Model):
 
         return list(set(available_lot_ids))
 
+    def _pick_random_salesperson(self):
+        """Return a random internal salesperson, never the system user.
+
+        Rental quotes submitted through the public website forms are created
+        under the system user (id 1, "R-E-A-L.iT") because the website form
+        handler runs sudo. That makes the quote default its salesperson to the
+        system user, so the internal reps who should action it never see it in
+        their pipeline. Pick a real salesperson at random instead — always
+        excluding the system user (SUPERUSER_ID).
+        """
+        Users = self.env['res.users'].sudo()
+        base_domain = [('share', '=', False), ('active', '=', True), ('id', '!=', SUPERUSER_ID)]
+
+        # Prefer users who are actual salespeople; fall back to any internal user.
+        group = self.env.ref('sales_team.group_sale_salesman', raise_if_not_found=False)
+        candidates = self.env['res.users']
+        if group:
+            candidates = Users.search(base_domain + [('groups_id', 'in', group.ids)])
+        if not candidates:
+            candidates = Users.search(base_domain)
+        if not candidates:
+            return self.env['res.users']
+        return random.choice(candidates)
+
     # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
     @api.model
     def create(self, vals):
@@ -1191,6 +1216,15 @@ class order(models.Model):
 
         # Assign company based on visitor location for website orders
         order._set_company_based_on_visitor_country()
+
+        # A rental quote must never be left on the system user (id 1,
+        # "R-E-A-L.iT") — that hides it from the internal reps who handle it.
+        # This happens for quotes created via the public rental forms, which
+        # run sudo and therefore default the salesperson to the system user.
+        if order.is_rental_order and (not order.user_id or order.user_id.id == SUPERUSER_ID):
+            salesperson = order._pick_random_salesperson()
+            if salesperson:
+                order.sudo().user_id = salesperson.id
 
         # Find or create the partner with email derek@r-e-a-l.it
         sales_email = self.env['res.partner'].search([('id', '=', '58319')], limit=1)

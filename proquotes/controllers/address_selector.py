@@ -117,9 +117,11 @@ class AddressSelectorPortal(http.Controller):
         partner = request.env["res.partner"].sudo().browse(int(partner_id))
         if not partner.exists():
             return {"error": "Partner not found"}
-        # Note: partner_id may be the order's own contact — the "Default"
-        # card intentionally edits that record directly, since it represents
-        # the company's main address rather than a separate child address.
+        # The order's own contact is the company's default address and is not
+        # editable from the quote preview — customers must create a separate
+        # address instead of changing the default company/billing address.
+        if partner.id == order.partner_id.id:
+            return {"error": "The default address cannot be edited"}
 
         vals = {"name": name, "street": street, "city": city, "zip": zip}
         if country:

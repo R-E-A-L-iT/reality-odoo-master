@@ -103,6 +103,11 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     _onEditClick(ev) {
         ev.stopImmediatePropagation();
         const card = ev.currentTarget.closest(".addr_card");
+        // The "Default" card is the company's main address and is never
+        // editable here — if they need a different invoice/delivery address
+        // they add a new one. (The edit button isn't rendered on it, but
+        // guard anyway.)
+        if (card.dataset.fallback === "1") return;
         this._closeAllEdits(card);
         this._setCardMode(card, "edit");
         card.querySelector(".edit-name")?.focus();
@@ -431,7 +436,9 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
     _readLabels() {
         const anyCard = document.querySelector("#rental-address-section .addr_card:not(.add_card)");
         const editDiv  = anyCard?.querySelector(".addr_card_edit");
-        const editBtn  = anyCard?.querySelector(".addr_edit_btn");
+        // The Default card no longer renders an edit button, so read the edit
+        // tooltip from any card that still has one (a non-default address).
+        const editBtn  = document.querySelector("#rental-address-section .addr_edit_btn");
         const deleteBtn = document.querySelector("#rental-address-section .addr_delete_btn");
         return {
             name:   editDiv?.querySelector(".edit-name")?.placeholder   || "Name",
