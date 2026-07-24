@@ -1785,9 +1785,13 @@
              customer name" override was dropped — v19's quote_content no longer
              contains a <b>, so there is nothing to replace. -->
 
-        <xpath expr="//t[@t-call=&quot;portal.signature_form&quot;]/t[2]" position="replace">
-            <t t-set="default_name" t-value="env.user.name"/>
-        </xpath>
+        <!-- Odoo 19: the old override that pre-filled the signature name with the
+             logged-in user's name (//t[@t-call="portal.signature_form"]/t[2]) is
+             dropped. This priority-17 view applies after the payment/prepayment
+             modules rework the sign section, so the positional /t[2] anchor no
+             longer resolves. The signature now defaults to v19's standard value
+             (the partner / commercial-partner name) — a negligible difference not
+             worth a fragile anchor. Re-add against the v19 sign markup if needed. -->
 
         <!-- The footer image used to render here, standalone, right before
              the Discussion/Comments area. It's now rendered inside the
