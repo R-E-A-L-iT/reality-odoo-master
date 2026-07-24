@@ -1144,18 +1144,29 @@
         <xpath expr="//div[@id='total']" position="replace"/>
 
         <!--Enable Variable Quantities-->
-        <xpath expr="//span[@t-field=&quot;line.product_uom_qty&quot;]" position="replace">
-            <t t-if="line.quantityLocked == 'yes' or sale_order.state in ('sale', 'done', 'cancel')">
-                <span class="qtySpan" t-if="line.product_uom_qty == round(line.product_uom_qty)"
-                      t-esc="round(line.product_uom_qty)"/>
-                <span t-else="" class="rp-20" t-field="line.product_uom_qty"/>
-            </t>
-            <t t-elif="line.quantityLocked =='no' and sale_order.state not in ('sale', 'done', 'cancel')">
-                <t t-set="qty" t-value="round(line.product_uom_qty)"/>
-                <!-- <span t-out="qty" /> -->
-                <input type="number" class="quantityChange" min="1" t-attf-value="{{qty}}"
-                       style="display: inline; width: 60px;"/>
-            </t>
+        <!-- Odoo 19: target the whole quantity CELL rather than the inner
+             <span t-field="line.product_uom_qty"/>. Another module (the rental
+             addon) reworks that span in the parent before this priority-17 view
+             applies, so the span is not reliably present — the cell, however, is
+             still there by name. Replacing the cell also removes the unit-of-
+             measure span, so the old separate "hide unit column" xpath is gone.
+             The replacement keeps name="td_product_quantity" so the rental
+             "Value" column xpath below still matches it. -->
+        <xpath expr="//td[@name=&quot;td_product_quantity&quot;]" position="replace">
+            <td name="td_product_quantity" class="text-end">
+                <div id="quote_qty">
+                    <t t-if="line.quantityLocked == 'yes' or sale_order.state in ('sale', 'done', 'cancel')">
+                        <span class="qtySpan" t-if="line.product_uom_qty == round(line.product_uom_qty)"
+                              t-esc="round(line.product_uom_qty)"/>
+                        <span t-else="" class="rp-20" t-field="line.product_uom_qty"/>
+                    </t>
+                    <t t-elif="line.quantityLocked =='no' and sale_order.state not in ('sale', 'done', 'cancel')">
+                        <t t-set="qty" t-value="round(line.product_uom_qty)"/>
+                        <input type="number" class="quantityChange" min="1" t-attf-value="{{qty}}"
+                               style="display: inline; width: 60px;"/>
+                    </t>
+                </div>
+            </td>
         </xpath>
         <xpath expr="//td[@name=&quot;td_product_quantity&quot;]" position="before">
             <td t-if="sale_order.is_rental_order" class="text-right">
@@ -1173,8 +1184,9 @@
             </td>
         </xpath>
 
-        <!-- Hide Uneeded Unit Column -->
-        <xpath expr="//span[@t-field=&quot;line.product_uom_id&quot;]" position="replace"/>
+        <!-- (The old "Hide Unneeded Unit Column" xpath is gone: the unit-of-measure
+             span sat inside the quantity cell that is now replaced wholesale above,
+             so targeting it separately would fail to locate anything.) -->
 
         <!-- Add Attributes For Easier CSS -->
         <xpath expr="//tr[@name=&quot;tr_product&quot;]/td[3]" position="attributes">
