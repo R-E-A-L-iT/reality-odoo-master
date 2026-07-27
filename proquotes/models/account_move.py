@@ -318,36 +318,37 @@ class invoice(models.Model):
 
         return defaults
 
-    @api.model
-    def create(self, vals):
-        invoice_object = super(invoice, self).create(vals)
+    # Odoo 19: create is @api.model_create_multi (receives a list of vals dicts).
+    @api.model_create_multi
+    def create(self, vals_list):
+        invoices = super(invoice, self).create(vals_list)
 
-        if invoice_object.move_type not in ['out_invoice', 'out_refund']:
-            return invoice_object
+        for invoice_object in invoices:
+            if invoice_object.move_type not in ['out_invoice', 'out_refund']:
+                continue
 
-        # Ensure invoice inherits correct company from website sale order
-        self._set_company_from_sale_order(invoice_object)
+            # Ensure invoice inherits correct company from website sale order
+            self._set_company_from_sale_order(invoice_object)
 
-        # add derek@r-e-a-l.it as a follower of the document
-        if invoice_object.move_type in ['out_invoice', 'out_refund']:
-            partner = self.env['res.partner'].search([('id', '=', '58319')], limit=1)
-            if partner and partner.id not in invoice_object.message_partner_ids.ids:
-                invoice_object.message_subscribe(partner_ids=[partner.id])
+            # add derek@r-e-a-l.it as a follower of the document
+            if invoice_object.move_type in ['out_invoice', 'out_refund']:
+                partner = self.env['res.partner'].search([('id', '=', '58319')], limit=1)
+                if partner and partner.id not in invoice_object.message_partner_ids.ids:
+                    invoice_object.message_subscribe(partner_ids=[partner.id])
 
+            # Find the related sale orders
+            sale_orders = invoice_object.invoice_line_ids.mapped('sale_line_ids.order_id')
 
-        # Find the related sale orders
-        sale_orders = invoice_object.invoice_line_ids.mapped('sale_line_ids.order_id')
+            for order in sale_orders:
+                for line in invoice_object.invoice_line_ids:
+                    # Get the corresponding sale order line
+                    sale_line = line.sale_line_ids.filtered(lambda l: l.order_id == order)
 
-        for order in sale_orders:
-            for line in invoice_object.invoice_line_ids:
-                # Get the corresponding sale order line
-                sale_line = line.sale_line_ids.filtered(lambda l: l.order_id == order)
+                    # Remove the invoice line if the related sale line is not selected
+                    if sale_line and not sale_line.selected:
+                        line.unlink()
 
-                # Remove the invoice line if the related sale line is not selected
-                if sale_line and not sale_line.selected:
-                    line.unlink()
-
-        return invoice_object
+        return invoices
 
 class InvoiceMain(models.Model):
     _inherit = "account.move"

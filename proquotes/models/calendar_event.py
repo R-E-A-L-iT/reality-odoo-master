@@ -42,11 +42,13 @@ class CalendarEvent(models.Model):
         if company_to_assign and not event.company_id:
             event.company_id = company_to_assign.id
 
-    @api.model
-    def create(self, vals):
-        event = super(CalendarEvent, self).create(vals)
+    # Odoo 19: create is @api.model_create_multi (receives a list of vals dicts).
+    @api.model_create_multi
+    def create(self, vals_list):
+        events = super(CalendarEvent, self).create(vals_list)
 
         # Assign company based on visitor location for website appointments
-        self._set_company_based_on_visitor_country(event)
+        for event in events:
+            self._set_company_based_on_visitor_country(event)
 
-        return event
+        return events

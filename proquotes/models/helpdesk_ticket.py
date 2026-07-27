@@ -94,26 +94,28 @@ class ticket(models.Model):
         if company_to_assign:
             ticket.company_id = company_to_assign.id
 
-    @api.model
-    def create(self, vals):
+    # Odoo 19: create is @api.model_create_multi (receives a list of vals dicts).
+    @api.model_create_multi
+    def create(self, vals_list):
 
-        helpdesk_ticket = super(ticket, self).create(vals)
+        helpdesk_tickets = super(ticket, self).create(vals_list)
 
-        # Assign company based on visitor location for website tickets
-        self._set_company_based_on_visitor_country(helpdesk_ticket)
+        for helpdesk_ticket in helpdesk_tickets:
+            # Assign company based on visitor location for website tickets
+            self._set_company_based_on_visitor_country(helpdesk_ticket)
 
-        helpdesk_team = helpdesk_ticket.team_id
+            helpdesk_team = helpdesk_ticket.team_id
 
-        if not helpdesk_team:
-            _logger.info("No helpdesk team assigned to this ticket.")
-            return helpdesk_ticket
+            if not helpdesk_team:
+                _logger.info("No helpdesk team assigned to this ticket.")
+                continue
 
-        partners_with_emails = helpdesk_team.message_partner_ids.filtered(lambda partner: partner.email)
+            partners_with_emails = helpdesk_team.message_partner_ids.filtered(lambda partner: partner.email)
 
-        if not partners_with_emails:
-            _logger.info("No users with emails found in the helpdesk team: %s", helpdesk_team.name)
-            return helpdesk_ticket
+            if not partners_with_emails:
+                _logger.info("No users with emails found in the helpdesk team: %s", helpdesk_team.name)
+                continue
 
-        _logger.info("Sending email to the following users: %s", ", ".join([partner.name for partner in partners_with_emails]))
+            _logger.info("Sending email to the following users: %s", ", ".join([partner.name for partner in partners_with_emails]))
 
-        return helpdesk_ticket
+        return helpdesk_tickets

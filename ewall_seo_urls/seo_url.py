@@ -33,10 +33,14 @@ class SEOURL(models.AbstractModel):
         return vals
 
 
-    @api.model
-    def create(self, vals):
-        vals = self._check_seo_url(vals)
-        return super(SEOURL, self).create(vals)
+    # Odoo 19: create is @api.model_create_multi (receives a list of vals dicts).
+    # This mixin (website_seo_url) is inherited by product.template /
+    # product.public.category, so it runs on every product create.
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            self._check_seo_url(vals)  # normalizes vals[self._seo_url_field] in place
+        return super(SEOURL, self).create(vals_list)
 
     def write(self, vals):
         for r in self:

@@ -101,12 +101,14 @@ class ProductTemplate(models.Model):
                 except Exception as e:
                     _logger.exception("ProSync Images: Error processing product %s url=%s: %s", product.id, image_url, e)
 
-    @api.model
-    def create(self, vals):
-        record = super(ProductTemplate, self).create(vals)
-        if "sku" in vals:
-            self._update_skuhidden(record.id, vals["sku"], record.name)
-        return record
+    # Odoo 19: create is @api.model_create_multi (receives a list of vals dicts).
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super(ProductTemplate, self).create(vals_list)
+        for record, vals in zip(records, vals_list):
+            if "sku" in vals:
+                self._update_skuhidden(record.id, vals["sku"], record.name)
+        return records
 
     def write(self, vals):
         result = super(ProductTemplate, self).write(vals)

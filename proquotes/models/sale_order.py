@@ -1182,46 +1182,50 @@ class order(models.Model):
         return list(set(available_lot_ids))
 
     # this function adds sales@r-e-a-l.it as a follower automatically upon creation so it receives all the relevant emails
-    @api.model
-    def create(self, vals):
-        if vals.get('is_rental_order') and vals.get('rental_start_date') and not vals.get('pickup_date'):
-            vals['pickup_date'] = vals['rental_start_date']
+    # Odoo 19: sale.order.create is @api.model_create_multi and receives a list of
+    # vals dicts (web_save passes a list). Iterate rather than treating vals as one dict.
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('is_rental_order') and vals.get('rental_start_date') and not vals.get('pickup_date'):
+                vals['pickup_date'] = vals['rental_start_date']
 
-        order = super().create(vals)
+        orders = super().create(vals_list)
 
-        # Assign company based on visitor location for website orders
-        order._set_company_based_on_visitor_country()
+        for order in orders:
+            # Assign company based on visitor location for website orders
+            order._set_company_based_on_visitor_country()
 
-        # Find or create the partner with email derek@r-e-a-l.it
-        sales_email = self.env['res.partner'].search([('id', '=', '58319')], limit=1)
-        if sales_email:
-            order.message_subscribe(partner_ids=[sales_email.id])
+            # Find or create the partner with email derek@r-e-a-l.it
+            sales_email = self.env['res.partner'].search([('id', '=', '58319')], limit=1)
+            if sales_email:
+                order.message_subscribe(partner_ids=[sales_email.id])
 
-        target_email = sales_email.email_normalized or (sales_email.email or '').strip().lower()
-        if not target_email:
-            return order
+            target_email = sales_email.email_normalized or (sales_email.email or '').strip().lower()
+            if not target_email:
+                continue
 
-        follower_partners = order.message_follower_ids.mapped('partner_id')
-        follower_emails = {
-            (p.email_normalized or (p.email or '').strip().lower())
-            for p in follower_partners
-            if (p.email or p.email_normalized)
-        }
+            follower_partners = order.message_follower_ids.mapped('partner_id')
+            follower_emails = {
+                (p.email_normalized or (p.email or '').strip().lower())
+                for p in follower_partners
+                if (p.email or p.email_normalized)
+            }
 
-        sp_partner = order.user_id.partner_id if order.user_id else False
-        salesperson_email = (sp_partner.email_normalized or (sp_partner.email or '').strip().lower()) if sp_partner else ''
+            sp_partner = order.user_id.partner_id if order.user_id else False
+            salesperson_email = (sp_partner.email_normalized or (sp_partner.email or '').strip().lower()) if sp_partner else ''
 
-        if target_email in follower_emails or target_email == salesperson_email:
-            return order
+            if target_email in follower_emails or target_email == salesperson_email:
+                continue
 
-        partner = order.partner_id
-        if partner and not partner.is_company:
-            if partner.id not in order.message_partner_ids.ids:
-                order.message_subscribe(partner_ids=[partner.id])
+            partner = order.partner_id
+            if partner and not partner.is_company:
+                if partner.id not in order.message_partner_ids.ids:
+                    order.message_subscribe(partner_ids=[partner.id])
 
-        order.with_context(skip_apply_canadian_sales_taxes=False)._apply_canadian_sales_taxes()
+            order.with_context(skip_apply_canadian_sales_taxes=False)._apply_canadian_sales_taxes()
 
-        return order
+        return orders
 
 
     @api.model
@@ -2142,12 +2146,15 @@ class SaleOrderTemplateHandler(models.Model):
                 discount = 0
 
                 if self.pricelist_id:
-                    pricelist_price = self.pricelist_id.with_context(uom=line.product_uom_id.id)._get_product_price(line.product_id, 1, False)
-
-                    if self.pricelist_id.discount_policy == 'without_discount' and price:
-                        discount = max(0, (price - pricelist_price) * 100 / price)
-                    else:
-                        price = pricelist_price
+                    # Odoo 19: _get_product_price(product, quantity, currency=None,
+                    # uom=None, date=False) — the old positional `partner` arg was
+                    # removed, and uom is now a kwarg (a uom record, not an id).
+                    # Pricelist `discount_policy` was also removed in v18: the
+                    # pricelist price is always the final (discounted) price now, so
+                    # there is no "list price + separate discount" branch to take.
+                    pricelist_price = self.pricelist_id._get_product_price(
+                        line.product_id, 1, uom=line.product_uom_id)
+                    price = pricelist_price
 
                 template_discount = getattr(line, 'discount', 0.0) or 0.0
                 if template_discount:

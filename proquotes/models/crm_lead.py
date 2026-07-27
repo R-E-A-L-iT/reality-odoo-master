@@ -19,11 +19,13 @@ class CrmLead(models.Model):
         for rec in self:
             rec.reveal_ip_public = rec.sudo().reveal_ip or False
 
-    @api.model
-    def create(self, vals):
-        lead = super(CrmLead, self).create(vals)
-        self._set_company_based_on_visitor_country(lead)
-        return lead
+    # Odoo 19: create is @api.model_create_multi (receives a list of vals dicts).
+    @api.model_create_multi
+    def create(self, vals_list):
+        leads = super(CrmLead, self).create(vals_list)
+        for lead in leads:
+            self._set_company_based_on_visitor_country(lead)
+        return leads
 
     def write(self, vals):
         result = super(CrmLead, self).write(vals)
