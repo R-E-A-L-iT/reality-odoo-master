@@ -169,6 +169,18 @@ class SaleOrderLine(models.Model):
     def get_sale_order_line_multiline_description_sale(self, product):
         return product.get_product_multiline_description_sale()
 
+    def _proquotes_description_sale_html(self):
+        """Product sales description rendered as raw HTML for the quote page.
+
+        `product.description_sale` is a Text field that we intentionally author
+        with HTML (``<ul><li>…``) to format the quote line. Odoo 19 removed
+        ``t-raw``; ``t-out`` escapes plain strings, so wrap the value in Markup
+        here and render it with ``t-out`` in quote_preview.xml.
+        """
+        from markupsafe import Markup
+        self.ensure_one()
+        return Markup(self.product_id.description_sale or "")
+
     @api.depends('product_uom_qty', 'selected', 'discount', 'price_unit', 'tax_ids')
     def _compute_amount(self):
         """

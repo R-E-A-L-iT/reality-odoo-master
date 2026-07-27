@@ -410,6 +410,14 @@
         <!-- Remove Original Table Header-->
         <xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/>
 
+        <!-- Hide the per-line Taxes column entirely (taxes are only shown on the
+             bottom totals table). Force display_taxes off *after* the core t-set
+             so the later value wins — this suppresses every per-line tax cell
+             (the header th was already removed above). -->
+        <xpath expr="//t[@t-set='display_taxes']" position="after">
+            <t t-set="display_taxes" t-value="False"/>
+        </xpath>
+
         <!-- Report ALL order lines (incl. the custom $-marker / CCP section lines)
              instead of the filtered _get_order_lines_to_report(). Do NOT replace
              the core <t t-set="lines_to_report"> node: other modules (e.g.
@@ -780,56 +788,9 @@
                 </tr>
             </t>
 
-            <!-- New Table Header Rows-->
-            <t t-if="line.name == '$block' or line.name == '$block+'">
-                <tr class="quote-head">
-                    <td class="text-left">
-                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead"
-                              style="padding-left: 20px !important;">Product
-                        </span>
-                        <span t-elif="language == 'fr_CA'" class="cHead" style="padding-left: 20px !important;">Produit
-                        </span>
-                        <span t-elif="language == 'es_ES'" class="cHead" style="padding-left: 20px !important;">Producto
-                        </span>
-                    </td>
-                    <td t-if="sale_order.is_rental_order" class="text-left">
-                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Value</span>
-                        <span t-elif="language == 'fr_CA'" class="cHead">Valeur</span>
-                        <span t-elif="language == 'es_ES'" class="cHead">Valor</span>
-                    </td>
-                    <!-- <td t-else=""/> -->
-                    <td class="text-left">
-                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Qty</span>
-                        <span t-elif="language == 'fr_CA'" class="cHead">Qté</span>
-                        <span t-elif="language == 'es_ES'" class="cHead">Cant.</span>
-                    </td>
-                    <td class="text-left">
-                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Price</span>
-                        <span t-elif="language == 'fr_CA'" class="cHead">Prix</span>
-                        <span t-elif="language == 'es_ES'" class="cHead">Precio</span>
-                    </td>
-                    <t t-if="sale_order.is_rental_order">
-                        <td class="text-left">
-                            <span class="cHead">Multiplier</span>
-                        </td>
-                    </t>
-                    <t t-if="any(line.discount for line in sale_order.order_line)">
-                        <td class="text-left">
-                            <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Disc.%</span>
-                            <span t-elif="language == 'fr_CA'" class="cHead">Rabais%</span>
-                            <span t-elif="language == 'es_ES'" class="cHead">Desc.%</span>
-                        </td>
-                    </t>
-                    <!-- <td>
-                        <span t-if="language == 'en_CA' or language == 'en_US'">Tax</span>
-                        <span t-elif="language == 'fr_CA'">Taxes</span>
-                    </td> -->
-                    <td class="text-left">
-                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Amount</span>
-                        <span t-elif="language == 'fr_CA'" class="cHead">Montant</span>
-                    </td>
-                </tr>
-            </t>
+            <!-- ($block / $block+ are no longer special: they are treated as a
+                 normal section, so the custom "table header" row that used to be
+                 injected for them has been removed per request.) -->
 
             <!-- Dynamic CCP Selection Block -->
             <t t-if="line.name and line.name.startswith('#ccp_selection_')">
@@ -921,12 +882,28 @@
             <attribute name="class">bg-100 quotesTableHead</attribute>
         </xpath>
 
-        <!-- Add Attributes For Easier CSS -->
+        <!-- Add Attributes For Easier CSS (and hide any $-marker / #ccp_selection_
+             line that happens to have no display_type, so it doesn't render a bare
+             product row). -->
         <xpath expr="//tr[@name=&quot;tr_product&quot;]" position="attributes">
-            <attribute name="t-att-class">'quoteLineRowSection bg-200 font-weight-bold o_line_section' if
+            <attribute name="t-att-class">('quoteLineRowSection bg-200 font-weight-bold o_line_section' if
                 line.display_type == 'line_section' else 'quoteLineRowNote font-italic o_line_note' if line.display_type
-                == 'line_note' else 'quoteLineRow'
+                == 'line_note' else 'quoteLineRow') + (' d-none' if (line.name and ((line.name.startswith('$') and line.name not in ('$block', '$block+')) or line.name.startswith('#ccp_selection_'))) else '')
             </attribute>
+        </xpath>
+
+        <!-- Hide the raw row for the special $-marker and #ccp_selection_ lines:
+             their real content is injected by the "Info Sections" block above, so
+             the marker line itself must not also render. $block / $block+ are
+             intentionally excluded (now treated as normal sections).
+             NOTE: we hide via a `d-none` class rather than changing the row's t-if
+             — the v19 rows are an if/elif/elif/else chain, so dropping tr_section's
+             t-if would make a marker fall through to the tr_product (else) branch. -->
+        <xpath expr="//tr[@name=&quot;tr_section&quot;]" position="attributes">
+            <attribute name="t-att-class">('fw-bolder o_line_section' if is_section else 'fw-bold o_line_subsection') + (' d-none' if (line.name and ((line.name.startswith('$') and line.name not in ('$block', '$block+')) or line.name.startswith('#ccp_selection_'))) else '')</attribute>
+        </xpath>
+        <xpath expr="//tr[@name=&quot;tr_note&quot;]" position="attributes">
+            <attribute name="t-att-class">'d-none' if (line.name and ((line.name.startswith('$') and line.name not in ('$block', '$block+')) or line.name.startswith('#ccp_selection_'))) else ''</attribute>
         </xpath>
 
         <!--Add Check Box to control fold Section-->
@@ -1030,7 +1007,10 @@
         <xpath expr="//td[@name=&quot;td_product_name&quot;]" position="replace">
             <td name="td_product_name">
                 <!--Line Id For User Selection-->
-                <div class="flex">
+                <!-- d-flex + gap so the selection checkbox sits to the LEFT of the
+                     product image with breathing room (the old bare "flex" class
+                     isn't a real class, so checkbox + image crammed together). -->
+                <div class="d-flex align-items-center" style="gap: 14px;">
                     <t t-if="line.optional == 'yes'">
                         <input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
                         <input t-else="" type="checkbox" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
@@ -1117,7 +1097,10 @@
                                 </t>
 
                                 <t t-else="">
-                                    <span style="color: #777;" t-out="line.product_id.description_sale"/>
+                                    <!-- Render the (intentionally HTML) sales description as raw HTML.
+                                         t-out escapes plain strings, so the value is wrapped in Markup
+                                         by _proquotes_description_sale_html(). -->
+                                    <span style="color: #777;" t-out="line._proquotes_description_sale_html()"/>
                                 </t>
                             </div>
                         </div>
