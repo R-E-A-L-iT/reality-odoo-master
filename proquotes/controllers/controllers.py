@@ -640,7 +640,8 @@ class QuotePortalFix(cPortal):
             'product_id': product.id,
             'name': product.name,
             'product_uom_qty': 1,
-            'product_uom': product.uom_id.id,
+            # Odoo 19: sale.order.line uses product_uom_id (not product_uom).
+            'product_uom_id': product.uom_id.id,
             'price_unit': product.list_price,
             'discount': 0,
             'sequence': ccp_sequence,

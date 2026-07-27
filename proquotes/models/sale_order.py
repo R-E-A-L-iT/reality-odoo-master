@@ -753,7 +753,8 @@ class order(models.Model):
             vals = {
                 "order_id": self.id,
                 "product_id": product.id,
-                "product_uom": bom_line.product_uom_id.id or product.uom_id.id,
+                # Odoo 19: sale.order.line renamed product_uom -> product_uom_id.
+                "product_uom_id": bom_line.product_uom_id.id or product.uom_id.id,
                 "product_uom_qty": qty,
                 "name": "%s\nKit component of: %s" % (
                     product.display_name,
@@ -921,7 +922,7 @@ class order(models.Model):
                     'name': line.product_id.display_name,
                     'product_id': line.product_id.id,
                     'product_uom_qty': line.product_uom_qty,
-                    'product_uom': (line.product_uom.id or line.product_id.uom_id.id),
+                    'product_uom': (line.product_uom_id.id or line.product_id.uom_id.id),
                     'location_id': src.id,
                     'location_dest_id': dest.id,
                     'sale_line_id': line.id,
@@ -966,7 +967,7 @@ class order(models.Model):
                     'name': line.product_id.display_name,
                     'product_id': line.product_id.id,
                     'product_uom_qty': line.product_uom_qty,
-                    'product_uom': (line.product_uom.id or line.product_id.uom_id.id),
+                    'product_uom': (line.product_uom_id.id or line.product_id.uom_id.id),
                     'location_id': src.id,
                     'location_dest_id': dest.id,
                     'sale_line_id': line.id,
@@ -2165,7 +2166,8 @@ class SaleOrderTemplateHandler(models.Model):
                     'discount': discount,
                     'product_uom_qty': line.product_uom_qty,
                     'product_id': line.product_id.id,
-                    'product_uom': line.product_uom_id.id,
+                    # Odoo 19: sale.order.line uses product_uom_id (not product_uom).
+                    'product_uom_id': line.product_uom_id.id,
                     'optional': line.optional,
                     'selected': line.selected,
                     'sectionSelected': line.sectionSelected,
