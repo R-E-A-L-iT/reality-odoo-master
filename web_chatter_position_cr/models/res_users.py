@@ -8,7 +8,7 @@ class ResUsers(models.Model):
     chatter_position = fields.Selection([
         ("auto", "Responsive"),
         ("bottom", "Bottom"),
-        ("sided", "Side"), ], default="auto")
+        ("sided", "Side"), ], default="auto" )
 
     @property
     def SELF_READABLE_FIELDS(self):
