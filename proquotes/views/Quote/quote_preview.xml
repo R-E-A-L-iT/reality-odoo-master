@@ -1641,11 +1641,11 @@
                     dollars. Local sales tax &amp; delivery costs will be added to final invoice (if not already
                     showing). The quote is valid for 30 days after submittal date.
                 </span>
-                <span t-elif="language == 'fr_CA'">Tous les prix sont en dollars<t t-out="currency_label"/>. Les taxes
+                <span t-elif="language == 'fr_CA'">Tous les prix sont en dollars <t t-out="currency_label"/>. Les taxes
                     de vente locale et les frais de livraison seront ajoutés à la facture finale (s'ils ne sont pas déjà
                     affichés). Cette soumission est valide pour 30 jours après la date soumise.
                 </span>
-                <span t-elif="language == 'es_ES'">Todos los precios están en dólares<t t-out="currency_label"/>. Los
+                <span t-elif="language == 'es_ES'">Todos los precios están en dólares <t t-out="currency_label"/>. Los
                     impuestos sobre las ventas locales y los costos de entrega se agregarán a la factura final (si no se
                     muestran ya). La cotización es válida por 30 días después de la fecha de presentación.
                 </span>
