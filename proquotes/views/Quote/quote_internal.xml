@@ -74,17 +74,32 @@
                 </group>
             </xpath>
 
+            <!-- Always show the Quote Builder tab. Natively it is hidden when no
+                 eligible document exists (invisible="not available_quotation_document_ids"),
+                 and since _compute_available_quotation_document_ids strips our
+                 "preview" docs, that condition only ever counted the Report (PDF)
+                 docs — so the tab vanished whenever no report header/footer was
+                 eligible. We want the preview selectors reachable at all times. -->
+            <xpath expr="//page[@name='pdf_quote_builder']" position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+
             <!-- Preview (online quote) header/footer selectors, shown in the
                  native Quote Builder tab next to the Report (PDF) header/footer
                  widget. These are quotation.document records of the "preview"
-                 class (a link/URL), kept separate from the uploaded PDF docs. -->
+                 class (a link/URL), kept separate from the uploaded PDF docs.
+                 Rendered with <separator> headings + the radio widget so they
+                 read like the native "Header"/"Footer" pickers (bold heading
+                 above a selectable list) instead of a labelled dropdown. -->
             <xpath expr="//page[@name='pdf_quote_builder']" position="inside">
-                <group string="Preview Header / Footer (online quote)" name="preview_header_footer">
-                    <field name="header_id"
+                <div name="preview_header_footer" class="mt-4">
+                    <separator string="Preview Header (online quote)"/>
+                    <field name="header_id" nolabel="1" widget="radio"
                            domain="['&amp;', '&amp;', ('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'header'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]"/>
-                    <field name="footer_id"
+                    <separator string="Preview Footer (online quote)"/>
+                    <field name="footer_id" nolabel="1" widget="radio"
                            domain="['&amp;', '&amp;', ('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'footer'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]"/>
-                </group>
+                </div>
             </xpath>
 
             <xpath expr="//create[1]" position="after">
