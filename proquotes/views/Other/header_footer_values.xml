@@ -1,34 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="footer_canada" model="header.footer">
+    <!-- Default "preview" (online quote) footers, now stored as quotation.document
+         records of the preview class. The xml ids are preserved from the legacy
+         header.footer records so existing references keep resolving. -->
+    <record id="footer_canada" model="quotation.document">
         <field name="name">EMAIL - Canadian Default Footer</field>
-        <field name="record_type">Footer</field>
+        <field name="doc_class">preview</field>
+        <field name="document_type">footer</field>
         <field name="url">https://cdn.r-e-a-l.it/images/footer/R-E-A-L.iTFooter_CANADA.png</field>
         <field name="company_ids" eval="[(4, ref('base.main_company'))]"/>
     </record>
 
-    <record id="footer_us" model="header.footer">
+    <record id="footer_us" model="quotation.document">
         <field name="name">EMAIL - American Default Footer</field>
-        <field name="record_type">Footer</field>
+        <field name="doc_class">preview</field>
+        <field name="document_type">footer</field>
         <field name="url">https://cdn.r-e-a-l.it/images/footer/R-E-A-L.iTFooter_USA.png</field>
         <field name="company_ids" eval="[(4, 3)]"/>
     </record>
 
-    <record id="footer_horia" model="header.footer">
+    <record id="footer_horia" model="quotation.document">
         <field name="name">EMAIL - Horia R-E-A-L.iT Footer</field>
-        <field name="record_type">Footer</field>
+        <field name="doc_class">preview</field>
+        <field name="document_type">footer</field>
         <field name="url">https://cdn.r-e-a-l.it/images/footer/REALiTFooter_Horia.png</field>
     </record>
 
-    <record id="footer_bill" model="header.footer">
+    <record id="footer_bill" model="quotation.document">
         <field name="name">EMAIL - Bill R-E-A-L.iT Footer</field>
-        <field name="record_type">Footer</field>
+        <field name="doc_class">preview</field>
+        <field name="document_type">footer</field>
         <field name="url">https://cdn.r-e-a-l.it/images/footer/REALiTFooter_Bill.png</field>
     </record>
 
-    <record id="footer_mael" model="header.footer">
+    <record id="footer_mael" model="quotation.document">
         <field name="name">EMAIL - Maël R-E-A-L.iT Footer</field>
-        <field name="record_type">Footer</field>
+        <field name="doc_class">preview</field>
+        <field name="document_type">footer</field>
         <field name="url">https://cdn.r-e-a-l.it/images/footer/REALiTFooter_Mael.png</field>
     </record>
 </odoo>

@@ -71,10 +71,19 @@
                     <field name="manual_invoice_status"/>
                     <!--  invisible="['|', ('partner_id.country_id.code', '!=', 'US')]" -->
                     <field name="approve_financing"/>
-                    <field name="header_id" invisible="0"
-                           domain="['&amp;', ('active', '=', True),('record_type', '=', 'Header'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]"/>
-                    <field name="footer_id" invisible="0"
-                           domain="['&amp;', ('active', '=', True),('record_type', '=', 'Footer'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]"/>
+                </group>
+            </xpath>
+
+            <!-- Preview (online quote) header/footer selectors, shown in the
+                 native Quote Builder tab next to the Report (PDF) header/footer
+                 widget. These are quotation.document records of the "preview"
+                 class (a link/URL), kept separate from the uploaded PDF docs. -->
+            <xpath expr="//page[@name='pdf_quote_builder']" position="inside">
+                <group string="Preview Header / Footer (online quote)" name="preview_header_footer">
+                    <field name="header_id"
+                           domain="['&amp;', '&amp;', ('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'header'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]"/>
+                    <field name="footer_id"
+                           domain="['&amp;', '&amp;', ('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'footer'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]"/>
                 </group>
             </xpath>
 

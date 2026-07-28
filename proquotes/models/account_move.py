@@ -71,13 +71,13 @@ class invoice(models.Model):
     def _get_available_footer_domain(self):
         return [
             ("active", "=", True),
-            ("record_type", "=", "Footer"),
+            ("doc_class", "=", "preview"), ("document_type", "=", "footer"),
         ]
 
     @api.model
     def _get_first_available_footer(self, company=False):
         domain = self._get_available_footer_domain()
-        footers = self.env["header.footer"].search(domain, order="id asc")
+        footers = self.env["quotation.document"].search(domain, order="id asc")
         if company:
             company_specific = footers.filtered(
                 lambda f: not f.company_ids or company in f.company_ids
@@ -92,7 +92,7 @@ class invoice(models.Model):
         company = company or self.env.company
 
         if not user or not company:
-            return self.env["header.footer"]
+            return self.env["quotation.document"]
 
         line = self.env["res.users.company.footer"].search(
             [
@@ -103,10 +103,10 @@ class invoice(models.Model):
             limit=1,
         )
 
-        if line and line.footer_id and line.footer_id.active and line.footer_id.record_type == "Footer":
+        if line and line.footer_id and line.footer_id.active and line.footer_id.document_type == "footer":
             return line.footer_id
 
-        return self.env["header.footer"]
+        return self.env["quotation.document"]
 
     @api.model
     def _get_company_default_footer(self, company=False):
@@ -115,10 +115,10 @@ class invoice(models.Model):
             company
             and company.default_footer_id
             and company.default_footer_id.active
-            and company.default_footer_id.record_type == "Footer"
+            and company.default_footer_id.document_type == "footer"
         ):
             return company.default_footer_id
-        return self.env["header.footer"]
+        return self.env["quotation.document"]
 
     @api.model
     def _default_footer_id(self):
@@ -137,10 +137,10 @@ class invoice(models.Model):
         return footer.id if footer else False
 
     footer_id = fields.Many2one(
-        "header.footer",
+        "quotation.document",
         string="Footer",
         required=True,
-        domain="[('active', '=', True), ('record_type', '=', 'Footer')]",
+        domain="[('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'footer')]",
         default=_default_footer_id,
     )
 

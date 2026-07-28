@@ -22,7 +22,11 @@ _logger = logging.getLogger(__name__)
 class SaleOrderTemplate(models.Model):
     _inherit = 'sale.order.template'
 
-    header_id = fields.Many2one('header.footer', string="Default Header")
+    header_id = fields.Many2one(
+        'quotation.document',
+        string="Default Preview Header",
+        domain="[('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'header')]",
+    )
 
     def _prepare_sale_order_line_values(self, order, line, **kwargs):
         vals = super()._prepare_sale_order_line_values(order, line, **kwargs)

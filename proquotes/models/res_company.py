@@ -30,9 +30,9 @@ class company(models.Model):
 	)
 	
 	default_footer_id = fields.Many2one(
-		"header.footer",
+		"quotation.document",
 		string="Default Footer",
-		domain="[('active', '=', True), ('record_type', '=', 'Footer')]",
+		domain="[('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'footer')]",
 	)
 
 	def write(self, values):

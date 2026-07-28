@@ -17,6 +17,7 @@
         "stock",
         "website",
         "sale_management",
+        "sale_pdf_quote_builder",
         "sale",
         "hr",
         "digest",

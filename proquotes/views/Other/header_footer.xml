@@ -1,74 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <odoo>
-    <record id="header_footer_tree" model="ir.ui.view">
-        <field name="name">Header Footer</field>
-        <field name="model">header.footer</field>
-        <field name="priority">4</field>
-        <field name="type">list</field>
+    <!--
+        The legacy custom "header.footer" model has been merged into the native
+        sale_pdf_quote_builder "quotation.document" model as a new document class
+        ("preview"). These inherits add the Report/Preview toggle, the preview URL
+        and the per-company scoping to the native views.
+    -->
+
+    <!-- Native form: add class toggle + preview URL, hide the PDF upload for previews -->
+    <record id="quotation_document_form_preview" model="ir.ui.view">
+        <field name="name">quotation.document.form.preview</field>
+        <field name="model">quotation.document</field>
+        <field name="inherit_id" ref="sale_pdf_quote_builder.quotation_document_form"/>
         <field name="arch" type="xml">
-            <list>
-                <field name="name" />
-                <field name="url" />
-                <field name="active" />
-            </list>
+            <xpath expr="//field[@name='document_type']" position="before">
+                <field name="doc_class" widget="radio" options="{'horizontal': true}"/>
+            </xpath>
+            <!-- Preview docs have no PDF, so the name must stay editable -->
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="readonly">doc_class != 'preview' and not datas</attribute>
+            </xpath>
+            <!-- Hide the PDF upload row + its label for preview docs -->
+            <xpath expr="//label[@for='datas']" position="attributes">
+                <attribute name="invisible">doc_class == 'preview'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='datas']/parent::div" position="attributes">
+                <attribute name="invisible">doc_class == 'preview'</attribute>
+            </xpath>
+            <!-- Preview-only fields: the resource link + optional company scoping -->
+            <xpath expr="//field[@name='document_type']" position="after">
+                <label for="url" string="Resource URL" invisible="doc_class != 'preview'"/>
+                <field name="url" nolabel="1"
+                       placeholder="https://cdn.r-e-a-l.it/images/..."
+                       invisible="doc_class != 'preview'"
+                       required="doc_class == 'preview'"/>
+                <field name="company_ids" widget="many2many_tags"
+                       invisible="doc_class != 'preview'"/>
+            </xpath>
         </field>
     </record>
 
-
-    <record id="header_footer_form" model="ir.ui.view">
-        <field name="name">Header Footer</field>
-        <field name="model">header.footer</field>
-        <field name="priority">4</field>
-        <field name="type">form</field>
+    <!-- Native list: surface the class + URL -->
+    <record id="quotation_document_list_preview" model="ir.ui.view">
+        <field name="name">quotation.document.list.preview</field>
+        <field name="model">quotation.document</field>
+        <field name="inherit_id" ref="sale_pdf_quote_builder.quotation_document_list"/>
         <field name="arch" type="xml">
-            <form>
-                <group>
-                    <field name="name" />
-                </group>
-                <group>
-                    <field name="record_type" />
-                </group>
-                <group>
-                    <field name="url" />
-                </group>
-                <group>
-                    <field name="company_ids" widget="many2many_tags" />
-                </group>
-                <group>
-                    <field name="active" />
-                    <field name="header_id" invisible="1"/>
-                </group>
-            </form>
+            <xpath expr="//field[@name='document_type']" position="after">
+                <field name="doc_class"/>
+                <field name="url" optional="hide"/>
+            </xpath>
         </field>
     </record>
 
-    <record id="header_footer_window" model="ir.actions.act_window">
-        <field name="name">Header Footer</field>
-        <field name="res_model">header.footer</field>
-        <field name="view_mode">list</field>
-        <field name="view_id" ref="header_footer_tree" />
-    </record>
-
-    <record id="header_footer_window_tree" model="ir.actions.act_window.view">
-        <field name="sequence">1</field>
-        <field name="view_mode">list</field>
-        <field name="view_id" ref="header_footer_tree" />
-        <field name="act_window_id" ref="proquotes.header_footer_window"></field>
-    </record>
-
-    <record id="header_footer_window_form" model="ir.actions.act_window.view">
-        <field name="sequence">2</field>
-        <field name="view_mode">form</field>
-        <field name="view_id" ref="header_footer_form" />
-        <field name="act_window_id" ref="proquotes.header_footer_window"></field>
+    <!-- Dedicated action + menu listing only the preview (online quote) documents -->
+    <record id="quotation_document_preview_action" model="ir.actions.act_window">
+        <field name="name">Preview Headers / Footers</field>
+        <field name="res_model">quotation.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_class', '=', 'preview')]</field>
+        <field name="context">{'default_doc_class': 'preview'}</field>
     </record>
 
     <menuitem
         id="proquotes_header_footer_menu_item"
-        name="Header Footer List"
+        name="Preview Headers / Footers"
         parent="sale.menu_sale_config"
-        action="header_footer_window"
+        action="quotation_document_preview_action"
         sequence="1"
     />
 </odoo>

@@ -10,7 +10,7 @@
                 <field name="company_footer_line_ids" context="{'default_user_id': id}">
                     <list editable="bottom">
                         <field name="company_id"/>
-                        <field name="footer_id" domain="[('active', '=', True), ('record_type', '=', 'Footer')]"/>
+                        <field name="footer_id" domain="[('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'footer')]"/>
                         <field name="active" optional="hide"/>
                     </list>
                 </field>

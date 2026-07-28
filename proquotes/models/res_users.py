@@ -18,26 +18,26 @@ class ResUsers(models.Model):
         line = self.company_footer_line_ids.filtered(
             lambda l: l.active and l.company_id == company
         )[:1]
-        if line and line.footer_id and line.footer_id.active and line.footer_id.record_type == "Footer":
+        if line and line.footer_id and line.footer_id.active and line.footer_id.document_type == "footer":
             return line.footer_id
 
         if (
             company
             and company.default_footer_id
             and company.default_footer_id.active
-            and company.default_footer_id.record_type == "Footer"
+            and company.default_footer_id.document_type == "footer"
         ):
             return company.default_footer_id
 
-        footer = self.env["header.footer"].search(
+        footer = self.env["quotation.document"].search(
             [
                 ("active", "=", True),
-                ("record_type", "=", "Footer"),
+                ("doc_class", "=", "preview"), ("document_type", "=", "footer"),
             ],
             order="id asc",
         ).filtered(lambda f: not f.company_ids or company in f.company_ids)[:1]
 
-        return footer or self.env["header.footer"]
+        return footer or self.env["quotation.document"]
 
 
 class ResUsersCompanyFooter(models.Model):
@@ -60,10 +60,10 @@ class ResUsersCompanyFooter(models.Model):
     )
 
     footer_id = fields.Many2one(
-        "header.footer",
+        "quotation.document",
         string="Default Footer",
         required=True,
-        domain="[('active', '=', True), ('record_type', '=', 'Footer')]",
+        domain="[('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'footer')]",
         ondelete="restrict",
     )
 
@@ -80,5 +80,5 @@ class ResUsersCompanyFooter(models.Model):
     @api.constrains("footer_id")
     def _check_footer_type(self):
         for record in self:
-            if record.footer_id and record.footer_id.record_type != "Footer":
+            if record.footer_id and record.footer_id.document_type != "footer":
                 raise ValidationError(_("The selected record must be a Footer."))

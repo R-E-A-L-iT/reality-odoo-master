@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="default_footer_id"
-                       domain="[('active', '=', True), ('record_type', '=', 'Footer')]"/>
+                       domain="[('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'footer')]"/>
             </xpath>
         </field>
     </record>

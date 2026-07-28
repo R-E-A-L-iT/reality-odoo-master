@@ -42,12 +42,12 @@ class ticket(models.Model):
         # Default footers based on company name
         if not footer:
             if company_name == 'R-E-A-L.iT Solutions':
-                footer = self.env['header.footer'].search(
+                footer = self.env['quotation.document'].search(
                     [('name', '=', 'EMAIL - Canadian Default Footer')],
                     limit=1
                 )
             elif company_name == 'R-E-A-L.iT U.S. Inc.':
-                footer = self.env['header.footer'].search(
+                footer = self.env['quotation.document'].search(
                     [('name', '=', 'EMAIL - American Default Footer')],
                     limit=1
                 )
@@ -55,10 +55,10 @@ class ticket(models.Model):
         return footer.id if footer else False
 
     footer_id = fields.Many2one(
-        "header.footer",
+        "quotation.document",
         default=_default_footer,
         required=False,
-        domain=[('record_type', '=', 'Footer')],
+        domain=[('doc_class', '=', 'preview'), ('document_type', '=', 'footer')],
         string="Footer"
     )
 
