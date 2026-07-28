@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Web Chatter Position',
-    'version': '19.0.1.0',
+    'version': '19.0.0.0',
     'summary': 'Chatter Position Custom Configuration based on users specific',
     'author': 'Candidroot Solutions Pvt. Ltd.',
     'description': """
 			With the help of this module user can configure chatter position based on specific position
 			like 'Side', 'Bottom' & 'Responsive'.
     """,
-    'depends': ['base','web', 'mail'],
+    'depends': ['web', 'mail'],
     'category': 'Extra Tools',
     'data': [
         'views/res_users.xml',

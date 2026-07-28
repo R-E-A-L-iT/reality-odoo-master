@@ -3,34 +3,37 @@ import { FormCompiler } from "@web/views/form/form_compiler";
 import { patch } from "@web/core/utils/patch";
 
 patch(FormCompiler.prototype, {
+    
     compileForm(el, params) {
         const res = super.compileForm(el, params);
         if (odoo.web_chatter_position === "sided") {
             const classes = res.getAttribute("t-attf-class");
-            if (classes) {
-                const newClasses = classes.replace('{{ __comp__.uiService.size < 6 ? "flex-column" : "flex-nowrap h-100" }}', 'flex-nowrap h-100')
-                res.setAttribute("t-attf-class", `${newClasses}`);
-            }
+            const newClasses = classes.replace('{{ __comp__.uiService.size < 5 ? "flex-column" : "flex-nowrap h-100" }}', 'flex-nowrap h-100')
+            debugger
+            res.setAttribute("t-attf-class", `${newClasses}`);
             return res;
         }
 
         else if (odoo.web_chatter_position === "bottom") {
-            const classes = res.getAttribute("t-attf-class")
-            // Odoo 19 removed jQuery from the web client; use vanilla DOM on the
-            // compiled template node (equivalent to the old $(...).addClass()).
-            const formView = res.getElementsByClassName('o_form_sheet_bg')[0]
+            const classes = res.getAttribute("t-attf-class");
+            const formView = res.getElementsByClassName('o_form_sheet_bg')[0];
+
             if (formView) {
-                formView.classList.add('customBottom')
-                const chatter = formView.parentElement && formView.parentElement.querySelector('.o-mail-Form-chatter')
-                if (chatter) {
-                    chatter.classList.add('customBottom')
+                formView.classList.add('customBottom');
+                const formParent = formView.parentElement;
+
+                if (formParent) {
+                    const chatter = formParent.querySelector('.o-mail-Form-chatter');
+                    if (chatter) {
+                        chatter.classList.add('customBottom');
+                    }
                 }
-            }
-            if (classes) {
-                const newClasses = classes.replace('{{ __comp__.uiService.size < 6 ? "flex-column" : "flex-nowrap h-100" }}', 'flex-column')
+
+                const newClasses = classes.replace('{{ __comp__.uiService.size < 5 ? "flex-column" : "flex-nowrap h-100" }}', 'flex-column');
                 res.setAttribute("t-attf-class", `${newClasses}`);
             }
-            return res
+
+            return res;
         }
 
         return res;
@@ -47,7 +50,7 @@ patch(FormCompiler.prototype, {
         if (odoo.web_chatter_position === "sided") {
             const classes = chatterContainerHookXml.getAttribute("t-attf-class")
             if(classes){
-                const newClasses = classes.replace('{{ __comp__.uiService.size >= 6 ? "o-aside" : "mt-4 mt-md-0" }}', 'o-aside')
+                const newClasses = classes.replace('{{ __comp__.uiService.size >= 5 ? "o-aside" : "mt-4 mt-md-0" }}', 'o-aside')
                 res.setAttribute("t-attf-class", `${newClasses}`);
             }
             return res
@@ -55,7 +58,7 @@ patch(FormCompiler.prototype, {
         else if (odoo.web_chatter_position === "bottom") {
             const classes = chatterContainerHookXml.getAttribute("t-attf-class")
             if(classes){
-                const newClasses = classes.replace('{{ __comp__.uiService.size >= 6 ? "o-aside" : "mt-4 mt-md-0" }}', 'mt-4 mt-md-0')
+                const newClasses = classes.replace('{{ __comp__.uiService.size >= 5 ? "o-aside" : "mt-4 mt-md-0" }}', 'mt-4 mt-md-0')
                 res.setAttribute("t-attf-class", `${newClasses}`);
             }
             return res
@@ -63,4 +66,3 @@ patch(FormCompiler.prototype, {
         return res;
     },
 });
-
