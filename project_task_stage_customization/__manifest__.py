@@ -1,6 +1,6 @@
 {
     'name': 'Project Task Stage Customization',
-    'version': '17.0.1.0.0',
+    'version': '19.0.1.0.0',
     'category': 'Project',
     'summary': 'Customize project task stages: rename In Progress to Not Started and create new In Progress stage',
     'description': """
@@ -13,14 +13,10 @@
     """,
     'author': '',
     'depends': ['project', 'web'],
-    'data': [
-        "views/filter_inherit.xml",
-    ],
+    'data': [],
     'assets': {
         'web.assets_backend': [
-             ("remove", "project/static/src/components/project_task_state_selection/project_task_state_selection.js"),
-              # 'project_task_stage_customization/static/src/components/project_task_state_selection/project_task_state_selection.js',
-             'project_task_stage_customization/static/src/components/project_task_state_selection/project_task_state_selection.js',
+            'project_task_stage_customization/static/src/components/project_task_state_selection/project_task_state_selection.js',
         ],
     },
     'installable': True,

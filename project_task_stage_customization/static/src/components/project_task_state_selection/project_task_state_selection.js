@@ -1,205 +1,54 @@
-/** @odoo-module **/
-
 import { _t } from "@web/core/l10n/translation";
-import {
-    StateSelectionField,
-    stateSelectionField,
-} from "@web/views/fields/state_selection/state_selection_field";
-import { useCommand } from "@web/core/commands/command_hook";
-import { formatSelection } from "@web/views/fields/formatters";
-
 import { registry } from "@web/core/registry";
-import { useState } from "@odoo/owl";
+import { patch } from "@web/core/utils/patch";
+import {
+    ProjectTaskStateSelection,
+    projectTaskStateSelection,
+} from "@project/components/project_task_state_selection/project_task_state_selection";
+import { TaskStageWithStateSelection } from "@project/components/project_task_state_selection/project_task_stage_state_selection/project_task_stage_with_state_selection";
 
-
-console.log(">>>>>>>>>>>>>>>>>>>>>55 call Myb module js>>>>>>>>>")
-export class ProjectTaskStateSelection extends StateSelectionField {
+export class CustomProjectTaskStateSelection extends ProjectTaskStateSelection {
     setup() {
-        this.state = useState({
-            isStateButtonHighlighted: false,
-        });
-        this.icons = {
+        super.setup();
+        Object.assign(this.icons, {
             "011_not_started": "o_status",
             "01_in_progress": "o_status bg-info",
-            "03_approved": "o_status o_status_green",
-            "02_changes_requested": "fa fa-lg fa-exclamation-circle",
-            "1_done": "fa fa-lg fa-check-circle",
-            "1_canceled": "fa fa-lg fa-times-circle",
-            "04_waiting_normal": "fa fa-lg fa-hourglass-o",
-        };
-        this.colorIcons = {
+        });
+        Object.assign(this.colorIcons, {
             "011_not_started": "",
             "01_in_progress": "text-info",
-            "03_approved": "text-success",
-            "02_changes_requested": "o_status_changes_requested",
-            "1_done": "text-success",
-            "1_canceled": "text-danger",
-            "04_waiting_normal": "",
-        };
-        this.colorButton = {
+        });
+        Object.assign(this.colorButton, {
             "011_not_started": "btn-outline-secondary",
             "01_in_progress": "btn-outline-info",
-            "03_approved": "btn-outline-success",
-            "02_changes_requested": "btn-outline-warning",
-            "1_done": "btn-outline-success",
-            "1_canceled": "btn-outline-danger",
-            "04_waiting_normal": "btn-outline-secondary",
-        };
-        if (this.props.viewType != 'form') {
-            super.setup();
-        } else {
-            const commandName = _t("Set state as...");
-            useCommand(
-                commandName,
-                () => {
-                    return {
-                        placeholder: commandName,
-                        providers: [
-                            {
-                                provide: () =>
-                                    this.options.map(subarr => ({
-                                        name: subarr[1],
-                                        action: () => {
-                                            this.updateRecord(subarr[0]);
-                                        },
-                                    })),
-                            },
-                        ],
-                    };
-                },
-                {
-                    category: "smart_action",
-                    hotkey: "alt+f",
-                    isAvailable: () => !this.props.readonly && !this.props.isDisabled,
-                }
-            );
-        }
+        });
     }
 
     get options() {
-        const options = [
-            ["1_canceled", _t("Canceled")],
-            ["1_done", _t("Done")],
-        ];
+        const parentOptions = super.options;
         const currentState = this.props.record.data[this.props.name];
-        if (currentState != "04_waiting_normal") {
-            return [
-                ["011_not_started", _t("Not Started")],
-                ["01_in_progress", _t("In Progress")],
-                ["02_changes_requested", _t("Changes Requested")],
-                ["03_approved", _t("Approved")],
-                ...options,
-            ];
+        if (currentState === "04_waiting_normal") {
+            return parentOptions;
         }
-        return options;
-    }
-
-    get availableOptions() {
-        // overrided because we need the currentOption in the dropdown as well
-        return this.options;
-    }
-
-    get label() {
-        const fullSelection = [...this.options];
-        fullSelection.push(["04_waiting_normal", "Waiting"]);
-        return formatSelection(this.currentValue, {
-            selection: fullSelection,
-        });
-    }
-
-    stateIcon(value) {
-        return this.icons[value] || "";
-    }
-
-    /**
-     * @override
-     */
-    statusColor(value) {
-        return this.colorIcons[value] || "";
-    }
-
-    /**
-     * determine if a single click will trigger the toggleState() method
-     * which will switch the state from in progress to done.
-     * Either the isToggleMode is active on the record OR the task is_private
-     */
-    get isToggleMode() {
-        return this.props.isToggleMode || !this.props.record.data.project_id;
-    }
-
-    isView(viewNames) {
-        return viewNames.includes(this.props.viewType);
-    }
-
-    async toggleState() {
-        const toggleVal = this.currentValue == "1_done" ? "01_in_progress" : "1_done";
-        await this.updateRecord(toggleVal);
-    }
-
-    getDropdownPosition() {
-        if (this.isView(['activity', 'kanban', 'list', 'calendar']) || this.env.isSmall) {
-            return '';
-        }
-        return 'bottom-end';
-    }
-
-    getTogglerClass(currentValue) {
-        if (this.isView(['activity', 'kanban', 'list', 'calendar']) || this.env.isSmall) {
-            return 'btn btn-link d-flex p-0';
-        }
-        return 'o_state_button btn rounded-pill ' + this.colorButton[currentValue];
-    }
-
-    async updateRecord(value) {
-        const result = await super.updateRecord(value);
-        this.state.isStateButtonHighlighted = false;
-        if (result) {
-            return result;
-        }
-    }
-
-    /**
-     * @param {MouseEvent} ev
-     */
-    onMouseEnterStateButton(ev) {
-        if (!this.env.isSmall) {
-            this.state.isStateButtonHighlighted = true;
-        }
-    }
-
-    /**
-     * @param {MouseEvent} ev
-     */
-    onMouseLeaveStateButton(ev) {
-        this.state.isStateButtonHighlighted = false;
+        const fieldSelection = this.props.record.fields[this.props.name].selection;
+        const notStartedLabel =
+            fieldSelection.find(([state]) => state === "011_not_started")?.[1] || _t("Not started");
+        return [["011_not_started", notStartedLabel], ...parentOptions];
     }
 }
 
-ProjectTaskStateSelection.template = "project.ProjectTaskStateSelection";
+export const customProjectTaskStateSelection = {
+    ...projectTaskStateSelection,
+    component: CustomProjectTaskStateSelection,
+};
 
-ProjectTaskStateSelection.props = {
-    ...stateSelectionField.component.props,
-    isToggleMode: { type: Boolean, optional: true },
-    viewType: { type: String },
-}
+registry
+    .category("fields")
+    .add("project_task_state_selection", customProjectTaskStateSelection, { force: true });
 
-export const projectTaskStateSelection = {
-    ...stateSelectionField,
-    component: ProjectTaskStateSelection,
-    fieldDependencies: [{ name: "project_id", type: "many2one" }],
-    supportedOptions: [
-        ...stateSelectionField.supportedOptions, {
-            label: _t("Is toggle mode"),
-            name: "is_toggle_mode",
-            type: "boolean"
-        }
-    ],
-    extractProps({ options, viewType }) {
-        const props = stateSelectionField.extractProps(...arguments);
-        props.isToggleMode = Boolean(options.is_toggle_mode);
-        props.viewType = viewType;
-        return props;
+patch(TaskStageWithStateSelection, {
+    components: {
+        ...TaskStageWithStateSelection.components,
+        ProjectTaskStateSelection: CustomProjectTaskStateSelection,
     },
-}
-
-registry.category("fields").add("project_task_state_selection", projectTaskStateSelection);
+});
