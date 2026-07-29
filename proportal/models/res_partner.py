@@ -27,6 +27,17 @@ class ResPartner(models.Model):
     # this module's mobile references keep working regardless of module load order.
     mobile = fields.Char(string="Mobile")
 
+    def init(self):
+        # The official 17->19 upgrade drops the native res_partner.mobile column.
+        # _auto_init won't re-create it reliably on the upgrade platform (and the
+        # base upgrade may drop it again after a version-gated migration), so we
+        # force it here: init() runs on every module update, after base has fully
+        # loaded, so the re-declared column is guaranteed to exist each build.
+        super().init()
+        self.env.cr.execute(
+            "ALTER TABLE res_partner ADD COLUMN IF NOT EXISTS mobile varchar"
+        )
+
     portal_administrator = fields.Boolean(
         string="Portal Administrative User",
         help="If enabled on this contact, the associated portal user sees Company Settings."

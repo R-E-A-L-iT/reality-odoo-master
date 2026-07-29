@@ -35,6 +35,15 @@ class CrmLead(models.Model):
     # Re-declared here so the lead form's mobile field keeps working.
     mobile = fields.Char(string="Mobile")
 
+    def init(self):
+        # See proportal res.partner.init: guarantee the re-declared mobile column
+        # exists on every module update, after base loads (the 17->19 upgrade drops
+        # the native column and _auto_init doesn't reliably re-create it).
+        super().init()
+        self.env.cr.execute(
+            "ALTER TABLE crm_lead ADD COLUMN IF NOT EXISTS mobile varchar"
+        )
+
     opportunity_log = fields.Datetime(string="Opportunity Log", help="Timestamp of when this lead was converted to an opportunity.")
     opportunity_answer_date = fields.Date(string="Opportunity Answer Date", help="Date when the lead was accepted or rejected as an opportunity.")
 
