@@ -1,6 +1,6 @@
 {
     'name': 'Chatter Google Message Button',
-    'version': '17.0.1.0.0',
+    'version': '19.0.1.0.0',
     'category': 'Mail',
     'summary': 'Adds a Google Message button to the chatter for CRM leads',
     'description': '''
@@ -9,7 +9,7 @@
         are sent without headers and footers.
     ''',
     'author': 'RealIT Custom',
-    'depends': ['mail', 'crm'],
+    'depends': ['mail', 'crm', 'hr'],
     'data': [
         'views/res_users_extend.xml',
     ],
