@@ -19,6 +19,9 @@ def migrate(cr, version):
     with any dangling external id. proportal recreates its clean globe override
     from ``views/header_icons.xml``.
     """
+    # Runs on every build (idempotent), before proportal's models load.
+    _ensure_removed_base_columns(cr)
+
     if not version:
         # Fresh install: nothing stored to clean up.
         return
@@ -40,4 +43,34 @@ def migrate(cr, version):
     _logger.info(
         "proportal 19.0 migration: removed %d stale language-selector view(s) "
         "incompatible with Odoo 19", len(view_ids),
+    )
+
+
+# Fields Odoo 19 removed from the base schema but that several custom modules
+# (prophone, proportal, proleads, de_apollo_connector, odoo_twilio_sms) re-declare
+# as stored Char fields. The official 17->19 upgrade drops the native columns; when
+# a bumped module re-adds the field, the runtime SELECT expects the column but a
+# build can leave it missing (e.g. res_partner.mobile / crm_lead.mobile), which
+# aborts every request that fetches a partner or lead. Guarantee the columns here,
+# before proportal's models load. Idempotent: ADD COLUMN IF NOT EXISTS is a no-op
+# once _auto_init (or a prior run) has created it.
+_REINSTATED_COLUMNS = (
+    ("res_partner", "mobile"),
+    ("crm_lead", "mobile"),
+)
+
+
+def _ensure_removed_base_columns(cr):
+    for table, column in _REINSTATED_COLUMNS:
+        cr.execute(
+            "SELECT 1 FROM information_schema.tables WHERE table_name = %s", (table,)
+        )
+        if not cr.fetchone():
+            continue
+        cr.execute(
+            'ALTER TABLE "%s" ADD COLUMN IF NOT EXISTS "%s" varchar' % (table, column)
+        )
+    _logger.info(
+        "proportal 19.0 migration: ensured re-declared base columns exist "
+        "(res_partner.mobile, crm_lead.mobile)"
     )
