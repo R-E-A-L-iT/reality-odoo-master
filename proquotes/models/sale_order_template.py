@@ -32,10 +32,14 @@ class SaleOrderTemplate(models.Model):
         vals = super()._prepare_sale_order_line_values(order, line, **kwargs)
         if hasattr(line, 'discount') and line.discount:
             vals['discount'] = line.discount
+        if getattr(line, 'section_name_translations', False):
+            vals['section_name_translations'] = line.section_name_translations
         return vals
 
     def _prepare_sale_order_optional_line_values(self, order, option_line, **kwargs):
         vals = super()._prepare_sale_order_optional_line_values(order, option_line, **kwargs)
         if hasattr(option_line, 'discount') and option_line.discount:
             vals['discount'] = option_line.discount
+        if getattr(option_line, 'section_name_translations', False):
+            vals['section_name_translations'] = option_line.section_name_translations
         return vals

@@ -27,6 +27,35 @@ class SaleOrderLine(models.Model):
     # applied_name = fields.Char(compute="get_applied_name", string="Applied Name")
     applied_name = fields.Char(string="Applied Name")
 
+    # Per-language section titles: {lang_code: text}. Replaces the old
+    # "#translate+EN+FR" name-parsing so one quotation template can serve
+    # customers of any language with correct section names. Edited via the
+    # "Translate" action in the section dropdown.
+    section_name_translations = fields.Json(string="Section Name Translations")
+
+    @api.onchange("name")
+    def _proquotes_sync_section_translation(self):
+        # Keep the current UI language's entry in sync with inline edits of a
+        # section/subsection title, so switching the backend language relabels it
+        # and the online/PDF quote can render the customer's language.
+        for line in self:
+            if line.display_type in ("line_section", "line_subsection"):
+                lang = self.env.context.get("lang") or self.env.user.lang or "en_US"
+                translations = dict(line.section_name_translations or {})
+                if line.name:
+                    if translations.get(lang) != line.name:
+                        translations[lang] = line.name
+                        line.section_name_translations = translations
+
+    def _proquotes_section_name(self, lang=None):
+        """Resolve a section's display name for ``lang`` from the stored
+        translations, falling back to the raw name. Non-section lines just return
+        their name."""
+        self.ensure_one()
+        lang = lang or self.env.context.get("lang") or self.env.user.lang or "en_US"
+        translations = self.section_name_translations or {}
+        return translations.get(lang) or self.name or ""
+
     selected = fields.Selection(
         [("true", "Yes"), ("false", "No")],
         default="true",

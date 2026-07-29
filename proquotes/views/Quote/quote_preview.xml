@@ -922,7 +922,9 @@
                                checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
                         <input t-else="" class="optionalSectionCheckbox" type="checkbox" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
                     </t>
-                    <span t-if="line.name.strip()[0] != '#'" t-field="line.name"/>
+                    <!-- New per-line translation system takes priority -->
+                    <span t-if="line.section_name_translations" t-out="line._proquotes_section_name(language)"/>
+                    <span t-elif="line.name.strip()[0] != '#'" t-field="line.name"/>
                     <span t-elif="line.name.strip()[0] == '#'">
                         <t t-set="sname" t-value="line.name[1:].strip()"/>
                         <t t-call="proquotes.section_name_resolution"/>

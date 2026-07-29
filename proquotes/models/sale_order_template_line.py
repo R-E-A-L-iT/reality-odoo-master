@@ -22,6 +22,10 @@ _logger = logging.getLogger(__name__)
 class SaleOrderTemplateLine(models.Model):
     _inherit = "sale.order.template.line"
     
+    # Per-language section titles carried by the template so quotes created from
+    # it preserve the correct translations. See sale.order.line.section_name_translations.
+    section_name_translations = fields.Json(string="Section Name Translations")
+
     selected = fields.Selection([
         ('true', "Yes"),
         ('false', "No")], default="true", required=True, help="Field to Mark Wether Customer has Selected Product")

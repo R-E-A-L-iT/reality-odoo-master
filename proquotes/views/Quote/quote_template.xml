@@ -21,6 +21,8 @@
 
             <xpath expr="//control" position="after">
                 <field name="special" invisible="1" />
+                <!-- Loaded so the section "Translate" dialog can read/write it. -->
+                <field name="section_name_translations" column_invisible="1" />
             </xpath>
 
             <xpath expr="//list//field[@name=&quot;product_uom_qty&quot;]" position="after">

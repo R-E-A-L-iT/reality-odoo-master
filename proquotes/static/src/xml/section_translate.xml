@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Add a "Translate" item to the section options dropdown (sale order lines). -->
+    <t t-name="proquotes.section_translate_item"
+       t-inherit="sale.ListRenderer.RecordRow"
+       t-inherit-mode="extension">
+        <xpath expr="//DropdownItem[i[hasclass('fa-clone')]]" position="after">
+            <DropdownItem
+                t-if="record.data.display_type === 'line_section' or record.data.display_type === 'line_subsection'"
+                onSelected="() => this.onTranslateSection(record)">
+                <i class="me-1 fa fa-fw fa-language"/><span>Translate</span>
+            </DropdownItem>
+        </xpath>
+    </t>
+
+    <!-- Same, on the quotation template line editor. -->
+    <t t-name="proquotes.section_translate_item_template"
+       t-inherit="sale_management.ListRenderer.RecordRow"
+       t-inherit-mode="extension">
+        <xpath expr="//DropdownItem[i[hasclass('fa-clone')]]" position="after">
+            <DropdownItem
+                t-if="record.data.display_type === 'line_section' or record.data.display_type === 'line_subsection'"
+                onSelected="() => this.onTranslateSection(record)">
+                <i class="me-1 fa fa-fw fa-language"/><span>Translate</span>
+            </DropdownItem>
+        </xpath>
+    </t>
+
+    <!-- The translation editor dialog. -->
+    <t t-name="proquotes.SectionTranslateDialog">
+        <Dialog title="'Translate section name'" size="'md'">
+            <div class="o_section_translate_dialog">
+                <p class="text-muted">
+                    Enter the section title for each language. Customers see the version
+                    matching their language on the online quote and the printed PDF.
+                </p>
+                <t t-foreach="langs" t-as="lang" t-key="lang.code">
+                    <div class="mb-2">
+                        <label class="fw-bold d-block" t-esc="lang.name"/>
+                        <input type="text" class="form-control"
+                               t-att-value="state.values[lang.code]"
+                               t-on-input="(ev) => this.onInput(lang.code, ev)"/>
+                    </div>
+                </t>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-on-click="onConfirm">Save</button>
+                <button class="btn btn-secondary" t-on-click="onCancel">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+
+</templates>

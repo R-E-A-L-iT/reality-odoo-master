@@ -334,7 +334,7 @@
                                                 <span t-esc="ccp_label">CCP Label</span>
                                             </td>
                                             <td t-else="" name="td_section_line" colspan="99">
-                                                <span t-field="line.name">A section title</span>
+                                                <span t-out="line._proquotes_section_name(language)">A section title</span>
                                             </td>
                                             <t t-set="current_section" t-value="line"/>
                                             <t t-set="current_subtotal" t-value="0"/>

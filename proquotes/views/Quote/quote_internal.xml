@@ -109,6 +109,9 @@
 
             <xpath expr="//control" position="after">
                 <field name="special" column_invisible="True"/>
+                <!-- Loaded so the "Translate" section action + language-aware
+                     section labels (section_translate.js) can read/write it. -->
+                <field name="section_name_translations" column_invisible="True"/>
             </xpath>
 
 
