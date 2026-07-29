@@ -10,9 +10,18 @@ import { TaskStageWithStateSelection } from "@project/components/project_task_st
 export class CustomProjectTaskStateSelection extends ProjectTaskStateSelection {
     setup() {
         super.setup();
-        Object.assign(this.icons, { "011_not_started": "o_status" });
-        Object.assign(this.colorIcons, { "011_not_started": "" });
-        Object.assign(this.colorButton, { "011_not_started": "btn-outline-secondary" });
+        Object.assign(this.icons, {
+            "011_not_started": "o_status",
+            "01_in_progress": "o_status bg-info",
+        });
+        Object.assign(this.colorIcons, {
+            "011_not_started": "",
+            "01_in_progress": "text-info",
+        });
+        Object.assign(this.colorButton, {
+            "011_not_started": "btn-outline-secondary",
+            "01_in_progress": "btn-outline-info",
+        });
     }
 
     get options() {
