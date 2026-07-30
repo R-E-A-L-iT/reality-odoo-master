@@ -3,7 +3,6 @@
 from odoo import _, api, models
 from odoo.exceptions import ValidationError
 import re
-# Odoo 19: the module-level slugify() helper was removed; use the ir.http method.
 
 # SEO URL Model
 class SEOURL(models.AbstractModel):
@@ -33,14 +32,10 @@ class SEOURL(models.AbstractModel):
         return vals
 
 
-    # Odoo 19: create is @api.model_create_multi (receives a list of vals dicts).
-    # This mixin (website_seo_url) is inherited by product.template /
-    # product.public.category, so it runs on every product create.
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            self._check_seo_url(vals)  # normalizes vals[self._seo_url_field] in place
-        return super(SEOURL, self).create(vals_list)
+    @api.model
+    def create(self, vals):
+        vals = self._check_seo_url(vals)
+        return super(SEOURL, self).create(vals)
 
     def write(self, vals):
         for r in self:
