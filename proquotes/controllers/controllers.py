@@ -486,7 +486,8 @@ class Website(WebsiteINH):
         if lang == 'default':
             lang = request.website.default_lang_id.url_code
             r = '/%s%s' % (lang, r or '/')
-        lang_code = request.env['res.lang']._lang_get_code(lang)
+        # Odoo 19 removed res.lang._lang_get_code(); resolve via _get_data(url_code=...)
+        lang_code = request.env['res.lang']._get_data(url_code=lang).code or lang
         # replace context with correct lang, to avoid that the url_for of request.redirect remove the
         # default lang in case we switch from /fr -> /en with /en as default lang.
         request.update_context(lang=lang_code)
