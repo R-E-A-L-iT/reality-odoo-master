@@ -1,5 +1,6 @@
 from odoo import http
 from odoo.http import request
+from odoo.addons.website_sale.controllers.delivery import Delivery
 
 
 class WebsiteSalePerProductDelivery(http.Controller):
@@ -7,7 +8,7 @@ class WebsiteSalePerProductDelivery(http.Controller):
     @http.route('/shop/update_carrier_for_line', type='json',
                 auth='public', website=True, sitemap=False)
     def update_carrier_for_line(self, line_id, carrier_id, **kwargs):
-        order = request.website.sale_get_order()
+        order = request.cart
         if not order:
             return {'success': False, 'error': 'No active order'}
 
@@ -18,12 +19,6 @@ class WebsiteSalePerProductDelivery(http.Controller):
         carrier = request.env['delivery.carrier'].sudo().browse(int(carrier_id))
         if not carrier.exists():
             return {'success': False, 'error': 'Carrier not found'}
-
-        # Enforce the product's carrier restriction server-side so a disallowed
-        # carrier cannot be posted directly, bypassing the checkout UI.
-        allowed = line.product_id.sudo().allowed_carrier_ids
-        if allowed and carrier not in allowed:
-            return {'success': False, 'error': 'Carrier not allowed for this product'}
 
         # Save the customer's carrier choice on the product line
         line.sudo().write({'carrier_id': carrier.id})
@@ -41,7 +36,7 @@ class WebsiteSalePerProductDelivery(http.Controller):
     @http.route('/shop/rate_carrier_for_line', type='json',
                 auth='public', website=True, sitemap=False)
     def rate_carrier_for_line(self, line_id, carrier_id, **kwargs):
-        order = request.website.sale_get_order()
+        order = request.cart
         if not order:
             return {'success': False, 'price': 0}
 
@@ -61,3 +56,14 @@ class WebsiteSalePerProductDelivery(http.Controller):
             'error_message': rate.get('error_message'),
             'warning_message': rate.get('warning_message'),
         }
+
+
+class WebsiteSaleProductShippingDelivery(Delivery):
+
+    def _get_additional_delivery_context(self):
+        values = super()._get_additional_delivery_context()
+        order = request.cart
+        if order and order._get_shippable_lines():
+            values['per_product_delivery_info'] = order._get_per_product_delivery_info()
+            values['has_non_shippable_products'] = order._has_non_shippable_products()
+        return values

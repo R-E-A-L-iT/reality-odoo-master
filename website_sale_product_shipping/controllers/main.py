@@ -1,27 +1,13 @@
-from odoo import http
 from odoo.addons.website_sale.controllers.main import WebsiteSale
 
 
 class WebsiteSaleProductShipping(WebsiteSale):
 
-    def _get_shop_payment_values(self, order, **kwargs):
-        values = super()._get_shop_payment_values(order, **kwargs)
-
-        if http.request.website.enabled_delivery:
-            has_shippable = order._has_shippable_products()
-            has_non_shippable = order._has_non_shippable_products()
-
-            # Correct the storable flag: no_shipping products must not count
-            values['delivery_has_storable'] = has_shippable
-            values['has_non_shippable_products'] = has_non_shippable
-
-            # Remove deliveries when there is nothing physical to ship
-            if not has_shippable:
-                values.pop('deliveries', None)
-
-            # Per-product delivery selection data
-            values['per_product_delivery_info'] = order._get_per_product_delivery_info()
-
+    def _prepare_checkout_page_values(self, order_sudo, **kwargs):
+        values = super()._prepare_checkout_page_values(order_sudo, **kwargs)
+        if order_sudo._get_shippable_lines():
+            values['per_product_delivery_info'] = order_sudo._get_per_product_delivery_info()
+            values['has_non_shippable_products'] = order_sudo._has_non_shippable_products()
         return values
 
     def order_2_return_dict(self, order):

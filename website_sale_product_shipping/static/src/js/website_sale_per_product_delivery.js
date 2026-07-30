@@ -1,21 +1,19 @@
-/** @odoo-module **/
+import { Interaction } from '@web/public/interaction';
+import { registry } from '@web/core/registry';
+import { rpc } from '@web/core/network/rpc';
 
-import publicWidget from '@web/legacy/js/public/public_widget';
+export class PerProductDelivery extends Interaction {
+    static selector = '.o_per_product_delivery';
 
-publicWidget.registry.PerProductDelivery = publicWidget.Widget.extend({
-    selector: '.o_per_product_delivery',
+    dynamicContent = {
+        'input[type="radio"]': { 't-on-change': this.onCarrierChange },
+    };
 
-    start() {
-        this.rpc = this.bindService('rpc');
-        this._fetchRates();
-        return this._super(...arguments);
-    },
+    async willStart() {
+        await this.waitFor(this.fetchRates());
+    }
 
-    events: {
-        'change input[type="radio"]': '_onCarrierChange',
-    },
-
-    async _fetchRates() {
+    async fetchRates() {
         const lineId = this.el.dataset.lineId;
         for (const radio of this.el.querySelectorAll('input[type="radio"]')) {
             const carrierId = radio.dataset.carrierId;
@@ -24,7 +22,7 @@ publicWidget.registry.PerProductDelivery = publicWidget.Widget.extend({
             );
             if (!badge) continue;
             try {
-                const result = await this.rpc('/shop/rate_carrier_for_line', {
+                const result = await rpc('/shop/rate_carrier_for_line', {
                     line_id: parseInt(lineId),
                     carrier_id: parseInt(carrierId),
                 });
@@ -41,9 +39,9 @@ publicWidget.registry.PerProductDelivery = publicWidget.Widget.extend({
                 badge.textContent = 'N/A';
             }
         }
-    },
+    }
 
-    async _onCarrierChange(ev) {
+    async onCarrierChange(ev) {
         const input = ev.target;
         if (!input.dataset.carrierId) return;
 
@@ -54,10 +52,10 @@ publicWidget.registry.PerProductDelivery = publicWidget.Widget.extend({
         if (payBtn) payBtn.disabled = true;
 
         try {
-            const result = await this.rpc('/shop/update_carrier_for_line', {
+            const result = await this.waitFor(rpc('/shop/update_carrier_for_line', {
                 line_id: lineId,
                 carrier_id: carrierId,
-            });
+            }));
             if (result && result.success) {
                 // Reload so the payment form's amount is always in sync with the
                 // updated order total — prevents the "cart has been updated" error.
@@ -67,5 +65,10 @@ publicWidget.registry.PerProductDelivery = publicWidget.Widget.extend({
             console.error('Failed to update carrier for line', e);
             if (payBtn) payBtn.disabled = false;
         }
-    },
-});
+    }
+}
+
+registry.category('public.interactions').add(
+    'website_sale_product_shipping.per_product_delivery',
+    PerProductDelivery,
+);

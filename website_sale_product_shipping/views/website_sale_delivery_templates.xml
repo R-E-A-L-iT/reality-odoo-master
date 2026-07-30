@@ -2,15 +2,19 @@
 <odoo>
 
     <!--
-        Replace Odoo's single "Choose a delivery method" block with a
-        per-product delivery section. Each shippable product gets its own
-        carrier selection box. Products marked no_shipping=True are skipped.
-        Products that pick the same carrier are grouped into one delivery line.
+        Replace Odoo's single "Choose a delivery method" list with a
+        per-product delivery section inside the address-step delivery form.
+        Each shippable product gets its own carrier selection box. Products
+        marked no_shipping=True are skipped. Products that pick the same
+        carrier are grouped into one delivery line.
     -->
-    <template id="payment_delivery_per_product"
-              inherit_id="website_sale.payment_delivery"
+    <template id="delivery_form_per_product"
+              inherit_id="website_sale.delivery_form"
               priority="20">
-        <xpath expr="//div[@id='delivery_carrier']" position="replace">
+        <xpath expr="//ul[@id='o_delivery_methods']" position="attributes">
+            <attribute name="t-if">delivery_methods and not per_product_delivery_info</attribute>
+        </xpath>
+        <xpath expr="//ul[@id='o_delivery_methods']" position="before">
             <t t-if="per_product_delivery_info">
                 <t t-foreach="per_product_delivery_info" t-as="pdi">
                     <div class="o_per_product_delivery mb-3"
@@ -51,16 +55,8 @@
                 </t>
             </t>
         </xpath>
-    </template>
-
-    <!--
-        Mixed-cart notice: shown when the order contains both shippable (physical)
-        and non-shippable (digital/software) products.
-    -->
-    <template id="payment_delivery_mixed_cart_notice"
-              inherit_id="website_sale.payment_delivery">
-        <xpath expr="//div[@id='delivery_carrier']" position="before">
-            <t t-if="has_non_shippable_products and delivery_has_storable">
+        <xpath expr="//form[@id='o_delivery_form']" position="before">
+            <t t-if="has_non_shippable_products and per_product_delivery_info">
                 <div class="alert alert-info d-flex align-items-center gap-2 mb-3">
                     <i class="fa fa-info-circle fa-lg flex-shrink-0"/>
                     <span>
@@ -73,19 +69,19 @@
         </xpath>
     </template>
 
-
     <!--
-        The base cart_delivery template only shows the delivery row when
-        carrier_id is set. We never set order.carrier_id in per-product mode,
-        so override the condition to also show when amount_delivery > 0.
+        The base cart total row only shows a computed amount when carrier_id is
+        set. We never set order.carrier_id in per-product mode, so key the
+        displayed value off amount_delivery instead.
     -->
-    <template id="cart_delivery_per_product"
-              inherit_id="website_sale.cart_delivery"
+    <template id="total_delivery_per_product"
+              inherit_id="website_sale.total"
               priority="20">
-        <xpath expr="//tr[@id='order_delivery']" position="attributes">
-            <attribute name="t-if">
-                website_sale_order and (website_sale_order.carrier_id or website_sale_order.amount_delivery)
-            </attribute>
+        <xpath expr="//tr[@name='o_order_delivery']//span[@name='o_message_no_dm_set']" position="attributes">
+            <attribute name="t-att-class">'d-none' if (website_sale_order.carrier_id or website_sale_order.amount_delivery) else ''</attribute>
+        </xpath>
+        <xpath expr="//tr[@name='o_order_delivery']//span[@name='o_message_no_dm_set']/following-sibling::span" position="attributes">
+            <attribute name="t-att-class">'monetary_field' + ('' if (website_sale_order.carrier_id or website_sale_order.amount_delivery) else ' d-none')</attribute>
         </xpath>
     </template>
 

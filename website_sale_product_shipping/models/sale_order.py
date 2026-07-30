@@ -54,29 +54,12 @@ class SaleOrder(models.Model):
 
         return all_carriers
 
-    def _get_backend_delivery_methods(self):
-        """Carriers selectable in the backend 'Add shipping' wizard.
-
-        The frontend ``_get_delivery_methods`` hides carriers for
-        no_shipping-only carts; the backend wizard must instead always let an
-        internal user pick any carrier available for the order's partner,
-        regardless of the cart's shipping profile.
-        """
-        self.ensure_one()
-        carriers = self.env['delivery.carrier'].search([
-            '|', ('company_id', '=', False), ('company_id', '=', self.company_id.id),
-        ])
-        partner = self.partner_shipping_id or self.partner_id
-        if partner:
-            carriers = carriers.available_carriers(partner)
-        return carriers
-
     def _get_estimated_weight(self):
         """Exclude no_shipping products from shipping weight calculation."""
         self.ensure_one()
         weight = 0.0
         for line in self.order_line.filtered(
-            lambda l: l.product_id.type in ['product', 'consu']
+            lambda l: l.product_id.type == 'consu'
             and not l.is_delivery
             and not l.display_type
             and l.product_uom_qty > 0
@@ -87,7 +70,7 @@ class SaleOrder(models.Model):
 
     def _has_shippable_products(self):
         return any(
-            line.product_id.type in ['consu', 'product']
+            line.product_id.type == 'consu'
             and not line.product_id.no_shipping
             for line in self.order_line
             if not line.is_delivery and not line.display_type
@@ -107,7 +90,7 @@ class SaleOrder(models.Model):
         return self.order_line.filtered(
             lambda l: not l.is_delivery
             and not l.display_type
-            and l.product_id.type in ['consu', 'product']
+            and l.product_id.type == 'consu'
             and not l.product_id.no_shipping
         )
 
@@ -116,13 +99,9 @@ class SaleOrder(models.Model):
         carriers = self._get_delivery_methods().sudo()
         result = []
         for line in self._get_shippable_lines():
-            # If the product restricts its carriers, only offer the allowed
-            # ones that are also currently available; otherwise offer all.
-            allowed = line.product_id.sudo().allowed_carrier_ids
-            line_carriers = carriers.filtered(lambda c: c in allowed) if allowed else carriers
             result.append({
                 'line': line,
-                'carriers': line_carriers,
+                'carriers': carriers,
                 'selected_carrier': line.carrier_id,
             })
         return result
@@ -171,27 +150,28 @@ class SaleOrder(models.Model):
             vals['carrier_id'] = carrier.id
             self.env['sale.order.line'].sudo().create(vals)
 
-    def _check_carrier_quotation(self, force_carrier_id=None, keep_carrier=False):
-        """Skip standard single-carrier logic for orders with shippable products.
+    def _get_preferred_delivery_method(self, available_delivery_methods):
+        """Skip standard single-carrier preference when per-product carriers apply."""
+        if self._get_shippable_lines():
+            return self.env['delivery.carrier']
+        return super()._get_preferred_delivery_method(available_delivery_methods)
 
-        Odoo's default implementation creates ONE delivery line for the whole order.
+    def _set_delivery_method(self, delivery_method, rate=None):
+        """Skip standard single-carrier commit when per-product carriers apply.
+
+        Odoo's default implementation sets ONE carrier for the whole order.
         In per-product mode each physical product gets its own carrier selection, so
-        we must never let the default logic run — it would create a duplicate/standard
-        delivery line that survives alongside the per-product ones.
+        we must never let the default logic set `carrier_id` — it would create a
+        duplicate/standard delivery line alongside the per-product ones.
         """
-        if self._has_shippable_products():
-            # Remove any standard delivery line Odoo may have auto-created on a
-            # previous call (no source_line_ids = created by the default flow)
-            stale = self.env['sale.order.line'].search([
-                ('order_id', '=', self.id),
-                ('is_delivery', '=', True),
-                ('source_line_ids', '=', False),
-            ])
-            stale.filtered(lambda l: l.qty_invoiced == 0).unlink()
-            return True
-        return super()._check_carrier_quotation(
-            force_carrier_id=force_carrier_id, keep_carrier=keep_carrier
-        )
+        if self._get_shippable_lines():
+            self._remove_delivery_line()
+            return
+        return super()._set_delivery_method(delivery_method, rate=rate)
+
+    def _get_backend_delivery_methods(self):
+        """Carriers offered by the backend 'Add Shipping' wizard on this order."""
+        return self._get_delivery_methods()
 
     def _check_cart_is_ready_to_be_paid(self):
         """Per-product delivery validation: every physical product needs a carrier."""
