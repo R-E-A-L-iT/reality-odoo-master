@@ -67,21 +67,28 @@ export class SectionTranslateDialog extends Component {
 // Add the "Translate" action to the section options dropdown, on both the sale
 // order line editor (sol_o2m) and the quotation template line editor
 // (so_template_line_o2m) so translations can be authored in either place.
-const sectionTranslateRendererPatch = {
-    setup() {
-        super.setup();
-        this.translateDialog = useService("dialog");
-        this.translateOrm = useService("orm");
-    },
+//
+// NOTE: each patch() call needs its OWN object literal — Odoo's patch reparents
+// the patch object's prototype so `super` resolves, so a shared object would
+// corrupt the super-chain of whichever class was patched first (breaking its
+// setup(), e.g. leaving productColumns undefined).
+function makeSectionTranslatePatch() {
+    return {
+        setup() {
+            super.setup();
+            this.translateDialog = useService("dialog");
+            this.translateOrm = useService("orm");
+        },
 
-    async onTranslateSection(record) {
-        const langs = await this.translateOrm.searchRead(
-            "res.lang",
-            [["active", "=", true]],
-            ["code", "name"]
-        );
-        this.translateDialog.add(SectionTranslateDialog, { record, langs });
-    },
-};
-patch(SaleOrderLineListRenderer.prototype, sectionTranslateRendererPatch);
-patch(SaleOrderTemplateLineListRenderer.prototype, sectionTranslateRendererPatch);
+        async onTranslateSection(record) {
+            const langs = await this.translateOrm.searchRead(
+                "res.lang",
+                [["active", "=", true]],
+                ["code", "name"]
+            );
+            this.translateDialog.add(SectionTranslateDialog, { record, langs });
+        },
+    };
+}
+patch(SaleOrderLineListRenderer.prototype, makeSectionTranslatePatch());
+patch(SaleOrderTemplateLineListRenderer.prototype, makeSectionTranslatePatch());
