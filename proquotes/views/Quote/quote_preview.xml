@@ -565,117 +565,7 @@
             <t t-if="line.name == '$omnigo'">
                 <tr style="padding: 0; margin: 0;">
                     <td colspan="100" style="border: none; padding: 0 !important; margin: 0;">
-
-                        <div style="
-                            background-color: #db0d0d;
-                            padding: 4px;
-                            margin: 0;
-                            line-height: normal;
-                        ">
-                            <div style="
-                                border: 1px solid #ffffff;
-                                padding: 20px 16px;
-                                margin: 0;
-                                display: flex;
-                                flex-direction: column;
-                                align-items: center;
-                                gap: 16px;
-                            ">
-                                <!-- Video — full inner width, rounded corners via wrapper -->
-                                <div style="
-                                    width: 100%;
-                                    border-radius: 10px;
-                                    overflow: hidden;
-                                ">
-                                    <!-- English video -->
-                                    <t t-if="language != 'fr_CA'">
-                                        <iframe
-                                            src="https://player.vimeo.com/video/1197522692"
-                                            width="100%" height="400"
-                                            frameborder="0"
-                                            allow="autoplay; fullscreen; picture-in-picture"
-                                            allowfullscreen=""
-                                            style="display:block; width:100%;"
-                                        ></iframe>
-                                    </t>
-                                    <!-- French video -->
-                                    <t t-else="">
-                                        <iframe
-                                            src="https://player.vimeo.com/video/1198501160"
-                                            width="100%" height="400"
-                                            frameborder="0"
-                                            allow="autoplay; fullscreen; picture-in-picture"
-                                            allowfullscreen=""
-                                            style="display:block; width:100%;"
-                                        ></iframe>
-                                    </t>
-                                </div>
-
-                                <!-- Text + button on the same line, centred -->
-                                <div style="
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    gap: 20px;
-                                    flex-wrap: wrap;
-                                ">
-                                    <span style="
-                                        color: white;
-                                        font-size: 17px;
-                                        font-weight: 700;
-                                        line-height: 1.3;
-                                        margin: 0;
-                                    ">
-                                        <t t-if="language == 'fr_CA'">
-                                            Découvrez notre nouvel adaptateur tout-en-un OmniGO pour le BLK2GO.
-                                        </t>
-                                        <t t-else="">
-                                            Discover our new all in one OmniGO adapter for the BLK2GO.
-                                        </t>
-                                    </span>
-
-                                    <a t-if="language == 'fr_CA'"
-                                       href="https://www.r-e-a-l.it/omnigo"
-                                       target="_blank"
-                                       style="
-                                           display: inline-block;
-                                           background: #ffffff;
-                                           color: #000000;
-                                           text-decoration: none;
-                                           font-weight: 700;
-                                           padding: 10px 22px;
-                                           border: none;
-                                           border-radius: 6px;
-                                           box-shadow: none;
-                                           white-space: nowrap;
-                                           -webkit-appearance: none;
-                                           appearance: none;
-                                       ">
-                                        En savoir plus
-                                    </a>
-                                    <a t-else=""
-                                       href="https://www.r-e-a-l.it/omnigo"
-                                       target="_blank"
-                                       style="
-                                           display: inline-block;
-                                           background: #ffffff;
-                                           color: #000000;
-                                           text-decoration: none;
-                                           font-weight: 700;
-                                           padding: 10px 22px;
-                                           border: none;
-                                           border-radius: 6px;
-                                           box-shadow: none;
-                                           white-space: nowrap;
-                                           -webkit-appearance: none;
-                                           appearance: none;
-                                       ">
-                                        Learn More
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
+                        <t t-call="proquotes.omnigo_block_content"/>
                     </td>
                 </tr>
             </t>
@@ -1653,8 +1543,13 @@
         <xpath expr="//div[@t-if='sale_order._has_to_be_signed() or sale_order._has_to_be_paid()']" position="replace">
 
 
-            <!-- approve financing section -->
-            <div class="approve_section" t-if="sale_order.approve_financing">
+            <!-- OmniGO advertisement block (selected via Quote Builder "Other Blocks") -->
+            <div t-if="sale_order._has_preview_block('omnigo')" class="omnigo_preview_block" style="margin: 16px 0;">
+                <t t-call="proquotes.omnigo_block_content"/>
+            </div>
+
+            <!-- approve financing section (selected via Quote Builder "Other Blocks") -->
+            <div class="approve_section" t-if="sale_order._has_preview_block('approve_financing')">
                 <div class="approve_section_inner">
                     <!-- approve plugin install -->
                     <script type="text/javascript" async="">window.kwipped_approve = window.kwipped_approve || {};

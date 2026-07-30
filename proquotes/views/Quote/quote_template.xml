@@ -11,6 +11,7 @@
                 <group string="Defaults for Quotes">
                     <field name="header_id"
                            domain="[('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'header')]"/>
+                    <field name="preview_block_ids" widget="many2many_checkboxes"/>
                 </group>
             </xpath>
 

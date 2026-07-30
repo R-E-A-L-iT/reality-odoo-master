@@ -28,6 +28,15 @@ class SaleOrderTemplate(models.Model):
         domain="[('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'header')]",
     )
 
+    # Preview blocks carried by the template into quotes created from it.
+    preview_block_ids = fields.Many2many(
+        "proquotes.preview.block",
+        "sale_order_template_preview_block_rel",
+        "template_id",
+        "block_id",
+        string="Other Blocks",
+    )
+
     def _prepare_sale_order_line_values(self, order, line, **kwargs):
         vals = super()._prepare_sale_order_line_values(order, line, **kwargs)
         if hasattr(line, 'discount') and line.discount:

@@ -69,8 +69,8 @@
 
                     <field name="customer_po_number" invisible="0"/>
                     <field name="manual_invoice_status"/>
-                    <!--  invisible="['|', ('partner_id.country_id.code', '!=', 'US')]" -->
-                    <field name="approve_financing"/>
+                    <!-- approve_financing is now selected via the Quote Builder
+                         "Other Blocks" list; kept on the model for back-compat. -->
                 </group>
             </xpath>
 
@@ -92,13 +92,15 @@
                  read like the native "Header"/"Footer" pickers (bold heading
                  above a selectable list) instead of a labelled dropdown. -->
             <xpath expr="//page[@name='pdf_quote_builder']" position="inside">
-                <div name="preview_header_footer" class="mt-4">
+                <div name="preview_header_footer" class="mt-4 o_preview_builder">
                     <separator string="Preview Header (online quote)"/>
-                    <field name="header_id" nolabel="1" widget="radio"
+                    <field name="header_id" nolabel="1" widget="radio" class="o_preview_builder_list"
                            domain="['&amp;', '&amp;', ('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'header'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]"/>
                     <separator string="Preview Footer (online quote)"/>
-                    <field name="footer_id" nolabel="1" widget="radio"
+                    <field name="footer_id" nolabel="1" widget="radio" class="o_preview_builder_list"
                            domain="['&amp;', '&amp;', ('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'footer'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]"/>
+                    <separator string="Other Blocks (online quote)"/>
+                    <field name="preview_block_ids" nolabel="1" widget="many2many_checkboxes" class="o_preview_builder_list"/>
                 </div>
             </xpath>
 

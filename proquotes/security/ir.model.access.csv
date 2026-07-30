@@ -3,6 +3,8 @@ access_proquotes_variant,access_proquotes_variant,model_proquotes_variant,base.g
 proquotes.access_renewal_entry,access_renewal_entry,proquotes.model_renewal_entry,base.group_user,1,1,1,1
 proquotes.access_renewal_map,access_renewal_map,proquotes.model_renewal_map,base.group_user,1,1,1,1
 proquotes.access_preconfigured_section,access_preconfigured_section,proquotes.model_preconfigured_section,,1,1,1,1
+proquotes.access_preview_block_user,access_preview_block_user,proquotes.model_proquotes_preview_block,base.group_user,1,0,0,0
+proquotes.access_preview_block_manager,access_preview_block_manager,proquotes.model_proquotes_preview_block,sales_team.group_sale_manager,1,1,1,1
 proquotes.access_preconfigured_section_line,access_preconfigured_section_line,proquotes.model_preconfigured_section_line,,1,1,1,1
 +proquotes.access_ccp_type_config_user,access_ccp_type_config_user,proquotes.model_ccp_type_config,base.group_user,1,0,0,0
 proquotes.access_ccp_type_config_manager,access_ccp_type_config_manager,proquotes.model_ccp_type_config,sales_team.group_sale_manager,1,1,1,1

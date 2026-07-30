@@ -114,6 +114,24 @@ class order(models.Model):
 
     approve_financing = fields.Boolean(string="APPROVE Financing")
 
+    # Optional content blocks shown on the online quote preview, selected in the
+    # Quote Builder tab ("Other Blocks"). Replaces the old approve_financing
+    # checkbox / "$omnigo" named section as the way to toggle these blocks.
+    preview_block_ids = fields.Many2many(
+        "proquotes.preview.block",
+        "sale_order_preview_block_rel",
+        "order_id",
+        "block_id",
+        string="Other Blocks",
+    )
+
+    def _has_preview_block(self, code):
+        self.ensure_one()
+        # Back-compat: the legacy approve_financing boolean still enables its block.
+        if code == "approve_financing" and self.approve_financing:
+            return True
+        return bool(self.preview_block_ids.filtered(lambda b: b.code == code))
+
     # partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
     email_contacts = fields.Many2many("res.partner", "display_name", string="Email Contacts")
 
@@ -417,6 +435,8 @@ class order(models.Model):
     def _onchange_sale_order_template_id_set_header_footer(self):
         if self.sale_order_template_id and self.sale_order_template_id.header_id:
             self.header_id = self.sale_order_template_id.header_id
+        if self.sale_order_template_id:
+            self.preview_block_ids = self.sale_order_template_id.preview_block_ids
     
     # this function returns a json of the selected items on the quote for the approve plugin
     def get_approve_items_json(self):

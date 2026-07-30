@@ -94,6 +94,7 @@
     "data": [
         "security/ir.model.access.csv",
         # ccp configuration data
+        "data/preview_block_data.xml",
         "data/ccp_type_config_data.xml",
         "data/ccp_period_config_data.xml",
         "data/ccp_scanner_config_data.xml",
@@ -104,6 +105,7 @@
         # confirmation activity templates
         "views/Configuration/confirmation_activity_view.xml",
         # quotes
+        "views/Quote/preview_blocks.xml",
         "views/Quote/quote_report.xml",
         "views/Quote/quote_preview.xml",
         "views/Quote/quote_internal.xml",

@@ -9,6 +9,7 @@ from . import account_move
 from . import calendar_event
 from . import crm_lead
 from . import quotation_document
+from . import preview_block
 from . import helpdesk_ticket
 from . import ir_ui_view
 from . import mail_compose_message

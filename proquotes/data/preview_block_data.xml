@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="preview_block_approve_financing" model="proquotes.preview.block">
+        <field name="name">APPROVE Financing</field>
+        <field name="code">approve_financing</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="preview_block_omnigo" model="proquotes.preview.block">
+        <field name="name">OmniGO Advertisement</field>
+        <field name="code">omnigo</field>
+        <field name="sequence">20</field>
+    </record>
+</odoo>
