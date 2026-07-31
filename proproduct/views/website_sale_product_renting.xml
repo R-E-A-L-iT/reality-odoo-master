@@ -4,7 +4,7 @@
               name="Hide rental website elements unless enabled on product">
 
         <!-- Rental period block -->
-        <xpath expr="//div[hasclass('js_main_product')]//t[@t-placeholder='select']/following-sibling::div[1]"
+        <xpath expr="//div[hasclass('o_wsale_product_details_content_section_renting')]"
                position="attributes">
             <attribute name="t-if">
                 combination_info.get('is_rental')
@@ -14,12 +14,13 @@
         </xpath>
 
         <!-- Pricing table block -->
-        <xpath expr="//div[@id='product_documents']/preceding-sibling::t[1]"
+        <xpath expr="//t[div[hasclass('o_wsale_product_details_content_section_rental_pricing')]]"
                position="attributes">
             <attribute name="t-if">
                 combination_info.get('is_rental')
                 and product.rental_behaviour_on_store
                 and (not website.prevent_zero_price_sale or combination_info['current_rental_price'])
+                and not (is_view_active('website_sale_comparison.accordion_specs_item') or is_view_active('website_sale.accordion_more_information'))
             </attribute>
         </xpath>
 
