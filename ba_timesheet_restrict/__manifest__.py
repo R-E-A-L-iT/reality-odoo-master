@@ -33,15 +33,13 @@
 ##############################################################################
 {
     'name': 'Timesheet Date Restriction',
-    'version': '1.0',
+    'version': '19.0.1.0.0',
     'summary': 'Restrict timesheet entries to a configurable number of past days and disallow future dates.',
     'category': 'Human Resources',
     'author': "Braincrew Apps",
-    'license': "AGPL-3",
     'depends': ['hr_timesheet'],
     'data': [
         'views/res_config_settings_views.xml',
-        # 'views/account_analytic_line_views.xml',
     ],
     'installable': True,
     'application': False,
