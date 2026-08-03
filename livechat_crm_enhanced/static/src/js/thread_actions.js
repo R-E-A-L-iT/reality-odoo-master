@@ -4,8 +4,12 @@ import { threadActionsRegistry } from "@mail/core/common/thread_actions";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
 
-// Register the "Create Lead" thread action
-threadActionsRegistry.add("create-lead", {
+// Register the "Create Lead (Enhanced)" thread action.
+// NOTE: odoo19's crm_livechat already registers its own "create-lead" thread
+// action (a simple /lead-command popover). This module's smart-match/update/
+// enrichment flow is functionally richer, so it's kept as a separate action
+// with its own id/label rather than colliding with or replacing stock's.
+threadActionsRegistry.add("create-lead-enhanced", {
     condition({ owner, thread }) {
         // Show only for livechat channels, and not inside a chat window popup.
         return (
@@ -21,7 +25,7 @@ threadActionsRegistry.add("create-lead", {
     },
     icon: "fa fa-fw fa-handshake-o",
     iconLarge: "fa fa-fw fa-lg fa-handshake-o",
-    name: _t("Create Lead"),
+    name: _t("Create Lead (Enhanced)"),
     async open({ action, thread }) {
         try {
             // Get current lead status
