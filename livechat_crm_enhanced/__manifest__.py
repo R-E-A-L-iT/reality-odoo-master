@@ -1,6 +1,6 @@
 {
     'name': 'LiveChat CRM Enhanced',
-    'version': '19.0.2.0.0',
+    'version': '19.0.2.1.0',
     'category': 'Sales/CRM',
     'summary': 'Enhanced LiveChat integration with CRM lead creation',
     'description': """
@@ -27,20 +27,14 @@
         'views/res_config_settings_views.xml',
     ],
     'assets': {
-        # Odoo 19 migration: temporarily disabled. This "Create Lead" thread action
-        # (a) was declared in im_livechat.embed_assets — the restricted public
-        # livechat-widget bundle that can't resolve backend imports (@mail/core,
-        # useService, rpc), which fails the bundle build and blanks the client — and
-        # (b) uses the v17 thread-action definition shape; the mail thread-action API
-        # changed in v18/19. Re-add it (backend bundle only, ported to the v19
-        # registerThreadAction API) once reviewed. The livechat_channel_count field
-        # and the rest of the module stay active (version bump kept).
-        # 'web.assets_backend': [
-        #     'livechat_crm_enhanced/static/src/js/thread_actions.js',
-        # ],
-        # 'im_livechat.embed_assets': [
-        #     'livechat_crm_enhanced/static/src/js/thread_actions.js',
-        # ],
+        # Backend-only: this "Create Lead" thread action is a Discuss-app feature for
+        # internal agents. It must NOT be added to im_livechat.embed_assets (the
+        # restricted public livechat-widget bundle) — that bundle can't resolve
+        # backend-only imports (@mail/core, useService), and the button isn't
+        # relevant to anonymous visitors anyway.
+        'web.assets_backend': [
+            'livechat_crm_enhanced/static/src/js/thread_actions.js',
+        ],
     },
     'installable': True,
     'application': False,
