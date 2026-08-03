@@ -1,10 +1,26 @@
 /** @odoo-module **/
 
-import { threadActionsRegistry } from "@mail/core/common/thread_actions";
+import { threadActionsRegistry, ThreadAction } from "@mail/core/common/thread_actions";
+import { patch } from "@web/core/utils/patch";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
 
+// Hide crm_livechat's stock "create-lead" thread action (the plain /lead-command
+// popover) — our "create-lead-enhanced" action below fully replaces it, so we
+// don't want to show both. crm_livechat enables it via its own ThreadAction
+// patch (odoo/addons/crm_livechat/static/src/core/thread_action_patch.js);
+// short-circuit to false here for that one id before its check runs.
+patch(ThreadAction.prototype, {
+    _condition({ action, ...rest }) {
+        if (action.id === "create-lead") {
+            return false;
+        }
+        return super._condition({ action, ...rest });
+    },
+});
+
 // Register the "Create Lead (Enhanced)" thread action.
+
 // NOTE: odoo19's crm_livechat already registers its own "create-lead" thread
 // action (a simple /lead-command popover). This module's smart-match/update/
 // enrichment flow is functionally richer, so it's kept as a separate action
