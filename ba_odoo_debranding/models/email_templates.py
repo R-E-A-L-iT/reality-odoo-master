@@ -6,7 +6,7 @@ class MailTemplate(models.Model):
     _inherit = "mail.template"
 
     def init(self):
-        template_mail_template_data_portal_welcome = self.env.ref('portal.mail_template_data_portal_welcome')
+        template_mail_template_data_portal_welcome = self.env.ref('portal.mail_template_data_portal_welcome', raise_if_not_found=False)
         if template_mail_template_data_portal_welcome:
             template_mail_template_data_portal_welcome.sudo().write({
                 'body_html': """
