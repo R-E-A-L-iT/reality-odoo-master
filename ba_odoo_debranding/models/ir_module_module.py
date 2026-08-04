@@ -24,17 +24,6 @@ class IrModule(models.Model):
         modules = self.browse(self.env.context.get('active_ids'))
         [module.button_immediate_uninstall() for module in modules if module not in ['base', 'web']]
 
-    def module_multi_refresh_po(self):
-        lang = self.env.user.lang
-        modules = self.browse(self.env.context.get('active_ids'))
-        for rec in modules:
-            translate = self.env['ir.translation'].search([
-                ('lang', '=', lang),
-                ('module', '=', rec.name)
-            ])
-            translate.sudo().unlink()
-        self.sudo().with_context(overwrite=True)._update_translations(lang)
-
     def button_get_po(self):
         self.ensure_one()
         action = self.env.ref('ba_odoo_debranding.action_server_module_multi_get_po').read()[0]

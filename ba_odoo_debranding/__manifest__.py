@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Odoo Debranding',
-    'version': '1.0',
+    'version': '19.0.1.0.0',
     'author': 'Braincrew Apps',
     'category': 'Productivity',
     'website': 'http://www.braincrewapps.com',
