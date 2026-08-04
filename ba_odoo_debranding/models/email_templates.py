@@ -199,7 +199,7 @@ class MailTemplate(models.Model):
                         Dear <t t-out="object.name or ''">Marc Demo</t>,<br /><br />
                         You have been invited by <t t-out="object.company_id.name or ''">YourCompany</t> to connect.
                         <div style="margin: 16px 0px 16px 0px;">
-                            <a t-att-href="object.signup_url"
+                            <a t-att-href="object.partner_id._get_signup_url()"
                                 style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
                                 Accept invitation
                             </a>
