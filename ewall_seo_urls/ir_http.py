@@ -2,6 +2,8 @@
 import re
 import unicodedata
 
+from werkzeug.exceptions import NotFound
+
 from odoo import models
 from odoo.http import request
 from odoo.addons.website.models.ir_http import ModelConverter as WebsiteModelConverter
@@ -37,6 +39,14 @@ class ModelConverterCustom(WebsiteModelConverter):
                 )
                 if record:
                     return record.with_context(_converter_value=value)
+        # No SEO-slug match. Our regex is more permissive than the core
+        # unslug pattern (it doesn't require a trailing numeric id), so
+        # falling through blindly can hand website_sale controllers an
+        # empty/wrong recordset instead of a clean 404. Only defer to the
+        # default id-based resolution when the value actually contains a
+        # resolvable id; otherwise this URL genuinely doesn't exist.
+        if request.env['ir.http']._unslug(value)[1] is None:
+            raise NotFound()
         return super().to_python(value)
 
 

@@ -32,15 +32,15 @@ class SEOURL(models.AbstractModel):
         return vals
 
 
-    @api.model
-    def create(self, vals):
-        vals = self._check_seo_url(vals)
-        return super(SEOURL, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        vals_list = [self._check_seo_url(vals) for vals in vals_list]
+        return super(SEOURL, self).create(vals_list)
 
     def write(self, vals):
         for r in self:
-            vals = r._check_seo_url(vals, record_id=r.id)
-            super(SEOURL, r).write(vals)
+            r_vals = r._check_seo_url(dict(vals), record_id=r.id)
+            super(SEOURL, r).write(r_vals)
         return True
 
     # SEO URL Unique Value Check
@@ -79,6 +79,6 @@ class SEOURL(models.AbstractModel):
             pattern = patterns.get(record.seo_url_language)
             
             if record.seo_url and pattern and not re.match(pattern, record.seo_url):
-                raise models.ValidationError(
+                raise ValidationError(
                     f"The URL can only contain characters valid for the selected language ({record.seo_url_language})."
                 )
