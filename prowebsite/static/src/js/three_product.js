@@ -1991,9 +1991,14 @@ whenReady(async () => {
 // happens after the DOM is already built). Finds any promo popups on the page,
 // moves them into a single flex container so they stack and auto-collapse on dismiss.
 (function () {
-    var omnigo = document.querySelector(".o_omnigo_promo");
-    var rtc    = document.querySelector(".o_rtc_promo");
-    if (!omnigo && !rtc) return;
+    // Collect every promo card on the page (there can be more than one of each
+    // class — e.g. two .o_omnigo_promo cards for OmniGO and Omni360). Using
+    // querySelectorAll (not querySelector) is what lets any number of cards
+    // stack; order in the stack follows DOM order.
+    var promos = Array.prototype.slice.call(
+        document.querySelectorAll(".o_omnigo_promo, .o_rtc_promo")
+    );
+    if (!promos.length) return;
 
     var stack = document.createElement("div");
     stack.className = "o_promo_stack";
@@ -2004,9 +2009,11 @@ whenReady(async () => {
     // The class is added here, before the website's publicWidget scan runs, so
     // its selector-based tilt widget (selector: ".o_liquid_glass") auto-attaches
     // to them — no direct import, keeping prowebsite decoupled from proquotes.
-    // OmniGO on top, RTC below
-    if (omnigo) { omnigo.classList.add("o_liquid_glass"); omnigo.parentNode.removeChild(omnigo); stack.appendChild(omnigo); }
-    if (rtc)    { rtc.classList.add("o_liquid_glass");    rtc.parentNode.removeChild(rtc);       stack.appendChild(rtc);    }
+    promos.forEach(function (p) {
+        p.classList.add("o_liquid_glass");
+        p.parentNode.removeChild(p);
+        stack.appendChild(p);
+    });
 
     document.body.appendChild(stack);
 
@@ -2016,8 +2023,7 @@ whenReady(async () => {
     // driven). Clear the animation once it ends so the tilt transform can take
     // over; the final keyframe pose is visually identical to the tilt's resting
     // pose, so there's no jump.
-    [omnigo, rtc].forEach(function (p) {
-        if (!p) { return; }
+    promos.forEach(function (p) {
         p.addEventListener("animationend", function onIn(e) {
             if (e.animationName !== "omnigo-promo-in") { return; }
             p.style.animation = "none";
