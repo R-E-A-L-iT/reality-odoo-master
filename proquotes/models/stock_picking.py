@@ -316,12 +316,24 @@ class StockPicking(models.Model):
                 },
             )
 
+            # Localise the subject the same way the email body does: this module
+            # has no .po files, so translation is handled by branching on the
+            # customer's language (see proquotes.software_license_email_body),
+            # not by gettext/_(). Fall back to English for any other language.
+            partner_lang = (sale_order.partner_id.lang or '').lower()
+            if partner_lang == 'fr_ca':
+                subject = f"Licences logicielles pour {sale_order.name}"
+            elif partner_lang == 'es_es':
+                subject = f"Licencias de software para {sale_order.name}"
+            else:
+                subject = f"Software Licenses for {sale_order.name}"
+
             sale_order.with_context(
                 lang=sale_order.partner_id.lang,
                 mail_notify_force_send=True,
             ).message_post(
                 partner_ids=partners.ids,
-                subject=f"Software Licenses for {sale_order.name}",
+                subject=subject,
                 body=body_html,
                 message_type='comment',
                 subtype_xmlid='mail.mt_comment',
