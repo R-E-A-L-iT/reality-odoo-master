@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_discuss_channel_livechat_crm_user,discuss.channel.livechat.crm.user,mail.model_discuss_channel,crm.group_use_lead,1,1,0,0
-access_crm_lead_livechat_user,crm.lead.livechat.user,crm.model_crm_lead,im_livechat.im_livechat_group_user,1,0,0,0
