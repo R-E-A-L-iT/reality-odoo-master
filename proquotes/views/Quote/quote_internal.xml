@@ -94,10 +94,10 @@
             <xpath expr="//page[@name='pdf_quote_builder']" position="inside">
                 <div name="preview_header_footer" class="mt-4">
                     <separator string="Preview Header (online quote)"/>
-                    <field name="header_id" nolabel="1" widget="radio"
+                    <field name="header_id" nolabel="1" widget="selection_badge"
                            domain="['&amp;', '&amp;', ('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'header'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]"/>
                     <separator string="Preview Footer (online quote)"/>
-                    <field name="footer_id" nolabel="1" widget="radio"
+                    <field name="footer_id" nolabel="1" widget="selection_badge"
                            domain="['&amp;', '&amp;', ('active', '=', True), ('doc_class', '=', 'preview'), ('document_type', '=', 'footer'), '|', ('company_ids', '=', False), ('company_ids', 'in', company_id)]"/>
                     <separator string="Other Blocks (online quote)"/>
                     <field name="preview_block_ids" nolabel="1" widget="many2many_checkboxes"/>
