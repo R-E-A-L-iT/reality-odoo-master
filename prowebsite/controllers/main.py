@@ -327,6 +327,81 @@ class ProwebsiteController(http.Controller):
         return {'success': True, 'lead_id': lead.id}
 
     @http.route(
+        '/tradeshow_signup/submit',
+        type='json',
+        auth='public',
+        website=True,
+        csrf=False,
+    )
+    def tradeshow_signup_submit(self, **kw):
+        """Create a CRM opportunity from a tradeshow / "stay in the loop" contact
+        signup and assign it round-robin to a member of the Sales team.
+
+        Simpler sibling of rtc_demo_submit: no week/location — just contact
+        details plus an optional product-of-interest and event name, so the same
+        Sales pipeline picks these up alongside demo requests."""
+        email = (kw.get('email') or '').strip()
+        if not email or not _EMAIL_RE.match(email):
+            return {'success': False, 'error': 'invalid_email'}
+
+        full_name = (kw.get('full_name') or '').strip()
+        company = (kw.get('company') or '').strip()
+        phone = (kw.get('phone') or '').strip()
+        product = (kw.get('product') or '').strip()
+        event = (kw.get('event') or '').strip()
+        notes = (kw.get('notes') or '').strip()
+
+        description = (
+            "<p><b>Tradeshow / contact signup</b></p>"
+            "<ul>"
+            "<li>Event: %s</li>"
+            "<li>Product of interest: %s</li>"
+            "<li>Company: %s</li>"
+            "<li>Phone: %s</li>"
+            "<li>Email: %s</li>"
+            "%s"
+            "</ul>"
+        ) % (
+            event or '-', product or '-', company or '-', phone or '-', email,
+            ('<li>Notes: %s</li>' % notes) if notes else '',
+        )
+
+        try:
+            team = self._sales_team()
+            user = self._drb_pick_salesperson(team)
+        except Exception as e:
+            _logger.warning("[tradeshow_signup] team/salesperson resolution failed: %s", e)
+            team = request.env['crm.team']
+            user = request.env['res.users']
+
+        title = 'Tradeshow signup — %s' % (company or full_name or email)
+        if event:
+            title += ' (%s)' % event
+
+        vals = {
+            'name': title,
+            'type': 'opportunity',
+            'contact_name': full_name or False,
+            'partner_name': company or False,
+            'email_from': email,
+            'phone': phone or False,
+            'description': description,
+            'team_id': team.id if team else False,
+            'user_id': user.id if user else False,
+        }
+
+        try:
+            lead = request.env['crm.lead'].sudo().create(vals)
+        except Exception as e:
+            _logger.exception("[tradeshow_signup] lead creation failed: %s", e)
+            return {'success': False, 'error': 'create_failed'}
+
+        if not team:
+            _logger.warning("[tradeshow_signup] lead %s created with no sales team resolved", lead.id)
+
+        return {'success': True, 'lead_id': lead.id}
+
+    @http.route(
         '/product_demo/submit',
         type='json',
         auth='public',

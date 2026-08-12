@@ -53,6 +53,9 @@ whenReady(() => {
 
     const form = page.querySelector(".o_rtc_demo_form");
     if (!form) return;
+    // The tradeshow signup page reuses the .o_rtc_demo_* styling but is driven
+    // by tradeshow_signup.js (different fields, different endpoint) — skip it.
+    if (form.classList.contains("o_rtc_signup_form")) return;
 
     const weekSel = form.querySelector('[name="week"]');
     buildWeekOptions(weekSel);

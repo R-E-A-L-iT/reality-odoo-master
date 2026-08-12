@@ -35,6 +35,7 @@
             'prowebsite/static/src/js/product_page.js',
             'prowebsite/static/src/js/multimapper.js',
             'prowebsite/static/src/js/rtc_demo_request.js',
+            'prowebsite/static/src/js/tradeshow_signup.js',
             'prowebsite/static/src/js/product_lead.js',
         ],
     }
