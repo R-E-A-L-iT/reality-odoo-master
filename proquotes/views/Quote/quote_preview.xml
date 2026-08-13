@@ -466,6 +466,18 @@
             <t t-set="display_taxes" t-value="False"/>
         </xpath>
 
+        <!-- Widen the section-name colspan on rental orders. Odoo's base computes
+             section_name_colspan = 3 + display_discount + display_taxes, counting
+             only the native columns (Products / Qty / Unit Price / Disc / Taxes /
+             Amount). We inject two extra columns for rental orders — "Value"
+             (before Quantity) and "Multiplier" (after Price) — which the base
+             colspan doesn't know about, so the section header/subtotal row falls
+             short by 2 columns and its underline stops before Multiplier/Amount.
+             Add those 2 back so the section spans the full table width. -->
+        <xpath expr="//t[@t-set='section_name_colspan']" position="after">
+            <t t-set="section_name_colspan" t-value="section_name_colspan + (2 if sale_order.is_rental_order else 0)"/>
+        </xpath>
+
         <!-- Report ALL order lines (incl. the custom $-marker / CCP section lines)
              instead of the filtered _get_order_lines_to_report(). Do NOT replace
              the core <t t-set="lines_to_report"> node: other modules (e.g.
