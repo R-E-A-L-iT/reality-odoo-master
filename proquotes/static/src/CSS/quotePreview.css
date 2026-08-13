@@ -767,11 +767,14 @@ color: #17171a;
 padding: 0px 0px 0px;
 }
 
-#sales_order_table > tbody > tr.quote-head > td:nth-child(1) {
+/* The header row now lives in <thead> (restored to its native position)
+   rather than being injected into <tbody> per "$block+", so these rounded
+   top-corner rules use a descendant combinator to match it in either spot. */
+#sales_order_table tr.quote-head > td:nth-child(1) {
    border-top-left-radius: 20px;
 }
 
-#sales_order_table > tbody > tr.quote-head > td:last-child {
+#sales_order_table tr.quote-head > td:last-child {
    border-top-right-radius: 20px;
 }
 

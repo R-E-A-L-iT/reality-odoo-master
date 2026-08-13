@@ -407,8 +407,56 @@
             <attribute name="t-att-data-order-state">sale_order.state</attribute>
         </xpath>
 
-        <!-- Remove Original Table Header-->
-        <xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace"/>
+        <!-- Restore the table header in its native <thead> position (a single
+             header row rendered once at the top of the table) instead of Odoo's
+             stock Description/Quantity/Unit Price/... row. This brings the header
+             back now that the per-"$block+" injected header rows have been removed:
+             same custom labels + quote-head/cHead styling we applied to the old
+             custom header, just rendered once as the real table header. -->
+        <xpath expr="//table[@id=&quot;sales_order_table&quot;]/thead/tr" position="replace">
+            <tr class="quote-head">
+                <td class="text-left">
+                    <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead"
+                          style="padding-left: 20px !important;">Product
+                    </span>
+                    <span t-elif="language == 'fr_CA'" class="cHead" style="padding-left: 20px !important;">Produit
+                    </span>
+                    <span t-elif="language == 'es_ES'" class="cHead" style="padding-left: 20px !important;">Producto
+                    </span>
+                </td>
+                <td t-if="sale_order.is_rental_order" class="text-left">
+                    <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Value</span>
+                    <span t-elif="language == 'fr_CA'" class="cHead">Valeur</span>
+                    <span t-elif="language == 'es_ES'" class="cHead">Valor</span>
+                </td>
+                <td class="text-left">
+                    <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Qty</span>
+                    <span t-elif="language == 'fr_CA'" class="cHead">Qté</span>
+                    <span t-elif="language == 'es_ES'" class="cHead">Cant.</span>
+                </td>
+                <td class="text-left">
+                    <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Price</span>
+                    <span t-elif="language == 'fr_CA'" class="cHead">Prix</span>
+                    <span t-elif="language == 'es_ES'" class="cHead">Precio</span>
+                </td>
+                <t t-if="sale_order.is_rental_order">
+                    <td class="text-left">
+                        <span class="cHead">Multiplier</span>
+                    </td>
+                </t>
+                <t t-if="any(line.discount for line in sale_order.order_line)">
+                    <td class="text-left">
+                        <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Disc.%</span>
+                        <span t-elif="language == 'fr_CA'" class="cHead">Rabais%</span>
+                        <span t-elif="language == 'es_ES'" class="cHead">Desc.%</span>
+                    </td>
+                </t>
+                <td class="text-left">
+                    <span t-if="language == 'en_CA' or language == 'en_US'" class="cHead">Amount</span>
+                    <span t-elif="language == 'fr_CA'" class="cHead">Montant</span>
+                </td>
+            </tr>
+        </xpath>
 
         <!-- Hide the per-line Taxes column entirely (taxes are only shown on the
              bottom totals table). Force display_taxes off *after* the core t-set
