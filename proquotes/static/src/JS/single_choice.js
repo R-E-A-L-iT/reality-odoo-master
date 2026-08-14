@@ -40,4 +40,29 @@ patch(SaleOrderLineListRenderer.prototype, {
     get disableCompositionButton() {
         return super.disableCompositionButton || !!this.record?.data?.x_single_choice;
     },
+
+    // TEMP DEBUG — remove once the Enterprise "optional" field is identified.
+    // Logs a section's scalar fields (+ values) whenever its options dropdown
+    // opens, so we can spot which field flags an optional section.
+    _pqLogSectionFields(record) {
+        try {
+            if (!record?.data?.display_type) {
+                return;
+            }
+            const scalars = {};
+            for (const [k, v] of Object.entries(record.data)) {
+                if (v === null || ["boolean", "number", "string"].includes(typeof v)) {
+                    scalars[k] = v;
+                }
+            }
+            console.log("[proquotes SC] section fields:", scalars);
+        } catch (e) {
+            /* no-op */
+        }
+    },
+
+    get hidePrices() {
+        this._pqLogSectionFields(this.record);
+        return super.hidePrices;
+    },
 });
