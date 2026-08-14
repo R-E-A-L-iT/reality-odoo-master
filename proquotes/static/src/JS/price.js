@@ -121,10 +121,9 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				p = p.parentNode;
 			}
 			var lineId = p.querySelector(".line_id").id;
-			return rpc("/my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId, {
+			return rpc("/my/orders/" + this.orderDetail.orderId + "/singleChoiceSelect/" + lineId, {
 				"access_token": this.orderDetail.token,
 				"line_id": lineId,
-				"quantity": 1,
 			}).then((data) => {
 				if (data) {
 					self.$("#portal_sale_content").html($(data["sale_inner_template"]));

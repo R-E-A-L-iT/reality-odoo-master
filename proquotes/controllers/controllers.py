@@ -195,6 +195,44 @@ class QuoteCustomerPortal(cPortal):
 
         return results
 
+    @http.route(
+        ["/my/orders/<int:order_id>/singleChoiceSelect/<string:line_id>"],
+        type="json",
+        auth="public",
+        website=True,
+    )
+    def single_choice_select(self, order_id, line_id, access_token=None, **post):
+        # Select one product within a single-choice section: it gets qty >= 1 and
+        # every other member of the section is forced to 0 (deterministic, server
+        # side). Then re-render the quote content.
+        try:
+            order_sudo = self._document_check_access(
+                "sale.order", order_id, access_token=access_token
+            )
+        except (AccessError, MissingError):
+            return request.redirect("/my")
+
+        digits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
+        line_id_formated = "".join(c for c in line_id if c in digits)
+        line = request.env["sale.order.line"].sudo().browse(int(line_id_formated))
+
+        if not line.exists() or order_sudo != line.order_id:
+            return request.redirect(order_sudo.get_portal_url())
+
+        if str(order_sudo.state) not in ("sale", "done", "cancel"):
+            line.portal_select_single_choice()
+
+        order_sudo._compute_tax_totals()
+        results = self._get_portal_order_details(order_sudo)
+        results["sale_inner_template"] = request.env["ir.ui.view"]._render_template(
+            "sale.sale_order_portal_content",
+            {
+                "sale_order": order_sudo,
+                "report_type": "html",
+            },
+        )
+        return results
+
 
     @http.route(['/my/orders/<int:order_id>'], type='http', auth='public', website=True)
     def portal_order_page(self, order_id, access_token=None, **kw):

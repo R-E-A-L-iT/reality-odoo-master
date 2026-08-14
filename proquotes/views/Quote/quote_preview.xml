@@ -1056,7 +1056,12 @@
         <xpath expr="//td[@name=&quot;td_product_quantity&quot;]" position="replace">
             <td name="td_product_quantity" class="text-end">
                 <div id="quote_qty">
-                    <t t-if="line.quantityLocked == 'yes' or sale_order.state in ('sale', 'done', 'cancel')">
+                    <t t-if="line.x_single_choice_member and line.product_uom_qty &lt; 1">
+                        <!-- Unselected single-choice option: no editable quantity
+                             input until it is selected; just show a static 0. -->
+                        <span class="qtySpan">0</span>
+                    </t>
+                    <t t-elif="line.quantityLocked == 'yes' or sale_order.state in ('sale', 'done', 'cancel')">
                         <span class="qtySpan" t-if="line.product_uom_qty == round(line.product_uom_qty)"
                               t-esc="round(line.product_uom_qty)"/>
                         <span t-else="" class="rp-20" t-field="line.product_uom_qty"/>

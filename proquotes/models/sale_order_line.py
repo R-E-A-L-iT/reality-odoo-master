@@ -162,14 +162,34 @@ class SaleOrderLine(models.Model):
         return members
 
     def _single_choice_siblings(self):
-        """Other product lines that belong to the same single-choice section."""
+        """Other product lines that belong to the same single-choice section.
+
+        Derived from the section's members by document order (not by matching the
+        stored section link on every sibling), so a single missing/stale tag never
+        prevents the exclusivity cascade from zeroing the previous selection."""
         self.ensure_one()
         section = self.x_single_choice_section_id
         if not section:
             return self.env["sale.order.line"]
-        return self.order_id.order_line.filtered(
-            lambda l: l.id != self.id and l.x_single_choice_section_id == section
+        return section._single_choice_member_lines() - self
+
+    def portal_select_single_choice(self):
+        """Portal selection: make this product the chosen one in its single-choice
+        section (qty >= 1) and force every other member to 0. Deterministic, so the
+        online quote doesn't depend on the generic quantity-change cascade."""
+        self.ensure_one()
+        section = self.x_single_choice_section_id
+        if not section:
+            return False
+        others = section._single_choice_member_lines() - self
+        others.with_context(_single_choice_no_cascade=True).write(
+            {"product_uom_qty": 0}
         )
+        if self.product_uom_qty < 1:
+            self.with_context(_single_choice_no_cascade=True).write(
+                {"product_uom_qty": 1}
+            )
+        return True
 
     def action_make_single_choice(self):
         """Turn a section into a single-choice section: tag its member product
