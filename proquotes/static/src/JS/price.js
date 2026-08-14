@@ -162,7 +162,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 					return;
 				}
 				// Quantity cell: input only when selected and unlocked.
-				var qtyBox = tr.querySelector("#quote_qty");
+				var qtyBox = tr.querySelector(".quote_qty");
 				if (qtyBox) {
 					if (!ld.selected) {
 						qtyBox.innerHTML = '<span class="qtySpan">0</span>';

@@ -1044,7 +1044,7 @@
              "Value" column xpath below still matches it. -->
         <xpath expr="//td[@name=&quot;td_product_quantity&quot;]" position="replace">
             <td name="td_product_quantity" class="text-end">
-                <div id="quote_qty">
+                <div class="quote_qty">
                     <t t-if="line.x_single_choice_member and line.product_uom_qty &lt; 1">
                         <!-- Unselected single-choice option: no editable quantity
                              input until it is selected; just show a static 0. -->
