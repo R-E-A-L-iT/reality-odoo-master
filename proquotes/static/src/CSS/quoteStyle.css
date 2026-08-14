@@ -331,6 +331,41 @@ tr.quoteLineRowSection * {
 	margin-top: 5vh;
 }
 
+/* ─── Single-choice section: product selector radio + unselected dimming ───── */
+input[type="radio"].singleChoiceRadio {
+	-webkit-appearance: none;
+	appearance: none;
+	flex-shrink: 0;
+	width: 22px;
+	height: 22px;
+	border: 2px solid #cccccc;
+	border-radius: 50%;
+	background: #ffffff;
+	cursor: pointer;
+	transition: border-color 0.2s ease, box-shadow 0.15s ease;
+}
+
+input[type="radio"].singleChoiceRadio:hover:not(:disabled) {
+	border-color: #1a7d3c;
+	box-shadow: 0 0 0 3px rgba(26, 125, 60, 0.12);
+}
+
+input[type="radio"].singleChoiceRadio:checked {
+	border-color: #1a7d3c;
+	background-color: #1a7d3c;
+	box-shadow: inset 0 0 0 4px #ffffff;
+}
+
+input[type="radio"].singleChoiceRadio:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* Unselected products in a single-choice section: dimmed but still readable. */
+.single-choice-unselected {
+	opacity: 0.45;
+}
+
 .flex {
 	display: flex;
 	flex-wrap: wrap;

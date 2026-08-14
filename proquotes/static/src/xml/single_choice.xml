@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Add a "Make single choice" item to the section options dropdown, placed
+         right before "Add a note" (i.e. just after the native "Set Optional"
+         item). Anchoring on the community "Add a note" icon (fa-sticky-note-o)
+         keeps the xpath stable regardless of the Enterprise "Set Optional" item. -->
+    <t t-name="proquotes.single_choice_item"
+       t-inherit="sale.ListRenderer.RecordRow"
+       t-inherit-mode="extension">
+        <xpath expr="//DropdownItem[i[hasclass('fa-sticky-note-o')]]" position="before">
+            <DropdownItem
+                t-if="record.data.display_type === 'line_section' or record.data.display_type === 'line_subsection'"
+                onSelected="() => this.onMakeSingleChoice(record)">
+                <i class="me-1 fa fa-fw fa-dot-circle-o text-success"/><span>Make single choice</span>
+            </DropdownItem>
+        </xpath>
+    </t>
+
+</templates>

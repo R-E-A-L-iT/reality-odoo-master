@@ -13,6 +13,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 		selector: ".o_portal_sale_sidebar",
 		events: {
 			"change .quantityChange": "_updateQuantityEvent",
+			"change .singleChoiceRadio": "_singleChoiceSelectEvent",
 			"change #rental-start": "_updatePriceTotalsEvent",
 			"change #rental-end": "_updatePriceTotalsEvent",
 		},
@@ -84,6 +85,31 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			// Now only used to refresh the rental value/estimate totals when the
 			// rental dates change (line selection was removed).
 			this._rentalValueTotal();
+		},
+
+		// Single-choice section: picking a product's radio selects it (qty 1). The
+		// server-side write() rule zeroes the other members of the section, so one
+		// changeQuantity call fully switches the selection; then we re-render.
+		_singleChoiceSelectEvent: function (ev) {
+			if (this._isOrderLocked()) {
+				return;
+			}
+			let self = this;
+			var p = ev.currentTarget;
+			while (p.tagName != "TR") {
+				p = p.parentNode;
+			}
+			var lineId = p.querySelector(".line_id").id;
+			return rpc("/my/orders/" + this.orderDetail.orderId + "/changeQuantity/" + lineId, {
+				"access_token": this.orderDetail.token,
+				"line_id": lineId,
+				"quantity": 1,
+			}).then((data) => {
+				if (data) {
+					self.$("#portal_sale_content").html($(data["sale_inner_template"]));
+					this._updateView(data["order_amount_total"]);
+				}
+			});
 		},
 
 

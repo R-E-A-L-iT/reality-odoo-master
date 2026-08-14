@@ -129,12 +129,18 @@
                 <field name="is_quantityLocked" invisible="0" readonly="state in ('sale', 'done', 'cancel')"/>
                 <field name="variant" invisible="1" optional="hide"/>
                 <field name="hiddenSection" invisible="1" optional="hide"/>
+                <!-- Single-choice section flags (drive the green row decoration below). -->
+                <field name="x_single_choice" column_invisible="1"/>
+                <field name="x_single_choice_member" column_invisible="1"/>
             </xpath>
 
 
-            <!-- Line Display Default Limit -->
+            <!-- Line Display Default Limit + green highlight for single-choice
+                 sections and their member product lines (parallels the native
+                 optional purple, which is a text colour). -->
             <xpath expr="//field[@name='order_line']/list" position="attributes">
                 <attribute name="limit">150</attribute>
+                <attribute name="decoration-success">x_single_choice or x_single_choice_member</attribute>
             </xpath>
 
             <!-- Widen Product and Description columns -->

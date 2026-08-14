@@ -82,6 +82,8 @@
             "proquotes/static/src/xml/composer_confirmation.xml",
             "proquotes/static/src/JS/section_translate.js",
             "proquotes/static/src/xml/section_translate.xml",
+            "proquotes/static/src/JS/single_choice.js",
+            "proquotes/static/src/xml/single_choice.xml",
         ],
         'website.assets_wysiwyg': [
             'proquotes/static/src/JS/rental_quote_form_editor.js',
