@@ -16,6 +16,11 @@ patch(SaleOrderLineListRenderer.prototype, {
     },
 
     async onToggleSingleChoice(record) {
+        // Mutually exclusive with the native optional mode: block setting single
+        // choice on an optional section (the item is greyed for that case too).
+        if (record.data.is_optional && !record.data.x_single_choice) {
+            return;
+        }
         // Persist pending edits so the section and its product lines have database
         // ids, run the server-side set/unset, then reload the form to reflect the
         // new quantities/highlight.
@@ -39,30 +44,5 @@ patch(SaleOrderLineListRenderer.prototype, {
 
     get disableCompositionButton() {
         return super.disableCompositionButton || !!this.record?.data?.x_single_choice;
-    },
-
-    // TEMP DEBUG — remove once the Enterprise "optional" field is identified.
-    // Logs a section's scalar fields (+ values) whenever its options dropdown
-    // opens, so we can spot which field flags an optional section.
-    _pqLogSectionFields(record) {
-        try {
-            if (!record?.data?.display_type) {
-                return;
-            }
-            const scalars = {};
-            for (const [k, v] of Object.entries(record.data)) {
-                if (v === null || ["boolean", "number", "string"].includes(typeof v)) {
-                    scalars[k] = v;
-                }
-            }
-            console.log("[proquotes SC] section fields:", scalars);
-        } catch (e) {
-            /* no-op */
-        }
-    },
-
-    get hidePrices() {
-        this._pqLogSectionFields(this.record);
-        return super.hidePrices;
     },
 });

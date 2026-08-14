@@ -11,7 +11,8 @@
         <xpath expr="//DropdownItem[i[hasclass('fa-sticky-note-o')]]" position="before">
             <DropdownItem
                 t-if="record.data.display_type === 'line_section' or record.data.display_type === 'line_subsection'"
-                onSelected="() => this.onToggleSingleChoice(record)">
+                onSelected="() => this.onToggleSingleChoice(record)"
+                attrs="{ 'class': (record.data.is_optional and not record.data.x_single_choice) ? 'disabled' : '' }">
                 <i class="me-1 fa fa-fw fa-dot-circle-o"/>
                 <span t-if="record.data.x_single_choice">Unset Single Choice</span>
                 <span t-else="">Set Single Choice</span>

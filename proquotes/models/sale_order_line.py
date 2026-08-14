@@ -197,6 +197,11 @@ class SaleOrderLine(models.Model):
         self.ensure_one()
         if self.display_type not in ("line_section", "line_subsection"):
             return False
+        # Single-choice and the native "optional" mode are mutually exclusive
+        # (the dropdown greys this item out for optional sections; this is the
+        # server-side backstop).
+        if self.is_optional:
+            return False
         self.x_single_choice = True
         members = self._single_choice_member_lines()
         for idx, line in enumerate(members):
@@ -208,9 +213,9 @@ class SaleOrderLine(models.Model):
             )
         return True
 
-    def action_unset_single_choice(self):
-        """Revert a single-choice section back to a normal section. Quantities are
-        left as-is; only the single-choice constraint/link is removed."""
+    def _clear_single_choice(self):
+        """Turn off single-choice on this section and untag its members (quantities
+        are left untouched)."""
         self.ensure_one()
         self.x_single_choice = False
         members = self.order_id.order_line.filtered(
@@ -219,6 +224,11 @@ class SaleOrderLine(models.Model):
         members.with_context(_single_choice_no_cascade=True).write(
             {"x_single_choice_section_id": False}
         )
+
+    def action_unset_single_choice(self):
+        """Revert a single-choice section back to a normal section."""
+        self.ensure_one()
+        self._clear_single_choice()
         return True
 
     def _enforce_single_choice_exclusivity(self):
@@ -235,10 +245,18 @@ class SaleOrderLine(models.Model):
 
     def write(self, vals):
         res = super().write(vals)
-        if "product_uom_qty" in vals and not self.env.context.get(
-            "_single_choice_no_cascade"
-        ):
-            self._enforce_single_choice_exclusivity()
+        if not self.env.context.get("_single_choice_no_cascade"):
+            if vals.get("is_optional"):
+                # Optional and single-choice are mutually exclusive: turning a
+                # section optional drops any single-choice mode it had, so the two
+                # can never conflict (regardless of how "Set Optional" was clicked).
+                for line in self:
+                    if line.x_single_choice:
+                        line.with_context(
+                            _single_choice_no_cascade=True
+                        )._clear_single_choice()
+            if "product_uom_qty" in vals:
+                self._enforce_single_choice_exclusivity()
         return res
 
     @api.onchange("product_uom_qty")
