@@ -103,7 +103,7 @@ class QuoCall(models.Model):
             commercial_ids = list({p.commercial_partner_id.id for p in external})
             all_ids = list(set(partner_ids + commercial_ids))
 
-            call.quote_count = self.env["sale.order"].sudo().search_count([
+            call.quote_count = self.env["sale.order"].search_count([
                 ("state", "in", ["draft", "sent"]),
                 "|", "|", "|",
                     ("partner_id", "in", all_ids),
@@ -111,7 +111,7 @@ class QuoCall(models.Model):
                     ("partner_invoice_id", "in", all_ids),
                     ("message_partner_ids", "in", partner_ids),
             ])
-            call.opportunity_count = self.env["crm.lead"].sudo().search_count([
+            call.opportunity_count = self.env["crm.lead"].search_count([
                 ("type", "=", "opportunity"),
                 ("active", "=", True),
                 "|",
