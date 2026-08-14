@@ -185,7 +185,6 @@ class StockPicking(models.Model):
         kit_lines = order.order_line.filtered(
             lambda l: (
                 not l.display_type
-                and l.selected == 'true'
                 and not l.x_is_rental_kit_component
                 and order._get_phantom_bom_for_line(l)
             )
@@ -200,7 +199,6 @@ class StockPicking(models.Model):
         non_kit_lines = order.order_line.filtered(
             lambda l: (
                 not l.display_type
-                and l.selected == 'true'
                 and not l.x_is_rental_kit_component
                 and not order._get_phantom_bom_for_line(l)
                 and l.product_id
@@ -225,7 +223,6 @@ class StockPicking(models.Model):
         kit_lines = order.order_line.filtered(
             lambda l: (
                 not l.display_type
-                and l.selected == 'true'
                 and not l.x_is_rental_kit_component
                 and order._get_phantom_bom_for_line(l)
             )
@@ -243,7 +240,6 @@ class StockPicking(models.Model):
         non_kit_lines = order.order_line.filtered(
             lambda l: (
                 not l.display_type
-                and l.selected == 'true'
                 and not l.x_is_rental_kit_component
                 and not order._get_phantom_bom_for_line(l)
                 and l.product_id

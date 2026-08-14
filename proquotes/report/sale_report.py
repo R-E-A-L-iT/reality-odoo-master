@@ -7,8 +7,8 @@ class SaleReport(models.Model):
     _inherit = "sale.report"
 
     def _where_sale(self):
-        """Override to filter only selected sale order lines where is_selected = True"""
+        """Override to exclude hidden rental-kit component lines from the report."""
         base_where = super()._where_sale()
         return f"""
             {base_where}
-            AND l.selected = 'true'"""
+            AND COALESCE(l.x_is_rental_kit_component, FALSE) = FALSE"""

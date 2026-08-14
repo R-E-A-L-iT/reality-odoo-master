@@ -786,7 +786,7 @@
                                         <t t-if="ccp_line.display_type == 'line_section'">
                                             <t t-set="calculating" t-value="False"/>
                                         </t>
-                                        <t t-elif="ccp_line.selected == 'true' and not ccp_line.display_type">
+                                        <t t-elif="not ccp_line.display_type and not ccp_line.x_is_rental_kit_component">
                                             <t t-set="ccp_subtotal" t-value="ccp_subtotal + ccp_line.price_subtotal"/>
                                         </t>
                                     </t>
@@ -855,11 +855,6 @@
                     <!-- Section fold icon -->
                     <span t-attf-class="quote-folding-icon {{ 'is-open' if line.hiddenSection == 'no' else '' }}"></span>
 
-                    <t t-if="line.special == 'optional'">
-                        <input t-if="line.selected == 'true'" class="optionalSectionCheckbox" type="checkbox"
-                               checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                        <input t-else="" class="optionalSectionCheckbox" type="checkbox" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    </t>
                     <!-- New per-line translation system takes priority -->
                     <span t-if="line.section_name_translations" t-out="line._proquotes_section_name(language)"/>
                     <span t-elif="line.name.strip()[0] != '#'" t-field="line.name"/>
@@ -870,23 +865,11 @@
                     <span class="line_id" t-attf-id="{{line}}"/>
                 </label>
 
-                <!--Apply Custom Class to Special Section Types if needed-->
-                <t t-if="line.hiddenSection == 'no'">
-                    <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}"
-                           class="foldInput multipleChoice" type="checkbox" style="display: none;"/>
-                    <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}"
-                           class="foldInput optionalSection" type="checkbox" style="display: none;"/>
-                    <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox"
-                           style="display: none;"/>
-                </t>
-                <t t-else="">
-                    <input t-if="line.special == 'multiple'" t-attf-id="fold{{line}}{{line_index}}"
-                           class="foldInput multipleChoice" type="checkbox" style="display: none;" checked="true"/>
-                    <input t-elif="line.special == 'optional'" t-attf-id="fold{{line}}{{line_index}}"
-                           class="foldInput optionalSection" type="checkbox" style="display: none;" checked="true"/>
-                    <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput" type="checkbox"
-                           style="display: none;" checked="true"/>
-                </t>
+                <!-- Hidden checkbox that drives the section fold/unfold (fold.js). -->
+                <input t-if="line.hiddenSection == 'no'" t-attf-id="fold{{line}}{{line_index}}"
+                       class="foldInput" type="checkbox" style="display: none;"/>
+                <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput"
+                       type="checkbox" style="display: none;" checked="true"/>
             </div>
 
             <div style="width: 25%; float: right">
@@ -904,9 +887,6 @@
                             Total parcial
                         </strong>
                     </span>
-                    <!-- <span t-if="line.special != 'optional' or line.selected == 'true'"
-                          class="subtotal-destination-span text-left" t-att-data-section_id="line_section_id"
-                          style="font-weight: 400 !important;"/> -->
                     <t t-set="section_subtotal" t-value="0"/>
                     <t t-set="flag" t-value="0"/>
                     <t t-foreach="sale_order.order_line" t-as="rec">
@@ -925,16 +905,10 @@
                         </t>
                     </t>
                     <!-- <t t-esc="section_subtotal"/> -->
-                    <span t-if="line.special != 'optional' or line.selected == 'true'"
-                        t-out="section_subtotal"
+                    <span t-out="section_subtotal"
                         t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"
                         class="text-left"
                         t-att-data-section_id="line_section_id"
-                        style="font-weight: 400 !important;"></span>
-                    <span t-else=""
-                        t-out="0.0"
-                        t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"
-                        class="text-left"
                         style="font-weight: 400 !important;"></span>
                 </label>
             </div>
@@ -946,20 +920,7 @@
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@name=&quot;td_product_name&quot;]" position="replace">
             <td name="td_product_name">
-                <!--Line Id For User Selection-->
-                <!-- d-flex + gap so the selection checkbox sits to the LEFT of the
-                     product image with breathing room (the old bare "flex" class
-                     isn't a real class, so checkbox + image crammed together). -->
                 <div class="d-flex align-items-center" style="gap: 14px;">
-                    <t t-if="line.optional == 'yes'">
-                        <input t-if="line.selected == 'true'" type="checkbox" class="priceChange" checked="true" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                        <input t-else="" type="checkbox" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    </t>
-                    <t t-else="">
-                        <input t-if="line.selected == 'true'" type="radio" checked="true" style="display: none;"
-                               class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                        <input t-else="" type="radio" style="display: none;" class="priceChange" t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    </t>
                     <span class="line_id" t-attf-id="{{line}}"/>
                     <div class="d-flex">
                         <div width="10%" style="display: flex; align-items: center;">
@@ -993,7 +954,7 @@
                             </t>
                         </div>
                         <div width="90%">
-                            <span t-attf-class="optional{{line.optional}}" t-field="line.product_id.name"/>
+                            <span t-field="line.product_id.name"/>
 
                             <label t-attf-for="productFold{{line}}{{line_index}}" style="float: right;"></label>
                             <input t-if="line.hiddenSection == 'no'" t-attf-id="productFold{{line}}{{line_index}}"
@@ -1051,11 +1012,11 @@
 
 
 
-        <!-- Amount column: show selected amount only -->
+        <!-- Amount column: line subtotal. -->
         <xpath expr="//td[@name=&quot;td_product_subtotal&quot;]" position="replace">
             <td t-if="not line.is_downpayment" class="text-left" name="td_product_subtotal">
                 <span class="proquotesLineTotal oe_order_line_price_subtotal"
-                    t-out="line.price_subtotal if line.selected == 'true' else 0.0"
+                    t-out="line.price_subtotal"
                     t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"/>
             </td>
         </xpath>

@@ -15,29 +15,15 @@
                 </group>
             </xpath>
 
-            <xpath expr="//create[1]" position="after">
-                <create name="optional_product" string="Add Optional Product" context="{'default_optional': 'yes', 'default_selected': 'false'}" />
-            </xpath>
-
-
             <xpath expr="//control" position="after">
-                <field name="special" invisible="1" />
                 <!-- Loaded so the section "Translate" dialog can read/write it. -->
                 <field name="section_name_translations" column_invisible="1" />
             </xpath>
 
             <xpath expr="//list//field[@name=&quot;product_uom_qty&quot;]" position="after">
-                <field name="optional" invisible="0" />
-                <field name="selected" invisible="0" />
-                <field name="sectionSelected" invisible="1" />
                 <field name="quantityLocked" invisible="0" />
                 <field name="hiddenSection" invisible="1" />
                 <field name="discount" widget="percentage" invisible="0" />
-            </xpath>
-
-            <xpath expr="//create[3]" position="after">
-                <create name="multiple_choice" string="Add Multiple Choice Section" context="{'default_display_type': 'line_section', 'default_special': 'multiple'}" />
-                <create name="optional_Section" string="Add an Optional Section" context="{'default_display_type': 'line_section', 'default_special': 'optional'}" />
             </xpath>
 
             <xpath expr="//page[@name=&quot;optional_products&quot;]" position="replace">

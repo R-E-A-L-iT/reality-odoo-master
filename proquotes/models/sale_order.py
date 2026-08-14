@@ -438,14 +438,15 @@ class order(models.Model):
         if self.sale_order_template_id:
             self.preview_block_ids = self.sale_order_template_id.preview_block_ids
     
-    # this function returns a json of the selected items on the quote for the approve plugin
+    # this function returns a json of the quote's product items for the approve plugin
     def get_approve_items_json(self):
         self.ensure_one()
         items = []
 
-        selected_lines = self.order_line.filtered(lambda l: l.is_selected and not l.display_type)
+        product_lines = self.order_line.filtered(
+            lambda l: not l.display_type and not l.x_is_rental_kit_component)
 
-        for line in selected_lines:
+        for line in product_lines:
             items.append({
                 "model": line.product_id.name,
                 "price": line.price_unit,
@@ -787,25 +788,16 @@ class order(models.Model):
                 "discount": 0.0,
                 "tax_ids": [Command.clear()],
 
-                # Your custom tracking fields.
+                # Your custom tracking fields. Component lines are hidden from the
+                # quote/customer display and excluded from totals purely via
+                # x_is_rental_kit_component (all rental/display filters key off it).
                 "x_parent_rental_kit_line_id": kit_line.id,
                 "x_is_rental_kit_component": True,
-
-                # Important: keep the component line active for rental pickup,
-                # but hidden from your custom quote total/display logic.
-                "selected": "false",
-                "sectionSelected": "false",
-                "optional": "no",
                 "quantityLocked": "yes",
             }
 
             if component_line:
                 # Avoid touching quantity if it is already correct.
-                # Do NOT set selected/sectionSelected to 'true' here — component SOLs
-                # must stay selected='false' so they remain hidden on the quote.
-                # The selected field on component lines is not read by any rental
-                # processing code (all rental filters use x_is_rental_kit_component),
-                # so keeping it false has no functional side-effect.
                 update_vals = {
                     "name": vals["name"],
                     "price_unit": 0.0,
@@ -901,7 +893,7 @@ class order(models.Model):
         return picking_type
 
     def _build_rental_move_vals(self, picking_type):
-        """Build stock.move value dicts for all selected lines, exploding kits into components.
+        """Build stock.move value dicts for all product lines, exploding kits into components.
 
         Component moves are linked to the KIT PARENT SOL (not to per-component helper SOLs).
         Odoo's sale_renting only creates "extra" order lines for moves where sale_line_id is
@@ -913,7 +905,7 @@ class order(models.Model):
         move_vals_list = []
 
         for line in self.order_line.sorted(lambda l: (l.sequence, l.id)):
-            if line.display_type or line.selected != 'true' or line.x_is_rental_kit_component:
+            if line.display_type or line.x_is_rental_kit_component:
                 continue
             if not line.product_id:
                 continue
@@ -963,7 +955,7 @@ class order(models.Model):
         for line in self.order_line.sorted(lambda l: (l.sequence, l.id)):
             if line.display_type or line.x_is_rental_kit_component:
                 continue
-            if line.selected != 'true' or not line.product_id:
+            if not line.product_id:
                 continue
 
             bom = self._get_phantom_bom_for_line(line)
@@ -1006,11 +998,8 @@ class order(models.Model):
         )
         for l in lines:
             _logger.info(
-                "[KIT-CLEANUP]   id=%-6d  selected=%-5s  optional=%-3s  "
-                "x_is_rental_kit_component=%-5s  product=%s",
+                "[KIT-CLEANUP]   id=%-6d  x_is_rental_kit_component=%-5s  product=%s",
                 l.id,
-                l.selected,
-                l.optional,
                 l.x_is_rental_kit_component,
                 l.product_id.display_name if l.product_id else '(section)',
             )
@@ -1018,16 +1007,14 @@ class order(models.Model):
     def _remove_extra_kit_sols(self, checkpoint=""):
         """Delete any order lines for kit-component products that should not appear on the quote.
 
-        This covers two cases:
-          (a) Lines created by the OLD approach (_ensure_rental_kit_component_lines) that
-              have x_is_rental_kit_component=True — no longer needed because we now point
-              all component moves directly to the kit-parent SOL.
-          (b) Lines added by Odoo's sale_renting when it detects component products in the
-              transfer — these are always selected='false', optional='no'.
+        Targets the hidden component lines created for kit processing
+        (x_is_rental_kit_component=True) — no longer needed because we now point
+        all component moves directly to the kit-parent SOL. Odoo's sale_renting no
+        longer injects its own "extra" component lines either, since every
+        component move already carries the kit-parent SOL as its sale_line_id.
 
-        Detection: selected='false' AND optional='no' AND product is a BOM component of a
-        selected kit line on this order.  optional='yes' lines (user-visible add-ons) are
-        intentionally excluded.
+        Detection: x_is_rental_kit_component=True AND product is a BOM component of
+        a kit line on this order.
 
         Before deletion, any stock moves that still reference the removed SOLs are redirected
         to the kit-parent SOL so picking state is not corrupted.
@@ -1037,10 +1024,10 @@ class order(models.Model):
         self.env.flush_all()
         self.invalidate_recordset(['order_line'])
 
-        # Build: component_product_id → kit_parent_sol_id  (from selected kit lines' BOMs)
+        # Build: component_product_id → kit_parent_sol_id  (from real kit lines' BOMs)
         kit_parent_by_component = {}
         for line in self.order_line.filtered(
-            lambda l: l.selected == 'true' and not l.display_type and l.product_id
+            lambda l: not l.x_is_rental_kit_component and not l.display_type and l.product_id
         ):
             bom = self._get_phantom_bom_for_line(line)
             if not bom:
@@ -1058,13 +1045,13 @@ class order(models.Model):
             checkpoint, set(kit_parent_by_component.keys()),
         )
 
-        # Find all spurious lines: selected=false, optional=no, product is a BOM component.
-        # This intentionally INCLUDES x_is_rental_kit_component=True lines (old approach).
+        # Find all spurious lines: the hidden kit-component helper lines whose
+        # product is a BOM component of a kit line on this order.
         extra = self.order_line.filtered(
             lambda l: (
-                l.selected == 'false'
-                and l.optional == 'no'
+                l.x_is_rental_kit_component
                 and not l.display_type
+                and l.product_id
                 and l.product_id.id in kit_parent_by_component
             )
         )
@@ -1346,9 +1333,9 @@ class order(models.Model):
         if admin_email:
             self.message_subscribe(partner_ids=[admin_email.id])
 
-        selected_lines = self.order_line.sudo().filtered(
-            lambda line: line.selected == 'true' and line.product_id.name != 'No CCP')
-        selected_lines._action_launch_stock_rule()
+        product_lines = self.order_line.sudo().filtered(
+            lambda line: not line.x_is_rental_kit_component and line.product_id.name != 'No CCP')
+        product_lines._action_launch_stock_rule()
 
         self._create_confirmation_activities()
 
@@ -1691,24 +1678,17 @@ class order(models.Model):
     def test_action(self, *args):
         _logger.error("HELLO THERE" + str(args[0]))
 
-    def generate_section_line(self, name, *, special="regular", selected="true"):
+    def generate_section_line(self, name):
         section = self.env["sale.order.line"].new(
             {
                 "name": name,
-                "special": special,
                 "display_type": "line_section",
                 "order_id": self._origin.id,
-                "selected": selected,
             }
         )
         return section
 
-    def generate_product_line(self, product_id, *, selected=False, uom="Units", locked_qty="yes", optional="no"):
-        if selected is True:
-            selected = "true"
-        elif selected is False:
-            selected = "false"
-
+    def generate_product_line(self, product_id, *, uom="Units", locked_qty="yes"):
         product = self.env["product.product"].browse(product_id.id)
 
         # Price from pricelist (as you already do)
@@ -1723,8 +1703,6 @@ class order(models.Model):
         # DO NOT set product_uom: Odoo will use product.uom_id & validate categories.
         line_vals = {
             "name": product.name,
-            "selected": selected,
-            "optional": optional,
             "quantityLocked": locked_qty,
             "product_id": product.id,
             "product_uom_qty": 1,
@@ -1750,13 +1728,13 @@ class order(models.Model):
 
         renewal_map = renewal_maps[0]
         hardware_lines.append(
-            self.generate_section_line(product.formated_label, special="multiple").id
+            self.generate_section_line(product.formated_label).id
         )
         section_lines = []
         for map_product in renewal_map.product_offers:
             if (map_product.product_id.sale_ok):
                 line = self.generate_product_line(
-                    map_product.product_id, selected=map_product.selected
+                    map_product.product_id
                 )
                 if str(type(line)) == "<class 'str'>":
                     return line
@@ -1781,7 +1759,7 @@ class order(models.Model):
                 eid) + "\n[product.product].name: " + str(product.product_id.name) + "\n\n"
 
         line = self.generate_product_line(
-            product_list[0], selected=True, optional="yes"
+            product_list[0]
         )
         if str(type(line)) == "<class 'str'>":
             return line
@@ -1812,7 +1790,7 @@ class order(models.Model):
                 product.product_id.name) + "\n\n"
 
         line = self.generate_product_line(
-            product_list[0], selected=True, optional="yes"
+            product_list[0]
         )
         if str(type(line)) == "<class 'str'>":
             return line
@@ -1884,7 +1862,7 @@ class order(models.Model):
         AccountTax = self.env['account.tax']
         for order in self:
             order = order.with_company(order.company_id)
-            order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
+            order_lines = order.order_line.filtered(lambda x: not x.display_type and not x.x_is_rental_kit_component)
             base_lines = [line._prepare_base_line_for_taxes_computation() for line in order_lines]
             AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
             AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
@@ -2028,11 +2006,11 @@ class order(models.Model):
         return groups
 
     def _amount_all(self):
-        # Ensure sale order lines are selected to included in calculation
+        # Include every real product line; hidden rental-kit components are excluded.
         for order in self:
             amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
-                if line.selected == "true" and line.sectionSelected == "true":
+                if not line.display_type and not line.x_is_rental_kit_component:
                     amount_untaxed += line.price_subtotal
                     amount_tax += line.price_tax
 
@@ -2045,11 +2023,11 @@ class order(models.Model):
             )
 
     def _compute_amount_undiscounted(self):
-        # Ensure sale order lines are selected to included in calculation
+        # Include every real product line; hidden rental-kit components are excluded.
         for order in self:
             total = 0.0
             for line in order.order_line:
-                if line.selected == "true" and line.sectionSelected == "true":
+                if not line.display_type and not line.x_is_rental_kit_component:
                     # why is there a discount in a field named amount_undiscounted ??
                     total += (
                             line.price_subtotal
@@ -2060,7 +2038,7 @@ class order(models.Model):
             order.amount_undiscounted = total
 
     def _amount_by_group(self):
-        #  Overden Method to Ensure sale order lines are selected to included in calculation
+        #  Overridden method — include every real product line; hidden rental-kit components excluded.
         for order in self:
             currency = order.currency_id or order.company_id.currency_id
             fmt = partial(
@@ -2081,7 +2059,7 @@ class order(models.Model):
                     group = tax.tax_group_id
                     res.setdefault(group, {"amount": 0.0, "base": 0.0})
                     for t in taxes:
-                        if line.selected != "true" or line.sectionSelected != "true":
+                        if line.display_type or line.x_is_rental_kit_component:
                             break
                         if t["id"] == tax.id or t["id"] in tax.children_tax_ids.ids:
                             res[group]["amount"] += t["amount"]
@@ -2172,7 +2150,6 @@ class SaleOrderTemplateHandler(models.Model):
         for line in template.sale_order_template_line_ids:
             data = self._compute_line_data_for_template_change(line)
             data.update({
-                'special': line.special,
                 'hiddenSection': line.hiddenSection
             })
 
@@ -2202,9 +2179,6 @@ class SaleOrderTemplateHandler(models.Model):
                     'product_id': line.product_id.id,
                     # Odoo 19: sale.order.line uses product_uom_id (not product_uom).
                     'product_uom_id': line.product_uom_id.id,
-                    'optional': line.optional,
-                    'selected': line.selected,
-                    'sectionSelected': line.sectionSelected,
                     'quantityLocked': line.quantityLocked,
                     'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                 })
@@ -2234,8 +2208,6 @@ class PreconfigSaleOrder(models.Model):
                         'order_id': self.id,
                         'product_id': line.product_id.id,
                         'name': line.product_name,
-                        'optional': 'yes' if line.optional else 'no',
-                        'selected': 'true' if line.selected else 'false',
                         'quantityLocked': 'yes' if line.quantity_locked else 'no',
                         'price_unit': line.price_unit,
                         'discount': line.discount,

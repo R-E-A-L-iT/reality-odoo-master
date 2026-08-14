@@ -104,13 +104,7 @@
                 </div>
             </xpath>
 
-            <xpath expr="//create[1]" position="after">
-                <create name="optional_product" string="Add Optional Product"
-                        context="{'default_optional': 'yes', 'default_selected': 'false'}"/>
-            </xpath>
-
             <xpath expr="//control" position="after">
-                <field name="special" column_invisible="True"/>
                 <!-- Loaded so the "Translate" section action + language-aware
                      section labels (section_translate.js) can read/write it. -->
                 <field name="section_name_translations" column_invisible="True"/>
@@ -131,24 +125,12 @@
             <!-- Custom Line Fields -->
             <xpath expr="//field[@name=&quot;product_uom_qty&quot;][@decoration-info=&quot;(not display_type and invoice_status == 'to invoice')&quot;]"
                    position="after">
-                <field name="optional" column_invisible="1" readonly="state in ('sale', 'done', 'cancel')"/>
-                <field name="is_optional" invisible="0" readonly="state in ('sale', 'done', 'cancel')"/>
-                <field name="selected" column_invisible="1" readonly="state in ('sale', 'done', 'cancel')"/>
-                <field name="is_selected" invisible="0" readonly="state in ('sale', 'done', 'cancel')"/>
-                <field name="sectionSelected" invisible="1" optional="hide" readonly="state in ('sale', 'done', 'cancel')"/>
                 <field name="quantityLocked" column_invisible="1" readonly="state in ('sale', 'done', 'cancel')"/>
-                 <field name="demo_selected" column_invisible="1" optional="hide" readonly="state in ('sale', 'done', 'cancel')"/>
                 <field name="is_quantityLocked" invisible="0" readonly="state in ('sale', 'done', 'cancel')"/>
                 <field name="variant" invisible="1" optional="hide"/>
                 <field name="hiddenSection" invisible="1" optional="hide"/>
             </xpath>
 
-            <xpath expr="//create[3]" position="after">
-                <create name="multiple_choice" string="Add Multiple Choice Section"
-                        context="{'default_display_type': 'line_section', 'default_special': 'multiple'}"/>
-                <create name="optional_Section" string="Add an Optional Section"
-                        context="{'default_display_type': 'line_section', 'default_special': 'optional'}"/>
-            </xpath>
 
             <!-- Line Display Default Limit -->
             <xpath expr="//field[@name='order_line']/list" position="attributes">

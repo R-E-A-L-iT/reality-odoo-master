@@ -26,27 +26,10 @@ class SaleOrderTemplateLine(models.Model):
     # it preserve the correct translations. See sale.order.line.section_name_translations.
     section_name_translations = fields.Json(string="Section Name Translations")
 
-    selected = fields.Selection([
-        ('true', "Yes"),
-        ('false', "No")], default="true", required=True, help="Field to Mark Wether Customer has Selected Product")
-    
-    sectionSelected = fields.Selection([
-        ('true', "Yes"),
-        ('false', "No")], default="true", required=True, help="Field to Mark Wether Container Section is Selected")
-    
-    special = fields.Selection([
-        ('regular', "regular"),
-        ('multiple', "Multiple"),
-        ('optional', "Optional")], default='regular', required=True, help="Technical field for UX purpose.")
-    
     hiddenSection = fields.Selection([
         ('yes', "Yes"),
         ('no', "No")], default='no', required=True, help="Field To Track if Sections are folded")
-    
-    optional = fields.Selection([
-        ('yes', "Yes"),
-        ('no', "No")], default="no", required=True, help="Field to Mark Product as Optional")
-    
+
     quantityLocked = fields.Selection([
         ('yes', "Yes"),
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")

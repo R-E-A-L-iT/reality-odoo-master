@@ -56,39 +56,11 @@ class SaleOrderLine(models.Model):
         translations = self.section_name_translations or {}
         return translations.get(lang) or self.name or ""
 
-    selected = fields.Selection(
-        [("true", "Yes"), ("false", "No")],
-        default="true",
-        required=True,
-        help="Field to Mark Wether Customer has Selected Product",
-    )
-
-    sectionSelected = fields.Selection(
-        [("true", "Yes"), ("false", "No")],
-        default="true",
-        required=True,
-        help="Field to Mark Wether Container Section is Selected",
-    )
-
-    special = fields.Selection(
-        [("regular", "regular"), ("multiple", "Multiple"), ("optional", "Optional")],
-        default="regular",
-        required=True,
-        help="Technical field for UX purpose.",
-    )
-
     hiddenSection = fields.Selection(
         [("yes", "Yes"), ("no", "No")],
         default="no",
         required=True,
         help="Field To Track if Sections are folded",
-    )
-
-    optional = fields.Selection(
-        [("yes", "Yes"), ("no", "No")],
-        default="no",
-        required=True,
-        help="Field to Mark Product as Optional",
     )
 
     quantityLocked = fields.Selection(
@@ -99,23 +71,14 @@ class SaleOrderLine(models.Model):
         help="Field to Lock Quantity on Products",
     )
 
-    is_optional = fields.Boolean(
-        required=True, string="Optional",
-        help="Field to Mark Product as Optional",
-    )
-    is_selected = fields.Boolean(
-        required=True, string="Selected",
-        help="Field to Mark Wether Customer has Selected Product",
-    )
     is_quantityLocked = fields.Boolean(
         string="Lock Quantity",
-        required=True,
-        help="Field to Lock Quantity on Products",
+        compute="_compute_is_quantityLocked",
+        inverse="_inverse_is_quantityLocked",
+        store=True,
+        readonly=False,
+        help="Boolean mirror of quantityLocked for the backend order-line form.",
     )
-
-    demo_selected = fields.Boolean(string="Selected", compute="_check_selected_line",
-                                   help="Field to Mark Wether Customer has Selected Product",
-                                   )
 
     x_parent_rental_kit_line_id = fields.Many2one(
         "sale.order.line",
@@ -159,41 +122,15 @@ class SaleOrderLine(models.Model):
                     line.price_unit = line.product_id.list_price
                 else:
                     line.price_unit = line.product_id.lst_price
-            if line.order_id and line.order_id.sale_order_template_id.name.lower() == 'sales blank':
-                line.is_selected = True
-            else:
-                line.is_selected = False
-                
-    @api.onchange('is_selected', 'is_quantityLocked', 'is_optional')
-    def _onchange_selected_line(self):
-        if self.is_selected:
-            self.selected = 'true'
-        else:
-            self.selected = 'false'
-        if self.is_quantityLocked:
-            self.quantityLocked = 'yes'
-        else:
-            self.quantityLocked = 'no'
-        if self.is_optional:
-            self.optional = 'yes'
-        else:
-            self.optional = 'no'
-    def _check_selected_line(self):
+
+    @api.depends('quantityLocked')
+    def _compute_is_quantityLocked(self):
         for rec in self:
-            rec.demo_selected = False
-            rec.is_quantityLocked = False
-            if rec.selected == 'true':
-                rec.is_selected = True
-            else:
-                rec.is_selected = False
-            if rec.optional == 'yes':
-                rec.is_optional = True
-            else:
-                rec.is_optional = False
-            if rec.quantityLocked == 'yes':
-                rec.is_quantityLocked = True
-            else:
-                rec.is_quantityLocked = False
+            rec.is_quantityLocked = rec.quantityLocked == 'yes'
+
+    def _inverse_is_quantityLocked(self):
+        for rec in self:
+            rec.quantityLocked = 'yes' if rec.is_quantityLocked else 'no'
 
     def get_sale_order_line_multiline_description_sale(self, product):
         return product.get_product_multiline_description_sale()
@@ -210,7 +147,7 @@ class SaleOrderLine(models.Model):
         self.ensure_one()
         return Markup(self.product_id.description_sale or "")
 
-    @api.depends('product_uom_qty', 'selected', 'discount', 'price_unit', 'tax_ids')
+    @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_ids')
     def _compute_amount(self):
         """
         Compute the amounts of the SO line.
@@ -219,8 +156,8 @@ class SaleOrderLine(models.Model):
         line._convert_to_tax_base_line_dict() were replaced by per-base-line
         computation (_prepare_base_line_for_taxes_computation /
         _add_tax_details_in_base_line / _round_base_lines_tax_details) reading
-        the amounts off base_line['tax_details']. Unselected / zero-qty CCP lines
-        keep contributing 0 to the untaxed subtotal (original behavior).
+        the amounts off base_line['tax_details']. Zero-qty lines keep
+        contributing 0 to the untaxed subtotal (original behavior).
         """
         AccountTax = self.env['account.tax']
         for line in self:
@@ -232,7 +169,7 @@ class SaleOrderLine(models.Model):
             computed_total = base_line['tax_details']['total_included_currency']
             amount_tax = computed_total - computed_untaxed
 
-            if line.selected == 'false' or line.product_uom_qty == 0:
+            if line.product_uom_qty == 0:
                 amount_untaxed = 0.00
             else:
                 amount_untaxed = computed_untaxed
@@ -357,12 +294,10 @@ class SaleOrderLine(models.Model):
         for vals in vals_list:
             _logger.info(
                 "[KIT-CLEANUP] SaleOrderLine.create — order_id=%s  product_id=%s  "
-                "selected=%s  optional=%s  x_is_rental_kit_component=%s  "
+                "x_is_rental_kit_component=%s  "
                 "context={skip_procurement:%s  tracking_disable:%s  suppress_extra_line_chatter:%s}",
                 vals.get('order_id'),
                 vals.get('product_id'),
-                vals.get('selected'),
-                vals.get('optional'),
                 vals.get('x_is_rental_kit_component'),
                 self.env.context.get('skip_procurement'),
                 self.env.context.get('tracking_disable'),

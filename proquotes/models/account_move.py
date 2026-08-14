@@ -336,18 +336,6 @@ class invoice(models.Model):
                 if partner and partner.id not in invoice_object.message_partner_ids.ids:
                     invoice_object.message_subscribe(partner_ids=[partner.id])
 
-            # Find the related sale orders
-            sale_orders = invoice_object.invoice_line_ids.mapped('sale_line_ids.order_id')
-
-            for order in sale_orders:
-                for line in invoice_object.invoice_line_ids:
-                    # Get the corresponding sale order line
-                    sale_line = line.sale_line_ids.filtered(lambda l: l.order_id == order)
-
-                    # Remove the invoice line if the related sale line is not selected
-                    if sale_line and not sale_line.selected:
-                        line.unlink()
-
         return invoices
 
 class InvoiceMain(models.Model):
