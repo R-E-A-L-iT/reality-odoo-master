@@ -45,4 +45,11 @@ patch(SaleOrderLineListRenderer.prototype, {
     get disableCompositionButton() {
         return super.disableCompositionButton || !!this.record?.data?.x_single_choice;
     },
+
+    // Grey out the native "Set Optional" item on a single-choice section (the two
+    // modes are mutually exclusive). The native item already binds its disabled
+    // class to this getter, so overriding it is all that's needed.
+    get disableOptionalButton() {
+        return super.disableOptionalButton || !!this.record?.data?.x_single_choice;
+    },
 });
