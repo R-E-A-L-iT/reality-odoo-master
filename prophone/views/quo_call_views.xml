@@ -76,16 +76,16 @@
                         <page string="Summary">
                             <div class="o_form_sheet">
                                 <field name="summary_text"
-                                    nolabel="1"
-                                    placeholder="No summary yet..."
-                                    class="oe_full_width"/>
+                                       nolabel="1"
+                                       placeholder="No summary yet..."
+                                       class="oe_full_width"/>
 
                                 <separator string="Next Steps"/>
 
                                 <field name="next_steps_text"
-                                    nolabel="1"
-                                    placeholder="No next steps yet..."
-                                    class="oe_full_width"/>
+                                       nolabel="1"
+                                       placeholder="No next steps yet..."
+                                       class="oe_full_width"/>
                             </div>
                         </page>
                         <page string="Recording">
@@ -97,11 +97,8 @@
                 </sheet>
 
                 <!-- Chatter (log notes, activities, messages) -->
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
+                <chatter/>
+
             </form>
         </field>
     </record>

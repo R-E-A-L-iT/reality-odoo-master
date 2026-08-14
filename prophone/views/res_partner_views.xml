@@ -22,7 +22,7 @@
                 </button>
             </xpath>
 
-            <xpath expr="//div[hasclass('oe_title')]" position="inside">
+            <xpath expr="//div[hasclass('d-flex') and hasclass('flex-column') and hasclass('flex-grow-1')]" position="inside">
                 <div class="o_row" groups="base.group_system">
                     <field name="quo_ignore_as_customer" widget="boolean_toggle"/>
                     <label for="quo_ignore_as_customer" string="Ignore for Quo (not a customer)"/>
