@@ -120,16 +120,79 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			while (p.tagName != "TR") {
 				p = p.parentNode;
 			}
-			var lineId = p.querySelector(".line_id").id;
+			var lineId = p.querySelector(".line_id").id.replace(/\D/g, "");
 			return rpc("/my/orders/" + this.orderDetail.orderId + "/singleChoiceSelect/" + lineId, {
 				"access_token": this.orderDetail.token,
 				"line_id": lineId,
 			}).then((data) => {
-				if (data) {
-					self.$("#portal_sale_content").html($(data["sale_inner_template"]));
-					this._updateView(data["order_amount_total"]);
+				if (data && data.single_choice) {
+					self._applySingleChoiceUpdate(data);
 				}
 			});
+		},
+
+		// Apply the single-choice selection result (JSON) to just the affected
+		// rows + totals, instead of re-rendering the whole quote.
+		_applySingleChoiceUpdate: function (data) {
+			var self = this;
+			(data.lines || []).forEach(function (ld) {
+				var tr = self._findRowByLineId(ld.id);
+				if (!tr) {
+					return;
+				}
+				// Quantity cell: input only when selected and unlocked.
+				var qtyBox = tr.querySelector("#quote_qty");
+				if (qtyBox) {
+					if (!ld.selected) {
+						qtyBox.innerHTML = '<span class="qtySpan">0</span>';
+					} else if (ld.locked) {
+						qtyBox.innerHTML = '<span class="qtySpan">' + ld.qty + "</span>";
+					} else {
+						qtyBox.innerHTML =
+							'<input type="number" class="quantityChange" min="1" value="' +
+							ld.qty + '" style="display: inline; width: 60px;"/>';
+					}
+				}
+				// Line amount.
+				var sub = tr.querySelector(".proquotesLineTotal");
+				if (sub) {
+					sub.textContent = ld.subtotal;
+				}
+				// Radio + dimming.
+				var radio = tr.querySelector(".singleChoiceRadio");
+				if (radio) {
+					radio.checked = ld.selected;
+				}
+				var info = tr.querySelector(".single-choice-info");
+				if (info) {
+					info.classList.toggle("single-choice-unselected", !ld.selected);
+				}
+			});
+			// Section subtotal + grand total.
+			if (data.section_id) {
+				var secSpan = document.querySelector(
+					'span[data-section_id="' + data.section_id + '"]'
+				);
+				if (secSpan) {
+					secSpan.textContent = data.section_subtotal;
+				}
+			}
+			this._updateTotal(data.amount_total);
+			this._rentalValueTotal();
+		},
+
+		_findRowByLineId: function (lineId) {
+			var els = document.querySelectorAll(".line_id");
+			for (var i = 0; i < els.length; i++) {
+				if ((els[i].id || "").replace(/\D/g, "") === String(lineId)) {
+					var tr = els[i];
+					while (tr && tr.tagName != "TR") {
+						tr = tr.parentNode;
+					}
+					return tr;
+				}
+			}
+			return null;
 		},
 
 

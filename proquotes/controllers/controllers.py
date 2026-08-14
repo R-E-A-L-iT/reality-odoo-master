@@ -6,6 +6,7 @@ import base64
 import binascii
 
 from odoo import fields, http, _
+from odoo.tools import formatLang
 from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
 from odoo.http import Response
@@ -204,7 +205,8 @@ class QuoteCustomerPortal(cPortal):
     def single_choice_select(self, order_id, line_id, access_token=None, **post):
         # Select one product within a single-choice section: it gets qty >= 1 and
         # every other member of the section is forced to 0 (deterministic, server
-        # side). Then re-render the quote content.
+        # side). Returns only the changed numbers as JSON so the frontend can
+        # update the affected rows + totals WITHOUT re-rendering the whole quote.
         try:
             order_sudo = self._document_check_access(
                 "sale.order", order_id, access_token=access_token
@@ -217,21 +219,41 @@ class QuoteCustomerPortal(cPortal):
         line = request.env["sale.order.line"].sudo().browse(int(line_id_formated))
 
         if not line.exists() or order_sudo != line.order_id:
-            return request.redirect(order_sudo.get_portal_url())
+            return {"single_choice": False}
 
         if str(order_sudo.state) not in ("sale", "done", "cancel"):
             line.portal_select_single_choice()
 
         order_sudo._compute_tax_totals()
-        results = self._get_portal_order_details(order_sudo)
-        results["sale_inner_template"] = request.env["ir.ui.view"]._render_template(
-            "sale.sale_order_portal_content",
-            {
-                "sale_order": order_sudo,
-                "report_type": "html",
-            },
-        )
-        return results
+
+        section = line.x_single_choice_section_id
+        members = section._single_choice_member_lines() if section else line
+        currency = order_sudo.currency_id or order_sudo.company_id.currency_id
+        env = order_sudo.env
+
+        def fmt(amount):
+            return formatLang(env, amount, currency_obj=currency)
+
+        lines_data = []
+        for member in members:
+            qty = member.product_uom_qty
+            lines_data.append({
+                "id": member.id,
+                "qty": int(qty) if float(qty).is_integer() else qty,
+                "selected": qty >= 1,
+                "locked": member.quantityLocked == "yes",
+                "subtotal": fmt(member.price_subtotal),
+            })
+
+        section_subtotal = sum(members.mapped("price_subtotal"))
+        return {
+            "single_choice": True,
+            "section_id": section.id if section else False,
+            "lines": lines_data,
+            "section_subtotal": fmt(section_subtotal),
+            "amount_total": fmt(order_sudo.amount_total),
+            "order_amount_total": order_sudo.amount_total,
+        }
 
 
     @http.route(['/my/orders/<int:order_id>'], type='http', auth='public', website=True)

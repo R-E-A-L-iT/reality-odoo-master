@@ -331,6 +331,40 @@ tr.quoteLineRowSection * {
 	margin-top: 5vh;
 }
 
+/* ─── Product image skeleton loader ─────────────────────────────────────────
+   Pure-CSS shimmer that sits BEHIND the image (z-index): while the lazy
+   thumbnail is still loading, the empty <img> is transparent and the grey
+   shimmer shows through; once the image paints it covers the shimmer. No JS, so
+   it keeps working after any partial re-render of the quote. */
+.img-skeleton {
+	display: inline-block;
+	position: relative;
+	width: 50px;
+	height: 50px;
+	border-radius: 6px;
+	overflow: hidden;
+	background: #eceef1;
+	vertical-align: middle;
+}
+.img-skeleton::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+	transform: translateX(-100%);
+	animation: sc-shimmer 1.2s infinite;
+}
+.img-skeleton img {
+	position: relative;
+	z-index: 1;
+}
+@keyframes sc-shimmer {
+	100% {
+		transform: translateX(100%);
+	}
+}
+
 /* ─── Single-choice section: product selector radio + unselected dimming ───── */
 input[type="radio"].singleChoiceRadio {
 	-webkit-appearance: none;

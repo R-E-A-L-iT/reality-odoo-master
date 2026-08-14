@@ -82,31 +82,13 @@
                 <div class="edit_row edit_row--split">
                     <select class="edit-country">
                         <option value=""><t t-esc="lbl_country"/></option>
-                        <t t-foreach="priority_countries" t-as="c">
-                            <option t-att-value="c.id" t-esc="c.name" t-att-selected="c.id == addr.country_id.id"/>
-                        </t>
-                        <option value="" disabled="disabled">──────────</option>
-                        <t t-foreach="other_countries" t-as="c">
+                        <t t-foreach="na_countries" t-as="c">
                             <option t-att-value="c.id" t-esc="c.name" t-att-selected="c.id == addr.country_id.id"/>
                         </t>
                     </select>
                     <select class="edit-state">
                         <option value=""><t t-esc="lbl_state"/></option>
-                        <t t-foreach="ca_states" t-as="s">
-                            <option t-att-value="s.id"
-                                    t-att-data-country-id="s.country_id.id"
-                                    t-esc="s.name"
-                                    t-att-selected="s.id == addr.state_id.id"/>
-                        </t>
-                        <option value="" disabled="disabled">──────────</option>
-                        <t t-foreach="us_states" t-as="s">
-                            <option t-att-value="s.id"
-                                    t-att-data-country-id="s.country_id.id"
-                                    t-esc="s.name"
-                                    t-att-selected="s.id == addr.state_id.id"/>
-                        </t>
-                        <option value="" disabled="disabled">──────────</option>
-                        <t t-foreach="other_states" t-as="s">
+                        <t t-foreach="na_states" t-as="s">
                             <option t-att-value="s.id"
                                     t-att-data-country-id="s.country_id.id"
                                     t-esc="s.name"
@@ -934,23 +916,30 @@
                            t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
                     <div t-attf-class="single-choice-info d-flex {{ 'single-choice-unselected' if line.x_single_choice_member and line.product_uom_qty &lt; 1 else '' }}">
                         <div width="10%" style="display: flex; align-items: center;">
+                            <!-- Images are served as /web/image URLs (not inline
+                                 base64): the browser lazy-loads the 50px thumbnail
+                                 and only fetches the full-res image_1024 when the
+                                 zoom modal opens. The .img-skeleton wrapper shows a
+                                 shimmer placeholder until the thumbnail loads. -->
                             <t t-if="line.product_id.image_128">
-                                <img class="zoomable-product-image"
-                                     t-att-src="'data:image/png;base64,' + line.product_id.image_128.decode('utf-8') if line.product_id.image_128 else ''"
-                                     t-att-data-zoom-src="'data:image/png;base64,' + (line.product_id.image_1024 or line.product_id.image_512 or line.product_id.image_256 or line.product_id.image_128).decode('utf-8')"
-                                     alt="Product Image"
-                                     style="width: 50px; height: 50px; margin-right: 10px; vertical-align: middle;"/>
+                                <span class="img-skeleton" style="margin-right: 10px;">
+                                    <img class="zoomable-product-image" loading="lazy"
+                                         t-attf-src="/web/image/product.product/{{ line.product_id.id }}/image_128"
+                                         t-attf-data-zoom-src="/web/image/product.product/{{ line.product_id.id }}/image_1024"
+                                         alt="Product Image"
+                                         style="width: 50px; height: 50px; vertical-align: middle;"/>
+                                </span>
                                 <div class="product-gallery-data" style="display:none;">
                                     <t t-foreach="line.product_id.product_tmpl_id.product_template_image_ids" t-as="extra_img">
                                         <t t-if="extra_img.video_url">
                                             <span class="gallery-item gallery-video"
                                                   t-att-data-embed="extra_img.embed_code"
-                                                  t-att-data-thumb="'data:image/png;base64,' + extra_img.image_128.decode('utf-8') if extra_img.image_128 else ''"/>
+                                                  t-attf-data-thumb="/web/image/product.template.image/{{ extra_img.id }}/image_128"/>
                                         </t>
                                         <t t-else="">
                                             <span class="gallery-item gallery-image"
-                                                  t-att-data-src="'data:image/png;base64,' + (extra_img.image_1024 or extra_img.image_512 or extra_img.image_256 or extra_img.image_128 or b'').decode('utf-8') if (extra_img.image_1024 or extra_img.image_512 or extra_img.image_256 or extra_img.image_128) else ''"
-                                                  t-att-data-thumb="'data:image/png;base64,' + extra_img.image_128.decode('utf-8') if extra_img.image_128 else ''"/>
+                                                  t-attf-data-src="/web/image/product.template.image/{{ extra_img.id }}/image_1024"
+                                                  t-attf-data-thumb="/web/image/product.template.image/{{ extra_img.id }}/image_128"/>
                                         </t>
                                     </t>
                                 </div>
@@ -1142,18 +1131,13 @@
                     <t t-set="delivery_addresses" t-value="sale_order.partner_id.child_ids.filtered(lambda p: p.type == 'delivery' and p.active)"/>
                     <t t-set="default_partner" t-value="sale_order.partner_id"/>
 
-                    <!-- Country / state lists for the per-card edit forms.
-                         Canada and the US come first (that's ~99% of addresses today),
-                         then everything else alphabetically below a separator. -->
-                    <t t-set="priority_countries" t-value="sorted(request.env['res.country'].sudo().search([('code', 'in', ['CA', 'US'])]), key=lambda c: ['CA', 'US'].index(c.code))"/>
-                    <t t-set="other_countries" t-value="request.env['res.country'].sudo().search([('code', 'not in', ['CA', 'US'])], order='name asc')"/>
-
-                    <!-- Same idea for states/provinces: Canadian provinces, then US
-                         states, then everything else, each alphabetical, with the
-                         country each one belongs to still tagged for live filtering. -->
-                    <t t-set="ca_states" t-value="request.env['res.country.state'].sudo().search([('country_id.code', '=', 'CA')], order='name asc')"/>
-                    <t t-set="us_states" t-value="request.env['res.country.state'].sudo().search([('country_id.code', '=', 'US')], order='name asc')"/>
-                    <t t-set="other_states" t-value="request.env['res.country.state'].sudo().search([('country_id.code', 'not in', ['CA', 'US'])], order='name asc')"/>
+                    <!-- Address pickers are limited to the North American regions we
+                         serve — United States, Canada, Bermuda — which keeps these
+                         option lists tiny and avoids searching the full country/state
+                         tables on every render. Widen na_codes to support more. -->
+                    <t t-set="na_codes" t-value="['US', 'CA', 'BM']"/>
+                    <t t-set="na_countries" t-value="request.env['res.country'].sudo().search([('code', 'in', na_codes)]).sorted(key=lambda c: na_codes.index(c.code))"/>
+                    <t t-set="na_states" t-value="request.env['res.country.state'].sudo().search([('country_id.code', 'in', na_codes)]).sorted(key=lambda s: (na_codes.index(s.country_id.code), s.name or ''))"/>
 
                     <!-- Localized labels, computed once and reused by every card -->
                     <t t-set="lbl_name" t-value="'Nom' if language == 'fr_CA' else ('Nombre' if language == 'es_ES' else 'Name')"/>
@@ -1174,25 +1158,13 @@
                          only ever need to be rendered once. -->
                     <select id="addr-country-options-template" style="display:none;" tabindex="-1" aria-hidden="true">
                         <option value=""><t t-esc="lbl_country"/></option>
-                        <t t-foreach="priority_countries" t-as="c">
-                            <option t-att-value="c.id" t-esc="c.name"/>
-                        </t>
-                        <option value="" disabled="disabled">──────────</option>
-                        <t t-foreach="other_countries" t-as="c">
+                        <t t-foreach="na_countries" t-as="c">
                             <option t-att-value="c.id" t-esc="c.name"/>
                         </t>
                     </select>
                     <select id="addr-state-options-template" style="display:none;" tabindex="-1" aria-hidden="true">
                         <option value=""><t t-esc="lbl_state"/></option>
-                        <t t-foreach="ca_states" t-as="s">
-                            <option t-att-value="s.id" t-att-data-country-id="s.country_id.id" t-esc="s.name"/>
-                        </t>
-                        <option value="" disabled="disabled">──────────</option>
-                        <t t-foreach="us_states" t-as="s">
-                            <option t-att-value="s.id" t-att-data-country-id="s.country_id.id" t-esc="s.name"/>
-                        </t>
-                        <option value="" disabled="disabled">──────────</option>
-                        <t t-foreach="other_states" t-as="s">
+                        <t t-foreach="na_states" t-as="s">
                             <option t-att-value="s.id" t-att-data-country-id="s.country_id.id" t-esc="s.name"/>
                         </t>
                     </select>
