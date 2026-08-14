@@ -95,7 +95,28 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				return;
 			}
 			let self = this;
-			var p = ev.currentTarget;
+			var radio = ev.currentTarget;
+			var groupName = radio.getAttribute("name");
+
+			// Optimistic feedback: immediately dim the now-unselected members and
+			// un-dim the chosen one, so the switch feels instant. The RPC below
+			// persists it (the server zeroes the section's other members) and the
+			// re-render reconciles quantities/subtotals.
+			document.querySelectorAll(".singleChoiceRadio").forEach(function (r) {
+				if (r.getAttribute("name") !== groupName) {
+					return;
+				}
+				var tr = r;
+				while (tr && tr.tagName != "TR") {
+					tr = tr.parentNode;
+				}
+				var info = tr ? tr.querySelector(".single-choice-info") : null;
+				if (info) {
+					info.classList.toggle("single-choice-unselected", r !== radio);
+				}
+			});
+
+			var p = radio;
 			while (p.tagName != "TR") {
 				p = p.parentNode;
 			}

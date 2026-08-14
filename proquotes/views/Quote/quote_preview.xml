@@ -920,17 +920,19 @@
         <!--Apply HTML tags to description and Names And Add User Control Elements-->
         <xpath expr="//td[@name=&quot;td_product_name&quot;]" position="replace">
             <td name="td_product_name">
-                <div t-attf-class="d-flex align-items-center {{ 'single-choice-unselected' if line.x_single_choice_member and line.product_uom_qty &lt; 1 else '' }}" style="gap: 14px;">
+                <div class="d-flex align-items-center" style="gap: 14px;">
                     <span class="line_id" t-attf-id="{{line}}"/>
                     <!-- Single-choice selector: one product per section may be
                          chosen. Checked = currently selected (qty >= 1). The radio
-                         name groups the section's members so only one is active. -->
+                         name groups the section's members so only one is active.
+                         The radio stays fully opaque even on unselected rows so it
+                         reads as clickable; only the product info below is dimmed. -->
                     <input t-if="line.x_single_choice_member" type="radio"
                            class="singleChoiceRadio"
-                           t-att-name="'single-choice-' + str(line._single_choice_section().id)"
+                           t-att-name="'single-choice-' + str(line.x_single_choice_section_id.id)"
                            t-att-checked="'checked' if line.product_uom_qty &gt;= 1 else None"
                            t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    <div class="d-flex">
+                    <div t-attf-class="single-choice-info d-flex {{ 'single-choice-unselected' if line.x_single_choice_member and line.product_uom_qty &lt; 1 else '' }}">
                         <div width="10%" style="display: flex; align-items: center;">
                             <t t-if="line.product_id.image_128">
                                 <img class="zoomable-product-image"

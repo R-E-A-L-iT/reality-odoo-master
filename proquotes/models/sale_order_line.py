@@ -100,9 +100,7 @@ class SaleOrderLine(models.Model):
     # A "single choice" section is one where exactly one of its products may be
     # selected (qty >= 1) at a time; the rest are forced to qty 0. It is an
     # independent, self-contained mode (mutually exclusive with the native
-    # "optional" section feature). x_single_choice is set on the SECTION line;
-    # x_single_choice_member is derived for the product lines under it, using the
-    # native section hierarchy field ``parent_id``.
+    # "optional" section feature). x_single_choice is set on the SECTION line.
     x_single_choice = fields.Boolean(
         string="Single Choice Section",
         default=False,
@@ -111,77 +109,102 @@ class SaleOrderLine(models.Model):
              "products (the others are forced to quantity 0).",
     )
 
+    # Each member product line stores an explicit link to its section. Membership
+    # is a STORED link (not derived at runtime from the native, non-stored
+    # ``parent_id``) so the exclusivity cascade in write() is reliable and fast
+    # even from the isolated portal quantity-change path.
+    x_single_choice_section_id = fields.Many2one(
+        "sale.order.line",
+        string="Single Choice Section Line",
+        copy=False,
+        index=True,
+        ondelete="set null",
+        help="Product line's single-choice section (set when the section is made "
+             "single choice).",
+    )
+
     x_single_choice_member = fields.Boolean(
         string="Single Choice Member",
         compute="_compute_x_single_choice_member",
+        store=True,
         help="Product line that belongs to a single-choice section.",
     )
 
-    @api.depends(
-        "display_type",
-        "parent_id",
-        "parent_id.x_single_choice",
-        "parent_id.parent_id.x_single_choice",
-    )
+    @api.depends("x_single_choice_section_id")
     def _compute_x_single_choice_member(self):
-        # Membership follows the native section hierarchy (parent_id). We check
-        # the immediate parent and one level up so a single-choice section still
-        # captures products nested one subsection deep.
         for line in self:
-            member = False
-            if not line.display_type:
-                parent = line.parent_id
-                grandparent = parent.parent_id if parent else parent
-                member = bool(
-                    (parent and parent.x_single_choice)
-                    or (grandparent and grandparent.x_single_choice)
-                )
-            line.x_single_choice_member = member
+            line.x_single_choice_member = bool(line.x_single_choice_section_id)
 
-    def _single_choice_section(self):
-        """Return the enclosing single-choice section line, if any."""
+    def _single_choice_member_lines(self):
+        """Product lines belonging to this section, in document order — stopping at
+        the next section of the same or higher level (subsections nested inside a
+        section are included)."""
         self.ensure_one()
-        parent = self.parent_id
-        seen = 0
-        while parent and seen < 10:
-            if parent.x_single_choice:
-                return parent
-            parent = parent.parent_id
-            seen += 1
-        return self.env["sale.order.line"]
+        lines = self.order_id.order_line.sorted(lambda l: (l.sequence, l.id))
+        is_subsection = self.display_type == "line_subsection"
+        members = self.env["sale.order.line"]
+        collecting = False
+        for line in lines:
+            if line == self:
+                collecting = True
+                continue
+            if not collecting:
+                continue
+            if line.display_type == "line_section":
+                break
+            if line.display_type == "line_subsection":
+                if is_subsection:
+                    break
+                continue
+            if line.display_type:  # note
+                continue
+            members |= line
+        return members
 
     def _single_choice_siblings(self):
         """Other product lines that belong to the same single-choice section."""
         self.ensure_one()
-        section = self._single_choice_section()
+        section = self.x_single_choice_section_id
         if not section:
             return self.env["sale.order.line"]
         return self.order_id.order_line.filtered(
-            lambda l: l.id != self.id
-            and not l.display_type
-            and l._single_choice_section() == section
+            lambda l: l.id != self.id and l.x_single_choice_section_id == section
         )
 
     def action_make_single_choice(self):
-        """Turn a section into a single-choice section and auto-select its first
-        product (qty 1, all others 0). Invoked from the section-options dropdown."""
+        """Turn a section into a single-choice section: tag its member product
+        lines and auto-select the first (qty 1, all others 0)."""
         self.ensure_one()
         if self.display_type not in ("line_section", "line_subsection"):
             return False
         self.x_single_choice = True
-        members = self.order_id.order_line.filtered(
-            lambda l: not l.display_type and l._single_choice_section() == self
-        ).sorted(lambda l: (l.sequence, l.id))
+        members = self._single_choice_member_lines()
         for idx, line in enumerate(members):
             line.with_context(_single_choice_no_cascade=True).write(
-                {"product_uom_qty": 1 if idx == 0 else 0}
+                {
+                    "x_single_choice_section_id": self.id,
+                    "product_uom_qty": 1 if idx == 0 else 0,
+                }
             )
+        return True
+
+    def action_unset_single_choice(self):
+        """Revert a single-choice section back to a normal section. Quantities are
+        left as-is; only the single-choice constraint/link is removed."""
+        self.ensure_one()
+        self.x_single_choice = False
+        members = self.order_id.order_line.filtered(
+            lambda l: l.x_single_choice_section_id == self
+        )
+        members.with_context(_single_choice_no_cascade=True).write(
+            {"x_single_choice_section_id": False}
+        )
         return True
 
     def _enforce_single_choice_exclusivity(self):
         """For each line just set to qty >= 1, drop its section siblings to 0."""
         for line in self:
-            if line.x_single_choice_member and line.product_uom_qty >= 1:
+            if line.x_single_choice_section_id and line.product_uom_qty >= 1:
                 siblings = line._single_choice_siblings().filtered(
                     lambda l: l.product_uom_qty != 0
                 )
@@ -202,7 +225,7 @@ class SaleOrderLine(models.Model):
     def _onchange_single_choice_qty(self):
         # Best-effort live enforcement in the backend form (the write() override
         # is the authoritative path, covering save + portal edits).
-        if self.x_single_choice_member and self.product_uom_qty >= 1:
+        if self.x_single_choice_section_id and self.product_uom_qty >= 1:
             for sibling in self._single_choice_siblings():
                 if sibling.product_uom_qty != 0:
                     sibling.product_uom_qty = 0

@@ -11,8 +11,10 @@
         <xpath expr="//DropdownItem[i[hasclass('fa-sticky-note-o')]]" position="before">
             <DropdownItem
                 t-if="record.data.display_type === 'line_section' or record.data.display_type === 'line_subsection'"
-                onSelected="() => this.onMakeSingleChoice(record)">
-                <i class="me-1 fa fa-fw fa-dot-circle-o text-success"/><span>Make single choice</span>
+                onSelected="() => this.onToggleSingleChoice(record)">
+                <i class="me-1 fa fa-fw fa-dot-circle-o"/>
+                <span t-if="record.data.x_single_choice">Unset Single Choice</span>
+                <span t-else="">Set Single Choice</span>
             </DropdownItem>
         </xpath>
     </t>
