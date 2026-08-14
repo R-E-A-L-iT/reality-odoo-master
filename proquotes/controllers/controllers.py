@@ -246,6 +246,14 @@ class QuoteCustomerPortal(cPortal):
             })
 
         section_subtotal = sum(members.mapped("price_subtotal"))
+
+        # Re-render only the small totals table (Untaxed / taxes / Total) so the
+        # frontend can swap it in — far cheaper than re-rendering the whole quote.
+        totals_html = env["ir.ui.view"]._render_template(
+            "sale.sale_order_portal_content_totals_table",
+            {"sale_order": order_sudo, "report_type": "html"},
+        )
+
         return {
             "single_choice": True,
             "section_id": section.id if section else False,
@@ -253,6 +261,7 @@ class QuoteCustomerPortal(cPortal):
             "section_subtotal": fmt(section_subtotal),
             "amount_total": fmt(order_sudo.amount_total),
             "order_amount_total": order_sudo.amount_total,
+            "totals_html": totals_html,
         }
 
 

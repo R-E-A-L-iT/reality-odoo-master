@@ -359,6 +359,15 @@ tr.quoteLineRowSection * {
 	position: relative;
 	z-index: 1;
 }
+/* Once the image has loaded, remove the grey background + shimmer entirely so it
+   never shows through transparent product images. */
+.img-skeleton.loaded {
+	background: transparent;
+}
+.img-skeleton.loaded::after {
+	display: none;
+	animation: none;
+}
 @keyframes sc-shimmer {
 	100% {
 		transform: translateX(100%);

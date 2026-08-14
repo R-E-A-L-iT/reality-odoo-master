@@ -36,6 +36,27 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 		_onLoad: function () {
 			this._updatePriceTotalsEvent();
 			this._rentalValueTotal();
+			this._revealSkeletons();
+		},
+
+		// Hide each product-image shimmer once its thumbnail has loaded (add the
+		// .loaded class). Runs on initial load and after any partial re-render, and
+		// handles already-cached images that won't fire a fresh load event.
+		_revealSkeletons: function () {
+			document.querySelectorAll(".img-skeleton").forEach(function (sk) {
+				var img = sk.querySelector("img");
+				if (!img) {
+					sk.classList.add("loaded");
+					return;
+				}
+				if (img.complete && img.naturalHeight !== 0) {
+					sk.classList.add("loaded");
+				} else {
+					var done = function () { sk.classList.add("loaded"); };
+					img.addEventListener("load", done, { once: true });
+					img.addEventListener("error", done, { once: true });
+				}
+			});
 		},
 
 		_updateQuantityEvent: function (t) {
@@ -77,7 +98,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
                         this._updateView(data["order_amount_total"]);
                     }
                 });
-            }, 800);
+            }, 300);
 
 		},
 
@@ -168,7 +189,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 					info.classList.toggle("single-choice-unselected", !ld.selected);
 				}
 			});
-			// Section subtotal + grand total.
+			// Section subtotal.
 			if (data.section_id) {
 				var secSpan = document.querySelector(
 					'span[data-section_id="' + data.section_id + '"]'
@@ -177,6 +198,16 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 					secSpan.textContent = data.section_subtotal;
 				}
 			}
+			// Totals table (Untaxed / taxes / Total): swap in the freshly rendered
+			// fragment so the bottom totals reflect the new selection.
+			if (data.totals_html) {
+				var totalDiv = document.querySelector("#total");
+				if (totalDiv) {
+					totalDiv.innerHTML =
+						'<div class="col-xs-7 col-md-5 ms-auto">' + data.totals_html + "</div>";
+				}
+			}
+			// Sidebar total + rental estimate.
 			this._updateTotal(data.amount_total);
 			this._rentalValueTotal();
 		},
@@ -418,6 +449,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			this._updateFoldDisplay();
 			this._rentalValueTotal();
 			this._updateTotal(total);
+			this._revealSkeletons();
 		},
 	});
 //});
