@@ -129,7 +129,7 @@ class QuoCall(models.Model):
             "type": "ir.actions.act_window",
             "name": "Related Quotes",
             "res_model": "sale.order",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [
                 ("state", "in", ["draft", "sent"]),
                 "|", "|", "|",
@@ -150,7 +150,7 @@ class QuoCall(models.Model):
             "type": "ir.actions.act_window",
             "name": "Related Opportunities",
             "res_model": "crm.lead",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [
                 ("type", "=", "opportunity"),
                 ("active", "=", True),
