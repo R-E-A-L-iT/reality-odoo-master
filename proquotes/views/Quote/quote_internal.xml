@@ -132,6 +132,12 @@
                 <!-- Single-choice section flags (drive the green row decoration below). -->
                 <field name="x_single_choice" column_invisible="1"/>
                 <field name="x_single_choice_member" column_invisible="1"/>
+                <!-- Optional-section membership + customer-hidden preset quantity.
+                     Preset is the qty a member takes when the customer ticks it on
+                     the online quote (shown greyed while unselected). -->
+                <field name="x_optional_section_id" column_invisible="1"/>
+                <field name="x_optional_member" column_invisible="1"/>
+                <field name="x_preset_qty" optional="hide" readonly="state in ('sale', 'done', 'cancel')"/>
             </xpath>
 
 

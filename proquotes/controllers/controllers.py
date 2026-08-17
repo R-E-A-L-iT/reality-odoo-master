@@ -264,6 +264,76 @@ class QuoteCustomerPortal(cPortal):
             "totals_html": totals_html,
         }
 
+    @http.route(
+        ["/my/orders/<int:order_id>/optionalSelect/<string:line_id>"],
+        type="json",
+        auth="public",
+        website=True,
+    )
+    def optional_select(self, order_id, line_id, select=True, access_token=None, **post):
+        # Select/unselect one product within an optional section. Selecting sets the
+        # real qty to the line's preset (min 1); unselecting drops it to 0. Returns
+        # only the changed numbers as JSON so the frontend can update the affected
+        # row + totals WITHOUT re-rendering the whole quote (mirrors
+        # single_choice_select).
+        try:
+            order_sudo = self._document_check_access(
+                "sale.order", order_id, access_token=access_token
+            )
+        except (AccessError, MissingError):
+            return request.redirect("/my")
+
+        digits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
+        line_id_formated = "".join(c for c in line_id if c in digits)
+        line = request.env["sale.order.line"].sudo().browse(int(line_id_formated))
+
+        if not line.exists() or order_sudo != line.order_id:
+            return {"optional": False}
+
+        if str(order_sudo.state) not in ("sale", "done", "cancel"):
+            line.portal_toggle_optional(bool(select))
+
+        order_sudo._compute_tax_totals()
+
+        section = line.x_optional_section_id
+        currency = order_sudo.currency_id or order_sudo.company_id.currency_id
+        env = order_sudo.env
+
+        def fmt(amount):
+            return formatLang(env, amount, currency_obj=currency)
+
+        qty = line.product_uom_qty
+        preset = line.x_preset_qty
+        line_data = {
+            "id": line.id,
+            "qty": int(qty) if float(qty).is_integer() else qty,
+            "preset": int(preset) if float(preset).is_integer() else preset,
+            "selected": qty >= 1,
+            "locked": line.quantityLocked == "yes",
+            "subtotal": fmt(line.price_subtotal),
+        }
+
+        section_subtotal = (
+            sum(section._single_choice_member_lines().mapped("price_subtotal"))
+            if section else line.price_subtotal
+        )
+
+        # Re-render only the small totals table (Untaxed / taxes / Total).
+        totals_html = env["ir.ui.view"]._render_template(
+            "sale.sale_order_portal_content_totals_table",
+            {"sale_order": order_sudo, "report_type": "html"},
+        )
+
+        return {
+            "optional": True,
+            "section_id": section.id if section else False,
+            "line": line_data,
+            "section_subtotal": fmt(section_subtotal),
+            "amount_total": fmt(order_sudo.amount_total),
+            "order_amount_total": order_sudo.amount_total,
+            "totals_html": totals_html,
+        }
+
 
     @http.route(['/my/orders/<int:order_id>'], type='http', auth='public', website=True)
     def portal_order_page(self, order_id, access_token=None, **kw):

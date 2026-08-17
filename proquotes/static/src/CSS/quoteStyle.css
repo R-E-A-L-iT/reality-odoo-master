@@ -404,8 +404,10 @@ input[type="radio"].singleChoiceRadio:disabled {
 	cursor: not-allowed;
 }
 
-/* Unselected products in a single-choice section: dimmed but still readable. */
-.single-choice-unselected {
+/* Unselected products in a single-choice or optional section: dimmed but still
+   readable. */
+.single-choice-unselected,
+.optional-unselected {
 	opacity: 0.45;
 }
 

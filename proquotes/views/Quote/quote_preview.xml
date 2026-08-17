@@ -914,7 +914,15 @@
                            t-att-name="'single-choice-' + str(line.x_single_choice_section_id.id)"
                            t-att-checked="'checked' if line.product_uom_qty &gt;= 1 else None"
                            t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
-                    <div t-attf-class="single-choice-info d-flex {{ 'single-choice-unselected' if line.x_single_choice_member and line.product_uom_qty &lt; 1 else '' }}">
+                    <!-- Optional-section selector: any number of a section's products
+                         may be ticked. Checked = currently selected (real qty >= 1).
+                         The checkbox stays opaque even on unselected rows so it reads
+                         as clickable; only the product info below is dimmed. -->
+                    <input t-if="line.x_optional_member" type="checkbox"
+                           class="optionalCheckbox"
+                           t-att-checked="'checked' if line.product_uom_qty &gt;= 1 else None"
+                           t-att-disabled="'disabled' if sale_order.state in ('sale', 'done', 'cancel') else None"/>
+                    <div t-attf-class="d-flex {{ 'single-choice-info' if line.x_single_choice_member else '' }} {{ 'single-choice-unselected' if line.x_single_choice_member and line.product_uom_qty &lt; 1 else '' }} {{ 'optional-info' if line.x_optional_member else '' }} {{ 'optional-unselected' if line.x_optional_member and line.product_uom_qty &lt; 1 else '' }}">
                         <div width="10%" style="display: flex; align-items: center;">
                             <!-- Images are served as /web/image URLs (not inline
                                  base64): the browser lazy-loads the 50px thumbnail
@@ -1049,6 +1057,25 @@
                         <!-- Unselected single-choice option: no editable quantity
                              input until it is selected; just show a static 0. -->
                         <span class="qtySpan">0</span>
+                    </t>
+                    <t t-elif="line.x_optional_member and line.product_uom_qty &lt; 1">
+                        <!-- Unselected optional option: show the PRESET quantity
+                             (what the line would be if selected), greyed with the
+                             row; no editor until selected. -->
+                        <span class="qtySpan" t-esc="round(line.x_preset_qty)"/>
+                    </t>
+                    <t t-elif="line.x_optional_member and (line.quantityLocked == 'yes' or sale_order.state in ('sale', 'done', 'cancel'))">
+                        <!-- Selected optional option, locked qty: static real qty. -->
+                        <span class="qtySpan" t-if="line.product_uom_qty == round(line.product_uom_qty)"
+                              t-esc="round(line.product_uom_qty)"/>
+                        <span t-else="" class="rp-20" t-field="line.product_uom_qty"/>
+                    </t>
+                    <t t-elif="line.x_optional_member">
+                        <!-- Selected optional option, unlocked qty: editable input
+                             on the real qty. -->
+                        <t t-set="qty" t-value="round(line.product_uom_qty)"/>
+                        <input type="number" class="quantityChange" min="1" t-attf-value="{{qty}}"
+                               style="display: inline; width: 60px;"/>
                     </t>
                     <t t-elif="line.quantityLocked == 'yes' or sale_order.state in ('sale', 'done', 'cancel')">
                         <span class="qtySpan" t-if="line.product_uom_qty == round(line.product_uom_qty)"

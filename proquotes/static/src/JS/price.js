@@ -14,6 +14,7 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 		events: {
 			"change .quantityChange": "_updateQuantityEvent",
 			"change .singleChoiceRadio": "_singleChoiceSelectEvent",
+			"change .optionalCheckbox": "_optionalSelectEvent",
 			"change #rental-start": "_updatePriceTotalsEvent",
 			"change #rental-end": "_updatePriceTotalsEvent",
 		},
@@ -224,6 +225,102 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				}
 			}
 			return null;
+		},
+
+		// Optional section: ticking a product's checkbox selects it (real qty set
+		// to its preset, min 1); unticking drops the real qty to 0. Each line is
+		// independent, so — unlike single choice — no siblings are affected. The
+		// server does the write and returns just the changed numbers.
+		_optionalSelectEvent: function (ev) {
+			if (this._isOrderLocked()) {
+				return;
+			}
+			let self = this;
+			var checkbox = ev.currentTarget;
+
+			// Optimistic feedback: dim/un-dim the row's product info immediately so
+			// the toggle feels instant; the RPC + partial re-render reconcile it.
+			var tr = checkbox;
+			while (tr && tr.tagName != "TR") {
+				tr = tr.parentNode;
+			}
+			var info = tr ? tr.querySelector(".optional-info") : null;
+			if (info) {
+				info.classList.toggle("optional-unselected", !checkbox.checked);
+			}
+
+			var lineId = tr.querySelector(".line_id").id.replace(/\D/g, "");
+			return rpc("/my/orders/" + this.orderDetail.orderId + "/optionalSelect/" + lineId, {
+				"access_token": this.orderDetail.token,
+				"line_id": lineId,
+				"select": checkbox.checked,
+			}).then((data) => {
+				if (data && data.optional) {
+					self._applyOptionalUpdate(data);
+				}
+			});
+		},
+
+		// Apply the optional-select result (JSON) to just the toggled row + totals,
+		// instead of re-rendering the whole quote. Parallels _applySingleChoiceUpdate,
+		// but the unselected quantity cell shows the PRESET (what the line would be
+		// if selected), not 0.
+		_applyOptionalUpdate: function (data) {
+			var ld = data.line;
+			if (!ld) {
+				return;
+			}
+			var tr = this._findRowByLineId(ld.id);
+			if (tr) {
+				// Quantity cell: editable input only when selected and unlocked;
+				// preset (greyed) when unselected.
+				var qtyBox = tr.querySelector(".quote_qty");
+				if (qtyBox) {
+					if (!ld.selected) {
+						qtyBox.innerHTML = '<span class="qtySpan">' + ld.preset + "</span>";
+					} else if (ld.locked) {
+						qtyBox.innerHTML = '<span class="qtySpan">' + ld.qty + "</span>";
+					} else {
+						qtyBox.innerHTML =
+							'<input type="number" class="quantityChange" min="1" value="' +
+							ld.qty + '" style="display: inline; width: 60px;"/>';
+					}
+				}
+				// Line amount.
+				var sub = tr.querySelector(".proquotesLineTotal");
+				if (sub) {
+					sub.textContent = ld.subtotal;
+				}
+				// Checkbox + dimming.
+				var checkbox = tr.querySelector(".optionalCheckbox");
+				if (checkbox) {
+					checkbox.checked = ld.selected;
+				}
+				var info = tr.querySelector(".optional-info");
+				if (info) {
+					info.classList.toggle("optional-unselected", !ld.selected);
+				}
+			}
+			// Section subtotal.
+			if (data.section_id) {
+				var secSpan = document.querySelector(
+					'span[data-section_id="' + data.section_id + '"]'
+				);
+				if (secSpan) {
+					secSpan.textContent = data.section_subtotal;
+				}
+			}
+			// Totals table (Untaxed / taxes / Total).
+			if (data.totals_html) {
+				var totalDiv = document.querySelector("#total");
+				if (totalDiv) {
+					totalDiv.innerHTML =
+						'<div class="col-xs-7 col-md-5 ms-auto">' + data.totals_html + "</div>";
+				}
+			}
+			// Sidebar total + rental estimate.
+			this._updateTotal(data.amount_total);
+			this._rentalValueTotal();
 		},
 
 

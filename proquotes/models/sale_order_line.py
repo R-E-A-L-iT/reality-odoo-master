@@ -135,6 +135,47 @@ class SaleOrderLine(models.Model):
         for line in self:
             line.x_single_choice_member = bool(line.x_single_choice_section_id)
 
+    # ── Optional sections (checkbox multi-select) ───────────────────────────
+    # An "optional" section (native ``is_optional`` on the section line) lets the
+    # customer tick any number of its products on/off. Selection-ness is NOT a
+    # stored flag: a member is "selected" iff its real ``product_uom_qty`` >= 1
+    # (so unselected lines stay at qty 0 and never hit totals/invoices). Each
+    # member also carries a hidden "preset" quantity — the qty it takes when the
+    # customer selects it — shown (greyed) on unselected rows so they can see what
+    # they'd get. Mirrors the single-choice tagging so the portal + backend can
+    # tell a member from an ordinary line cheaply.
+    x_preset_qty = fields.Float(
+        string="Preset Quantity",
+        default=1.0,
+        copy=True,
+        digits="Product Unit of Measure",
+        help="For a product in an optional section: the quantity the line takes "
+             "when the customer selects it (shown, greyed, while unselected). Not "
+             "editable by the customer.",
+    )
+
+    x_optional_section_id = fields.Many2one(
+        "sale.order.line",
+        string="Optional Section Line",
+        copy=False,
+        index=True,
+        ondelete="set null",
+        help="Product line's optional section (set when the section is made "
+             "optional).",
+    )
+
+    x_optional_member = fields.Boolean(
+        string="Optional Member",
+        compute="_compute_x_optional_member",
+        store=True,
+        help="Product line that belongs to an optional section.",
+    )
+
+    @api.depends("x_optional_section_id")
+    def _compute_x_optional_member(self):
+        for line in self:
+            line.x_optional_member = bool(line.x_optional_section_id)
+
     def _single_choice_member_lines(self):
         """Product lines belonging to this section, in document order — stopping at
         the next section of the same or higher level (subsections nested inside a
@@ -231,6 +272,46 @@ class SaleOrderLine(models.Model):
         self._clear_single_choice()
         return True
 
+    def _make_optional_members(self):
+        """Tag this (now-optional) section's product lines: link them to the
+        section, capture their current qty as the preset (min 1), and drop the real
+        qty to 0 so every member starts unselected (matching native optional).
+        Idempotent — re-running only re-links, it won't clobber a preset already
+        set to a sensible value below the current qty."""
+        self.ensure_one()
+        for line in self._single_choice_member_lines():
+            line.with_context(_single_choice_no_cascade=True).write(
+                {
+                    "x_optional_section_id": self.id,
+                    "x_preset_qty": max(line.product_uom_qty, 1),
+                    "product_uom_qty": 0,
+                }
+            )
+
+    def _clear_optional_members(self):
+        """Untag an (no-longer-optional) section's members. Quantities/presets are
+        left as-is."""
+        self.ensure_one()
+        members = self.order_id.order_line.filtered(
+            lambda l: l.x_optional_section_id == self
+        )
+        members.with_context(_single_choice_no_cascade=True).write(
+            {"x_optional_section_id": False}
+        )
+
+    def portal_toggle_optional(self, select):
+        """Portal select/unselect of an optional-section product: selecting sets the
+        real qty to the preset (min 1); unselecting drops it to 0. Deterministic, so
+        the online quote doesn't depend on the generic quantity-change path."""
+        self.ensure_one()
+        if not self.x_optional_section_id:
+            return False
+        qty = max(self.x_preset_qty, 1) if select else 0
+        self.with_context(_single_choice_no_cascade=True).write(
+            {"product_uom_qty": qty}
+        )
+        return True
+
     def _enforce_single_choice_exclusivity(self):
         """For each line just set to qty >= 1, drop its section siblings to 0."""
         for line in self:
@@ -243,21 +324,34 @@ class SaleOrderLine(models.Model):
                         {"product_uom_qty": 0}
                     )
 
-    def write(self, vals):
-        res = super().write(vals)
-        if not self.env.context.get("_single_choice_no_cascade"):
-            if vals.get("is_optional"):
-                # Optional and single-choice are mutually exclusive: turning a
-                # section optional drops any single-choice mode it had, so the two
-                # can never conflict (regardless of how "Set Optional" was clicked).
-                for line in self:
+    def _apply_selection_cascade(self, vals):
+        """Post-write cascade for the section-selection features (single choice +
+        optional). Called from the single write() below, AFTER super().write, and
+        skipped under the ``_single_choice_no_cascade`` re-entrancy guard."""
+        if self.env.context.get("_single_choice_no_cascade"):
+            return
+        if "is_optional" in vals:
+            for line in self:
+                if line.display_type not in ("line_section", "line_subsection"):
+                    continue
+                if vals.get("is_optional"):
+                    # Optional and single-choice are mutually exclusive: turning a
+                    # section optional drops any single-choice mode it had, then
+                    # tags its members (preset from current qty, real qty -> 0).
                     if line.x_single_choice:
                         line.with_context(
                             _single_choice_no_cascade=True
                         )._clear_single_choice()
-            if "product_uom_qty" in vals:
-                self._enforce_single_choice_exclusivity()
-        return res
+                    line.with_context(
+                        _single_choice_no_cascade=True
+                    )._make_optional_members()
+                else:
+                    # No longer optional: untag its members.
+                    line.with_context(
+                        _single_choice_no_cascade=True
+                    )._clear_optional_members()
+        if "product_uom_qty" in vals:
+            self._enforce_single_choice_exclusivity()
 
     @api.onchange("product_uom_qty")
     def _onchange_single_choice_qty(self):
@@ -533,6 +627,10 @@ class SaleOrderLine(models.Model):
         orders_before = self._orders_to_retax()
 
         res = super().write(vals)
+
+        # Section-selection cascade (single choice + optional). Runs regardless of
+        # the tax-skip context below so selection state stays consistent.
+        self._apply_selection_cascade(vals)
 
         if self.env.context.get("skip_apply_canadian_sales_taxes"):
             return res
