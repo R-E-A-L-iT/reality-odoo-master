@@ -820,14 +820,26 @@
              — the v19 rows are an if/elif/elif/else chain, so dropping tr_section's
              t-if would make a marker fall through to the tr_product (else) branch. -->
         <xpath expr="//tr[@name=&quot;tr_section&quot;]" position="attributes">
-            <attribute name="t-att-class">('fw-bolder o_line_section' if is_section else 'fw-bold o_line_subsection') + (' d-none' if (line.name and ((line.name.startswith('$') and line.name not in ('$block', '$block+')) or line.name.startswith('#ccp_selection_'))) else '')</attribute>
+            <!-- Give normal top-level sections the same styled header as the CCP
+                 sections: the `quoteLineRowSection` class drives the light-grey bar
+                 (see quotePreview.css). Subsections keep the lighter, un-boxed look
+                 to preserve the visual hierarchy. -->
+            <attribute name="t-att-class">('quoteLineRowSection bg-200 font-weight-bold o_line_section' if is_section else 'fw-bold o_line_subsection') + (' d-none' if (line.name and ((line.name.startswith('$') and line.name not in ('$block', '$block+')) or line.name.startswith('#ccp_selection_'))) else '')</attribute>
         </xpath>
         <xpath expr="//tr[@name=&quot;tr_note&quot;]" position="attributes">
             <attribute name="t-att-class">'d-none' if (line.name and ((line.name.startswith('$') and line.name not in ('$block', '$block+')) or line.name.startswith('#ccp_selection_'))) else ''</attribute>
         </xpath>
 
         <!--Add Check Box to control fold Section-->
-        <xpath expr="//tr[@name=&quot;tr_section&quot;]/td[@name=&quot;td_section_name&quot;]/span" position="replace">
+        <!-- Replace the whole desktop section-name cell with a single full-width,
+             always-visible cell (colspan 99). This absorbs the section name + our
+             own "Subtotal" label, spans the entire table, and drops the responsive
+             md-only gating so the styled header shows on every breakpoint. The
+             mobile/tablet (td_section_name_xs / _sm) and the native section-total
+             (td_section_price) cells are removed just below — the latter is the
+             duplicate subtotal we're eliminating. -->
+        <xpath expr="//tr[@name=&quot;tr_section&quot;]/td[@name=&quot;td_section_name&quot;]" position="replace">
+          <td name="td_section_name" colspan="99" style="padding: 20px !important;">
             <div style="width: 75%; float: left;">
                 <t t-set="line_section_id" t-value="line.id"/>
                 <label t-attf-for="fold{{line}}{{line_index}}"
@@ -894,7 +906,17 @@
                         style="font-weight: 400 !important;"></span>
                 </label>
             </div>
+          </td>
         </xpath>
+
+        <!-- Remove the now-redundant native section cells: the mobile/tablet
+             section-name variants (our single replacement cell above is visible at
+             all breakpoints) and the native section-total cell, which was the
+             duplicate subtotal shown alongside our labelled one. -->
+        <xpath expr="//tr[@name=&quot;tr_section&quot;]/td[@name=&quot;td_section_name_xs&quot;]" position="replace"/>
+        <xpath expr="//tr[@name=&quot;tr_section&quot;]/td[@name=&quot;td_section_name_sm&quot;]" position="replace"/>
+        <xpath expr="//tr[@name=&quot;tr_section&quot;]/td[@name=&quot;td_section_price&quot;]" position="replace"/>
+
         <xpath expr="//tr[@name=&quot;tr_note&quot;]/td" position="inside">
             <span class="line_id" t-attf-id="{{line}}"/>
         </xpath>
