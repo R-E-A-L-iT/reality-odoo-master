@@ -5,31 +5,18 @@
 //  "use strict";
 //  var publicWidget = require("web.public.widget");
 //
-import { rpc } from "@web/core/network/rpc";
-import { renderToFragment } from "@web/core/utils/render";
 import publicWidget from "@web/legacy/js/public/public_widget";
 
+// NOTE: rental date saving now lives in price.js (_updateRentalDatesEvent), which
+// persists the dates AND re-renders the quote so recalculated prices show instantly.
+// This widget no longer binds the date inputs to avoid a duplicate save RPC.
 publicWidget.registry.rental = publicWidget.Widget.extend({
     selector: ".o_portal_sale_sidebar",
-    events: {
-        "change #rental-start": "_saveRentalDates",
-        "change #rental-end": "_saveRentalDates",
-    },
+    events: {},
 
     async start() {
         await this._super(...arguments);
         this.orderDetail = this.$el.find("table#sales_order_table").data();
-    },
-
-    _saveRentalDates() {
-        return rpc(
-            "/my/orders/" + this.orderDetail.orderId + "/update_rental_dates",
-            {
-                access_token: this.orderDetail.token,
-                rental_start: document.getElementById("rental-start")?.value || "",
-                rental_end: document.getElementById("rental-end")?.value || "",
-            }
-        );
     },
 });
 //});

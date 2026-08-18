@@ -15,8 +15,8 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			"change .quantityChange": "_updateQuantityEvent",
 			"change .singleChoiceRadio": "_singleChoiceSelectEvent",
 			"change .optionalCheckbox": "_optionalSelectEvent",
-			"change #rental-start": "_updatePriceTotalsEvent",
-			"change #rental-end": "_updatePriceTotalsEvent",
+			"change #rental-start": "_updateRentalDatesEvent",
+			"change #rental-end": "_updateRentalDatesEvent",
 		},
 
 		async start() {
@@ -104,9 +104,32 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 		},
 
 		_updatePriceTotalsEvent: function (ev) {
-			// Now only used to refresh the rental value/estimate totals when the
-			// rental dates change (line selection was removed).
+			// Refresh the JS-side rental value/estimate landing totals. Still used
+			// on initial load; date changes go through _updateRentalDatesEvent.
 			this._rentalValueTotal();
+		},
+
+		// Rental dates changed: persist them (the controller converts the picker
+		// date to the right timezone and recomputes rental line prices), then swap
+		// in the freshly rendered quote content so the recalculated prices/totals
+		// show instantly — the same partial-render path _updateQuantityEvent uses.
+		_updateRentalDatesEvent: function () {
+			if (this._isOrderLocked()) {
+				return;
+			}
+			let self = this;
+			var start = document.getElementById("rental-start");
+			var end = document.getElementById("rental-end");
+			return rpc("/my/orders/" + this.orderDetail.orderId + "/update_rental_dates", {
+				access_token: this.orderDetail.token,
+				rental_start: start ? start.value : "",
+				rental_end: end ? end.value : "",
+			}).then((data) => {
+				if (data && data.sale_inner_template) {
+					self.$("#portal_sale_content").html($(data.sale_inner_template));
+					self._updateView(data.order_amount_total);
+				}
+			});
 		},
 
 		// Single-choice section: picking a product's radio selects it (qty 1). The

@@ -1279,7 +1279,29 @@ class order(models.Model):
                 lines.discount = 0.0
         lines_to_recompute._compute_discount()
         self.show_update_pricelist = False
-    
+
+    def _recompute_rental_prices(self):
+        """Recompute unit prices for the order's rental lines only.
+
+        Rental line prices depend on the order's rental_start/return dates (via the
+        custom formula in ``sale.order.line._get_pricelist_price``), but nothing
+        retriggers ``_compute_price_unit`` when the portal customer changes those
+        dates. Force it here — scoped to rental product lines so manual price/discount
+        edits on ordinary lines are never clobbered (unlike the global
+        ``_recompute_prices``)."""
+        for order in self:
+            if not order.is_rental_order:
+                continue
+            rental_lines = order.order_line.filtered(
+                lambda l: not l.display_type
+                and not l.is_downpayment
+                and l.product_id.rent_ok
+            )
+            if not rental_lines:
+                continue
+            rental_lines.invalidate_recordset(["pricelist_item_id"])
+            rental_lines._compute_price_unit()
+
     # force ecommerce template use instead if quote created from ecommerce order
     def action_quotation_send(self):
         self.ensure_one()
