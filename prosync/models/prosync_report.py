@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 class ProsyncReport(models.Model):
     _name = 'prosync.report'
@@ -48,8 +49,4 @@ class ProsyncReport(models.Model):
         if not cron:
             raise UserError("Cron 'prosync.prosync_schedule' not found.")
         cron.method_direct_trigger()
-        return True
-
-    def dummy_button(self):
-        _logger.info("Dummy button clicked.")
         return True

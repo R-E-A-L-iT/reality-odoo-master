@@ -1,4 +1,5 @@
 import gspread
+import json
 import logging
 
 from odoo import api, fields, models
@@ -95,7 +96,25 @@ class ProsyncSync(models.Model):
     def start_sync_process(self, pw=None):
         try:
             line_index = 1
-            db_name = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            config = self.env['ir.config_parameter'].sudo()
+
+            # Cron-triggered and "Run ProSync now" invocations don't have a caller
+            # to pass credentials inline, so fall back to the service-account key
+            # JSON stored in system parameters (documented in section 5 of the
+            # module docs: prosync.google_service_account_key).
+            if not pw:
+                stored_key = config.get_param('prosync.google_service_account_key')
+                if stored_key:
+                    pw = json.loads(stored_key)
+                else:
+                    _logger.error(
+                        "ProSync: No Google service-account key provided and none "
+                        "found in system parameter 'prosync.google_service_account_key'. "
+                        "Aborting sync."
+                    )
+                    return
+
+            db_name = config.get_param('web.base.url')
             template_id = self.get_master_database_template_id(db_name)
             configuration_tab = self.establish_sheets_connection(pw, template_id, 0)
 
@@ -141,6 +160,10 @@ class ProsyncSync(models.Model):
                         _logger.info(f"ProSync: Processing sheet '{sheet_name}' of type: {sheet_type}")
                         syncer = res_partner_sync(name=sheet_name, sheet=sheet_data, database=self.env)
                         syncer.sync_res_partner()
+                    elif sheet_type == "mrp_bom":
+                        _logger.info(f"ProSync: Processing sheet '{sheet_name}' of type: {sheet_type}")
+                        syncer = mrp_bom_sync(name=sheet_name, sheet=sheet_data, database=self.env)
+                        syncer.sync_mrp_bom()
                     elif sheet_type == "mrp_bom_line":
                         _logger.info(f"ProSync: Processing sheet '{sheet_name}' of type: {sheet_type}")
                         syncer = mrp_bom_line_sync(name=sheet_name, sheet=sheet_data, database=self.env)

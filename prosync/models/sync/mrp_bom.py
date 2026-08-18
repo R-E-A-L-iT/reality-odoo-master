@@ -60,10 +60,11 @@ class mrp_bom_sync:
 
         sheet_columns = self.sheet[0] if len(self.sheet) > 0 else []
         sheet_width = len(sheet_columns)
-        
+
         # variables that will contain a list of any missing columns in the sheet
-        missing_columns = [header for header in required_fields if header not in sheet_columns]
-        
+        sheet_columns_lower = [c.strip().lower() for c in sheet_columns]
+        missing_columns = [header for header in required_fields if header not in sheet_columns_lower]
+
         # verify that sheet format is as expected
         if missing_columns:
             error_msg = f"Sheet validation failed. Missing columns for fields: {missing_columns}."
@@ -179,10 +180,12 @@ class mrp_bom_sync:
         column_indices = {col.strip().lower(): idx for idx, col in enumerate(self.sheet[0])}
 
         code_raw = row[column_indices.get("code", -1)] if "code" in column_indices else ''
-        product_tmpl_id_raw = row[column_indices.get("product_tmpl_id", -1)] if "product_tmpl_id" in column_indices else ''
+        # Parent product is keyed by SKU (via the required "product_tmpl_id[related=sku]"
+        # column), matching how every other syncer resolves product.template records.
+        sku_raw = row[column_indices.get("product_tmpl_id[related=sku]", -1)] if "product_tmpl_id[related=sku]" in column_indices else ''
 
         code = normalize_char(code_raw)
-        product_tmpl_id = self.database['product.template'].sudo().search([('code', '=', normalize_char(product_tmpl_id_raw))], limit=1)
+        product_tmpl_id = self.database['product.template'].sudo().search([('sku', '=', normalize_char(sku_raw))], limit=1)
 
         if not code or not product_tmpl_id:
             _logger.warning(f"ProSync: Row {row_index} — Cannot create bom without valid Code and Product Template ID. Skipping.")
@@ -195,7 +198,7 @@ class mrp_bom_sync:
 
         bom = bom_model.create({
             "code": code,
-            "product_tmpl_id": name,
+            "product_tmpl_id": product_tmpl_id.id,
         })
 
         _logger.info(f"ProSync: Row {row_index} — Created new mrp.bom with CODE: {code}, ID: {bom.id}")
