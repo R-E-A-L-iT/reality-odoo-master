@@ -190,9 +190,9 @@
                                             <span t-field="line.product_uom_qty">3</span>
                                             <!-- Odoo 19 renamed sale.order.line.product_uom -> product_uom_id. -->
                                             <span t-field="line.product_uom_id">units</span>
-                                            <span t-if="line.product_packaging_id">
-                                                (<span t-field="line.product_packaging_qty" t-options="{&quot;widget&quot;: &quot;integer&quot;}"/> <span t-field="line.product_packaging_id"/>)
-                                            </span>
+                                            <!-- Product packaging (product_packaging_id / _qty) was removed from
+                                                 sale.order.line in Odoo 18/19, so the old packaging annotation
+                                                 block was dropped. -->
                                         </td>
                                         <td name="td_priceunit" class="text-end">
                                             <span t-field="line.price_unit">3</span>
