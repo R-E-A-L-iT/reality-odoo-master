@@ -839,15 +839,17 @@
              (td_section_price) cells are removed just below — the latter is the
              duplicate subtotal we're eliminating. -->
         <xpath expr="//tr[@name=&quot;tr_section&quot;]/td[@name=&quot;td_section_name&quot;]" position="replace">
-          <td name="td_section_name" colspan="99" style="padding: 20px !important;">
+          <td name="td_section_name" colspan="99"
+              t-attf-style="padding: {{ '14px 20px 14px 52px' if is_subsection else '20px' }} !important;">
             <div style="width: 75%; float: left;">
                 <t t-set="line_section_id" t-value="line.id"/>
                 <label t-attf-for="fold{{line}}{{line_index}}"
                        style="display: inline-block; width: 100%; height: 100%;">
 
 
-                    <!-- Section fold icon -->
-                    <span t-attf-class="quote-folding-icon {{ 'is-open' if line.hiddenSection == 'no' else '' }}"></span>
+                    <!-- Section fold icon — only top-level sections get the +/×
+                         toggle; subsections fold together with their parent. -->
+                    <span t-if="is_section" t-attf-class="quote-folding-icon {{ 'is-open' if line.hiddenSection == 'no' else '' }}"></span>
 
                     <!-- New per-line translation system takes priority -->
                     <span t-if="line.section_name_translations" t-out="line._proquotes_section_name(language)"/>
@@ -859,11 +861,15 @@
                     <span class="line_id" t-attf-id="{{line}}"/>
                 </label>
 
-                <!-- Hidden checkbox that drives the section fold/unfold (fold.js). -->
-                <input t-if="line.hiddenSection == 'no'" t-attf-id="fold{{line}}{{line_index}}"
-                       class="foldInput" type="checkbox" style="display: none;"/>
-                <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput"
-                       type="checkbox" style="display: none;" checked="true"/>
+                <!-- Hidden checkbox that drives the section fold/unfold (fold.js).
+                     Rendered only for top-level sections: subsections have no
+                     independent fold, they collapse with the parent section. -->
+                <t t-if="is_section">
+                    <input t-if="line.hiddenSection == 'no'" t-attf-id="fold{{line}}{{line_index}}"
+                           class="foldInput" type="checkbox" style="display: none;"/>
+                    <input t-else="" t-attf-id="fold{{line}}{{line_index}}" class="foldInput"
+                           type="checkbox" style="display: none;" checked="true"/>
+                </t>
             </div>
 
             <div style="width: 25%; float: right">
@@ -1081,10 +1087,10 @@
                         <span class="qtySpan">0</span>
                     </t>
                     <t t-elif="line.x_optional_member and line.product_uom_qty &lt; 1">
-                        <!-- Unselected optional option: show the PRESET quantity
-                             (what the line would be if selected), greyed with the
-                             row; no editor until selected. -->
-                        <span class="qtySpan" t-esc="round(line.x_preset_qty)"/>
+                        <!-- Unselected optional option: always show the real qty
+                             (0 while unselected); it becomes the preset only once the
+                             customer ticks the line. No editor until selected. -->
+                        <span class="qtySpan">0</span>
                     </t>
                     <t t-elif="line.x_optional_member and (line.quantityLocked == 'yes' or sale_order.state in ('sale', 'done', 'cancel'))">
                         <!-- Selected optional option, locked qty: static real qty. -->

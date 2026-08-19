@@ -823,6 +823,20 @@ text-shadow: none !important;
 padding: 14px 16px !important;
 }
 
+/* Subsections: a lighter band than the grey section bar, and indented (see the
+   inline left-padding set in quote_preview.xml) so they read as nested beneath
+   their parent section. They have no fold toggle of their own — they collapse
+   together with the parent section. */
+#quote-nav-quotation tr.o_line_subsection {
+background-color: #f4f5f6 !important;
+color: #1a1a1a !important;
+}
+
+#quote-nav-quotation tr.o_line_subsection * {
+color: #1a1a1a !important;
+text-shadow: none !important;
+}
+
 /* Section fold icon (the +/× circle toggling a kit/bundle section
    open/closed) inherits quoteStyle.css's base styling — white bars
    on a translucent border, tuned for the page's old dark

@@ -300,7 +300,8 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				var qtyBox = tr.querySelector(".quote_qty");
 				if (qtyBox) {
 					if (!ld.selected) {
-						qtyBox.innerHTML = '<span class="qtySpan">' + ld.preset + "</span>";
+						// Unselected: real qty is 0, show it (not the preset).
+						qtyBox.innerHTML = '<span class="qtySpan">0</span>';
 					} else if (ld.locked) {
 						qtyBox.innerHTML = '<span class="qtySpan">' + ld.qty + "</span>";
 					} else {

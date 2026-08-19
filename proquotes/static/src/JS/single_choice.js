@@ -33,6 +33,23 @@ patch(SaleOrderLineListRenderer.prototype, {
         await root.load();
     },
 
+    async onToggleOptional(record) {
+        // Custom "Set/Unset Optional" for SUBSECTIONS. Native optional is only
+        // offered on top-level sections; this drives the same is_optional cascade
+        // (tag members, capture preset, zero real qty) for subsections. Blocked on a
+        // single-choice line (the two modes are mutually exclusive).
+        if (record.data.x_single_choice) {
+            return;
+        }
+        const root = record.model.root;
+        await root.save();
+        const method = record.data.is_optional
+            ? "action_unset_optional"
+            : "action_make_optional";
+        await this.singleChoiceOrm.call("sale.order.line", method, [record.resId]);
+        await root.load();
+    },
+
     // Disable (grey out) the price/composition collapse actions on a single-choice
     // section — hiding prices/composition doesn't apply there, matching how the
     // native optional sections disable these same two items. These getters drive

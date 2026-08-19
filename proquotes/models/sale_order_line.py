@@ -312,6 +312,24 @@ class SaleOrderLine(models.Model):
         )
         return True
 
+    def action_make_optional(self):
+        """Mark a section OR subsection optional. Native "Set Optional" is only
+        offered on top-level sections, so this backs the custom subsection dropdown
+        item. Writing is_optional runs the tagging cascade in write()."""
+        self.ensure_one()
+        if self.display_type not in ("line_section", "line_subsection"):
+            return False
+        self.is_optional = True
+        return True
+
+    def action_unset_optional(self):
+        """Revert an optional section/subsection back to a normal one."""
+        self.ensure_one()
+        if self.display_type not in ("line_section", "line_subsection"):
+            return False
+        self.is_optional = False
+        return True
+
     def _enforce_single_choice_exclusivity(self):
         """For each line just set to qty >= 1, drop its section siblings to 0."""
         for line in self:
