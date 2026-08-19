@@ -369,8 +369,12 @@
                         <div id="total" class="row" name="total">
                             <div t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-6'} ms-auto">
                                 <table class="table table-sm table-borderless">
-                                    <!-- Tax totals -->
+                                    <!-- Tax totals. The native sale.document_tax_totals
+                                         template reads a `currency` context variable for its
+                                         monetary widgets (Odoo 19); set it or it renders with
+                                         display_currency=None -> AttributeError on decimal_places. -->
                                     <t t-set="tax_totals" t-value="doc.tax_totals"/>
+                                    <t t-set="currency" t-value="doc.currency_id"/>
                                     <t t-call="sale.document_tax_totals"/>
                                 </table>
                             </div>
