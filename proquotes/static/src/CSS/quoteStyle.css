@@ -374,32 +374,58 @@ tr.quoteLineRowSection * {
 	}
 }
 
-/* ─── Single-choice section: product selector radio + unselected dimming ───── */
-input[type="radio"].singleChoiceRadio {
+/* ─── Section selectors: single-choice radio + optional checkbox ─────────────
+   Prominent, brand-red (#db0d0d, matching the section fold ✕ / submenu accents)
+   controls — the Odoo-17-style look. The radio stays a circle (pick one); the
+   checkbox is a rounded square with a white check (pick any). */
+input[type="radio"].singleChoiceRadio,
+input[type="checkbox"].optionalCheckbox {
 	-webkit-appearance: none;
 	appearance: none;
 	flex-shrink: 0;
-	width: 22px;
-	height: 22px;
-	border: 2px solid #cccccc;
-	border-radius: 50%;
+	width: 26px;
+	height: 26px;
+	border: 2px solid #c4c7cc;
 	background: #ffffff;
 	cursor: pointer;
-	transition: border-color 0.2s ease, box-shadow 0.15s ease;
+	margin: 0;
+	transition: border-color 0.2s ease, background-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-input[type="radio"].singleChoiceRadio:hover:not(:disabled) {
-	border-color: #1a7d3c;
-	box-shadow: 0 0 0 3px rgba(26, 125, 60, 0.12);
+input[type="radio"].singleChoiceRadio {
+	border-radius: 50%;
 }
 
+input[type="checkbox"].optionalCheckbox {
+	border-radius: 7px;
+}
+
+input[type="radio"].singleChoiceRadio:hover:not(:disabled),
+input[type="checkbox"].optionalCheckbox:hover:not(:disabled) {
+	border-color: #db0d0d;
+	box-shadow: 0 0 0 3px rgba(219, 13, 13, 0.15);
+}
+
+/* Radio: red disc with a white center when picked. */
 input[type="radio"].singleChoiceRadio:checked {
-	border-color: #1a7d3c;
-	background-color: #1a7d3c;
-	box-shadow: inset 0 0 0 4px #ffffff;
+	border-color: #db0d0d;
+	background-color: #db0d0d;
+	box-shadow: inset 0 0 0 5px #ffffff;
 }
 
-input[type="radio"].singleChoiceRadio:disabled {
+/* Checkbox: solid red with a white check when ticked (SVG so the tick renders
+   reliably on a replaced <input>, where ::after does not). */
+input[type="checkbox"].optionalCheckbox:checked {
+	border-color: #db0d0d;
+	background-color: #db0d0d;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6.5'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 18px 18px;
+}
+
+input[type="radio"].singleChoiceRadio:disabled,
+input[type="checkbox"].optionalCheckbox:disabled {
 	opacity: 0.5;
 	cursor: not-allowed;
 }
