@@ -164,7 +164,8 @@
                                     <t t-if="not line.display_type and not line.x_is_rental_kit_component">
                                         <!-- <td name="td_name"><span t-field="line.name">Bacon Burger</span></td> -->
                                         <td name="td_name">
-                                            <span t-raw="line.product_id.name" />
+                                            <!-- Odoo 19 removed t-raw. Product name is plain text → t-field. -->
+                                            <span t-field="line.product_id.name" />
                                             <!-- <span t-raw="line.name"/> -->
                                             <!-- <span dangerouslySetInnerHTML={{ __html: line.name }} /> -->
                                             <br/>
@@ -180,7 +181,10 @@
                                                     border-bottom: 1px solid #ccc !important;
                                                 }
                                             </style>
-                                            <div class="description-root" t-raw="line.product_id.description_sale" style="color: #777;"/>
+                                            <!-- Odoo 19 removed t-raw; description_sale is intentionally
+                                                 authored as HTML, so render it via the Markup-wrapping
+                                                 helper with t-out (same path the portal uses). -->
+                                            <div class="description-root" t-out="line._proquotes_description_sale_html()" style="color: #777;"/>
                                         </td>
                                         <td name="td_quantity" class="text-end">
                                             <span t-field="line.product_uom_qty">3</span>
@@ -405,7 +409,12 @@
                             <h1 t-if="language == 'fr_CA'">Termes et conditions</h1>
                             <h1 t-elif="language == 'es_ES'">Términos y condiciones</h1>
                             <h1 t-else="">Terms and Conditions</h1>
-                            <div id="rentalTerms" t-call="proquotes.rental_terms"/>
+                            <!-- Odoo 19 requires t-call on a <t> element (no longer
+                                 allowed directly on a <div>); keep the #rentalTerms
+                                 wrapper for styling and nest the call inside it. -->
+                            <div id="rentalTerms">
+                                <t t-call="proquotes.rental_terms"/>
+                            </div>
                         </t>
 
                         <t t-if="'abtech' in doc.company_id.name.lower()">
