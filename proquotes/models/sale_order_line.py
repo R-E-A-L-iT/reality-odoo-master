@@ -470,7 +470,10 @@ class SaleOrderLine(models.Model):
         For Renewal Auto template, modify the procurement values to use the correct product
         from stock.lot if a match is found.
         """
-        values = super(SaleOrderLine, self)._prepare_procurement_values(group_id)
+        # Odoo 19 dropped the group_id parameter from
+        # sale.order.line._prepare_procurement_values(self); don't forward it to
+        # super (our own optional param is kept for backward-compatible callers).
+        values = super(SaleOrderLine, self)._prepare_procurement_values()
         
         # Check if this is a Renewal Auto template
         if self.order_id.sale_order_template_id and self.order_id.sale_order_template_id.name == "Renewal Auto":
