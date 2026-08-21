@@ -921,7 +921,6 @@ class order(models.Model):
                     if not comp or qty <= 0:
                         continue
                     move_vals_list.append({
-                        'name': comp.display_name,
                         'product_id': comp.id,
                         'product_uom_qty': qty,
                         'product_uom': bom_line.product_uom_id.id or comp.uom_id.id,
@@ -931,7 +930,6 @@ class order(models.Model):
                     })
             else:
                 move_vals_list.append({
-                    'name': line.product_id.display_name,
                     'product_id': line.product_id.id,
                     'product_uom_qty': line.product_uom_qty,
                     'product_uom': (line.product_uom_id.id or line.product_id.uom_id.id),
@@ -966,7 +964,6 @@ class order(models.Model):
                     if not comp or qty <= 0:
                         continue
                     move_vals_list.append({
-                        'name': comp.display_name,
                         'product_id': comp.id,
                         'product_uom_qty': qty,
                         'product_uom': bom_line.product_uom_id.id or comp.uom_id.id,
@@ -976,7 +973,6 @@ class order(models.Model):
                     })
             else:
                 move_vals_list.append({
-                    'name': line.product_id.display_name,
                     'product_id': line.product_id.id,
                     'product_uom_qty': line.product_uom_qty,
                     'product_uom': (line.product_uom_id.id or line.product_id.uom_id.id),
