@@ -118,163 +118,157 @@ class StockPicking(models.Model):
         default=_default_footer_id,
     )
 
-    # ===== REVERT 2026-08-20: rental pickup/return reverted to native Odoo; original custom code commented out below (uncomment to restore). =====
-#     def _ensure_moves_have_sale_line(self):
-#         """For every unlinked move in a custom rental picking, assign sale_line_id
-#         to the matching kit-component SOL (or any matching SOL as fallback).
-# 
-#         Called both at action_confirm time and _action_done time because sale_renting
-#         scans for moves with sale_line_id=False at both points to create "extra" SOLs.
-#         """
-#         for picking in self.filtered(
-#             lambda p: p.rental_sale_order_id and p.rental_operation in ('pickup', 'return')
-#         ):
-#             order = picking.rental_sale_order_id
-#             for move in picking.move_ids.filtered(lambda m: not m.sale_line_id and m.product_id):
-#                 kit_comp = order.order_line.filtered(
-#                     lambda l: l.product_id.id == move.product_id.id
-#                         and not l.display_type
-#                         and l.x_is_rental_kit_component
-#                 )
-#                 matching = kit_comp or order.order_line.filtered(
-#                     lambda l: l.product_id.id == move.product_id.id and not l.display_type
-#                 )
-#                 if matching:
-#                     move.sudo().write({'sale_line_id': matching[0].id})
-#                     _logger.info(
-#                         "Assigned sale_line_id=%s on move %s (product %s, picking %s)",
-#                         matching[0].id, move.id,
-#                         move.product_id.display_name, picking.name,
-#                     )
+    def _ensure_moves_have_sale_line(self):
+        """For every unlinked move in a custom rental picking, assign sale_line_id
+        to the matching kit-component SOL (or any matching SOL as fallback).
 
-    # ===== REVERT 2026-08-20: rental pickup/return reverted to native Odoo; original custom code commented out below (uncomment to restore). =====
-#     def action_confirm(self):
-#         # Pre-assign sale_line_id before sale_renting's action_confirm hook fires.
-#         # sale_renting scans for moves with sale_line_id=False at confirm time and
-#         # creates "Extra line" SOLs for any it finds — pre-assigning here prevents that.
-#         self._ensure_moves_have_sale_line()
-#         return super().action_confirm()
+        Called both at action_confirm time and _action_done time because sale_renting
+        scans for moves with sale_line_id=False at both points to create "extra" SOLs.
+        """
+        for picking in self.filtered(
+            lambda p: p.rental_sale_order_id and p.rental_operation in ('pickup', 'return')
+        ):
+            order = picking.rental_sale_order_id
+            for move in picking.move_ids.filtered(lambda m: not m.sale_line_id and m.product_id):
+                kit_comp = order.order_line.filtered(
+                    lambda l: l.product_id.id == move.product_id.id
+                        and not l.display_type
+                        and l.x_is_rental_kit_component
+                )
+                matching = kit_comp or order.order_line.filtered(
+                    lambda l: l.product_id.id == move.product_id.id and not l.display_type
+                )
+                if matching:
+                    move.sudo().write({'sale_line_id': matching[0].id})
+                    _logger.info(
+                        "Assigned sale_line_id=%s on move %s (product %s, picking %s)",
+                        matching[0].id, move.id,
+                        move.product_id.display_name, picking.name,
+                    )
 
-    # ===== REVERT 2026-08-20: rental pickup/return reverted to native Odoo; original custom code commented out below (uncomment to restore). =====
-#     def _action_done(self):
-#         # Capture rental references before super() clears transient state
-#         rental_pickups = self.filtered(
-#             lambda p: p.rental_sale_order_id and p.rental_operation == 'pickup'
-#         )
-#         rental_returns = self.filtered(
-#             lambda p: p.rental_sale_order_id and p.rental_operation == 'return'
-#         )
-# 
-#         # Run a second pass in case action_confirm split or re-created any moves.
-#         self._ensure_moves_have_sale_line()
-# 
-#         res = super()._action_done()
-# 
-#         for picking in rental_pickups:
-#             if picking.state == 'done':
-#                 picking._process_rental_pickup_done()
-# 
-#         for picking in rental_returns:
-#             if picking.state == 'done':
-#                 picking._process_rental_return_done()
-# 
-#         return res
+    def action_confirm(self):
+        # Pre-assign sale_line_id before sale_renting's action_confirm hook fires.
+        # sale_renting scans for moves with sale_line_id=False at confirm time and
+        # creates "Extra line" SOLs for any it finds — pre-assigning here prevents that.
+        self._ensure_moves_have_sale_line()
+        return super().action_confirm()
 
-    # ===== REVERT 2026-08-20: rental pickup/return reverted to native Odoo; original custom code commented out below (uncomment to restore). =====
-#     def _process_rental_pickup_done(self):
-#         order = self.rental_sale_order_id
-#         if not order:
-#             return
-# 
-#         kit_lines = order.order_line.filtered(
-#             lambda l: (
-#                 not l.display_type
-#                 and not l.x_is_rental_kit_component
-#                 and order._get_phantom_bom_for_line(l)
-#             )
-#         )
-#         for kit_line in kit_lines:
-#             kit_line.with_context(
-#                 bypass_sol_lock=True,
-#                 skip_apply_canadian_sales_taxes=True,
-#                 skip_company_consistency=True,
-#             ).write({'qty_delivered': kit_line.product_uom_qty})
-# 
-#         non_kit_lines = order.order_line.filtered(
-#             lambda l: (
-#                 not l.display_type
-#                 and not l.x_is_rental_kit_component
-#                 and not order._get_phantom_bom_for_line(l)
-#                 and l.product_id
-#                 and l.product_id.rent_ok
-#             )
-#         )
-#         for line in non_kit_lines:
-#             line.with_context(
-#                 bypass_sol_lock=True,
-#                 skip_apply_canadian_sales_taxes=True,
-#                 skip_company_consistency=True,
-#             ).write({'qty_delivered': line.product_uom_qty})
-# 
-#         self._force_rental_status_sql(order, 'return')
-#         _logger.info("Rental pickup transfer %s validated → order %s set to 'return'", self.name, order.name)
+    def _action_done(self):
+        # Capture rental references before super() clears transient state
+        rental_pickups = self.filtered(
+            lambda p: p.rental_sale_order_id and p.rental_operation == 'pickup'
+        )
+        rental_returns = self.filtered(
+            lambda p: p.rental_sale_order_id and p.rental_operation == 'return'
+        )
 
-    # ===== REVERT 2026-08-20: rental pickup/return reverted to native Odoo; original custom code commented out below (uncomment to restore). =====
-#     def _process_rental_return_done(self):
-#         order = self.rental_sale_order_id
-#         if not order:
-#             return
-# 
-#         kit_lines = order.order_line.filtered(
-#             lambda l: (
-#                 not l.display_type
-#                 and not l.x_is_rental_kit_component
-#                 and order._get_phantom_bom_for_line(l)
-#             )
-#         )
-#         for kit_line in kit_lines:
-#             kit_line.with_context(
-#                 bypass_sol_lock=True,
-#                 skip_apply_canadian_sales_taxes=True,
-#                 skip_company_consistency=True,
-#             ).write({
-#                 'qty_delivered': kit_line.product_uom_qty,
-#                 'qty_returned': kit_line.product_uom_qty,
-#             })
-# 
-#         non_kit_lines = order.order_line.filtered(
-#             lambda l: (
-#                 not l.display_type
-#                 and not l.x_is_rental_kit_component
-#                 and not order._get_phantom_bom_for_line(l)
-#                 and l.product_id
-#                 and l.product_id.rent_ok
-#             )
-#         )
-#         for line in non_kit_lines:
-#             line.with_context(
-#                 bypass_sol_lock=True,
-#                 skip_apply_canadian_sales_taxes=True,
-#                 skip_company_consistency=True,
-#             ).write({
-#                 'qty_delivered': line.product_uom_qty,
-#                 'qty_returned': line.product_uom_qty,
-#             })
-# 
-#         self._force_rental_status_sql(order, 'returned')
-#         _logger.info("Rental return transfer %s validated → order %s set to 'returned'", self.name, order.name)
+        # Run a second pass in case action_confirm split or re-created any moves.
+        self._ensure_moves_have_sale_line()
 
-    # ===== REVERT 2026-08-20: rental pickup/return reverted to native Odoo; original custom code commented out below (uncomment to restore). =====
-#     def _force_rental_status_sql(self, order, target_status):
-#         self.env.flush_all()
-#         self.env.cr.execute("""
-#             UPDATE sale_order
-#             SET rental_status = %s,
-#                 write_date = NOW(),
-#                 write_uid = %s
-#             WHERE id = %s
-#         """, [target_status, self.env.uid, order.id])
-#         order.invalidate_recordset(["rental_status"])
+        res = super()._action_done()
+
+        for picking in rental_pickups:
+            if picking.state == 'done':
+                picking._process_rental_pickup_done()
+
+        for picking in rental_returns:
+            if picking.state == 'done':
+                picking._process_rental_return_done()
+
+        return res
+
+    def _process_rental_pickup_done(self):
+        order = self.rental_sale_order_id
+        if not order:
+            return
+
+        kit_lines = order.order_line.filtered(
+            lambda l: (
+                not l.display_type
+                and not l.x_is_rental_kit_component
+                and order._get_phantom_bom_for_line(l)
+            )
+        )
+        for kit_line in kit_lines:
+            kit_line.with_context(
+                bypass_sol_lock=True,
+                skip_apply_canadian_sales_taxes=True,
+                skip_company_consistency=True,
+            ).write({'qty_delivered': kit_line.product_uom_qty})
+
+        non_kit_lines = order.order_line.filtered(
+            lambda l: (
+                not l.display_type
+                and not l.x_is_rental_kit_component
+                and not order._get_phantom_bom_for_line(l)
+                and l.product_id
+                and l.product_id.rent_ok
+            )
+        )
+        for line in non_kit_lines:
+            line.with_context(
+                bypass_sol_lock=True,
+                skip_apply_canadian_sales_taxes=True,
+                skip_company_consistency=True,
+            ).write({'qty_delivered': line.product_uom_qty})
+
+        self._force_rental_status_sql(order, 'return')
+        _logger.info("Rental pickup transfer %s validated → order %s set to 'return'", self.name, order.name)
+
+    def _process_rental_return_done(self):
+        order = self.rental_sale_order_id
+        if not order:
+            return
+
+        kit_lines = order.order_line.filtered(
+            lambda l: (
+                not l.display_type
+                and not l.x_is_rental_kit_component
+                and order._get_phantom_bom_for_line(l)
+            )
+        )
+        for kit_line in kit_lines:
+            kit_line.with_context(
+                bypass_sol_lock=True,
+                skip_apply_canadian_sales_taxes=True,
+                skip_company_consistency=True,
+            ).write({
+                'qty_delivered': kit_line.product_uom_qty,
+                'qty_returned': kit_line.product_uom_qty,
+            })
+
+        non_kit_lines = order.order_line.filtered(
+            lambda l: (
+                not l.display_type
+                and not l.x_is_rental_kit_component
+                and not order._get_phantom_bom_for_line(l)
+                and l.product_id
+                and l.product_id.rent_ok
+            )
+        )
+        for line in non_kit_lines:
+            line.with_context(
+                bypass_sol_lock=True,
+                skip_apply_canadian_sales_taxes=True,
+                skip_company_consistency=True,
+            ).write({
+                'qty_delivered': line.product_uom_qty,
+                'qty_returned': line.product_uom_qty,
+            })
+
+        self._force_rental_status_sql(order, 'returned')
+        _logger.info("Rental return transfer %s validated → order %s set to 'returned'", self.name, order.name)
+
+    def _force_rental_status_sql(self, order, target_status):
+        self.env.flush_all()
+        self.env.cr.execute("""
+            UPDATE sale_order
+            SET rental_status = %s,
+                write_date = NOW(),
+                write_uid = %s
+            WHERE id = %s
+        """, [target_status, self.env.uid, order.id])
+        order.invalidate_recordset(["rental_status"])
 
     def button_validate(self):
         res = super(StockPicking, self).button_validate()

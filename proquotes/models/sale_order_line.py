@@ -591,58 +591,53 @@ class SaleOrderLine(models.Model):
                 self.env.context.get('suppress_extra_line_chatter'),
             )
 
-        # ===== REVERT 2026-08-20: rental pickup/return reverted to native Odoo.
-        # The block below blocked sale_renting's retroactive "extra line" creation
-        # during rental pickup/return (skip_procurement=True) and redirected its moves
-        # to our kit-component lines. Commented out so native line/move creation runs.
-        # Uncomment to restore.
         # When sale_renting._action_done adds retroactive lines after a transfer is validated,
         # it passes skip_procurement=True.  We intercept here to block duplicate creation for
         # any product that already has a kit-component line on the order.
         #
         # NOTE: move_ids may or may not be present in the vals — do NOT gate on its presence.
         # The check is purely: does this product already have a line on the order?
-        # if self.env.context.get("skip_procurement"):
-        #     allowed = []
-        #     for vals in vals_list:
-        #         order_id = vals.get("order_id")
-        #         product_id = vals.get("product_id")
-        #
-        #         if order_id and product_id:
-        #             order = self.env["sale.order"].browse(order_id)
-        #
-        #             # Block only when a kit-component line for this product already exists.
-        #             # This lets _ensure_rental_kit_component_lines create the line the
-        #             # first time (kit_comp is empty then), while blocking any subsequent
-        #             # attempt by sale_renting to add a duplicate "extra line" for the
-        #             # same product once our component line is in place.
-        #             kit_comp = order.order_line.filtered(
-        #                 lambda l: l.product_id.id == product_id
-        #                     and not l.display_type
-        #                     and l.x_is_rental_kit_component
-        #             )
-        #
-        #             if kit_comp:
-        #                 # Redirect any moves that came with this val to the existing line.
-        #                 move_ids = self._extract_move_ids_from_commands(vals.get("move_ids"))
-        #                 if move_ids:
-        #                     self.env["stock.move"].browse(move_ids).write(
-        #                         {"sale_line_id": kit_comp[0].id}
-        #                     )
-        #                 _logger.info(
-        #                     "Blocked retro SOL for order %s product_id=%s — "
-        #                     "redirected to existing kit-component line %s",
-        #                     order.display_name, product_id, kit_comp[0].id,
-        #                 )
-        #                 continue  # skip — do not allow this line to be created
-        #
-        #         allowed.append(vals)
-        #
-        #     created = self.browse()
-        #     if allowed:
-        #         created |= super().create(allowed)
-        #     created._orders_to_retax()._apply_canadian_sales_taxes()
-        #     return created
+        if self.env.context.get("skip_procurement"):
+            allowed = []
+            for vals in vals_list:
+                order_id = vals.get("order_id")
+                product_id = vals.get("product_id")
+
+                if order_id and product_id:
+                    order = self.env["sale.order"].browse(order_id)
+
+                    # Block only when a kit-component line for this product already exists.
+                    # This lets _ensure_rental_kit_component_lines create the line the
+                    # first time (kit_comp is empty then), while blocking any subsequent
+                    # attempt by sale_renting to add a duplicate "extra line" for the
+                    # same product once our component line is in place.
+                    kit_comp = order.order_line.filtered(
+                        lambda l: l.product_id.id == product_id
+                            and not l.display_type
+                            and l.x_is_rental_kit_component
+                    )
+
+                    if kit_comp:
+                        # Redirect any moves that came with this val to the existing line.
+                        move_ids = self._extract_move_ids_from_commands(vals.get("move_ids"))
+                        if move_ids:
+                            self.env["stock.move"].browse(move_ids).write(
+                                {"sale_line_id": kit_comp[0].id}
+                            )
+                        _logger.info(
+                            "Blocked retro SOL for order %s product_id=%s — "
+                            "redirected to existing kit-component line %s",
+                            order.display_name, product_id, kit_comp[0].id,
+                        )
+                        continue  # skip — do not allow this line to be created
+
+                allowed.append(vals)
+
+            created = self.browse()
+            if allowed:
+                created |= super().create(allowed)
+            created._orders_to_retax()._apply_canadian_sales_taxes()
+            return created
 
         lines = super().create(vals_list)
         lines._orders_to_retax()._apply_canadian_sales_taxes()
