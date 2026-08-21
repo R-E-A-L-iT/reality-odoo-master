@@ -3,7 +3,7 @@
     "name": "ProQuotes",
     "summary": """Module that adds features to Quotes, Invoices, Purchases, and Deliveries.""",
     "description": """This module adds renewal quote features, multiple choice/selection options for clients, a variety of new fields, and better user interface.""",
-    "author": "Ezekiel deBlois",
+    "author": "Ézékiel deBlois",
     "license": "LGPL-3",
     "category": "Sales",
     "depends": [
