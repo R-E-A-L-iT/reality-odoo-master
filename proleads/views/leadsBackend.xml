@@ -37,7 +37,7 @@
                 <field name="leica_can_register" invisible="1"/>
                 <field name="leica_registered" invisible="1"/>
             </xpath>
-            <xpath expr="//sheet/notebook" position="inside">
+            <xpath expr="//notebook" position="inside">
                 <page string="Leica Information" name="leica_information">
                     <group string="Leica Lead Details" colspan="2">
                         <group string="Leica registration details">
