@@ -20,7 +20,7 @@
                 <field name="opportunity_source" />
             </xpath>
             <xpath expr="//field[@name='stage_id']" position="replace">
-                <field name="stage_id" widget="statusbar_duration" options="{'clickable': '1', 'fold_field': 'fold'}" domain="['|', ('team_id', '=', team_id), ('team_id', '=', False)]" invisible="not active"/>
+                <field name="stage_id" widget="statusbar_duration" options="{'clickable': '1', 'fold_field': 'fold'}" domain="['|', ('team_ids', 'in', team_id), ('team_ids', '=', False)]" invisible="not active"/>
             </xpath>
             <xpath expr="//group[@name='categorization']" position="after">
                 <group string="Opportunity Details">
@@ -97,11 +97,9 @@
                         <field name="title" placeholder="Title" domain="[]" options="{&quot;no_open&quot;: True}"/>
                     </div>
                     <field name="function"/>
-                    <label for="mobile_page_lead" class="oe_inline"/>
-                    <div class="o_row o_row_readonly">
-                        <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger" title="This phone number is blacklisted for SMS Marketing. Click to unblacklist." type="object" context="{'default_phone': mobile}" groups="base.group_user" invisible="not mobile_blacklisted"/>
-                        <field name="mobile" id="mobile_page_lead" widget="phone"/>
-                    </div>
+                    <!-- crm.lead.mobile / mobile_blacklisted were removed in Odoo 19
+                         (leads use a single 'phone' field now); the old mobile block
+                         here was invalidating the whole view, so it's dropped. -->
                 </group>
                 <group name="ba_email_subject_group" string="Email Settings" invisible="type != 'opportunity'">
                     <field name="ba_email_subject"
