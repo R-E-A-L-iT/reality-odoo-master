@@ -1,0 +1,26 @@
+<odoo>
+  <record id="view_website_visitor_form_ip" model="ir.ui.view">
+    <field name="name">website.visitor.form.ip</field>
+    <field name="model">website.visitor</field>
+    <field name="inherit_id" ref="website.website_visitor_view_form"/>
+    <field name="arch" type="xml">
+      <!-- target the first <group> inside the <group id="general_info"> -->
+      <xpath expr="//group[@id='general_info']/group[1]" position="inside">
+        <field name="ip_address"/>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="view_website_visitor_tree_inherit_ip" model="ir.ui.view">
+    <field name="name">website.visitor.tree.ip</field>
+    <field name="model">website.visitor</field>
+    <!-- core tree view for visitors -->
+    <field name="inherit_id" ref="website.website_visitor_view_tree"/>
+    <field name="arch" type="xml">
+      <!-- inject your field into the tree, but keep it hidden by default -->
+      <xpath expr="//list" position="inside">
+        <field name="ip_address"/>
+      </xpath>
+    </field>
+  </record>
+</odoo>
