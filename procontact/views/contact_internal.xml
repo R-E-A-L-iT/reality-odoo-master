@@ -10,6 +10,7 @@
             <xpath expr="//field[@name='title']" position="after">
                 <field name="linkedin_link" />
                 <field name="is_customer" />
+                <field name="has_had_contact" />
                 <field name="parent_company_id" invisible="not is_company"/>
             </xpath>
 

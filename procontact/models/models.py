@@ -30,6 +30,12 @@ class individual(models.Model):
         help="Check this box if this contact is a customer."
     )
 
+    has_had_contact = fields.Boolean(
+        string="Has had contact",
+        default=True,
+        help="Whether we have had contact with this person/company."
+    )
+
     first_name = fields.Char(string="First Name", compute="_compute_first_last_names", store=False)
     last_name = fields.Char(string="Last Name", compute="_compute_first_last_names", store=False)
 
