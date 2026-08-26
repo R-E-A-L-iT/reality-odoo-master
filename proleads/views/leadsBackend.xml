@@ -5,6 +5,13 @@
         <field name="name">CRM_Lead_Backend_Form_REAL</field>
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form" />
+        <!-- Force-enable on every module update. The 17->19 upgrade platform
+             DEACTIVATES custom views that fail to apply (this one broke on the
+             removed crm.lead.mobile field, see the note further down) so the DB
+             can still boot. Fixing the arch alone does NOT re-enable it: a
+             module update only rewrites the fields the record declares, so
+             without this line `active` stays false forever. -->
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <!-- <xpath expr="//header" position="inside">
                 <button name="action_leica_register" type="object" string="Register with Leica"
@@ -94,7 +101,12 @@
                     <label for="contact_name_page_lead"/>
                     <div class="o_row">
                         <field name="contact_name" id="contact_name_page_lead"/>
-                        <field name="title" placeholder="Title" domain="[]" options="{&quot;no_open&quot;: True}"/>
+                        <!-- crm.lead.title (the Mr/Mrs/Dr salutation) was REMOVED in
+                             Odoo 19 — the title now lives only on res.partner. It was
+                             invalidating this whole view ("Field 'title' does not exist
+                             in model 'crm.lead'"), which is what got the view
+                             auto-deactivated by the upgrade, so it's dropped here the
+                             same way the mobile block below was. -->
                     </div>
                     <field name="function"/>
                     <!-- crm.lead.mobile / mobile_blacklisted were removed in Odoo 19
