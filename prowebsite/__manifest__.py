@@ -18,51 +18,45 @@
     ],
     'assets': {
         'web.assets_frontend': [
+            # ── Stylesheets ──────────────────────────────────────────────────
+            # The Odoo 17 store stylesheets (product_page.css / shop_page.css)
+            # were DELETED, not disabled: their selectors were written against
+            # the Odoo 17 website_sale markup and no longer matched in 19, and
+            # the store now stays on Odoo's default look by design. Nothing here
+            # targets the stock shop/product/cart/checkout pages any more.
             'prowebsite/static/src/css/header_dropdowns.css',
-            # three_product.css is the broad custom stylesheet (site header, hero/landing
-            # sections, and the "notify me" new-product signup styling shown on the home
-            # page). Kept ENABLED — it targets custom classes/snippets, not the default
-            # shop/product pages, so it doesn't un-default the store.
+            # Broad custom stylesheet: site header, hero/landing sections, FAQ,
+            # promos, review cards, video gallery, "notify me" signup.
             'prowebsite/static/src/css/three_product.css',
             'prowebsite/static/src/css/rtc_series.css',
             'prowebsite/static/src/css/rtc_series_sections.css',
             'prowebsite/static/src/css/rtc_demo_request.css',
+            # Leica MultiMapper landing page — scoped entirely under .o_mm_page.
+            'prowebsite/static/src/css/multimapper.css',
+
+            # ── Scripts ──────────────────────────────────────────────────────
+            # Every script is feature-detected: each one bails out early when the
+            # page doesn't contain its markup, so they're no-ops elsewhere.
             'prowebsite/static/src/js/header_dropdowns.js',
             'prowebsite/static/src/js/rtc_series.js',
             'prowebsite/static/src/js/rtc_scroll_model.js',
             'prowebsite/static/src/js/rtc_demo_request.js',
-            # Non-store features extracted out of three_product.js (disabled
-            # below) so they keep working without pulling back the 3D product
-            # viewer and shop/product-page rewrites that file also carries.
-            # All of them are styled by three_product.css, which stays enabled,
-            # and each is a no-op on pages that don't render its markup.
+            'prowebsite/static/src/js/multimapper.js',
+            # Site-wide features, extracted out of three_product.js so they no
+            # longer depend on it loading or succeeding. Do NOT re-add these
+            # calls to three_product.js — they would double-initialise (the
+            # video gallery would clone its slides twice).
             'prowebsite/static/src/js/video_gallery.js',
             'prowebsite/static/src/js/faq_accordion.js',
             'prowebsite/static/src/js/notify_signup.js',
             'prowebsite/static/src/js/review_cards.js',
             'prowebsite/static/src/js/promo_popups.js',
-            # Leica MultiMapper landing page. Scoped entirely under .o_mm_page —
-            # a standalone marketing page like the RTC series one, NOT the stock
-            # website_sale shop/product page — so it doesn't re-style the store
-            # and is a no-op on every other page.
-            'prowebsite/static/src/css/multimapper.css',
-            'prowebsite/static/src/js/multimapper.js',
-            # Product DETAIL page styling. Scoped under .o_wsale_product_page, so
-            # the shop grid, cart and checkout are untouched. Re-enabled because
-            # product pages (e.g. BLK2GO) author their description content against
-            # these rules — without them the content renders unstyled. Note this
-            # sheet is dark-themed by design, so it can't be split apart: the
-            # description rules use white text and rely on the dark surfaces the
-            # rest of the file sets.
-            'prowebsite/static/src/css/product_page.css',
+            # Store-page scripts (kept — only the store CSS was dropped):
+            #   product_page.js  → appends the currency code after the price
+            #   three_product.js → 3D product viewer + add-to-cart buy section,
+            #                      OmniGO page header/cursor/loading screen
             'prowebsite/static/src/js/product_page.js',
-            # Odoo 19 migration: remaining store customizations stay disabled to
-            # show the default shop grid + the stock product gallery/buy controls.
-            # Re-enable when porting the store.
-            #   shop_page.css    → scoped to .o_wsale_products_page (stock shop grid)
-            #   three_product.js → 3D product viewer + add-to-cart buy section
-            # 'prowebsite/static/src/css/shop_page.css',
-            # 'prowebsite/static/src/js/three_product.js',
+            'prowebsite/static/src/js/three_product.js',
         ],
     }
 }
