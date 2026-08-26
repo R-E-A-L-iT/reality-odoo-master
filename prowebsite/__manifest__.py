@@ -31,11 +31,16 @@
             'prowebsite/static/src/js/rtc_series.js',
             'prowebsite/static/src/js/rtc_scroll_model.js',
             'prowebsite/static/src/js/rtc_demo_request.js',
-            # Video gallery carousel. Extracted from three_product.js (disabled
-            # below) so the "See It For Yourself" section keeps working without
-            # pulling back the shop/product-page rewrites that file also carries.
-            # Its styling comes from three_product.css, which stays enabled.
+            # Non-store features extracted out of three_product.js (disabled
+            # below) so they keep working without pulling back the 3D product
+            # viewer and shop/product-page rewrites that file also carries.
+            # All of them are styled by three_product.css, which stays enabled,
+            # and each is a no-op on pages that don't render its markup.
             'prowebsite/static/src/js/video_gallery.js',
+            'prowebsite/static/src/js/faq_accordion.js',
+            'prowebsite/static/src/js/notify_signup.js',
+            'prowebsite/static/src/js/review_cards.js',
+            'prowebsite/static/src/js/promo_popups.js',
             # Odoo 19 migration: store shop/product-PAGE customizations disabled to
             # show the default shop/product pages (3D product viewer + shop/product CSS
             # that restyles the standard pages). Re-enable when porting the store.

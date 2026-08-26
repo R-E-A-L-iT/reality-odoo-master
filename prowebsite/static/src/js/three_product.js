@@ -74,10 +74,6 @@ whenReady(async () => {
             buyNowPrice:       (price) => `Acheter maintenant | ${price}`,
             dragToRotate:      'Faites glisser pour faire pivoter',
             intlNote:          'Vous achetez depuis l\'extérieur des États-Unis ou du Canada ? Contactez-nous directement <a href="/contact">ici</a> pour passer une commande.',
-            goToVideo:         (n) => `Aller à la vidéo ${n}`,
-            notifyMissingName: 'Veuillez entrer votre prénom et votre nom.',
-            notifyInvalidEmail:'Veuillez entrer une adresse courriel valide.',
-            notifyGenericError:'Une erreur est survenue — veuillez réessayer.',
         },
         es_ES: {
             navAdapt:          'Adaptar',
@@ -90,10 +86,6 @@ whenReady(async () => {
             buyNowPrice:       (price) => `Comprar ahora | ${price}`,
             dragToRotate:      'Arrastra para rotar',
             intlNote:          '¿Está comprando desde fuera de EE.UU. o Canadá? Contáctenos directamente <a href="/contact">aquí</a> para realizar un pedido.',
-            goToVideo:         (n) => `Ir al video ${n}`,
-            notifyMissingName: 'Por favor ingrese su nombre y apellido.',
-            notifyInvalidEmail:'Por favor ingrese un correo electrónico válido.',
-            notifyGenericError:'Algo salió mal — por favor intente de nuevo.',
         },
     };
 
@@ -523,17 +515,16 @@ whenReady(async () => {
         }
     });
 
-    // ── Lightweight, DOM-only features ────────────────────────────────────────
-    // These must NEVER depend on the Three.js CDN load or the 3D pipeline that
-    // follows. Previously they were wired only near the very end of this
-    // callback, so any error — or the early `return` on a CDN failure — in the
-    // 3D setup silently killed the video-gallery arrows, the buy section, the
-    // notify form and the FAQ accordion. Initialise them up-front so a broken /
-    // slow Three.js load can't take the rest of the page down with it.
-    initVideoGallery();
+    // ── Store-facing, DOM-only features ───────────────────────────────────────
+    // Initialised up-front so they never depend on the Three.js CDN load or the
+    // 3D pipeline below: any error there — or the early `return` on a CDN
+    // failure — would otherwise silently kill them too.
+    //
+    // The non-store features that used to live here (video gallery, FAQ
+    // accordion, notify-me signup, review cards, promo popups) now ship as
+    // their own always-enabled assets, so they keep working while this file
+    // stays disabled for the Odoo 19 migration. See __manifest__.py.
     initOmnigoBuySection();
-    initNotifySignupForm();
-    initFaqAccordion();
 
     if (!bottomModelHost || !scrollHost) {
         console.warn("[loader] early exit — missing host element(s), Three.js will not run on this page");
@@ -1404,29 +1395,7 @@ whenReady(async () => {
         scrollRenderer.render(scrollScene, scrollCamera);
     }
 
-    const reviewCards = document.querySelectorAll(".o_review_waterfall_card");
-
-    if (reviewCards.length) {
-        const reviewObserver = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("is-visible");
-                        reviewObserver.unobserve(entry.target);
-                    }
-                });
-            },
-            {
-                threshold: 0.18,
-                rootMargin: "0px 0px -8% 0px",
-            }
-        );
-
-        reviewCards.forEach((card, index) => {
-            card.style.transitionDelay = `${Math.min(index * 90, 450)}ms`;
-            reviewObserver.observe(card);
-        });
-    }
+    // Review "waterfall" reveal-on-scroll moved to review_cards.js.
 
     requestAnimationFrame(animate);
 
@@ -1623,373 +1592,11 @@ whenReady(async () => {
         });
     }
 
-    // ----------------------------
-    // Pre-launch "notify me" signup form
-    // ----------------------------
-    // Feature-detected, not product-gated: this only runs if a page actually
-    // contains .o_omnigo_notify_form (e.g. Omni360's buy section with shop
-    // controls switched off), so it's a no-op everywhere else, including the
-    // OmniGO page.
-    function initNotifySignupForm() {
-        const form = document.querySelector(".o_omnigo_notify_form");
-        if (!form) return;
-
-        const listKey   = form.dataset.listKey || '';
-        const fieldsEl  = form.querySelector(".o_omnigo_notify_fields");
-        const successEl = form.querySelector(".o_omnigo_notify_success");
-        const errorEl   = form.querySelector(".o_omnigo_notify_error");
-        const firstIn   = form.querySelector(".o_omnigo_notify_first");
-        const lastIn    = form.querySelector(".o_omnigo_notify_last");
-        const emailIn   = form.querySelector(".o_omnigo_notify_email");
-        const submitBtn = form.querySelector(".o_omnigo_notify_submit");
-
-        const jq = window.$ || window.jQuery;
-        const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-
-        function showError(msg) {
-            if (!errorEl) return;
-            errorEl.textContent = msg;
-            errorEl.classList.add("is-visible");
-        }
-
-        function clearError() {
-            errorEl?.classList.remove("is-visible");
-        }
-
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
-            clearError();
-
-            const first_name = (firstIn?.value || '').trim();
-            const last_name  = (lastIn?.value || '').trim();
-            const email      = (emailIn?.value || '').trim();
-
-            if (!first_name || !last_name) {
-                showError(_t('notifyMissingName', 'Please enter your first and last name.'));
-                return;
-            }
-            if (!emailRe.test(email)) {
-                showError(_t('notifyInvalidEmail', 'Please enter a valid email address.'));
-                return;
-            }
-
-            submitBtn.disabled = true;
-            submitBtn.classList.add("is-loading");
-
-            jq.ajax({
-                url: "/prowebsite/notify_signup",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({
-                    jsonrpc: "2.0",
-                    method: "call",
-                    id: 1,
-                    params: { first_name, last_name, email, list_key: listKey },
-                }),
-                success(resp) {
-                    submitBtn.disabled = false;
-                    submitBtn.classList.remove("is-loading");
-                    const result = resp?.result;
-                    if (result?.success) {
-                        fieldsEl?.classList.add("is-hidden");
-                        successEl?.classList.add("is-visible");
-                    } else {
-                        const err = result?.error;
-                        const msg = err === 'invalid_email'
-                            ? _t('notifyInvalidEmail', 'Please enter a valid email address.')
-                            : _t('notifyGenericError', 'Something went wrong — please try again.');
-                        showError(msg);
-                    }
-                },
-                error(xhr) {
-                    console.error("[notify_signup] HTTP error:", xhr.status);
-                    submitBtn.disabled = false;
-                    submitBtn.classList.remove("is-loading");
-                    showError(_t('notifyGenericError', 'Something went wrong — please try again.'));
-                },
-            });
-        });
-    }
-
-    // ----------------------------
-    // Video Gallery carousel — infinite loop with peek
-    // (initialised up-front near the top of this callback)
-    // ----------------------------
-    function initVideoGallery() {
-        const section  = document.querySelector(".o_omnigo_vgallery_section");
-        if (!section) return;
-
-        const track    = section.querySelector(".o_omnigo_vgallery_track");
-        const origSlides = Array.from(section.querySelectorAll(".o_omnigo_vgallery_slide"));
-        const prevBtn  = section.querySelector(".o_omnigo_vgallery_arrow.is-prev");
-        const nextBtn  = section.querySelector(".o_omnigo_vgallery_arrow.is-next");
-        const dotsWrap = section.querySelector(".o_omnigo_vgallery_dots");
-        const counter  = section.querySelector(".o_omnigo_vgallery_counter");
-
-        if (!track || origSlides.length === 0) return;
-
-        const total = origSlides.length;
-
-        // Must match the CSS values:
-        //   .o_omnigo_vgallery_slide  { flex: 0 0 calc(100% - 220px) }  → PEEK = 110
-        //   .o_omnigo_vgallery_track  { gap: 16px }                      → GAP  = 16
-        const PEEK = 110;
-        const GAP  = 16;
-
-        // ── Clone first / last slides for seamless infinite loop ───────────────
-        const firstClone = origSlides[0].cloneNode(true);
-        const lastClone  = origSlides[total - 1].cloneNode(true);
-        firstClone.setAttribute("aria-hidden", "true");
-        lastClone.setAttribute("aria-hidden",  "true");
-        track.appendChild(firstClone);
-        track.prepend(lastClone);
-        // DOM layout: [lastClone(0), slide0(1) … slideN-1(N), firstClone(N+1)]
-
-        const allSlides = Array.from(track.children);
-
-        let domIdx   = 1;    // DOM index of the currently visible slide
-        let realIdx  = 0;    // 0-based index into the original slides
-        let animating = false;
-
-        // ── Layout helpers ──────────────────────────────────────────────────────
-        // CSS owns the slide width (flex: 0 0 calc(100% - 160px)) and the gap
-        // (gap: 16px). JS just reads the rendered width — no risk of timing bugs.
-        function slideW() {
-            // Read from the first real slide (domIndex 1); fall back to estimate.
-            return allSlides[1]?.offsetWidth || (track.parentElement.offsetWidth - 2 * PEEK);
-        }
-
-        function setSlideWidths() {
-            // Nothing to set — CSS handles it. Only the translateX needs updating.
-        }
-
-        function offsetFor(d) {
-            // translateX that places the left edge of slide d at x = PEEK
-            return PEEK - d * (slideW() + GAP);
-        }
-
-        function applyTranslate(px, animated) {
-            track.style.transition = animated
-                ? "transform 0.42s cubic-bezier(0.4, 0, 0.2, 1)"
-                : "none";
-            track.style.transform = `translateX(${px}px)`;
-        }
-
-        function markActive() {
-            allSlides.forEach((s, i) => s.classList.toggle("is-active", i === domIdx));
-        }
-
-        // ── Dots ────────────────────────────────────────────────────────────────
-        const dots = origSlides.map((_, i) => {
-            const dot = document.createElement("button");
-            dot.className = "o_omnigo_vgallery_dot";
-            dot.setAttribute("aria-label", _t("goToVideo", (n) => `Go to video ${n}`, i + 1));
-            dot.addEventListener("click", () => {
-                if (!animating) goTo(i + 1, i);
-            });
-            dotsWrap?.appendChild(dot);
-            return dot;
-        });
-
-        function updateUI() {
-            dots.forEach((d, i) => d.classList.toggle("is-active", i === realIdx));
-            if (counter) counter.textContent = `${realIdx + 1} / ${total}`;
-            markActive();
-        }
-
-        // ── Pause Vimeo without reloading (postMessage API) ─────────────────────
-        function pauseVimeo(slideEl) {
-            const iframe = slideEl?.querySelector(".o_omnigo_vgallery_iframe");
-            if (!iframe?.contentWindow) return;
-            try {
-                iframe.contentWindow.postMessage(
-                    JSON.stringify({ method: "pause" }),
-                    "https://player.vimeo.com"
-                );
-            } catch (_) {}
-        }
-
-        // ── Navigation ──────────────────────────────────────────────────────────
-        function goTo(targetDom, targetReal) {
-            if (animating) return;
-            pauseVimeo(allSlides[domIdx]);
-            animating = true;
-            domIdx   = targetDom;
-            realIdx  = targetReal;
-            applyTranslate(offsetFor(domIdx), true);
-            updateUI();
-        }
-
-        function next() {
-            const nd = domIdx + 1;
-            const nr = nd <= total ? nd - 1 : 0;
-            goTo(nd, nr);
-        }
-
-        function prev() {
-            const nd = domIdx - 1;
-            const nr = nd >= 1 ? nd - 1 : total - 1;
-            goTo(nd, nr);
-        }
-
-        // ── Infinite-loop snap (silently jump clone → real slide) ───────────────
-        track.addEventListener("transitionend", e => {
-            if (e.propertyName !== "transform") return;
-            animating = false;
-
-            if (domIdx === 0) {
-                // Arrived at lastClone → snap to real last slide
-                domIdx  = total;
-                realIdx = total - 1;
-                applyTranslate(offsetFor(domIdx), false);
-                markActive();
-            } else if (domIdx === total + 1) {
-                // Arrived at firstClone → snap to real first slide
-                domIdx  = 1;
-                realIdx = 0;
-                applyTranslate(offsetFor(domIdx), false);
-                markActive();
-            }
-        });
-
-        // ── Event wiring ────────────────────────────────────────────────────────
-        prevBtn?.addEventListener("click", prev);
-        nextBtn?.addEventListener("click", next);
-
-        section.addEventListener("keydown", e => {
-            if (e.key === "ArrowLeft")  { e.preventDefault(); prev(); }
-            if (e.key === "ArrowRight") { e.preventDefault(); next(); }
-        });
-
-        let _tx = 0;
-        const trackWrap = section.querySelector(".o_omnigo_vgallery_track_wrap");
-        trackWrap?.addEventListener("touchstart", e => { _tx = e.touches[0].clientX; }, { passive: true });
-        trackWrap?.addEventListener("touchend", e => {
-            const delta = e.changedTouches[0].clientX - _tx;
-            if (Math.abs(delta) > 44) { delta < 0 ? next() : prev(); }
-        }, { passive: true });
-
-        // Reposition on window resize (CSS re-computes slide width automatically;
-        // we just need to recalculate the translateX offset to match).
-        let _rt = null;
-        window.addEventListener("resize", () => {
-            clearTimeout(_rt);
-            _rt = setTimeout(doLayout, 120);
-        }, { passive: true });
-
-        // ── Single-video mode — no carousel needed ──────────────────────────────
-        if (total === 1) {
-            prevBtn?.setAttribute("data-hidden", "true");
-            nextBtn?.setAttribute("data-hidden", "true");
-            if (dotsWrap) dotsWrap.style.display = "none";
-            if (counter)  counter.style.display  = "none";
-        }
-
-        // ── Init ─────────────────────────────────────────────────────────────────
-        // CSS controls slide width and aspect ratio, so all we need to do is
-        // read the rendered slide width and apply the correct translateX.
-        // We use ResizeObserver on the stage so this fires after the browser
-        // has done a layout pass and allSlides[1].offsetWidth is non-zero.
-        function doLayout() {
-            applyTranslate(offsetFor(domIdx), false);
-        }
-
-        const stage = section.querySelector(".o_omnigo_vgallery_stage");
-        const ro = new ResizeObserver(entries => {
-            for (const entry of entries) {
-                if (entry.contentRect.width > 0) {
-                    doLayout();
-                    // Enable CSS transition only after first real paint so the
-                    // initial snap doesn't animate in from position 0.
-                    requestAnimationFrame(() => {
-                        track.style.transition = "transform 0.42s cubic-bezier(0.4, 0, 0.2, 1)";
-                    });
-                    ro.disconnect();
-                }
-            }
-        });
-        ro.observe(stage || track.parentElement);
-
-        // Try synchronously too — works when page is served from cache and
-        // offsetWidth is already valid at script-execution time.
-        doLayout();
-
-        updateUI();
-    }
-
-    // ----------------------------
-    // FAQ accordion
-    // ----------------------------
-    // Single event listener on the list — no per-item listeners needed.
-    // (initialised up-front near the top of this callback)
-    function initFaqAccordion() {
-        const faqList = document.querySelector(".o_omnigo_faq_list");
-        if (!faqList) return;
-        faqList.addEventListener("click", e => {
-            const btn = e.target.closest(".o_omnigo_faq_q");
-            if (!btn) return;
-            const item = btn.closest(".o_omnigo_faq_item");
-            if (!item) return;
-
-            const isOpen = item.classList.contains("is-open");
-
-            // Close any other open item first.
-            faqList.querySelectorAll(".o_omnigo_faq_item.is-open").forEach(el => {
-                el.classList.remove("is-open");
-                el.querySelector(".o_omnigo_faq_q")?.setAttribute("aria-expanded", "false");
-            });
-
-            // Toggle the clicked item.
-            if (!isOpen) {
-                item.classList.add("is-open");
-                btn.setAttribute("aria-expanded", "true");
-            }
-        });
-    }
+    // Non-store features extracted to their own always-enabled assets so they
+    // keep working while this file stays disabled for the Odoo 19 migration:
+    //   notify-me signup  -> notify_signup.js
+    //   video gallery     -> video_gallery.js
+    //   FAQ accordion     -> faq_accordion.js
+    //   review cards      -> review_cards.js
+    //   promo popups      -> promo_popups.js
 });
-
-/* ─── Promo popup dismiss (handles OmniGO + RTC) ───────────────────────────── */
-// One delegated handler per close-button class. Finds the nearest ancestor
-// promo card, lets its CSS transition collapse it (max-height/margin/opacity/
-// transform, see .o_promo_stack .is-dismissed in three_product.css), then
-// removes it from layout once that's done so the stack stays clean.
-(function () {
-    function dismissPromo(closeSelector, cardSelector) {
-        document.addEventListener("click", function (e) {
-            if (!e.target.closest(closeSelector)) return;
-            var popup = e.target.closest(cardSelector);
-            if (!popup) return;
-            popup.classList.add("is-dismissed");
-            // max-height is the longest-running of the transitioned properties
-            // (0.4s, vs 0.22s for opacity/transform) — wait specifically for
-            // it so display:none never cuts the collapse off mid-animation.
-            function onEnd(ev) {
-                if (ev.target !== popup || ev.propertyName !== "max-height") return;
-                popup.removeEventListener("transitionend", onEnd);
-                popup.style.display = "none";
-            }
-            popup.addEventListener("transitionend", onEnd);
-        });
-    }
-    dismissPromo(".o_omnigo_promo_close", ".o_omnigo_promo");
-    dismissPromo(".o_rtc_promo_close",    ".o_rtc_promo");
-})();
-
-/* ─── Notification stack — groups OmniGO + RTC popups ──────────────────────── */
-// Runs immediately (no DOMContentLoaded wait needed — Odoo script injection
-// happens after the DOM is already built). Finds any promo popups on the page,
-// moves them into a single flex container so they stack and auto-collapse on dismiss.
-(function () {
-    var omnigo = document.querySelector(".o_omnigo_promo");
-    var rtc    = document.querySelector(".o_rtc_promo");
-    if (!omnigo && !rtc) return;
-
-    var stack = document.createElement("div");
-    stack.className = "o_promo_stack";
-
-    // OmniGO on top, RTC below
-    if (omnigo) { omnigo.parentNode.removeChild(omnigo); stack.appendChild(omnigo); }
-    if (rtc)    { rtc.parentNode.removeChild(rtc);       stack.appendChild(rtc);    }
-
-    document.body.appendChild(stack);
-})();
