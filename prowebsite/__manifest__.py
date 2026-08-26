@@ -37,6 +37,9 @@
             # Nothing here touches the stock website_sale markup.
             'prowebsite/static/src/css/product_sections.css',
             'prowebsite/static/src/css/rtc_demo_request.css',
+            # Reusable product demo / lead request form (.o_rtc_lead_form) — the
+            # paste-able "See it in action" block on the redesigned product pages.
+            'prowebsite/static/src/css/product_lead.css',
             # Leica MultiMapper landing page — scoped entirely under .o_mm_page.
             'prowebsite/static/src/css/multimapper.css',
 
@@ -47,6 +50,12 @@
             'prowebsite/static/src/js/rtc_series.js',
             'prowebsite/static/src/js/rtc_scroll_model.js',
             'prowebsite/static/src/js/rtc_demo_request.js',
+            # Posts to /product_demo/submit (see controllers/main.py) — creates a
+            # CRM lead titled by the product the visitor is enquiring about.
+            'prowebsite/static/src/js/product_lead.js',
+            # Posts to /tradeshow_signup/submit — tradeshow / "stay in the loop"
+            # contact signup, feeds the same Sales pipeline as the demo requests.
+            'prowebsite/static/src/js/tradeshow_signup.js',
             'prowebsite/static/src/js/multimapper.js',
             # Site-wide features, extracted out of three_product.js so they no
             # longer depend on it loading or succeeding. Do NOT re-add these
