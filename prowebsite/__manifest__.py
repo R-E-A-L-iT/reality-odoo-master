@@ -41,15 +41,28 @@
             'prowebsite/static/src/js/notify_signup.js',
             'prowebsite/static/src/js/review_cards.js',
             'prowebsite/static/src/js/promo_popups.js',
-            # Odoo 19 migration: store shop/product-PAGE customizations disabled to
-            # show the default shop/product pages (3D product viewer + shop/product CSS
-            # that restyles the standard pages). Re-enable when porting the store.
-            # 'prowebsite/static/src/css/product_page.css',
+            # Leica MultiMapper landing page. Scoped entirely under .o_mm_page —
+            # a standalone marketing page like the RTC series one, NOT the stock
+            # website_sale shop/product page — so it doesn't re-style the store
+            # and is a no-op on every other page.
+            'prowebsite/static/src/css/multimapper.css',
+            'prowebsite/static/src/js/multimapper.js',
+            # Product DETAIL page styling. Scoped under .o_wsale_product_page, so
+            # the shop grid, cart and checkout are untouched. Re-enabled because
+            # product pages (e.g. BLK2GO) author their description content against
+            # these rules — without them the content renders unstyled. Note this
+            # sheet is dark-themed by design, so it can't be split apart: the
+            # description rules use white text and rely on the dark surfaces the
+            # rest of the file sets.
+            'prowebsite/static/src/css/product_page.css',
+            'prowebsite/static/src/js/product_page.js',
+            # Odoo 19 migration: remaining store customizations stay disabled to
+            # show the default shop grid + the stock product gallery/buy controls.
+            # Re-enable when porting the store.
+            #   shop_page.css    → scoped to .o_wsale_products_page (stock shop grid)
+            #   three_product.js → 3D product viewer + add-to-cart buy section
             # 'prowebsite/static/src/css/shop_page.css',
-            # 'prowebsite/static/src/css/multimapper.css',
             # 'prowebsite/static/src/js/three_product.js',
-            # 'prowebsite/static/src/js/product_page.js',
-            # 'prowebsite/static/src/js/multimapper.js',
         ],
     }
 }
