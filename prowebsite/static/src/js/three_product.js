@@ -523,30 +523,21 @@ whenReady(async () => {
         }
     });
 
+    // ── Lightweight, DOM-only features ────────────────────────────────────────
+    // These must NEVER depend on the Three.js CDN load or the 3D pipeline that
+    // follows. Previously they were wired only near the very end of this
+    // callback, so any error — or the early `return` on a CDN failure — in the
+    // 3D setup silently killed the video-gallery arrows, the buy section, the
+    // notify form and the FAQ accordion. Initialise them up-front so a broken /
+    // slow Three.js load can't take the rest of the page down with it.
+    initVideoGallery();
+    initOmnigoBuySection();
+    initNotifySignupForm();
+    initFaqAccordion();
+
     if (!bottomModelHost || !scrollHost) {
         console.warn("[loader] early exit — missing host element(s), Three.js will not run on this page");
-        // Still wire up lightweight features that don't need the 3D canvas
-        initVideoGallery();
-        initOmnigoBuySection();
-        initNotifySignupForm();
-        const _faqListEarly = document.querySelector(".o_omnigo_faq_list");
-        if (_faqListEarly) {
-            _faqListEarly.addEventListener("click", e => {
-                const btn = e.target.closest(".o_omnigo_faq_q");
-                if (!btn) return;
-                const item = btn.closest(".o_omnigo_faq_item");
-                if (!item) return;
-                const isOpen = item.classList.contains("is-open");
-                _faqListEarly.querySelectorAll(".o_omnigo_faq_item.is-open").forEach(el => {
-                    el.classList.remove("is-open");
-                    el.querySelector(".o_omnigo_faq_q")?.setAttribute("aria-expanded", "false");
-                });
-                if (!isOpen) {
-                    item.classList.add("is-open");
-                    btn.setAttribute("aria-expanded", "true");
-                }
-            });
-        }
+        // Lightweight features were already initialised above.
         return;
     }
 
@@ -1720,11 +1711,9 @@ whenReady(async () => {
         });
     }
 
-    initOmnigoBuySection();
-    initNotifySignupForm();
-
     // ----------------------------
     // Video Gallery carousel — infinite loop with peek
+    // (initialised up-front near the top of this callback)
     // ----------------------------
     function initVideoGallery() {
         const section  = document.querySelector(".o_omnigo_vgallery_section");
@@ -1928,14 +1917,14 @@ whenReady(async () => {
         updateUI();
     }
 
-    initVideoGallery();
-
     // ----------------------------
     // FAQ accordion
     // ----------------------------
     // Single event listener on the list — no per-item listeners needed.
-    const faqList = document.querySelector(".o_omnigo_faq_list");
-    if (faqList) {
+    // (initialised up-front near the top of this callback)
+    function initFaqAccordion() {
+        const faqList = document.querySelector(".o_omnigo_faq_list");
+        if (!faqList) return;
         faqList.addEventListener("click", e => {
             const btn = e.target.closest(".o_omnigo_faq_q");
             if (!btn) return;
