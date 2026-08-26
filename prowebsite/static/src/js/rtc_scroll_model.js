@@ -519,7 +519,15 @@ whenReady(async () => {
     function animate() {
         requestAnimationFrame(animate);
 
-        if (_scrollDirty) {
+        // Recompute scroll progress every frame while the section is on-screen.
+        // Previously this was gated behind a `scroll`-event "dirty" flag bound to
+        // #wrapwrap; on the Odoo 19 frontend the page can scroll on a different
+        // element, so those events never fired and the model pose + feature
+        // callouts froze at their initial (t≈0) state. Reading progress directly
+        // each in-view frame is cheap (one getBoundingClientRect) and works no
+        // matter which element actually scrolls. `_scrollDirty` is kept as a
+        // secondary trigger so the very first frame after load still updates.
+        if (_scrollSectionInView || _scrollDirty) {
             _scrollDirty = false;
             updateScrollSectionProgress();
         }
