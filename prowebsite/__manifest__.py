@@ -30,6 +30,12 @@
             'prowebsite/static/src/css/three_product.css',
             'prowebsite/static/src/css/rtc_series.css',
             'prowebsite/static/src/css/rtc_series_sections.css',
+            # Reusable product-marketing content sections (.o_rtc_page +
+            # .o_rtc_feature_row / _media_card / _reviews / _cta ...). These are
+            # the building blocks the REDESIGNED product pages are authored
+            # against (BLK2GO etc.), layered on top of rtc_series_sections.css.
+            # Nothing here touches the stock website_sale markup.
+            'prowebsite/static/src/css/product_sections.css',
             'prowebsite/static/src/css/rtc_demo_request.css',
             # Leica MultiMapper landing page — scoped entirely under .o_mm_page.
             'prowebsite/static/src/css/multimapper.css',
