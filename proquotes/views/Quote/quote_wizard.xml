@@ -5,6 +5,7 @@
             <field name="name">mail.compose.message.form.sale.order</field>
             <field name="model">mail.compose.message</field>
             <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+            <field name="active" eval="True"/>
             <field name="arch" type="xml">
 
                 <!-- filter templates -->

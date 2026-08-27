@@ -5,6 +5,7 @@
         <field name="name">sale.view_order_form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
 
             <xpath expr="//div[@name='button_box']" position="inside">
@@ -186,6 +187,7 @@
         <field name="name">sale.view_order_form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <!-- Hide Original Optional Products Implementation -->
             <xpath expr="//page[@name=&quot;optional_products&quot;]" position="replace"></xpath>
@@ -196,6 +198,7 @@
         <field name="name">sale.order.form.inherit</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <field name="pricelist_id" position="attributes">
                 <attribute name="domain">[('name', 'not ilike', 'default')]</attribute>

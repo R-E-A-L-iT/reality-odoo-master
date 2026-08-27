@@ -4,6 +4,7 @@
         <field name="name">maintenance.equipment.form.inherit.company.firmware</field>
         <field name="model">maintenance.equipment</field>
         <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
 
             <!-- Add Owning Company right after Used By -->

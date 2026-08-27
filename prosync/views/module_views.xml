@@ -99,6 +99,7 @@
             <field name="name">prosync.report.form.run.btn</field>
             <field name="model">prosync.report</field>
             <field name="inherit_id" ref="prosync.view_sync_report_form"/>
+            <field name="active" eval="True"/>
             <field name="arch" type="xml">
                 <xpath expr="//form/sheet" position="before">
                     <header>

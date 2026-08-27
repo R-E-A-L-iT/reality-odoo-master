@@ -4,6 +4,7 @@
         <field name="name">helpdesk.ticket.form.inherit</field>
         <field name="model">helpdesk.ticket</field>
         <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <!-- Insert the footer_id field after the existing fields (adjust position as needed) -->
             <xpath expr="//group" position="inside">

@@ -4,6 +4,7 @@
         <field name="name">res.partner.form.inherit.quo.calls</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
 
             <xpath expr="//div[@name='button_box']" position="inside">

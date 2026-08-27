@@ -5,6 +5,7 @@
         <field name="name">rental.order.wizard.form.inherit.serial.domain</field>
         <field name="model">rental.order.wizard</field>
         <field name="inherit_id" ref="sale_renting.rental_order_wizard_view_form"/>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
 
             <xpath expr="//field[@name='rental_wizard_line_ids']/list/field[@name='product_id']" position="after">

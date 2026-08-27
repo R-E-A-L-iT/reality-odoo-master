@@ -12,6 +12,7 @@
         <field name="name">quotation.document.form.preview</field>
         <field name="model">quotation.document</field>
         <field name="inherit_id" ref="sale_pdf_quote_builder.quotation_document_form"/>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='document_type']" position="before">
                 <field name="doc_class" widget="radio" options="{'horizontal': true}"/>
@@ -45,6 +46,7 @@
         <field name="name">quotation.document.list.preview</field>
         <field name="model">quotation.document</field>
         <field name="inherit_id" ref="sale_pdf_quote_builder.quotation_document_list"/>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='document_type']" position="after">
                 <field name="doc_class"/>

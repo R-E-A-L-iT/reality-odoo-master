@@ -5,6 +5,7 @@
        <field name="model">product.template</field>
        <field name="priority">3</field>
        <field name="inherit_id" ref="product.product_template_only_form_view" />
+       <field name="active" eval="True"/>
        <field name="arch" type="xml">
            <xpath expr="//field[@name='website_id']" position="after">
                 <field name="show_add_to_cart" string="Show Add to Cart Button"/>
@@ -17,6 +18,7 @@
         <field name="name">product.template.product.website.form</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <field name="is_published" widget="website_redirect_button" position="after">
                 <button name="action_is_us_toggle" type="object" class="oe_stat_button">

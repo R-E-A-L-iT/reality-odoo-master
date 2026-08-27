@@ -9,6 +9,7 @@
         <field name="name">product.template.rental.pricing.mode</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="sale_renting.product_template_form_view_rental"/>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <!-- Insert the pricing mode checkboxes at the top of the Rental prices tab -->
             <xpath expr="//page[@name='pricing']/group" position="before">
@@ -31,6 +32,7 @@
         <field name="name">sale.order.rental.proquotes.overrides</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_renting.rental_order_form_view"/>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <!-- Remove required from the hidden return date field -->
             <xpath expr="//field[@name='rental_return_date'][@invisible='1']" position="attributes">

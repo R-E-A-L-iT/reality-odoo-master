@@ -4,6 +4,7 @@
         <field name="name">inherit.view.task.search.form</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <filter name="private_tasks" position="after">
                 <separator/>

@@ -5,6 +5,12 @@
         <field name="name">sale.order_template_view_form</field>
         <field name="model">sale.order.template</field>
         <field name="inherit_id" ref="sale_management.sale_order_template_view_form" />
+        <!-- Force-enable on every update: the 17->19 upgrade DEACTIVATED this
+             view (it referenced the since-removed optional/selected/special
+             fields). The arch is fixed now, but a module update only rewrites
+             the fields a record declares, so without this `active` stays
+             false forever and none of these customizations apply. -->
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
 
             <xpath expr="//group[@name='sale_info']" position="after">
