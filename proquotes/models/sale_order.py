@@ -76,11 +76,19 @@ class order(models.Model):
 
     # Allow same-datetime start/end so same-day rentals save without error.
     # Replaces the base sale_renting CHECK(rental_start_date < rental_return_date).
-    _sql_constraints = [(
-        'rental_period_coherence',
+    # Odoo 19 dropped support for _sql_constraints ("no longer supported, please
+    # define models.Constraint"). While it was still declared the old way this
+    # override was IGNORED, so base sale_renting's stricter
+    # CHECK(rental_start_date < rental_return_date) stayed in force and every
+    # same-day rental (start == return) violated it — which is what produced
+    # "check constraint sale_order_rental_period_coherence ... is violated by
+    # some row" on every update. The attribute name below becomes the constraint
+    # name (sale_order_rental_period_coherence), which is what lets it replace
+    # the base one.
+    _rental_period_coherence = models.Constraint(
         "CHECK(rental_start_date IS NULL OR rental_return_date IS NULL OR rental_start_date <= rental_return_date)",
         "The rental start date must be before or equal to the rental return date.",
-    )]
+    )
 
     @api.onchange('is_rental_order')
     def _onchange_is_rental_order(self):
