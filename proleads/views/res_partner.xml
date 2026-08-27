@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Contact-level LinkedIn link, moved here from the retired `procontact`
+        module. procontact anchored this on //field[@name='title'], which no
+        longer exists in the Odoo 19 partner form — anchoring on `website`
+        instead (both are URL fields, so they sit together naturally).
+    -->
+    <record id="view_partner_form_linkedin" model="ir.ui.view">
+        <field name="name">res.partner.form.linkedin</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <!-- See leadsBackend.xml: force-enable so an upgrade that deactivates
+             the view doesn't leave it silently off forever. -->
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='website']" position="after">
+                <field name="linkedin_link"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
