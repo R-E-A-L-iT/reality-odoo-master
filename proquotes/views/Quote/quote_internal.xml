@@ -183,16 +183,11 @@
         </field>
     </record>
 
-    <record id="hide_view_order_form_proquotes" model="ir.ui.view">
-        <field name="name">sale.view_order_form</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
-        <field name="active" eval="True"/>
-        <field name="arch" type="xml">
-            <!-- Hide Original Optional Products Implementation -->
-            <xpath expr="//page[@name=&quot;optional_products&quot;]" position="replace"></xpath>
-        </field>
-    </record>
+    <!-- hide_view_order_form_proquotes REMOVED: its only job was
+         <xpath expr="//page[@name='optional_products']" position="replace"/> on
+         sale_management.sale_order_form_quote. Odoo 19 deleted that page, so the
+         xpath failed and the view was permanently auto-deactivated. The page it
+         hid no longer exists, so the whole record is obsolete. -->
 
     <record id="view_order_form_inherit" model="ir.ui.view">
         <field name="name">sale.order.form.inherit</field>

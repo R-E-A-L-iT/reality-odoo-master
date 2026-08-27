@@ -32,9 +32,11 @@
                 <field name="discount" widget="percentage" invisible="0" />
             </xpath>
 
-            <xpath expr="//page[@name=&quot;optional_products&quot;]" position="replace">
-
-            </xpath>
+            <!-- The "Optional Products" page was REMOVED from
+                 sale_management.sale_order_template_view_form in Odoo 19, so the
+                 xpath that used to strip it now fails and invalidates this whole
+                 view (which is why it kept getting auto-deactivated). Nothing to
+                 remove any more — dropped. -->
 
         </field>
 
