@@ -1276,3 +1276,59 @@ display: none !important;
 body:has(.quote-hero-cover) #renewal-text * {
 color: #17171a !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Portal "Validate Order" sign modal (#modalaccept)
+   ══════════════════════════════════════════════════════════════════════════
+   Two problems this fixes:
+
+   1. STACKING — the site header (.o_site_header, prowebsite) is
+      position:relative with z-index:1001. Bootstrap's modal is 1055, but the
+      modal markup lives inside the portal content, so whichever ancestor
+      stacking context it sits in can pin the whole subtree under the header:
+      the modal's own title and close button ended up behind the nav bar,
+      unreadable and unclickable. Lifting the modal + its backdrop clear of
+      the header's 1001 puts it back on top.
+
+   2. INHERITED TEXT COLOUR — the modal renders on the dark-themed quote page,
+      so it inherits light text onto Bootstrap's white .modal-content: the
+      "By signing, you confirm acceptance on behalf of ..." line came out
+      white-on-white. The rules below re-assert a readable dark-on-light
+      palette for the modal's own chrome only. Everything is scoped to
+      #modalaccept so no other modal or page is affected.                     */
+
+#modalaccept {
+    z-index: 2000 !important;
+}
+#modalaccept + .modal-backdrop,
+.modal-backdrop.show {
+    z-index: 1999 !important;
+}
+
+/* Readable text on the white modal surface. `inherit` on the children lets
+   .modal-content own the colour, so a nested element that sets its own colour
+   (the red submit button, alerts) still wins. */
+#modalaccept .modal-content {
+    color: #17171a;
+    background-color: #ffffff;
+}
+#modalaccept .modal-header,
+#modalaccept .modal-body,
+#modalaccept .modal-title,
+#modalaccept #sign-dialog,
+#modalaccept #sign-dialog span,
+#modalaccept #sign-dialog b,
+#modalaccept .o_web_sign_name_and_signature,
+#modalaccept .col-form-label {
+    color: inherit;
+}
+
+/* The close button is a background-image glyph; force the dark variant so it
+   stays visible on the white header. */
+#modalaccept .modal-header .btn-close {
+    filter: none;
+    opacity: 0.75;
+}
+#modalaccept .modal-header .btn-close:hover {
+    opacity: 1;
+}
