@@ -43,6 +43,10 @@ class SaleOrderTemplate(models.Model):
             vals['discount'] = line.discount
         if getattr(line, 'section_name_translations', False):
             vals['section_name_translations'] = line.section_name_translations
+        # Carry the single-choice blueprint onto the real order line; the order
+        # side tags the members and enforces "exactly one selected" on create.
+        if getattr(line, 'x_single_choice', False):
+            vals['x_single_choice'] = True
         return vals
 
     def _prepare_sale_order_optional_line_values(self, order, option_line, **kwargs):
@@ -51,4 +55,8 @@ class SaleOrderTemplate(models.Model):
             vals['discount'] = option_line.discount
         if getattr(option_line, 'section_name_translations', False):
             vals['section_name_translations'] = option_line.section_name_translations
+        # Carry the single-choice blueprint onto the real order line; the order
+        # side tags the members and enforces "exactly one selected" on create.
+        if getattr(option_line, 'x_single_choice', False):
+            vals['x_single_choice'] = True
         return vals

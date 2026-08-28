@@ -24,6 +24,10 @@
             <xpath expr="//control" position="after">
                 <!-- Loaded so the section "Translate" dialog can read/write it. -->
                 <field name="section_name_translations" column_invisible="1" />
+                <!-- Loaded so the "Set/Unset Single Choice" dropdown item can read
+                     the current state (without it record.data.x_single_choice is
+                     undefined and the item always reads "Set"). -->
+                <field name="x_single_choice" column_invisible="1" />
             </xpath>
 
             <xpath expr="//list//field[@name=&quot;product_uom_qty&quot;]" position="after">

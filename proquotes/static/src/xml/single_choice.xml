@@ -31,4 +31,33 @@
         </xpath>
     </t>
 
+    <!-- Same two items on the quotation TEMPLATE line editor. It is a
+         separate renderer + row template, so without this the Single Choice
+         option simply never appeared on quotation templates. -->
+    <t t-name="proquotes.single_choice_item_template"
+       t-inherit="sale_management.ListRenderer.RecordRow"
+       t-inherit-mode="extension">
+        <xpath expr="//DropdownItem[i[hasclass('fa-sticky-note-o')]]" position="before">
+            <DropdownItem
+                t-if="record.data.display_type === 'line_section' or record.data.display_type === 'line_subsection'"
+                onSelected="() => this.onToggleSingleChoice(record)"
+                attrs="{ 'class': (record.data.is_optional and !record.data.x_single_choice) ? 'disabled' : '' }">
+                <i class="me-1 fa fa-fw fa-dot-circle-o"/>
+                <span t-if="record.data.x_single_choice">Unset Single Choice</span>
+                <span t-else="">Set Single Choice</span>
+            </DropdownItem>
+            <!-- "Set Optional" for SUBSECTIONS only — native optional is offered on
+                 top-level sections, so this fills the gap for subsections. Disabled
+                 on a single-choice subsection (mutually exclusive). -->
+            <DropdownItem
+                t-if="record.data.display_type === 'line_subsection'"
+                onSelected="() => this.onToggleOptional(record)"
+                attrs="{ 'class': record.data.x_single_choice ? 'disabled' : '' }">
+                <i class="me-1 fa fa-fw fa-check-square-o"/>
+                <span t-if="record.data.is_optional">Unset Optional</span>
+                <span t-else="">Set Optional</span>
+            </DropdownItem>
+        </xpath>
+    </t>
+
 </templates>

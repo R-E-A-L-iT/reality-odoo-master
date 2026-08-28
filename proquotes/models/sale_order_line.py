@@ -335,6 +335,26 @@ class SaleOrderLine(models.Model):
                 todo.with_context(_single_choice_no_cascade=True).write(
                     {fname: section.id}
                 )
+            if section.x_single_choice:
+                # A single-choice section must end up with EXACTLY one selected
+                # member. Lines built from a template all carry the template's
+                # quantities (typically 1 each), so without this every member
+                # would come out selected. Keep the first member that is already
+                # selected, zero the rest; if none is, select the first.
+                members = section._single_choice_member_lines()
+                if members:
+                    keep = next(
+                        (m for m in members if m.product_uom_qty >= 1), members[0]
+                    )
+                    others = members - keep
+                    if others:
+                        others.with_context(_single_choice_no_cascade=True).write(
+                            {"product_uom_qty": 0}
+                        )
+                    if keep.product_uom_qty < 1:
+                        keep.with_context(_single_choice_no_cascade=True).write(
+                            {"product_uom_qty": max(keep.x_preset_qty, 1)}
+                        )
 
     def portal_toggle_optional(self, select):
         """Portal select/unselect of an optional-section product: selecting sets the

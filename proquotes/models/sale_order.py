@@ -1869,8 +1869,10 @@ class order(models.Model):
 
     @api.onchange("sale_order_template_id", "renewal_product_items")
     def renewalQuoteAutoFill(self):
-        # Verify Correct Template
-        if self.sale_order_template_id.name == False:
+        # Verify Correct Template. A quote may legitimately have no template at
+        # all, so bail out explicitly instead of relying on an empty recordset's
+        # .name happening to be False.
+        if not self.sale_order_template_id or not self.sale_order_template_id.name:
             return
         if "Renewal Auto" not in self.sale_order_template_id.name:
             self.renewal_product_items = False
@@ -2207,11 +2209,14 @@ class SaleOrderTemplateHandler(models.Model):
     
     @api.onchange('sale_order_template_id')
     def onchange_sale_order_template_id(self):
-        
-        # if not self.sale_order_template_id:
-        #     self.require_signature = self._get_default_require_signature()
-        #     self.require_payment = self._get_default_require_payment()
-        #     return
+        # A quote is NOT required to have a template. Without this guard the
+        # method fell straight through to `order_lines = [(5, 0, 0)]` +
+        # `self.order_line = order_lines`, so clearing the template (or opening a
+        # templateless quote that retriggered the onchange) DELETED every line on
+        # the order. Native sale_management's own _onchange_sale_order_template_id
+        # returns early in exactly the same way.
+        if not self.sale_order_template_id:
+            return
 
         template = self.sale_order_template_id.with_context(lang=self.partner_id.lang)
 
