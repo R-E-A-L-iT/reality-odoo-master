@@ -299,6 +299,43 @@ class SaleOrderLine(models.Model):
             {"x_optional_section_id": False}
         )
 
+    def _link_selection_section_members(self):
+        """Link an optional / single-choice section's product lines to it, for lines
+        created in ONE SHOT (renewal automation, quote templates, duplicated quotes).
+
+        The interactive path tags members from write()'s _apply_selection_cascade,
+        but create() has no equivalent hook: a section created already carrying
+        is_optional / x_single_choice would keep the flag with no members attached,
+        so the portal and backend would treat each member as an ordinary line.
+
+        Only the LINK is established here — quantities and presets are left exactly
+        as the creator set them. That is deliberate: the renewal generator
+        pre-selects some members (qty >= 1), and running the interactive
+        _make_optional_members() would reset them all to 0.
+        """
+        # Cheap guard: only do this work when the batch actually introduced a
+        # flagged section (the one-shot generation case). create() is on the hot
+        # path for ordinary line edits and rental kit components.
+        new_sections = self.filtered(
+            lambda l: l.display_type in ("line_section", "line_subsection")
+            and (l.is_optional or l.x_single_choice)
+        )
+        if not new_sections:
+            return
+        for section in new_sections:
+            fname = (
+                "x_optional_section_id"
+                if section.is_optional
+                else "x_single_choice_section_id"
+            )
+            todo = section._single_choice_member_lines().filtered(
+                lambda m: not m[fname]
+            )
+            if todo:
+                todo.with_context(_single_choice_no_cascade=True).write(
+                    {fname: section.id}
+                )
+
     def portal_toggle_optional(self, select):
         """Portal select/unselect of an optional-section product: selecting sets the
         real qty to the preset (min 1); unselecting drops it to 0. Deterministic, so
@@ -640,6 +677,9 @@ class SaleOrderLine(models.Model):
             return created
 
         lines = super().create(vals_list)
+        # Sections created already flagged optional / single-choice need their
+        # members tagged; write()'s cascade never sees a plain create.
+        lines._link_selection_section_members()
         lines._orders_to_retax()._apply_canadian_sales_taxes()
         return lines
 

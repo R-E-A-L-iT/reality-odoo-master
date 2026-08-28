@@ -1704,17 +1704,42 @@ class order(models.Model):
     def test_action(self, *args):
         _logger.error("HELLO THERE" + str(args[0]))
 
-    def generate_section_line(self, name):
+    def generate_section_line(self, name, *, single_choice=False, optional=False):
+        """Build an in-memory section line for the renewal generator.
+
+        The two flags map onto the CURRENT selection system (the old
+        special="multiple" / optional="yes" line fields were dropped in the v19
+        port):
+            single_choice -> x_single_choice : customer picks exactly ONE member
+            optional      -> is_optional     : customer ticks any number of members
+
+        Only the flag is set here. Members are linked server-side on create (see
+        sale.order.line._link_selection_section_members) because this runs in an
+        @api.onchange over NewId records, and a Many2one pointing from one NewId to
+        another does not survive being serialised to the client and saved back.
+        """
         section = self.env["sale.order.line"].new(
             {
                 "name": name,
                 "display_type": "line_section",
                 "order_id": self._origin.id,
+                "x_single_choice": single_choice,
+                "is_optional": optional,
             }
         )
         return section
 
-    def generate_product_line(self, product_id, *, uom="Units", locked_qty="yes"):
+    def generate_product_line(
+        self, product_id, *, uom="Units", locked_qty="yes", selected=True, preset_qty=1.0
+    ):
+        """Build an in-memory product line.
+
+        ``selected`` reflects the new selection system, where "selected" is not a
+        flag but simply a real quantity >= 1: a selected member carries its preset
+        qty, an unselected one sits at 0 so it never reaches totals or invoices.
+        ``preset_qty`` is remembered on x_preset_qty so the portal can restore the
+        right quantity when the customer ticks the line on.
+        """
         product = self.env["product.product"].browse(product_id.id)
 
         # Price from pricelist (as you already do)
@@ -1731,7 +1756,9 @@ class order(models.Model):
             "name": product.name,
             "quantityLocked": locked_qty,
             "product_id": product.id,
-            "product_uom_qty": 1,
+            # Selected == qty >= 1; unselected members stay at 0 (out of totals).
+            "product_uom_qty": preset_qty if selected else 0,
+            "x_preset_qty": preset_qty,
             "price_unit": price,
             "order_id": self._origin.id,
         }
@@ -1753,19 +1780,33 @@ class order(models.Model):
             return "Either a renewal map is missing, or there are too many renewal maps available for the " + str(product.product_id.name) + ". Amount of renewal maps found: (" + str(len(renewal_maps)) + ")\n\n"
 
         renewal_map = renewal_maps[0]
+        # One section per renewed unit, holding that unit's renewal offers. The
+        # customer picks exactly ONE of them, so it is a single-choice section
+        # (this was special="multiple" under the old system).
         hardware_lines.append(
-            self.generate_section_line(product.formated_label).id
+            self.generate_section_line(product.formated_label, single_choice=True).id
         )
-        section_lines = []
+        offer_lines = []
+        chosen = False
         for map_product in renewal_map.product_offers:
             if (map_product.product_id.sale_ok):
+                # renewal.entry.selected marks the offer to pre-select. Guard
+                # against a map flagging several: single choice means exactly one.
+                want = bool(map_product.selected) and not chosen
                 line = self.generate_product_line(
-                    map_product.product_id
+                    map_product.product_id, selected=want
                 )
                 if str(type(line)) == "<class 'str'>":
                     return line
-                section_lines.append(line.id)
-        hardware_lines.extend(section_lines)
+                if want:
+                    chosen = True
+                offer_lines.append(line)
+        # A single-choice section must never come up with nothing selected — if the
+        # map flagged none, default to the first offer (same rule the interactive
+        # "Set Single Choice" action applies).
+        if offer_lines and not chosen:
+            offer_lines[0].product_uom_qty = offer_lines[0].x_preset_qty or 1
+        hardware_lines.extend(line.id for line in offer_lines)
 
     def softwareCCP(self, software_lines, product):
         eid = product.name
@@ -1773,7 +1814,11 @@ class order(models.Model):
         # Initilize Software Line Section If Needed
         if len(software_lines) == 0:
             software_lines.append(self.generate_section_line("$software").id)
-            software_lines.append(self.generate_section_line("$block").id)
+            # $software/$subscription are hidden marker rows that only trigger the
+            # injected header in the preview; $block is the VISIBLE section that
+            # directly precedes the products, so it is the one that carries the
+            # optional flag and owns the members.
+            software_lines.append(self.generate_section_line("$block", optional=True).id)
 
         product_list = self.env["product.product"].search(
             [("sku", "like", eid),
@@ -1798,7 +1843,11 @@ class order(models.Model):
         # Initilize Sub Line Section If Needed
         if len(software_sub_lines) == 0:
             software_sub_lines.append(self.generate_section_line("$subscription").id)
-            software_sub_lines.append(self.generate_section_line("$block").id)
+            # $software/$subscription are hidden marker rows that only trigger the
+            # injected header in the preview; $block is the VISIBLE section that
+            # directly precedes the products, so it is the one that carries the
+            # optional flag and owns the members.
+            software_sub_lines.append(self.generate_section_line("$block", optional=True).id)
 
         product_list = self.env["product.product"].search(
             [("sku", "like", eid),
