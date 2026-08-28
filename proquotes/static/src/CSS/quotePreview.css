@@ -1300,6 +1300,13 @@ color: #17171a !important;
 #modalaccept {
     z-index: 2000 !important;
 }
+
+/* The site header overlays the top of the viewport, so the modal's own header
+   (title + close button) would otherwise sit underneath it. Push the form clear
+   of it. */
+#modalaccept form#accept {
+    margin-top: 150px;
+}
 #modalaccept + .modal-backdrop,
 .modal-backdrop.show {
     z-index: 1999 !important;

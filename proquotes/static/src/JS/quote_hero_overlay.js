@@ -174,8 +174,30 @@ publicWidget.registry.quoteHeroOverlay = publicWidget.Widget.extend({
         // header_dropdowns.js listens on #wrapwrap instead of window for its
         // own scroll-driven effects. window.scrollY would just stay 0 here.
         if (root.querySelector(".quote-hero-text, .quote-hero-quicknav")) {
-            const scrollEl = document.getElementById("wrapwrap") || window;
-            const getScrollTop = () => scrollEl === window ? window.scrollY : scrollEl.scrollTop;
+            // Which element actually scrolls is NOT reliably #wrapwrap: depending
+            // on the page/theme it can be the documentElement, body, or wrapwrap.
+            // Binding to the wrong one meant the listener never fired, scrollTop
+            // stayed 0, the fade var was never written, and the hero title +
+            // quicknav stayed fully opaque behind the cards. So: read the largest
+            // scrollTop among every candidate, and listen in the CAPTURE phase on
+            // document — scroll events don't bubble, but they DO run through
+            // capture, so this catches whichever element is really scrolling
+            // without having to guess correctly.
+            const scrollCandidates = () =>
+                [
+                    document.getElementById("wrapwrap"),
+                    document.scrollingElement,
+                    document.documentElement,
+                    document.body,
+                ].filter(Boolean);
+
+            const getScrollTop = () => {
+                let top = window.scrollY || 0;
+                for (const el of scrollCandidates()) {
+                    top = Math.max(top, el.scrollTop || 0);
+                }
+                return top;
+            };
 
             let raf = null;
             const updateFade = () => {
@@ -185,12 +207,18 @@ publicWidget.registry.quoteHeroOverlay = publicWidget.Widget.extend({
                 root.style.setProperty("--quote-hero-text-fade", fade.toFixed(3));
                 root.style.setProperty("--quote-hero-nav-pe", fade < 0.05 ? "none" : "auto");
             };
-            updateFade();
-            scrollEl.addEventListener("scroll", () => {
+            const requestFade = () => {
                 if (raf === null) {
                     raf = requestAnimationFrame(updateFade);
                 }
-            }, { passive: true });
+            };
+
+            updateFade();
+            document.addEventListener("scroll", requestFade, {
+                capture: true,
+                passive: true,
+            });
+            window.addEventListener("resize", requestFade, { passive: true });
         }
     },
 });
