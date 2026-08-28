@@ -1771,7 +1771,6 @@ class order(models.Model):
         # Initilize Hardware Line Section if Needed
         if len(hardware_lines) == 0:
             hardware_lines.append(self.generate_section_line("$hardware").id)
-            hardware_lines.append(self.generate_section_line("$block").id)
 
         renewal_maps = self.env["renewal.map"].search(
             [("product_id", "=", product.product_id.id)])
@@ -1813,12 +1812,10 @@ class order(models.Model):
 
         # Initilize Software Line Section If Needed
         if len(software_lines) == 0:
-            software_lines.append(self.generate_section_line("$software").id)
-            # $software/$subscription are hidden marker rows that only trigger the
-            # injected header in the preview; $block is the VISIBLE section that
-            # directly precedes the products, so it is the one that carries the
-            # optional flag and owns the members.
-            software_lines.append(self.generate_section_line("$block", optional=True).id)
+            # With the $block spacer gone this marker section is the one that
+            # directly precedes the products, so it owns the optional members
+            # (membership is collected in document order up to the next section).
+            software_lines.append(self.generate_section_line("$software", optional=True).id)
 
         product_list = self.env["product.product"].search(
             [("sku", "like", eid),
@@ -1842,12 +1839,10 @@ class order(models.Model):
 
         # Initilize Sub Line Section If Needed
         if len(software_sub_lines) == 0:
-            software_sub_lines.append(self.generate_section_line("$subscription").id)
-            # $software/$subscription are hidden marker rows that only trigger the
-            # injected header in the preview; $block is the VISIBLE section that
-            # directly precedes the products, so it is the one that carries the
-            # optional flag and owns the members.
-            software_sub_lines.append(self.generate_section_line("$block", optional=True).id)
+            # With the $block spacer gone this marker section is the one that
+            # directly precedes the products, so it owns the optional members
+            # (membership is collected in document order up to the next section).
+            software_sub_lines.append(self.generate_section_line("$subscription", optional=True).id)
 
         product_list = self.env["product.product"].search(
             [("sku", "like", eid),
