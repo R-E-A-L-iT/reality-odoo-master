@@ -34,6 +34,20 @@ class SaleOrderTemplateLine(models.Model):
         ('yes', "Yes"),
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
 
+    def init(self):
+        # This environment does not reliably create new columns on rebuild (same
+        # problem proleads/proportal solve for their re-declared `mobile` fields).
+        # Without the column, ANY read of a template line explodes with
+        # "column sale_order_template_line.x_single_choice does not exist" — which
+        # took out the whole "change the quotation template" onchange, since core's
+        # _prepare_order_line_values reads every field on the line. init() runs on
+        # every module -u, after base has fully loaded, so the column is guaranteed.
+        super().init()
+        self.env.cr.execute(
+            "ALTER TABLE sale_order_template_line "
+            "ADD COLUMN IF NOT EXISTS x_single_choice boolean"
+        )
+
     # ── Single-choice sections on TEMPLATES ─────────────────────────────────
     # Mirrors sale.order.line.x_single_choice so a template can blueprint a
     # "customer picks exactly one" section. Only the FLAG lives here: a template
