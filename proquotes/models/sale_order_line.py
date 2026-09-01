@@ -453,16 +453,38 @@ class SaleOrderLine(models.Model):
     @api.onchange('product_id')
     def _onchange_product_id(self):
         for line in self:
-            if line.product_id:
-                target_categories = [
-                    'Software (Permanent License)',
-                    'Software CCP',
-                    'Software Subscription'
-                ]
-                if line.product_id.categ_id and line.product_id.categ_id.name in target_categories:
-                    line.price_unit = line.product_id.list_price
-                else:
-                    line.price_unit = line.product_id.lst_price
+            if not line.product_id:
+                continue
+
+            # NEVER touch the price on a rental line. The rental price comes from
+            # the custom daily-rate formula (sale_renting.py _get_pricelist_price),
+            # and a rental-only product's SALE price is typically 0 — so this
+            # onchange was overwriting the computed rental price with 0, which is
+            # what made every rental amount come out as 0.00. (Even for rental
+            # products that DO carry a sale price it was wrong, just less
+            # obviously: the line ended up priced at the product's sale value
+            # instead of daily-rate x paid-days.)
+            if line.order_id.is_rental_order and line.product_id.rent_ok:
+                continue
+
+            target_categories = [
+                'Software (Permanent License)',
+                'Software CCP',
+                'Software Subscription'
+            ]
+            if line.product_id.categ_id and line.product_id.categ_id.name in target_categories:
+                price = line.product_id.list_price
+            else:
+                price = line.product_id.lst_price
+
+            line.price_unit = price
+            # Odoo 19 added technical_price_unit and treats
+            # `technical_price_unit != price_unit` as "the user typed this price in
+            # by hand", after which _compute_price_unit SKIPS the line forever
+            # (see its has_manual_price check). Writing price_unit on its own left
+            # the two permanently out of step and latched the line at whatever it
+            # happened to hold. Keep them in sync.
+            line.technical_price_unit = price
 
     @api.depends('quantityLocked')
     def _compute_is_quantityLocked(self):
