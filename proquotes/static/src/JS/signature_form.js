@@ -40,7 +40,13 @@ class SignatureForm extends Component {
         // replaces them once it mounts, but onMounted below (and a fast click)
         // can run first, and calling an undefined member would throw.
         this.signature = useState({
-            name: this.props.defaultName,
+            // Deliberately NOT props.defaultName. Core pre-fills the signer box with
+            // the customer/company name, which meant people just hit "Accept & Sign"
+            // and the quote came back signed "R-E-A-L.iT Test Company" rather than by
+            // an actual person. Starting empty forces them to type their own name.
+            // The company is still shown in the "on behalf of ..." line above, so no
+            // information is lost.
+            name: "",
             getSignatureImage: () => "",
             resetSignature: () => {},
         });

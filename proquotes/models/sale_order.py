@@ -1274,7 +1274,14 @@ class order(models.Model):
     def _recompute_prices(self):
         lines_to_recompute = self._get_update_prices_lines()
         lines_to_recompute.invalidate_recordset(['pricelist_item_id'])
-        lines_to_recompute._compute_price_unit()
+        # force_price_recomputation is REQUIRED in Odoo 19: _compute_price_unit
+        # otherwise skips any line whose price_unit differs from its
+        # technical_price_unit, treating it as hand-priced. Core's own
+        # _recompute_prices passes it; this override (ported from v17, before the
+        # flag existed) had lost it.
+        lines_to_recompute.with_context(
+            force_price_recomputation=True
+        )._compute_price_unit()
         # Special case: we want to overwrite the existing discount on _recompute_prices call
         # i.e. to make sure the discount is correctly reset
         # if pricelist discount_policy is different than when the price was first computed.
@@ -1304,7 +1311,13 @@ class order(models.Model):
             if not rental_lines:
                 continue
             rental_lines.invalidate_recordset(["pricelist_item_id"])
-            rental_lines._compute_price_unit()
+            # Same as _recompute_prices above: without force_price_recomputation
+            # Odoo 19 skips every line it considers manually priced, which is why
+            # the "Recalculate rental prices" button appeared to do nothing while
+            # "Update Prices" (which goes through core's own forcing path) worked.
+            rental_lines.with_context(
+                force_price_recomputation=True
+            )._compute_price_unit()
 
     # force ecommerce template use instead if quote created from ecommerce order
     def action_quotation_send(self):

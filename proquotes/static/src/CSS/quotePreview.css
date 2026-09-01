@@ -1339,3 +1339,18 @@ color: #17171a !important;
 #modalaccept .modal-header .btn-close:hover {
     opacity: 1;
 }
+
+/* ── Stray close button on the core "order confirmed" alert ────────────────
+   When an order is confirmed, core portal markup emits its own
+   <div class="alert alert-success alert-dismissible"> "Thank You! / Your order
+   has been confirmed." That message is redundant here — proquotes renders its
+   own .quote-confirmed-notice for the same state — but the alert's Bootstrap
+   dismiss button still paints, landing detached from any visible text as a
+   lone X floating over the page.
+
+   Scoped to .alert-success.alert-dismissible so it cannot touch
+   .quote-confirmed-notice's own close button, which must keep working (it has
+   neither of those classes). */
+body:has(.quote-hero-cover) .alert-success.alert-dismissible > .btn-close {
+    display: none !important;
+}
