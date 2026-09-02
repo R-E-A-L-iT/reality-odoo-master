@@ -14,6 +14,9 @@ from . import helpdesk_ticket
 from . import ir_ui_view
 from . import mail_compose_message
 from . import mail_thread
+# Unique Message-Id per outgoing email (core reuses one id across every
+# recipient group of the same message, which made the relay merge them).
+from . import mail_mail
 # mail_wizard_invite removed for Odoo 19: the mail.wizard.invite model no longer exists.
 from . import models
 from . import preconfigured_section
