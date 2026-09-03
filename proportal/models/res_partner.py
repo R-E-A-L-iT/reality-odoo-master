@@ -9,6 +9,8 @@ from functools import partial
 from itertools import groupby
 from urllib import request
 
+from markupsafe import Markup
+
 from odoo import api, fields, models, SUPERUSER_ID, _, tools
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import formatLang, get_lang
@@ -121,7 +123,10 @@ class ResPartner(models.Model):
                 sku = getattr(l, "sku", False) or getattr(l.product_id, "default_code", False)
                 sku_part = f" ({sku})" if sku else ""
                 exp_str = format_date(env, l.expire)
-                items.append(f"<li>{prod}{sku_part} — SN: {l.name} — Expires {exp_str}</li>")
+                # Markup % escapes its arguments, so a product name containing
+                # & or < can't corrupt the email markup.
+                items.append(Markup("<li>%s%s — SN: %s — Expires %s</li>")
+                             % (prod, sku_part, l.name, exp_str))
 
             email_to = ",".join(sorted(set(renewal_contacts.mapped("email"))))
             email_from = company.email or env.company.email or False
@@ -131,7 +136,11 @@ class ResPartner(models.Model):
                 email_values["email_from"] = email_from
 
             template = self.env.ref("proportal.tmpl_ccp_renewal_reminder")
-            items_html = "<ul>" + "".join(items) + "</ul>"
+            # t-out escapes plain strings (t-raw, which didn't, was removed
+            # in Odoo 19), so this must be Markup or the renewal list would
+            # render as literal <li> tags in the email. Markup.join keeps the
+            # already-escaped items safe.
+            items_html = Markup("<ul>") + Markup("").join(items) + Markup("</ul>")
             template.with_context(items_html=items_html).send_mail(
                 company.id, force_send=True, email_values={"email_to": email_to, "email_from": email_from}
             )
