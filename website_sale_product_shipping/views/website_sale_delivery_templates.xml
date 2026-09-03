@@ -23,7 +23,14 @@
                             Delivery for
                             <t t-esc="pdi['line'].product_id.name"/>
                         </h4>
-                        <div class="card border-0">
+                        <!-- Not "card": website_sale's Checkout interaction binds a
+                             delegated click handler to '.card' anywhere inside
+                             #shop_checkout (for address-selection cards) and reads
+                             data-partner-id from the clicked element. This box only
+                             carries data-line-id, so a literal .card class here makes
+                             clicking a carrier radio also fire that handler with an
+                             undefined partner id, crashing /shop/update_address. -->
+                        <div class="o_per_product_delivery_box bg-white rounded">
                             <ul class="list-group list-group-flush">
                                 <t t-foreach="pdi['carriers']" t-as="delivery">
                                     <li class="list-group-item px-0">
