@@ -10,4 +10,50 @@
             </xpath>
         </field>
     </record>
+
+    <record id="view_order_graph_rental_income" model="ir.ui.view">
+        <field name="name">sale.order.graph.rental.income</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <graph string="Rental Income" type="bar">
+                <field name="name" type="row"/>
+                <field name="amount_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_stock_lot_form_inherit_rental_income" model="ir.ui.view">
+        <field name="name">stock.lot.form.inherit.rental.income</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_button_box')]/button" position="before">
+                <field name="currency_id" invisible="1"/>
+                <field name="rental_order_count" invisible="1"/>
+                <button class="oe_stat_button" name="action_view_rental_income"
+                        type="object" icon="fa-usd" help="Rental Income"
+                        invisible="rental_order_count == 0 or not display_complete">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="rental_income_total" widget="monetary" nolabel="1"/>
+                        </span>
+                        <span class="o_stat_text">Rental Income</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//group[@name='main_group']" position="after">
+                <group>
+                    <field name="rental_order_ids" widget="many2many" readonly="1"
+                           invisible="not rental_order_ids or display_complete">
+                        <list>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="date_order"/>
+                            <field name="amount_total"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
 </odoo>
