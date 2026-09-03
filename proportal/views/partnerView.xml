@@ -19,7 +19,11 @@
                     </sheet>
                 </page>
             </xpath>
-            <xpath expr="//p[@invisible=&quot;type != 'contact'&quot;]" position="after">
+            <!-- Anchored on the `type` field rather than on the core hint
+                 paragraph: Odoo 19 rewrote that <p> and the old
+                 //p[@invisible="type != 'contact'"] no longer matches, which
+                 aborted the whole module upgrade. -->
+            <xpath expr="//field[@name='type']" position="after">
                 <p class="mb-0" invisible="type != 'renewal'">
                     <span>This contact will be treated as the default recipient for CCP renewal notifications.</span>
                 </p>
@@ -27,8 +31,8 @@
             <xpath expr="//form[.//field[@name='type' and @widget='radio']]//field[@name='name']/ancestor::group[1]" position="replace">
                 <group>
                     <field name="name" string="Contact Name" required="type == 'contact' or type == 'renewal'"/>
-                    <field name="title" options="{'no_open': True}" placeholder="e.g. Mr." invisible="type != 'contact' or type != 'renewal'"/>
-                    <field name="function" placeholder="e.g. Sales Director" invisible="type != 'contact' or type != 'renewal'"/>
+                    <field name="title" options="{'no_open': True}" placeholder="e.g. Mr." invisible="type not in ('contact', 'renewal')"/>
+                    <field name="function" placeholder="e.g. Sales Director" invisible="type not in ('contact', 'renewal')"/>
                     <label for="street" string="Address" invisible="type == 'contact' or type == 'renewal'"/>
                     <div invisible="type == 'contact' or type == 'renewal'">
                         <div class="o_address_format" name="div_address">
@@ -44,7 +48,6 @@
                 <group>
                     <field name="email" widget="email"/>
                     <field name="phone" widget="phone"/>
-                    <field name="mobile" widget="phone"/>
                     <field name="company_id" invisible="1"/>
                 </group>
             </xpath>
