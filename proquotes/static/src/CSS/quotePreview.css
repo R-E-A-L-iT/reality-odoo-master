@@ -1354,3 +1354,8 @@ color: #17171a !important;
 body:has(.quote-hero-cover) .alert-success.alert-dismissible > .btn-close {
     display: none !important;
 }
+
+#quote-nav-quotation > div:nth-child(3) {
+   margin: 20px;
+   padding-bottom: 20px;
+}
