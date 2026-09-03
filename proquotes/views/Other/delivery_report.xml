@@ -105,31 +105,43 @@
 		<!-- Add Detail Lines -->
 		<xpath expr="//div[@t-else=&quot;&quot;]" position="replace">
 			<div>
-				<span style="height: 40px"> PO #:</span>
-				<span style="border-bottom: solid !important; width:500px !important;">
-					<span style="color: #fff;">________________________________________</span>
-				</span>
-				<br />
-				<br />
-				<span style="height: 40px"> Signature:</span>
-				<span style="border-bottom: solid !important; width:500px !important;">
-					<span style="color: #fff;">____________________________________</span>
-				</span>
-				<br />
-				<br />
-				<span style="height: 40px"> Date:</span>
-				<span style="border-bottom: solid !important; width:500px !important;">
-					<span style="color: #fff;">________________________________________</span>
-				</span>
-				<br />
-				<br />
-				<br />
-				<!-- <div t-if="o.footer_id">
-					<t t-set="footer" t-value="o.footer_id.url" />
-				</div> -->
-				<!-- <div t-else="">
-					<span>No footer found</span>
-				</div> -->
+				<t t-if="o.signature">
+					<span style="height: 40px"> PO #:</span>
+					<span style="border-bottom: solid !important; width:500px !important;">
+						<span style="color: #fff;">________________________________________</span>
+					</span>
+					<br /><br />
+					<span style="height: 40px"> Signed By: </span>
+					<span t-esc="o.signed_by or ''"/>
+					<br /><br />
+					<img t-att-src="image_data_uri(o.signature)"
+					     style="max-height: 80px; max-width: 200px; display: block; margin-top: 4px;"/>
+					<br />
+					<span style="height: 40px"> Date: </span>
+					<span t-esc="o.signed_on.strftime('%Y-%m-%d') if o.signed_on else ''"/>
+					<br /><br /><br />
+				</t>
+				<t t-else="">
+					<span style="height: 40px"> PO #:</span>
+					<span style="border-bottom: solid !important; width:500px !important;">
+						<span style="color: #fff;">________________________________________</span>
+					</span>
+					<br />
+					<br />
+					<span style="height: 40px"> Signature:</span>
+					<span style="border-bottom: solid !important; width:500px !important;">
+						<span style="color: #fff;">____________________________________</span>
+					</span>
+					<br />
+					<br />
+					<span style="height: 40px"> Date:</span>
+					<span style="border-bottom: solid !important; width:500px !important;">
+						<span style="color: #fff;">________________________________________</span>
+					</span>
+					<br />
+					<br />
+					<br />
+				</t>
 			</div>
 		</xpath>
 	</template>
