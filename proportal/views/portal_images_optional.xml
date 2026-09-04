@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Portal icon overrides for OPTIONAL modules.
+
+    Each template below inherits a view owned by a module that proportal does NOT
+    depend on. If such a module is not installed (or has not yet been upgraded on
+    this build), Odoo raises "External ID not found in the system" while loading
+    proportal, which aborts the registry with only a bare "Failed to load registry"
+    in the log.
+
+    To re-enable any of these: add the owning module to __manifest__.py "depends"
+    AND add this file to "data". Enable only modules that are actually installed.
+-->
+<odoo>
+
+    <template id="portal_my_home_appointment_icon_inherit"
+              inherit_id="appointment.portal_my_home_appointment"
+              name="Portal My Home - Replace Appointments Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/appointments'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Apointments.png'"/>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_timesheet_icon_inherit"
+              inherit_id="hr_timesheet.portal_my_home_timesheet"
+              name="Portal My Home - Replace Timesheets Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/timesheets'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Timesheets.png'"/>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_helpdesk_ticket_icon_inherit"
+              inherit_id="helpdesk.portal_my_home_helpdesk_ticket"
+              name="Portal My Home - Replace Tickets Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/tickets'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Tickets.png'"/>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_subscription_icon_inherit"
+              inherit_id="sale_subscription.portal_my_home_subscription"
+              name="Portal My Home - Replace Subscriptions Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/subscriptions'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Products.png'"/>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_knowledge_icon_inherit"
+              inherit_id="knowledge.portal_my_home_knowledge"
+              name="Portal My Home - Replace Knowledge Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/knowledge/home'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Knowledge.png'"/>
+        </xpath>
+    </template>
+
+</odoo>
