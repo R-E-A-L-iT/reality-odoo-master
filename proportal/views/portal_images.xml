@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-
     <template id="portal_my_home_connection_security_icon_inherit"
               inherit_id="portal.portal_my_home"
               name="Portal My Home - Replace Connection &amp; Security Icon">
@@ -16,6 +15,36 @@
         </xpath>
     </template>
 
+    <template id="portal_my_home_appointment_icon_inherit"
+              inherit_id="appointment.portal_my_home_appointment"
+              name="Portal My Home - Replace Appointments Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/appointments'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Apointments.png'"/>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_timesheet_icon_inherit"
+              inherit_id="hr_timesheet.portal_my_home_timesheet"
+              name="Portal My Home - Replace Timesheets Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/timesheets'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Timesheets.png'"/>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_helpdesk_ticket_icon_inherit"
+              inherit_id="helpdesk.portal_my_home_helpdesk_ticket"
+              name="Portal My Home - Replace Tickets Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/tickets'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Tickets.png'"/>
+        </xpath>
+    </template>
+
     <template id="portal_my_home_payment_icon_inherit"
               inherit_id="payment.portal_my_home_payment"
               name="Portal My Home - Replace Payment Methods Icon">
@@ -23,6 +52,16 @@
         <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/payment_method'&quot;]]/t[@t-set='icon']"
                position="replace">
             <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Payment-Methods.png'"/>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_subscription_icon_inherit"
+              inherit_id="sale_subscription.portal_my_home_subscription"
+              name="Portal My Home - Replace Subscriptions Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/subscriptions'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Products.png'"/>
         </xpath>
     </template>
 
@@ -58,6 +97,16 @@
         <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/my/tasks'&quot;]]/t[@t-set='icon']"
                position="replace">
             <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Tasks.png'"/>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_knowledge_icon_inherit"
+              inherit_id="knowledge.portal_my_home_knowledge"
+              name="Portal My Home - Replace Knowledge Icon">
+
+        <xpath expr="//t[@t-call='portal.portal_docs_entry'][t[@t-set='url'][@t-value=&quot;'/knowledge/home'&quot;]]/t[@t-set='icon']"
+               position="replace">
+            <t t-set="icon" t-value="'https://cdn.r-e-a-l.it/images/icons/Odoo/Knowledge.png'"/>
         </xpath>
     </template>
 

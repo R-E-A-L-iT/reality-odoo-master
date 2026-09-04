@@ -16,12 +16,6 @@
     "depends": [
         "base",
         "website",
-        # account/payment/sale arrive transitively via stock_account and
-        # website_sale, but views/portal_images.xml inherits views they own, so
-        # declare them to guarantee they load before proportal.
-        "account",
-        "payment",
-        "sale",
         "stock_account",
         "product",
         "purchase",
