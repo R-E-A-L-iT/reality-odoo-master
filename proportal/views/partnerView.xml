@@ -7,52 +7,38 @@
         <field name="inherit_id" ref="base.view_partner_form"></field>
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
+            <!-- //notebook is the only anchor in this file verified to exist in
+                 the Odoo 19 partner form as it is actually stored in this DB
+                 (ir.ui.view 118, which also carries Studio customisations). -->
             <xpath expr="//notebook" position="inside">
                 <page name="products" string="Products">
                     <sheet>
-                        <!-- <div t-if="parent_id"> -->
-                            <!-- <field name="parentProducts" string="Company Products"/> -->
-                        <!-- </div> -->
-                        <!-- <div t-if="company_type == 'company'"> -->
-                            <field name="products" domain="[('company_id', '=', 1)]" string="Products"/>
-                        <!-- </div> -->
+                        <field name="products" domain="[('company_id', '=', 1)]" string="Products"/>
                     </sheet>
                 </page>
             </xpath>
-            <!-- Anchored on the `type` field rather than on the core hint
-                 paragraph: Odoo 19 rewrote that <p> and the old
-                 //p[@invisible="type != 'contact'"] no longer matches, which
-                 aborted the whole module upgrade. -->
-            <xpath expr="//field[@name='type'][@widget='radio']" position="after">
-                <p class="mb-0" invisible="type != 'renewal'">
-                    <span>This contact will be treated as the default recipient for CCP renewal notifications.</span>
-                </p>
-            </xpath>
-            <!-- Odoo 19 rewrote the child-contact popup form: `name` now lives
-                 in an <h3> inside plain divs, with no <group> ancestor at all,
-                 so the old
-                   //form[.//field[@name='type' and @widget='radio']]
-                       //field[@name='name']/ancestor::group[1]
-                 replace matched nothing and would have aborted the upgrade.
-                 That block only ever did one thing core doesn't: make
-                 type == 'renewal' behave like type == 'contact'. Expressed as
-                 attribute patches on the fields core already renders, which is
-                 both smaller and robust against further layout changes.
-                 `ancestor::form[1]` is a reverse axis, so it resolves to the
-                 NEAREST enclosing form (the popup), not the outer partner form.
-                 Dropped along the way, deliberately: `mobile` (removed from
-                 res.partner in 19) and `title`, which the old block rendered
-                 with an always-true invisible condition and so was never
-                 actually visible. -->
-            <xpath expr="//field[@name='type'][@widget='radio']/ancestor::form[1]//field[@name='name']" position="attributes">
-                <attribute name="required">type in ('contact', 'renewal')</attribute>
-            </xpath>
-            <xpath expr="//field[@name='type'][@widget='radio']/ancestor::form[1]//field[@name='function']/ancestor::div[1]" position="attributes">
-                <attribute name="invisible">is_company or type not in ('contact', 'renewal')</attribute>
-            </xpath>
-            <xpath expr="//field[@name='type'][@widget='radio']/ancestor::form[1]//group[@name='other_info']" position="attributes">
-                <attribute name="invisible">type in ('contact', 'renewal')</attribute>
-            </xpath>
+
+            <!-- TEMPORARILY REMOVED (2026-09-08) — re-add one at a time, testing
+                 each with `odoo-bin -u proportal` before pushing.
+
+                 1. Renewal-contact hint paragraph. Original anchor
+                    //p[@invisible="type != 'contact'"] is the CONFIRMED cause of
+                    every failed build/upgrade: Odoo 19 rewrote that paragraph.
+                    A replacement anchored on
+                    //field[@name='type'][@widget='radio'] exists in upstream 19.0
+                    source but was never verified against this database.
+
+                 2. Three attribute patches on the child-contact popup that made
+                    type == 'renewal' behave like type == 'contact' (name required,
+                    function div visible, other_info group hidden), anchored via
+                    //field[@name='type'][@widget='radio']/ancestor::form[1].
+                    Same unverified status.
+
+                 BEHAVIOUR LOST until re-added: renewal contacts render in the
+                 child-contact popup exactly like 'other' address types — name is
+                 not required, the job-position field is hidden, and the address
+                 group shows. The Renewal type itself, the CCP reminder cron, and
+                 the Products tab are unaffected. -->
         </field>
-    </record> 
+    </record>
 </odoo>

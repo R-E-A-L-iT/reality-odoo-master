@@ -7,16 +7,22 @@
         <field name="inherit_id" ref="base.view_partner_form" />
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='title']" position="after">
-                <field name="company_nickname" invisible="not is_company" />
-            </xpath>
+            <!-- company_nickname used to be injected after //field[@name='title'].
+                 Odoo 19 removed the `title` field from the partner form, so that
+                 anchor cannot be located and aborted the module update. Moved into
+                 the Portal Settings page below, which hangs off //notebook — the
+                 one anchor verified against this database. company_nickname is
+                 required=True on the model, so it must stay reachable in the UI. -->
             <xpath expr="//notebook" position="inside">
                 <page name="portal" string="Portal Settings">
                     <sheet>
+                        <group string="Company Identification">
+                            <field name="company_nickname" invisible="not is_company"/>
+                        </group>
                         <group string="Portal Administration">
-                    <field name="portal_administrator"/>
-                    <field name="portal_companies_ids" widget="many2many_tags"/>
-                </group>
+                            <field name="portal_administrator"/>
+                            <field name="portal_companies_ids" widget="many2many_tags"/>
+                        </group>
                     </sheet>
                 </page>
             </xpath>
