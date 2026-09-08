@@ -1,6 +1,7 @@
 import logging
 
 from odoo import models
+from odoo.fields import Domain
 from odoo.http import request
 
 _logger = logging.getLogger(__name__)
@@ -141,6 +142,29 @@ class Website(models.Model):
             _logger.warning("[proproduct] cart pricelist sync failed: %s", e)
 
         return pl_sudo
+
+    # ------------------------------------------------------------------
+    # Region publication filter
+    # ------------------------------------------------------------------
+
+    def _product_domain(self):
+        """Hide products not published for the region the visitor is shopping in.
+
+        `is_us` / `is_ca` are set per product in the backend (the Publish in US /
+        Publish in CA stat buttons). v19 composes this method into
+        `sale_product_domain()`, which backs the shop grid, category pages and
+        site search — so one override covers all of them.
+
+        This used to live in the /shop controller override, which is disabled for
+        the v19 upgrade; that is why a US visitor was still seeing CA-only
+        products. Applied only on frontend requests, so backend/cron product
+        searches are untouched.
+        """
+        domain = super()._product_domain()
+        if not request:
+            return domain
+        field = 'is_us' if self.proproduct_region() == 'US' else 'is_ca'
+        return Domain.AND([Domain(domain), Domain(field, '=', True)])
 
     # ------------------------------------------------------------------
     # Compatibility shims
