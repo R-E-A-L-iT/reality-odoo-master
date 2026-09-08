@@ -22,11 +22,17 @@
         "stock",
         "portal",
         "website_sale",
+        # Referenced by security/portal_document_rules.xml (account.model_account_move,
+        # sale.model_sale_order). Both already arrive transitively via stock_account /
+        # website_sale, but the ir.rule refs need them guaranteed loaded first.
+        "account",
+        "sale",
         "project",
         "mail",
     ],
     # always loaded
     "data": [
+        "security/portal_document_rules.xml",
         "data/renewal_template.xml",
         "views/partnerView.xml",
         "views/stockView.xml",

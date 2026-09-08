@@ -58,6 +58,23 @@ class ResPartner(models.Model):
         ondelete={"renewal": "set default"},  # fallback if removed
     )
 
+    def _proportal_admin_commercial_ids(self):
+        """Commercial-partner ids whose documents this partner may see as a portal admin.
+
+        Called from ir.rule domains (see security/portal_document_rules.xml), so it
+        must be cheap, never raise, and return [] rather than something falsy-but-odd
+        for ordinary users: ('field', 'in', []) simply matches nothing, which makes
+        the admin clause a no-op for non-administrators.
+
+        sudo() because a portal user cannot read portal_administrator /
+        portal_companies_ids on its own partner through the portal record rules.
+        """
+        self.ensure_one()
+        partner = self.sudo()
+        if not partner.portal_administrator:
+            return []
+        return partner.get_portal_company_commercial_ids()
+
     def get_portal_company_ids(self):
         self.ensure_one()
         main_company = self.commercial_partner_id

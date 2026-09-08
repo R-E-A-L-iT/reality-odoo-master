@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Portal document visibility.
+
+        Odoo enforces portal visibility with ir.rule, NOT with the controller
+        domains. A record rule is ANDed into every ORM query, so widening
+        `_get_invoices_domain` / `_prepare_orders_domain` in a controller can
+        never reveal a record the rule forbids — which is why the previous
+        controller-side approach had no effect.
+
+        Rules granted to the SAME group on the SAME model are combined with OR,
+        so each rule below only ever WIDENS what core already allows
+        (core: partner_id child_of user.commercial_partner_id).
+
+        Two additions, per spec:
+          1. any document the portal user is a FOLLOWER of;
+          2. for portal administrators only, any document addressed to one of
+             their portal companies (or a child contact of one).
+
+        `_proportal_admin_commercial_ids()` returns [] for non-administrators,
+        so clause 2 collapses to a no-op ('in', []) for ordinary portal users.
+
+        The move_type / state clauses mirror core's rule so this cannot expose
+        drafts, cancelled moves, or non-invoice journal entries.
+    -->
+
+    <record id="account_move_rule_portal_proportal" model="ir.rule">
+        <field name="name">ProPortal: portal followers and portal administrators (invoices)</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="domain_force">[
+            ('state', 'not in', ('cancel', 'draft')),
+            ('move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')),
+            '|',
+                ('message_partner_ids', 'in', [user.partner_id.id]),
+                ('partner_id.commercial_partner_id', 'in', user.partner_id._proportal_admin_commercial_ids()),
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="account_move_line_rule_portal_proportal" model="ir.rule">
+        <field name="name">ProPortal: portal followers and portal administrators (invoice lines)</field>
+        <field name="model_id" ref="account.model_account_move_line"/>
+        <field name="domain_force">[
+            ('parent_state', 'not in', ('cancel', 'draft')),
+            ('move_id.move_type', 'in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')),
+            '|',
+                ('move_id.message_partner_ids', 'in', [user.partner_id.id]),
+                ('move_id.partner_id.commercial_partner_id', 'in', user.partner_id._proportal_admin_commercial_ids()),
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="sale_order_rule_portal_proportal" model="ir.rule">
+        <field name="name">ProPortal: portal followers and portal administrators (orders)</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="domain_force">[
+            '|',
+                ('message_partner_ids', 'in', [user.partner_id.id]),
+                ('partner_id.commercial_partner_id', 'in', user.partner_id._proportal_admin_commercial_ids()),
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="sale_order_line_rule_portal_proportal" model="ir.rule">
+        <field name="name">ProPortal: portal followers and portal administrators (order lines)</field>
+        <field name="model_id" ref="sale.model_sale_order_line"/>
+        <field name="domain_force">[
+            '|',
+                ('order_id.message_partner_ids', 'in', [user.partner_id.id]),
+                ('order_id.partner_id.commercial_partner_id', 'in', user.partner_id._proportal_admin_commercial_ids()),
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>
