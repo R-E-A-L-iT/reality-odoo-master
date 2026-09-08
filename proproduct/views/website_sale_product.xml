@@ -1,190 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <template id="website_sale_product_add_section" inherit_id="website_sale.product">
 
-        <!-- Pricelist follows the visitor's cookie/geo selection. The price block
-             below is wrapped in t-cache="pricelist,product,fiscal_position"; force
-             `pricelist` to the resolved pricelist *before* that cache key is built
-             so the cached fragment varies per currency (otherwise a stale CAD
-             render is served even after switching to USD). This t-set runs every
-             request (outside the cache), so website.get_current_pricelist() — and
-             its server-side [proproduct] log — fires live on every product view. -->
-        <xpath expr="//t[@t-cache]" position="before">
-            <t t-set="pricelist" t-value="website.get_current_pricelist()"/>
+    <!--
+        Odoo 19 rebuild.
+
+        Anchors were re-derived from this database's COMBINED arch
+        (ir.ui.view.get_combined_arch()), not from upstream source, because the
+        stored views also carry the theme and website-editor customisations.
+
+        Gone in v19, so the old xpaths were dropped:
+          * //t[@t-cache]                     - the product page cache wrapper
+          * //div[@id='o_product_terms_and_share']
+          * //p[@t-field='product.description_sale'] - description_sale is no
+            longer rendered inside website_sale.product at all.
+        Also dropped deliberately:
+          * the t-set='combination_info' price forcing and the MutationObserver
+            "price lock". Both existed because the pricelist never resolved
+            correctly (models/website.py hooked methods v19 deleted). That is
+            fixed at the model level now, so the price should render right the
+            first time; re-add a workaround only if it demonstrably does not.
+          * the [proproduct] console.log debug block.
+    -->
+
+    <!--
+        ADD TO CART GATING.
+
+        v19 moved #add_to_cart_wrap out of website_sale.product into its own
+        website_sale.cta_wrapper template, so this must inherit cta_wrapper.
+
+        The div now also CONTAINS the quantity selector and carries a
+        subscription-plan data attribute, so the old position="replace" would
+        quietly delete core functionality. Gate it with an added t-if and add the
+        fallback as a sibling instead — core markup is left completely intact.
+    -->
+    <template id="proproduct_cta_add_to_cart_gate" inherit_id="website_sale.cta_wrapper">
+
+        <xpath expr="//div[@id='o_wsale_cta_wrapper']" position="before">
+            <t t-set="proproduct_pricelist" t-value="request.pricelist"/>
+            <t t-set="proproduct_currency"
+               t-value="proproduct_pricelist and proproduct_pricelist.currency_id.name or ''"/>
+            <!-- Is this product published for the region the visitor is shopping in? -->
+            <t t-set="proproduct_region_allowed"
+               t-value="(proproduct_currency == 'USD' and product.is_us)
+                        or (proproduct_currency == 'CAD' and product.is_ca)"/>
+            <t t-set="proproduct_can_buy"
+               t-value="product.show_add_to_cart and proproduct_region_allowed"/>
         </xpath>
 
-        <!-- Compute combination info against the resolved pricelist via context,
-             so the cached body uses the same pricelist as the cache key (the
-             controller may otherwise seed the product context with the website
-             default pricelist, producing the wrong price). -->
-        <xpath expr="//t[@t-set='combination_info']" position="attributes">
-            <attribute name="t-value">product.with_context(pricelist=pricelist.id)._get_combination_info(combination, add_qty=add_qty)</attribute>
+        <xpath expr="//div[@id='add_to_cart_wrap']" position="attributes">
+            <attribute name="t-if">proproduct_can_buy</attribute>
         </xpath>
 
-        <!-- Force the displayed price to the applicable pricelist rule.
-             Odoo's price engine drops valid rules on this very large pricelist
-             (10k+ items -> _get_product_price returns the list_price fallback),
-             so we resolve the matching item directly (variant rule preferred over
-             product rule) and overwrite combination_info in place. -->
-        <xpath expr="//t[@t-set='combination_info']" position="after">
-            <t t-set="og_items" t-value="pricelist.item_ids.filtered(lambda i: (i.applied_on == '0_product_variant' and i.product_id.id == combination_info['product_id']) or (i.applied_on == '1_product' and i.product_tmpl_id.id == product.id))"/>
-            <t t-set="og_item" t-value="og_items.sorted(key=lambda i: 0 if i.applied_on == '0_product_variant' else 1)[:1]"/>
-            <t t-if="og_item and og_item.compute_price == 'fixed'"
-               t-set="og_price_applied"
-               t-value="combination_info.update({'price': og_item.fixed_price, 'list_price': og_item.fixed_price, 'has_discounted_price': False, 'is_rental': False})"/>
-        </xpath>
-
-        <!-- LOCK THE DISPLAYED PRICE.
-             Some other JS overwrites the product price ~2s after load with the
-             wrong (list_price) value. Rather than chase it, render the correct
-             pricelist-resolved price server-side, then on the client hide Odoo's
-             own price element and show our own copy that nothing else targets.
-             A MutationObserver re-asserts it if the page tries to change it. -->
-        <xpath expr="//section[@id='product_detail']" position="inside">
-            <span id="proproduct_locked_price_src" style="display:none;"
-                  t-esc="(pricelist.currency_id.symbol + ' ' + ('%.2f' % (combination_info.get('price') or 0.0))) if pricelist.currency_id.position == 'before' else (('%.2f' % (combination_info.get('price') or 0.0)) + ' ' + pricelist.currency_id.symbol)"/>
-            <script type="text/javascript">
-                (function () {
-                    function lock() {
-                        var src = document.getElementById('proproduct_locked_price_src');
-                        var detail = document.getElementById('product_detail');
-                        if (!src || !detail) return;
-                        var block = detail.querySelector('.product_price');
-                        if (!block) return;
-                        var orig = block.querySelector('.oe_price');
-                        if (!block.querySelector('.proproduct_locked_price')) {
-                            var el = document.createElement('span');
-                            el.className = 'proproduct_locked_price';
-                            el.textContent = src.textContent.trim();
-                            if (orig) {
-                                var cs = window.getComputedStyle(orig);
-                                el.style.fontSize = cs.fontSize;
-                                el.style.fontWeight = cs.fontWeight;
-                                el.style.color = cs.color;
-                                orig.parentNode.insertBefore(el, orig);
-                            } else {
-                                block.insertBefore(el, block.firstChild);
-                            }
-                        }
-                        block.querySelectorAll('.oe_price, .oe_default_price').forEach(function (e) {
-                            if (e.style.display !== 'none') e.style.setProperty('display', 'none', 'important');
-                        });
-                    }
-                    function start() {
-                        lock();
-                        var detail = document.getElementById('product_detail');
-                        if (detail) {
-                            new MutationObserver(function () { lock(); }).observe(detail, {
-                                childList: true, subtree: true,
-                                attributes: true, attributeFilter: ['style', 'class'],
-                            });
-                        }
-                    }
-                    if (document.readyState === 'loading') {
-                        document.addEventListener('DOMContentLoaded', start);
-                    } else {
-                        start();
-                    }
-                    setTimeout(lock, 1500);
-                    setTimeout(lock, 4000);
-                })();
-            </script>
-        </xpath>
-
-        <!-- DEBUG (browser console): logs the price the rendered fragment used.
-             Placed inside the page body (valid HTML) so it always executes. If the
-             server [proproduct] log says USD but this shows the CAD amount, the
-             t-cache served a stale fragment. -->
-        <xpath expr="//section[@id='product_detail']" position="inside">
-            <t t-set="us_pl" t-value="request.env['product.pricelist'].sudo().search([('name', '=', '🇺🇸')], limit=1)"/>
-            <t t-set="ca_pl" t-value="request.env['product.pricelist'].sudo().search([('name', '=', '🇨🇦')], limit=1)"/>
-            <script type="text/javascript">
-                console.log(
-                    "[proproduct] RESOLVED | rendered pricelist:",
-                    <t t-out="json.dumps(pricelist.display_name or '')"/>,
-                    "| id:", <t t-out="json.dumps(pricelist.id)"/>,
-                    "| currency:", <t t-out="json.dumps(pricelist.currency_id.name or '')"/>,
-                    "| combination price:", <t t-out="json.dumps(combination_info.get('price'))"/>,
-                    "| region cookie:", <t t-out="json.dumps(request.httprequest.cookies.get('pl_region') or 'none')"/>
-                );
-                console.log(
-                    "[proproduct] PER-PRICELIST | variant:", <t t-out="json.dumps(product_variant.id)"/>,
-                    "| list_price (CAD base):", <t t-out="json.dumps(product_variant.list_price)"/>
-                );
-                console.log("[proproduct] product.id (template):", <t t-out="json.dumps(product.id)"/>,
-                    "| variant id:", <t t-out="json.dumps(product_variant.id)"/>,
-                    "| variant.product_tmpl_id:", <t t-out="json.dumps(product_variant.product_tmpl_id.id)"/>);
-                console.log("[proproduct]   US 🇺🇸 | id:", <t t-out="json.dumps(us_pl.id)"/>,
-                    "| _get_product_price:", <t t-out="json.dumps(us_pl._get_product_price(product_variant, 1.0) if us_pl else None)"/>,
-                    "| matched (price, rule_id):", JSON.stringify(<t t-out="json.dumps(list(us_pl._get_product_price_rule(product_variant, 1.0)) if us_pl else [])"/>),
-                    "| total items:", <t t-out="json.dumps(len(us_pl.item_ids))"/>,
-                    "| matching items:", JSON.stringify(<t t-out="json.dumps([{'id': r.id, 'applied_on': r.applied_on, 'tmpl': r.product_tmpl_id.id, 'variant': r.product_id.id, 'compute': r.compute_price, 'fixed': r.fixed_price, 'base': r.base, 'min_qty': r.min_quantity, 'date_start': str(r.date_start or ''), 'date_end': str(r.date_end or '')} for r in us_pl.item_ids.filtered(lambda i: (i.product_tmpl_id and i.product_tmpl_id.id == product.id) or (i.product_id and i.product_id.product_tmpl_id.id == product.id))])"/>)
-                );
-                console.log("[proproduct]   CA 🇨🇦 | id:", <t t-out="json.dumps(ca_pl.id)"/>,
-                    "| _get_product_price:", <t t-out="json.dumps(ca_pl._get_product_price(product_variant, 1.0) if ca_pl else None)"/>,
-                    "| total items:", <t t-out="json.dumps(len(ca_pl.item_ids))"/>,
-                    "| matching items:", JSON.stringify(<t t-out="json.dumps([{'id': r.id, 'applied_on': r.applied_on, 'tmpl': r.product_tmpl_id.id, 'variant': r.product_id.id, 'compute': r.compute_price, 'fixed': r.fixed_price, 'base': r.base, 'min_qty': r.min_quantity, 'date_start': str(r.date_start or ''), 'date_end': str(r.date_end or '')} for r in ca_pl.item_ids.filtered(lambda i: (i.product_tmpl_id and i.product_tmpl_id.id == product.id) or (i.product_id and i.product_id.product_tmpl_id.id == product.id))])"/>)
-                );
-            </script>
-        </xpath>
-
-        <!-- forcing parsing of html tags in sales description -->
-        <xpath expr="//p[@t-field='product.description_sale']" position="replace">
-            <t t-if="product.description_sale">
-                <div t-raw="product.description_sale" class="text-muted my-2"/>
-            </t>
-        </xpath>
-
-        <!-- toggle add to cart in backend -->
-        <xpath expr="//div[@id='add_to_cart_wrap']" position="replace">
-            <t t-set="language" t-value="request.lang.code"/>
-
-            <!-- Determine whether the product is allowed in the active store region -->
-            <t t-set="region_allowed"
-            t-value="
-                    (pricelist and pricelist.currency_id and pricelist.currency_id.name == 'USD' and product.is_us)
-                    or
-                    (pricelist and pricelist.currency_id and pricelist.currency_id.name == 'CAD' and product.is_ca)
-            "/>
-
-            <div id="add_to_cart_wrap"
-                t-if="product.show_add_to_cart and region_allowed"
-                t-attf-class="{{'d-none' if combination_info['prevent_zero_price_sale'] else 'd-inline-flex'}} align-items-center mb-2 me-auto">
-                <a data-animation-selector=".o_wsale_product_images"
-                role="button"
-                id="add_to_cart"
-                t-attf-class="btn btn-primary js_check_product a-submit flex-grow-1"
-                href="#">
-                    <i class="fa fa-shopping-cart me-2"/>
-                    Add to cart
-                </a>
-            </div>
-
-            <div id="add_to_cart_wrap"
-                t-else=""
-                class="d-inline-flex align-items-center mb-2 me-auto">
-                <a role="button" t-attf-class="btn btn-primary flex-grow-1" href="/contact">
+        <xpath expr="//div[@id='add_to_cart_wrap']" position="after">
+            <div t-if="not proproduct_can_buy"
+                 id="proproduct_contact_wrap"
+                 class="d-flex flex-grow-1 flex-lg-grow-0 flex-wrap align-items-center gap-2">
+                <t t-set="proproduct_lang" t-value="request.lang.code"/>
+                <a role="button" class="btn btn-primary flex-grow-1" href="/contact">
                     <i class="fa fa-envelope me-2"/>
-                    <t t-if="language == 'fr_CA'">Contactez-Nous</t>
-                    <t t-elif="language == 'es_ES'">Contáctenos</t>
+                    <t t-if="proproduct_lang == 'fr_CA'">Contactez-Nous</t>
+                    <t t-elif="proproduct_lang == 'es_ES'">Contáctenos</t>
                     <t t-else="">Contact us</t>
                 </a>
             </div>
         </xpath>
 
-        <!-- approve financing section -->
-        <xpath expr="//div[@id='o_product_terms_and_share']" position="before">
-            <section class="approve_section" t-if="product.approve_financing and pricelist and pricelist.currency_id and pricelist.currency_id.name == 'USD'">
+    </template>
+
+    <!--
+        APPROVE FINANCING SECTION.
+
+        Anchored after the cta_wrapper call inside the product details column —
+        the closest surviving equivalent to the old o_product_terms_and_share
+        position. USD-only, as before.
+    -->
+    <template id="proproduct_product_approve_financing" inherit_id="website_sale.product">
+
+        <xpath expr="//t[@t-call='website_sale.cta_wrapper']" position="after">
+            <t t-set="proproduct_pricelist" t-value="request.pricelist"/>
+            <section class="approve_section"
+                     t-if="product.approve_financing
+                           and proproduct_pricelist
+                           and proproduct_pricelist.currency_id.name == 'USD'">
                 <div class="approve_section_inner">
 
                     <style>
-                        /* approve financing section styles */
                         .approve_section {
                             padding: 7px;
                             background-color: #db0d0d;
                             border-radius: 35px;
                             box-shadow: 0 0 25px 5px rgba(255, 0, 0, 0.5);
-                            /* border: 2px solid #ff6b6b; */
                             margin-bottom: 10px;
                             transition: transform 0.3s ease;
                         }
@@ -199,141 +104,67 @@
                             display: flex;
                             justify-content: center;
                         }
-                        .approve_section_header > img {
-                            width: 40%;
-                            height: auto;
-                        }
-
-                        .approve_section:hover {
-                            transform: scale(1.01);
-                        }
-
-
-                        .approve_teaser_block {
-                            text-align: center;
-                            color: white;
-                            margin: 25px 0;
-                        }
-
-                        .approve_teaser_header {
-                            font-size: 1.3rem;
-                            font-weight: 600;
-                            margin-bottom: 10px;
-                        }
-
-                        .approve_teaser_price {
-                            font-size: 4rem;
-                            font-weight: 700;
-                        }
-
-                        .approve_teaser_suffix {
-                            font-size: 2rem;
-                            font-weight: 600;
-                            margin-left: 5px;
-                        }
-
-                        .approve_teaser_subtext {
-                            font-size: 0.9rem;
-                            margin-top: 5px;
-                            color: #eee;
-                        }
-
-                        .approve_teaser_pitch {
-                            font-size: 1rem;
-                            font-weight: 500;
-                            margin-top: 20px;
-                            line-height: 1.4;
-                        }
-
-                        .approve_learn_more {
-                            color: white;
-                            text-decoration: underline;
-                            font-weight: 600;
-                        }
-
-
-
-                        .approve_button_section {
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                        }
-                        .approve_button {
-                            background-color: #fff;
-                            width: 350px;
-                            height: 75px;
-                            border: 2px solid #ff6b6b;
-                            border-radius: 5px;
-                            font-weight: bold;
-                            font-family: "Fira Sans", "Odoo Unicode Support Noto", sans-serif;
-                        }
-
-                        .approve_button:hover {
-                            transform: scale(1.01);
-                            transition: all 0.3s ease;
-                        }
-
+                        .approve_section_header > img { width: 40%; height: auto; }
+                        .approve_section:hover { transform: scale(1.01); }
+                        .approve_teaser_block { text-align: center; color: white; margin: 25px 0; }
+                        .approve_teaser_header { font-size: 1.3rem; font-weight: 600; margin-bottom: 10px; }
+                        .approve_teaser_price { font-size: 4rem; font-weight: 700; }
+                        .approve_teaser_suffix { font-size: 2rem; font-weight: 600; margin-left: 5px; }
+                        .approve_teaser_subtext { font-size: 0.9rem; margin-top: 5px; color: #eee; }
+                        .approve_teaser_pitch { font-size: 1rem; font-weight: 500; margin-top: 20px; line-height: 1.4; }
+                        .approve_learn_more { color: white; text-decoration: underline; font-weight: 600; }
+                        .approve_button_section { display: flex; justify-content: center; align-items: center; }
                         .flash-button {
-                        position: relative;
-                        overflow: hidden;
-                        box-shadow: 0 0 25px 5px rgba(255, 208, 208, 0.5);
-                        /* border: 1px solid #000; */
-                        -webkit-appearance: none;
-                        border-radius: 12px;
-                        background-color: #fff;
-                        color: #000;
-                        font-weight: bold;
-                        font-family: "Fira Sans", sans-serif;
-                        width: 200px;
-                        height: 50px;
-                        cursor: pointer;
-                        transition: transform 0.3s ease;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
+                            position: relative;
+                            overflow: hidden;
+                            box-shadow: 0 0 25px 5px rgba(255, 208, 208, 0.5);
+                            -webkit-appearance: none;
+                            border-radius: 12px;
+                            background-color: #fff;
+                            color: #000;
+                            font-weight: bold;
+                            font-family: "Fira Sans", sans-serif;
+                            width: 200px;
+                            height: 50px;
+                            cursor: pointer;
+                            transition: transform 0.3s ease;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
                         }
-
                         .flash-button:focus {
-                        outline: none;
-                        box-shadow: 0 0 25px 5px rgba(255, 208, 208, 0.5);
+                            outline: none;
+                            box-shadow: 0 0 25px 5px rgba(255, 208, 208, 0.5);
                         }
-
                         .flash-button span {
-                        position: relative;
-                        z-index: 1;
-                        text-transform: uppercase;
-                        font-size: 16px;
+                            position: relative;
+                            z-index: 1;
+                            text-transform: uppercase;
+                            font-size: 16px;
                         }
-
                         .flash-button::after {
-                        content: '';
-                        position: absolute;
-                        top: -75%;             
-                        left: -100%;
-                        width: 40%;            
-                        height: 250%;          
-                        background: rgba(255, 162, 162, 0.3);  
-                        transform: rotate(25deg);
-                        pointer-events: none;
-                        z-index: 0;
-                        transition: left 0.6s ease;
+                            content: '';
+                            position: absolute;
+                            top: -75%;
+                            left: -100%;
+                            width: 40%;
+                            height: 250%;
+                            background: rgba(255, 162, 162, 0.3);
+                            transform: rotate(25deg);
+                            pointer-events: none;
+                            z-index: 0;
+                            transition: left 0.6s ease;
                         }
-
-
-                        .flash-button:hover::after {
-                        left: 120%;
-                        }
+                        .flash-button:hover::after { left: 120%; }
                     </style>
 
-                    <!-- approve plugin install -->
                     <script type="text/javascript" async=""> window.kwipped_approve = window.kwipped_approve || {}; window.kwipped_approve.url = "https://www.kwipped.com"; window.kwipped_approve.approve_id = "eyJpdiI6Ik5US0IxcDN5dnFNcW16amZXN28weWc9PSIsInZhbHVlIjoidGYxRzl2eml4MkNkTHIwbkE1OGdLZz09IiwibWFjIjoiZDVkMzEzODUzOTNmOTg0MTlmOWFmMmI3ZjRhODA2YjBmNzFiMzBhZGMwNTE0MjMwYTMwNzlmYjYzYWMwMGUyNiJ9"; function init_kwipped_approve_snippet() { var b = document.getElementsByTagName('body')[0]; var t = document.querySelector('approve-widget'); if (!t) { t = document.createElement('approve-widget'); t.setAttribute('autosubmission', 1); t.setAttribute('theme', 'custom'); t.setAttribute('themestyle', '{"bgcolor":"#DB0E0D","header_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"inner_bgcolor":"#FFFFFF","button_bgcolor":"#DC0D0F","button_border_color":"#ebebeb","button_text_color":"#FFFFFF","button_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_font":{"fontFamily":"","fontWeight":"","fontStyle":""},"maintext_color":"#000000","headertext_color":"#FFFFFF"}'); b.appendChild(t); } var s=document.createElement('script'); s.type= 'text/javascript'; s.src = 'https://api.kwipped.com/approve/plugin/3.0/approve_plugin_loader.php'; b.appendChild(s); } if(document.readyState != 'loading'){ init_kwipped_approve_snippet(); } else{ window.addEventListener('DOMContentLoaded',init_kwipped_approve_snippet); } </script>
                     <span style="display:none;" id="approve_total_var" t-out="product.list_price"/>
-                    <!-- approve section header -->
+
                     <div class="approve_section_header">
                         <img src="https://www.approvepayments.com/hubfs/approve_logo_white.png" alt="KWIPPED APPROVE Logo"/>
                     </div>
 
-                    <!-- approve section teaser -->
                     <div class="approve_teaser_block">
                         <div class="approve_teaser_header">Finance as low as</div>
                         <div class="approve_teaser_price">
@@ -342,35 +173,25 @@
                         </div>
                         <div class="approve_teaser_subtext">*60 months</div>
                         <div class="approve_teaser_pitch">
-                            Multiple Lenders. Competing Offers. <br />
+                            Multiple Lenders. Competing Offers. <br/>
                             Smart Equipment Financing!
                         </div>
                     </div>
 
-                    
-                    <!-- approve section button -->
                     <div class="approve_button_section">
-                        <button 
-                        class="flash-button"
-                        type="button"
-                        approve-function="embedded_app"
-                        approve-action="add_to_app"
-                        t-att-approve-model="product.name"
-                        approve-qty="1" 
-                        t-att-approve-price="product.list_price"  
-                        approve-item-type="new_product" 
-                        style="display: none"  
-                        >
+                        <button class="flash-button"
+                                type="button"
+                                approve-function="embedded_app"
+                                approve-action="add_to_app"
+                                t-att-approve-model="product.name"
+                                approve-qty="1"
+                                t-att-approve-price="product.list_price"
+                                approve-item-type="new_product"
+                                style="display: none">
                             <span>INQUIRE NOW</span>
                         </button>
                     </div>
 
-                    <!-- 
-
-                    SCRIPTS 
-                    
-                    -->
-                    <!-- pass through json to button parameters -->
                     <script>
                         document.addEventListener('DOMContentLoaded', function () {
                             const approveBtn = document.querySelector('.flash-button');
@@ -388,4 +209,5 @@
         </xpath>
 
     </template>
+
 </odoo>

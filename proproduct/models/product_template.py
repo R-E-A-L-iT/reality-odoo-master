@@ -56,7 +56,12 @@ class ProductTemplate(models.Model):
         Products flagged for rental behaviour are left untouched.
         """
         res = super()._get_sales_prices(*args, **kwargs)
-        pricelist = args[0] if args else kwargs.get('pricelist')
+        # Odoo 19 signature is _get_sales_prices(self, website) — it passes the
+        # WEBSITE, not a pricelist. The old `args[0]` read handed a website record
+        # to the resolver, which then raised on `.item_ids` and was swallowed by
+        # the except below, so the price correction never applied. The current
+        # pricelist is on the request in v19.
+        pricelist = request.pricelist if request else None
         if not pricelist:
             return res
         for product in self:
@@ -91,7 +96,10 @@ class ProductTemplate(models.Model):
         try:
             variant = self.env['product.product'].browse(info.get('product_id')).exists() \
                 or self.product_variant_id
-            pricelist = self.env['website'].get_current_pricelist()
+            # v19: resolved pricelist for this request. The old call went through
+            # `self.env['website']` — an EMPTY recordset — and a method v19 removed,
+            # so it raised on every product page and the override silently no-opped.
+            pricelist = request.pricelist
             item = self._proproduct_resolve_pricelist_item(pricelist, variant)
             if item:
                 if item.compute_price == 'fixed':

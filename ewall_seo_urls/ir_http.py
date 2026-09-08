@@ -28,11 +28,23 @@ class ModelConverterCustom(WebsiteModelConverter):
     def to_python(self, value):
         field = getattr(request.env[self.model], "_seo_url_field", None)
         if field and field in request.env[self.model]._fields:
-            cur_lang = (request.context or {}).get("lang", "en_US")
-            langs = [cur_lang] + [
-                lang for lang, _ in request.env["res.lang"].sudo().get_installed()
-                if lang != cur_lang
+            # Only ever hand INSTALLED language codes to with_context(). The
+            # request context language comes from the frontend_lang cookie or,
+            # in a fresh/incognito session, from the browser's Accept-Language
+            # header — which can be a code that exists as a locale but is not
+            # installed here (e.g. a Canadian browser sending en-CA -> en_CA).
+            # Passing such a code straight through raised
+            # "Invalid language code: en_CA" (HTTP 422) on every category and
+            # product URL, since those are the ones routed through this converter.
+            installed = [
+                code for code, _ in request.env["res.lang"].sudo().get_installed()
             ]
+            cur_lang = (request.context or {}).get("lang")
+            langs = ([cur_lang] if cur_lang in installed else []) + [
+                code for code in installed if code != cur_lang
+            ]
+            if not langs:
+                langs = ["en_US"]
             for lang in langs:
                 record = request.env[self.model].with_context(lang=lang).sudo().search(
                     [(field, "=", value)], limit=1

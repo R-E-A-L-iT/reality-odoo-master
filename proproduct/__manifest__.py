@@ -19,14 +19,11 @@
         "maintenance",
     ],
     "data": [
-        # Odoo 19 migration: temporarily disabled. This view inherits
-        # website_sale.product and xpaths into markup that changed in v19 — the
-        # //t[@t-cache] wrapper was removed (the pricelist-forcing/price-lock
-        # blocks worked around a v17 t-cache stale-currency bug that no longer
-        # exists), and //div[@id='o_product_terms_and_share'] was removed. Rebuild
-        # it against the v19 product template — keeping the add-to-cart region
-        # gating and the financing section — then re-enable.
-        # "views/website_sale_product.xml",
+        # Rebuilt for Odoo 19 (anchors taken from this DB's combined arch).
+        # Add-to-cart gating now inherits website_sale.cta_wrapper, which is where
+        # v19 moved #add_to_cart_wrap; the financing section anchors after the
+        # cta_wrapper call. See the file header for what was dropped and why.
+        "views/website_sale_product.xml",
         "views/product_template_form.xml",
         # Odoo 19 migration: temporarily disabled to show the default store.
         # "views/wishlist_page.xml",
