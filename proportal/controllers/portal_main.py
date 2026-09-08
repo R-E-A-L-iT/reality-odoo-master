@@ -10,7 +10,6 @@ from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.addons.portal.controllers import portal
 from odoo.addons.portal.controllers.portal import pager as portal_pager, get_records_pager
 from collections import OrderedDict
-from odoo.osv.expression import OR, AND
 from markupsafe import Markup
 from odoo.tools import groupby as groupbyelem
 

@@ -8,7 +8,7 @@
     <field name="body_html"><![CDATA[
 <p>Hello,</p>
 <p>This is a reminder that your following CCPs will be expiring within the next month:</p>
-<t t-raw="ctx.get('items_html') or ''"/>
+<t t-out="ctx.get('items_html') or ''"/>
 <p>If you'd like to renew these CCPs, please feel free to contact us at 
 <a href="mailto:experts@r-e-a-l.it">experts@r-e-a-l.it</a> to get a new quote.</p>
 <p>Thank you.</p>
