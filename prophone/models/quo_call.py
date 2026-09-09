@@ -1418,11 +1418,28 @@ class QuoCallTranscript(models.Model):
 
         transcript_payload = transcript_payload or {}
 
+        # Two callers deliver two different shapes:
+        #   * the `call.transcript.completed` WEBHOOK passes the whole CALL
+        #     object, which carries the transcript nested under `callTranscript`;
+        #   * the import wizard (GET /v1/call-transcripts/{id}) passes the
+        #     transcript object itself, with `dialogue` at the top level.
+        # Reading `dialogue`/`duration` straight off the outer object therefore
+        # found nothing on the webhook path — no lines were created and the
+        # duration stored as 0. Resolve the transcript sub-object once here, but
+        # keep the ORIGINAL payload for raw_transcript_json so nothing is lost.
+        tdata = transcript_payload
+        if "dialogue" not in tdata:
+            for _nest_key in ("callTranscript", "transcript", "call_transcript"):
+                _nested = transcript_payload.get(_nest_key)
+                if isinstance(_nested, dict) and "dialogue" in _nested:
+                    tdata = _nested
+                    break
+
         # duration is present on transcript payload
         duration = (
-            transcript_payload.get("duration")
-            or transcript_payload.get("durationSeconds")
-            or transcript_payload.get("duration_seconds")
+            tdata.get("duration")
+            or tdata.get("durationSeconds")
+            or tdata.get("duration_seconds")
         )
         try:
             if duration not in (None, "", False) and int(float(duration)) < MIN_DURATION_SECONDS:
@@ -1445,8 +1462,10 @@ class QuoCallTranscript(models.Model):
 
         rec = Transcript.search([("call_id", "=", call.id)], limit=1)
 
-        created_at = transcript_payload.get("createdAt") or transcript_payload.get("created_at")
-        status = transcript_payload.get("status") or ""
+        created_at = tdata.get("createdAt") or tdata.get("created_at")
+        # The call object carries the useful status ("completed"); the nested
+        # transcript object usually has none, so prefer the outer one.
+        status = transcript_payload.get("status") or tdata.get("status") or ""
 
         vals = {
             "call_id": call.id,
@@ -1463,7 +1482,7 @@ class QuoCallTranscript(models.Model):
         else:
             transcript = Transcript.create(vals)
 
-        dialogue = transcript_payload.get("dialogue") or []
+        dialogue = tdata.get("dialogue") or []
         seq = 1
         line_vals = []
         for item in dialogue:

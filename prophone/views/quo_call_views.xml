@@ -143,6 +143,8 @@
     <record id="view_quo_transcript_tree" model="ir.ui.view">
         <field name="name">quo.call.transcript.tree</field>
         <field name="model">quo.call.transcript</field>
+        <field name="priority">1</field>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <list>
                 <field name="quo_call_id"/>
@@ -156,6 +158,8 @@
     <record id="view_quo_transcript_form" model="ir.ui.view">
         <field name="name">quo.call.transcript.form</field>
         <field name="model">quo.call.transcript</field>
+        <field name="priority">1</field>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <form>
                 <sheet>
@@ -199,6 +203,8 @@
     <record id="view_quo_text_tree" model="ir.ui.view">
         <field name="name">quo.text.tree</field>
         <field name="model">quo.text</field>
+        <field name="priority">1</field>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <list>
                 <field name="created_at"/>
@@ -213,6 +219,8 @@
     <record id="view_quo_text_form" model="ir.ui.view">
         <field name="name">quo.text.form</field>
         <field name="model">quo.text</field>
+        <field name="priority">1</field>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <form>
                 <sheet>
