@@ -155,6 +155,32 @@
         </field>
     </record>
 
+    <!-- Standalone list view for transcript lines.
+
+         Without this, ANY place a quo.call.transcript.line one2many is rendered
+         without an inline <list> (including Odoo's auto-generated fallback form)
+         falls back to a generated list that shows almost nothing — which is why
+         the Dialogue field rendered as a bare column of record IDs. Defining a
+         real default list view for the model fixes every such rendering at once. -->
+    <record id="view_quo_transcript_line_tree" model="ir.ui.view">
+        <field name="name">quo.call.transcript.line.list</field>
+        <field name="model">quo.call.transcript.line</field>
+        <field name="priority">1</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list string="Dialogue" create="false" delete="false">
+                <field name="sequence" widget="handle"/>
+                <field name="start_ms" string="Start" optional="show"/>
+                <field name="end_ms" string="End" optional="hide"/>
+                <field name="speaker_label" string="Speaker" optional="show"/>
+                <field name="partner_id" string="Contact" optional="show"/>
+                <field name="content" string="Transcript"/>
+                <field name="identifier" optional="hide"/>
+                <field name="user_id" string="Quo User ID" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
     <record id="view_quo_transcript_form" model="ir.ui.view">
         <field name="name">quo.call.transcript.form</field>
         <field name="model">quo.call.transcript</field>
@@ -164,29 +190,35 @@
             <form>
                 <sheet>
                     <group>
-                        <field name="call_id" readonly="1"/>
-                        <field name="created_at" readonly="1"/>
-                        <field name="status" readonly="1"/>
-                        <field name="duration_seconds" readonly="1"/>
+                        <group>
+                            <field name="call_id" readonly="1"/>
+                            <field name="created_at" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="status" readonly="1"/>
+                            <field name="duration_seconds" string="Duration (s)" readonly="1"/>
+                            <field name="quo_call_id" readonly="1" groups="base.group_no_one"/>
+                        </group>
                     </group>
 
                     <notebook>
-                        <page string="Dialogue">
-                            <field name="line_ids">
-                                <list>
-                                    <field name="partner_id"/>
-                                    <!-- <field name="sequence"/> -->
-                                    <field name="speaker_label" string="Phone #"/>
-                                    <field name="start_ms"/>
-                                    <field name="end_ms"/>
-                                    <field name="content"/>
+                        <page string="Dialogue" name="dialogue">
+                            <field name="line_ids" nolabel="1" readonly="1">
+                                <list create="false" delete="false">
+                                    <field name="sequence" column_invisible="1"/>
+                                    <field name="start_ms" string="Start"/>
+                                    <field name="speaker_label" string="Speaker"/>
+                                    <field name="partner_id" string="Contact"/>
+                                    <field name="content" string="Transcript"/>
                                 </list>
                             </field>
                         </page>
 
-                        <!-- <page string="Raw JSON">
-                            <field name="raw_transcript_json" widget="text"/>
-                        </page> -->
+                        <!-- Developer mode only, as requested: base.group_no_one is
+                             the group Odoo grants when developer mode is active. -->
+                        <page string="Raw JSON" name="raw_json" groups="base.group_no_one">
+                            <field name="raw_transcript_json" nolabel="1" widget="text" readonly="1"/>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
