@@ -5,14 +5,24 @@
     <record id="view_quo_call_tree" model="ir.ui.view">
         <field name="name">quo.call.tree</field>
         <field name="model">quo.call</field>
+        <!-- Explicit active=True: if this view was ever deactivated in the
+             database (Odoo disables views that fail validation, and a v17 arch
+             does not validate on v19), a plain module update would NOT switch it
+             back on, because the XML did not set the field. Odoo then falls back
+             to the auto-generated form, which renders every field on the model —
+             including the whole mail.thread / mail.activity.mixin set. -->
+        <field name="priority">1</field>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
-                <field name="quo_call_id"/>
-                <field name="direction"/>
-                <field name="phone_number_id"/>
                 <field name="started_at"/>
-                <field name="duration_seconds"/>
+                <field name="name" string="Call"/>
+                <field name="direction"/>
+                <field name="caller_from_partner_id" string="From"/>
+                <field name="caller_to_partner_id" string="To"/>
+                <field name="duration_seconds" string="Duration (s)" sum="Total"/>
+                <field name="quo_call_id" column_invisible="1"/>
+                <field name="phone_number_id" column_invisible="1"/>
             </list>
         </field>
     </record>
@@ -20,13 +30,15 @@
     <record id="view_quo_call_form" model="ir.ui.view">
         <field name="name">quo.call.form</field>
         <field name="model">quo.call</field>
+        <field name="priority">1</field>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <form>
-                <header/>
                 <sheet>
 
-                    <!-- Smart buttons: related quotes & opportunities -->
-                    <div name="button_box" class="oe_button_box">
+                    <!-- Smart buttons. Must be the first element in the sheet:
+                         that is what floats them to the top-right of the form. -->
+                    <div class="oe_button_box" name="button_box">
                         <button name="action_view_related_quotes"
                                 type="object"
                                 class="oe_stat_button"
@@ -45,7 +57,6 @@
                         <h1>
                             <field name="name" readonly="1"/>
                         </h1>
-
                         <div class="o_row mt-1">
                             <span class="text-muted me-2">Between</span>
                             <field name="caller_from_partner_id" options="{'no_create': False}" class="oe_inline"/>
@@ -54,51 +65,69 @@
                         </div>
                     </div>
 
-                    <br/>
-                    <group string="Call details" colspan="2">
-                        <group>
+                    <!-- Two sibling groups inside one outer group = two columns.
+                         The previous single nested group rendered one narrow
+                         column with the rest of the sheet blank. -->
+                    <group string="Call Details">
+                        <group name="timing">
                             <field name="started_at" readonly="1"/>
                             <field name="ended_at" readonly="1"/>
+                            <field name="duration_seconds" string="Duration (s)" readonly="1"/>
+                        </group>
+                        <group name="routing">
                             <field name="direction" readonly="1"/>
+                            <field name="from_number" readonly="1"/>
+                            <field name="to_number" readonly="1"/>
+                            <field name="partner_ids" widget="many2many_tags"
+                                   string="Participants" readonly="1"
+                                   options="{'no_create': True}"/>
                         </group>
                     </group>
 
                     <notebook>
-                        <page string="Transcript">
-                            <field name="transcript_id" context="{'default_call_id': id}">
+                        <page string="Transcript" name="transcript">
+                            <field name="transcript_id" nolabel="1" context="{'default_call_id': id}">
                                 <list>
                                     <field name="created_at"/>
                                     <field name="status"/>
-                                    <field name="duration_seconds"/>
+                                    <field name="duration_seconds" string="Duration (s)"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Summary">
-                            <div class="o_form_sheet">
-                                <field name="summary_text"
-                                       nolabel="1"
-                                       placeholder="No summary yet..."
-                                       class="oe_full_width"/>
 
-                                <separator string="Next Steps"/>
-
-                                <field name="next_steps_text"
-                                       nolabel="1"
-                                       placeholder="No next steps yet..."
-                                       class="oe_full_width"/>
-                            </div>
-                        </page>
-                        <page string="Recording">
+                        <page string="Summary" name="summary">
                             <group>
-                                <field name="recording_url" widget="url"/>
+                                <field name="summary_text" nolabel="1"
+                                       placeholder="No summary yet..."/>
+                            </group>
+                            <separator string="Next Steps"/>
+                            <group>
+                                <field name="next_steps_text" nolabel="1"
+                                       placeholder="No next steps yet..."/>
+                            </group>
+                        </page>
+
+                        <page string="Recording" name="recording">
+                            <group>
+                                <field name="recording_url" widget="url" readonly="1"/>
+                                <field name="recording_duration_seconds"
+                                       string="Recording Duration (s)" readonly="1"/>
+                                <field name="recording_mimetype" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Technical" name="technical" groups="base.group_system">
+                            <group>
+                                <field name="quo_call_id" readonly="1"/>
+                                <field name="phone_number_id" readonly="1"/>
+                                <field name="from_sanitized" readonly="1"/>
+                                <field name="to_sanitized" readonly="1"/>
                             </group>
                         </page>
                     </notebook>
                 </sheet>
 
-                <!-- Chatter (log notes, activities, messages) -->
                 <chatter/>
-
             </form>
         </field>
     </record>
