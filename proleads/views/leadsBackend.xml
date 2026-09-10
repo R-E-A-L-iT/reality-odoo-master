@@ -6,13 +6,13 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form" />
         <field name="arch" type="xml">
-            <!-- <xpath expr="//header" position="inside">
+            <xpath expr="//header" position="inside">
                 <button name="action_leica_register" type="object" string="Register with Leica"
                         class="oe_highlight"
                         invisible="not leica_can_register or leica_registered"/>
                 <button name="action_leica_register" type="object" string="Register with Leica"
                         readonly="1" invisible="not leica_registered"/>
-            </xpath> -->
+            </xpath>
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="partner_company_id" />
             </xpath>

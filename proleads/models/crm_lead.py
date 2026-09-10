@@ -1,14 +1,15 @@
 import re
-import json
 import logging
-import requests
-import hmac
-import hashlib
+
+from markupsafe import Markup
 
 from odoo import fields, models, api, _, tools
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
+
+LEICA_LEAD_LOG_EMAIL = "grokbot@r-e-a-l.it"
+LEICA_LEAD_LOG_SUBJECT = "Leica lead log request"
 
 LEICA_MARKET_SEGMENT_SEL = [
     ("bld_construction", "Building & Construction"),
@@ -38,7 +39,7 @@ class CrmLead(models.Model):
         string="Registered with Leica",
         default=False,
         readonly=True,
-        help="Set automatically after the 'Register with Leica' action is sent."
+        help="Set automatically after the 'Register with Leica' lead log request email is sent."
     )
 
     leica_can_register = fields.Boolean(
@@ -298,103 +299,92 @@ class CrmLead(models.Model):
 
             lead.leica_can_register = has_core and email_ok and phone_ok and addr_ok
 
-    # helper for compiling/sending information to leica webhook
-    def _post_to_leica_webhook(self, payload: dict):
-        ICP = self.env["ir.config_parameter"].sudo()
-        url = ICP.get_param("proleads_leica_webhook_url", "").strip()
-        secret = ICP.get_param("proleads_leica_webhook_secret", "").strip()
+    # values required for the leica lead log, grouped by section: [(section, [(label, value)])]
+    def _leica_lead_log_sections(self):
+        self.ensure_one()
+        partner = self.partner_id
+        state = partner.state_id
+        country_code = (partner.country_id.code or "").upper()
+        rep = self.leica_representative_id
 
-        if not url:
-            raise UserError(_("Leica webhook URL is not configured (proleads_leica_webhook_url)."))
-        if not secret:
-            raise UserError(_("Leica webhook secret is not configured (proleads_leica_webhook_secret)."))
+        def yes_no(value):
+            return "Yes" if value else "No"
 
-        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-        signature = hmac.new(secret.encode("utf-8"), body, hashlib.sha256).hexdigest()
+        return [
+            ("Lead", [
+                ("Lead ID", self.id),
+                ("Lead Name", self.name),
+                ("Odoo Link", "%s/web#id=%s&model=crm.lead&view_type=form" % (self.get_base_url(), self.id)),
+                ("Leica Representative", rep.email and "%s <%s>" % (rep.name, rep.email) or rep.name),
+            ]),
+            ("Contact", [
+                ("Contact Name", self.contact_name),
+                ("Company Name", self.partner_name),
+                ("Email", self.email_from),
+                ("Phone", self.phone),
+            ]),
+            ("Address", [
+                ("Street", partner.street),
+                ("City", partner.city),
+                ("State/Province", state.code or state.name),
+                ("ZIP/Postal Code", partner.zip),
+                ("Country", partner.country_id.name),
+                ("Sales Region", {"CA": "Canada", "US": "United States"}.get(country_code)),
+            ]),
+            ("Leica Details", [
+                ("Market Segment", LEICA_MARKET_SEGMENT_LABEL.get(self.leica_market_segment)),
+                ("Product Interest", LEICA_PRODUCT_INTEREST_LABEL.get(self.leica_product_interest)),
+                ("Part of an RFP", yes_no(self.leica_is_rfp)),
+                ("Expected Purchase Date (MM/DD/YYYY)", self.date_deadline and self.date_deadline.strftime("%m/%d/%Y")),
+                ("Quantity", self.leica_quantity),
+            ]),
+            ("End-user Requests", [
+                ("Requested a Demonstration", yes_no(self.leica_has_demo_request)),
+                ("Requested Pricing", yes_no(self.leica_has_pricing_request)),
+                ("Requested a Meeting", yes_no(self.leica_has_meeting_request)),
+            ]),
+        ]
 
-        headers = {
-            "Content-Type": "application/json",
-            "X-REAL-Signature": signature,
-            "User-Agent": "Odoo-17/LeicaWebhook",
-        }
+    def _leica_lead_log_body(self):
+        cell = "padding:6px 12px;border:1px solid #dee2e6;vertical-align:top;"
+        rows = Markup()
+        for section, items in self._leica_lead_log_sections():
+            rows += Markup(
+                '<tr><th colspan="2" style="%sbackground:#f1f3f5;text-align:left;font-size:15px;">%s</th></tr>'
+            ) % (cell, section)
+            for label, value in items:
+                if value in (False, None, ""):
+                    value = "N/A"
+                rows += Markup(
+                    '<tr><td style="%sfont-weight:bold;white-space:nowrap;">%s</td><td style="%s">%s</td></tr>'
+                ) % (cell, label, cell, value)
+        return Markup(
+            '<div style="font-family:Arial,sans-serif;font-size:14px;">'
+            '<p>A new lead is ready to be logged with Leica.</p>'
+            '<table style="border-collapse:collapse;">%s</table>'
+            '</div>'
+        ) % rows
 
-        try:
-            resp = requests.post(url, data=body, headers=headers, timeout=10)
-        except requests.RequestException as e:
-            _logger.exception("Error posting to Leica webhook: %s", e)
-            raise UserError(_("Failed to reach the Leica webhook: %s") % e) from e
-
-        if resp.status_code != 200:
-            _logger.error("Leica webhook non-200: %s, body=%s", resp.status_code, resp.text[:500])
-            raise UserError(_("Leica webhook responded with HTTP %s") % resp.status_code)
-
-        try:
-            data = resp.json()
-        except Exception:
-            _logger.error("Leica webhook invalid JSON response: %s", resp.text[:500])
-            raise UserError(_("Leica webhook returned invalid JSON."))
-
-        if not data or not data.get("ok"):
-            _logger.error("Leica webhook returned error payload: %s", data)
-            raise UserError(_("Leica webhook indicated failure."))
-
-        return True
-
-    # register lead with leica sending email to vm
+    # register lead with leica by emailing a lead log request
     def action_leica_register(self):
         self.ensure_one()
         if self.leica_registered:
             raise UserError(_("This lead has already been registered with Leica."))
 
-        def _fmt_us_date(d):
-            if not d:
-                return ""
-            try:
-                py = fields.Date.to_date(d)
-                return py.strftime("%m/%d/%Y")
-            except Exception:
-                return ""
-
-        sales_region = ""
-        c = (self.partner_id.country_id and self.partner_id.country_id.code or "").upper()
-        if c == "CA":
-            sales_region = "ca"
-        elif c == "US":
-            sales_region = "us"
-
-        payload = {
-            "lead_id": self.id,
-            "contact_name": self.contact_name or "",
-            "company_name": self.partner_name or "",
-            "email": self.email_from or "",
-            "phone": self.phone or "",
-
-            "street": self.partner_id.street or "",
-            "city": self.partner_id.city or "",
-            "state": (self.partner_id.state_id and (self.partner_id.state_id.code or self.partner_id.state_id.name)) or "",
-            "zip": self.partner_id.zip or "",
-            "country": (self.partner_id.country_id and self.partner_id.country_id.name) or "",
-
-            "sales_region": sales_region,
-
-            "market_segment_label": dict(self._fields['leica_market_segment'].selection).get(self.leica_market_segment, "") if hasattr(self, 'leica_market_segment') else "",
-            "product_interest_label": dict(self._fields['leica_product_interest'].selection).get(self.leica_product_interest, "") if hasattr(self, 'leica_product_interest') else "",
-            "is_rfp": bool(getattr(self, 'leica_is_rfp', False)),
-
-            "expected_closing_mmddyyyy": _fmt_us_date(self.date_deadline),
-            "quantity": self.leica_quantity or None,
-
-            "has_demo_request": bool(self.leica_has_demo_request),
-            "has_pricing_request": bool(self.leica_has_pricing_request),
-            "has_meeting_request": bool(self.leica_has_meeting_request),
-        }
-
-        self._post_to_leica_webhook(payload)
+        mail = self.env["mail.mail"].sudo().create({
+            "subject": LEICA_LEAD_LOG_SUBJECT,
+            "email_to": LEICA_LEAD_LOG_EMAIL,
+            "email_from": self.env.user.email_formatted or self.env.company.email_formatted,
+            "body_html": self._leica_lead_log_body(),
+            "auto_delete": False,
+        })
+        # raise so a delivery failure rolls back and the lead can be retried
+        mail.send(raise_exception=True)
 
         self.leica_registered = True
         system_partner = self.env.ref("base.user_root").partner_id
         self.message_post(
-            body=_("Lead has been registered in Leica's system and is awaiting approval."),
+            body=_("Leica lead log request sent to %s.", LEICA_LEAD_LOG_EMAIL),
             message_type="comment",
             subtype_xmlid="mail.mt_note",
             author_id=system_partner.id,
