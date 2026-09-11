@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_leica_register_confirm_wizard_user,leica.register.confirm.wizard.user,model_leica_register_confirm_wizard,base.group_user,1,1,1,1
