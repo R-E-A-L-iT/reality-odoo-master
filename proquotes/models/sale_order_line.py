@@ -130,6 +130,29 @@ class SaleOrderLine(models.Model):
         help="Product line that belongs to a single-choice section.",
     )
 
+    ba_kit_description = fields.Text(
+        string='Kit Items',
+        help='Auto-generated kit component list for this quote line. Edit via the "Edit Kit Qty" button.',
+    )
+
+    is_kit_product = fields.Boolean(
+        string='Is Kit Product',
+        compute='_compute_is_kit_product',
+        store=True,
+    )
+
+    @api.depends('product_id')
+    def _compute_is_kit_product(self):
+        for line in self:
+            if not line.product_id:
+                line.is_kit_product = False
+                continue
+            bom = self.env['mrp.bom'].sudo().search([
+                ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),
+                ('type', '=', 'phantom'),
+            ], limit=1)
+            line.is_kit_product = bool(bom)
+
     @api.depends("x_single_choice_section_id")
     def _compute_x_single_choice_member(self):
         for line in self:
@@ -448,6 +471,52 @@ class SaleOrderLine(models.Model):
                 ids.append(c.id)
         return ids
 
+    def action_open_kit_qty_wizard(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Edit Kit Component Quantities',
+            'res_model': 'proquotes.kit.qty.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_sale_line_id': self.id},
+        }
+
+    def _sync_kit_qty_to_delivery(self):
+        """Push ba_kit_description quantities to pending stock moves for kit lines."""
+        for line in self:
+            if not line.is_kit_product or not line.ba_kit_description:
+                continue
+
+            # Parse "4x SKU - Name" or "4x Name" lines into {sku_or_name: qty}
+            qty_by_key = {}
+            for text in line.ba_kit_description.split('\n'):
+                text = text.strip()
+                m = re.match(r'^(\d+(?:\.\d+)?)\s*x\s+(.+)$', text)
+                if not m:
+                    continue
+                qty = float(m.group(1))
+                rest = m.group(2).strip()
+                if ' - ' in rest:
+                    sku_part, name_part = rest.split(' - ', 1)
+                    qty_by_key[sku_part.strip()] = qty
+                    qty_by_key[name_part.strip()] = qty
+                else:
+                    qty_by_key[rest] = qty
+
+            if not qty_by_key:
+                continue
+
+            moves = self.env['stock.move'].sudo().search([
+                ('sale_line_id', '=', line.id),
+                ('state', 'not in', ['done', 'cancel']),
+            ])
+            for move in moves:
+                product = move.product_id.sudo()
+                sku = product.product_tmpl_id.sku or ''
+                custom_qty = qty_by_key.get(sku) or qty_by_key.get(product.name)
+                if custom_qty is not None and custom_qty != move.product_uom_qty:
+                    move.sudo().write({'product_uom_qty': custom_qty})
+
     # if line is being created retroactively by stock.picking (delivery), override creation
 
     @api.onchange('product_id')
@@ -455,6 +524,11 @@ class SaleOrderLine(models.Model):
         for line in self:
             if not line.product_id:
                 continue
+
+            # Populate the kit component breakdown regardless of rental/price
+            # handling below — kit lines are common on rental orders too, and
+            # this only touches ba_kit_description, never price.
+            line.ba_kit_description = line.product_id.get_kit_description_text() or False
 
             # NEVER touch the price on a rental line. The rental price comes from
             # the custom daily-rate formula (sale_renting.py _get_pricelist_price),
