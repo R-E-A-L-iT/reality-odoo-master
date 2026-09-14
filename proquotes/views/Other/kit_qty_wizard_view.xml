@@ -13,13 +13,13 @@
                     </div>
                     <field name="sale_line_id" invisible="1"/>
                     <field name="line_ids" nolabel="1">
-                        <tree editable="bottom">
+                        <list editable="bottom">
                             <field name="product_id" column_invisible="1"/>
                             <field name="product_name" readonly="1" string="Component"/>
                             <field name="sku" readonly="1" optional="show"/>
                             <field name="original_qty" readonly="1" string="BOM Default" optional="show"/>
                             <field name="qty" string="Quote Qty"/>
-                        </tree>
+                        </list>
                     </field>
                     <div class="alert alert-info mt-2" role="alert">
                         <strong>Note:</strong> Saving will update the quote description and adjust quantities on any pending (not yet validated) delivery.
