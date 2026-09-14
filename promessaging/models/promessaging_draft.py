@@ -80,16 +80,39 @@ class PromessagingDraft(models.Model):
         self.ensure_one()
         return Markup("<br>").join(escape(line) for line in (self.body or "").splitlines())
 
+    def _check_email_subject(self, record):
+        """Opportunities must carry an Email Subject, same as the composer."""
+        if record._name != "crm.lead" or "ba_email_subject" not in record._fields:
+            return
+        if record.type == "opportunity" and not record.ba_email_subject:
+            raise UserError(_(
+                "Please set an Email Subject on this opportunity before sending the draft."
+            ))
+
     def action_send_draft(self):
-        """Post the draft as a real message to the document's followers."""
+        """Post the draft as a real message to the document's followers, the same
+        way the chatter composer would."""
         self.ensure_one()
         self.env["res.users"]._promessaging_check_send_message()
         record = self._get_document(self.res_model, self.res_id)
-        record.message_post(
-            body=self._body_html(),
-            message_type="comment",
-            subtype_xmlid="mail.mt_comment",
-        )
+        self._check_email_subject(record)
+
+        # leads send the customer a header-less layout (chatter_google_message);
+        # the flag is only set while the notification emails are rendered
+        simple_layout = "simple_email_layout" in record._fields
+        original_layout = record.simple_email_layout if simple_layout else False
+        if simple_layout and not original_layout:
+            record.write({"simple_email_layout": True})
+        try:
+            record.message_post(
+                body=self._body_html(),
+                message_type="comment",
+                subtype_xmlid="mail.mt_comment",
+            )
+        finally:
+            if simple_layout and record.simple_email_layout != original_layout:
+                record.write({"simple_email_layout": original_layout})
+
         self.unlink()
         return True
 
