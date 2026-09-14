@@ -1,8 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <t t-name="promessaging.Chatter" t-inherit="mail.Chatter" t-inherit-mode="extension">
+
         <xpath expr="//button[hasclass('o-mail-Chatter-sendMessage')]" position="attributes">
             <attribute name="t-if">props.hasMessageList and canSendMessage</attribute>
         </xpath>
+
+        <xpath expr="//button[hasclass('o-mail-Chatter-sendMessage')]" position="after">
+            <button t-if="props.hasMessageList and !canSendMessage"
+                    class="o-promessaging-writeDraft btn btn-primary text-nowrap me-1"
+                    t-att-class="{ 'my-2': !props.compactHeight }"
+                    t-att-disabled="!state.thread.canPostMessage and props.threadId"
+                    t-on-click="() => this.promessagingEditDraft()">
+                Write draft
+            </button>
+        </xpath>
+
+        <xpath expr="//div[hasclass('o-mail-Chatter-topbar')]" position="after">
+            <div t-if="promessagingShowDraft" class="o-promessaging-draft border rounded mx-3 mb-2 p-2 bg-light">
+                <div class="d-flex align-items-center mb-1">
+                    <i class="fa fa-pencil-square-o me-1" role="img"/>
+                    <span class="fw-bold">Draft message</span>
+                    <small t-if="promessagingDraft.draft" class="text-muted ms-2">
+                        by <t t-esc="promessagingDraft.draft.author"/>
+                    </small>
+                    <small class="text-muted ms-2">not sent to anyone</small>
+                </div>
+                <t t-if="promessagingDraft.editing">
+                    <textarea class="form-control" rows="6"
+                              placeholder="Write a draft for someone to review and send..."
+                              t-model="promessagingDraft.value"/>
+                    <div class="d-flex mt-2">
+                        <button class="btn btn-primary btn-sm me-1"
+                                t-att-disabled="!promessagingDraft.value.trim()"
+                                t-on-click="() => this.promessagingPostDraft()">
+                            Post
+                        </button>
+                        <button class="btn btn-link btn-sm"
+                                t-on-click="() => this.promessagingCancelDraft()">
+                            Cancel
+                        </button>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="o-promessaging-draft-body" style="white-space: pre-wrap;"
+                         t-esc="promessagingDraft.draft.body"/>
+                    <div class="d-flex mt-2">
+                        <button t-if="canSendMessage" class="btn btn-primary btn-sm me-1"
+                                t-on-click="() => this.promessagingSendDraft()">
+                            Send as message
+                        </button>
+                        <button class="btn btn-secondary btn-sm me-1"
+                                t-on-click="() => this.promessagingEditDraft()">
+                            Edit
+                        </button>
+                        <button class="btn btn-link btn-sm text-danger"
+                                t-on-click="() => this.promessagingDiscardDraft()">
+                            Discard
+                        </button>
+                    </div>
+                </t>
+            </div>
+        </xpath>
+
     </t>
 </templates>
