@@ -1,5 +1,7 @@
 from . import res_users
+from . import promessaging_draft
 from . import ir_http
+from . import mail_thread
 from . import mail_activity_mixin
 from . import mail_compose_message
 from . import account_move_send

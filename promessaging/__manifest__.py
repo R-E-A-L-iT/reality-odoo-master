@@ -9,6 +9,7 @@ messages or emails from any document.""",
     "version": "17.0",
     "depends": ["mail", "account"],
     "data": [
+        "security/ir.model.access.csv",
         "views/res_users_views.xml",
     ],
     "assets": {
