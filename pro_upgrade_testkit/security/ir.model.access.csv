@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pro_upgrade_test_run_user,pro.upgrade.test.run.user,model_pro_upgrade_test_run,sales_team.group_sale_salesman,1,1,1,1
+access_pro_upgrade_test_run_line_user,pro.upgrade.test.run.line.user,model_pro_upgrade_test_run_line,sales_team.group_sale_salesman,1,1,1,1
+access_pro_upgrade_testkit_wizard_user,pro.upgrade.testkit.wizard.user,model_pro_upgrade_testkit_wizard,sales_team.group_sale_salesman,1,1,1,1
+access_pro_upgrade_test_run_manager,pro.upgrade.test.run.manager,model_pro_upgrade_test_run,sales_team.group_sale_manager,1,1,1,1
+access_pro_upgrade_test_run_line_manager,pro.upgrade.test.run.line.manager,model_pro_upgrade_test_run_line,sales_team.group_sale_manager,1,1,1,1
+access_pro_upgrade_testkit_wizard_manager,pro.upgrade.testkit.wizard.manager,model_pro_upgrade_testkit_wizard,sales_team.group_sale_manager,1,1,1,1
