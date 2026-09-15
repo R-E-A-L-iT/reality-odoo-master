@@ -154,6 +154,9 @@
             <div t-elif="!state.doc" class="text-muted p-3">Save this summary to start writing it.</div>
             <t t-else="">
 
+                <SummariesBlocks t-if="state.doc.intro_blocks.length" blocks="state.doc.intro_blocks"
+                                 openRef="openRef" resId="resId"/>
+
                 <div class="card mb-3 o_summaries_tasks">
                     <div class="card-header d-flex align-items-center py-2">
                         <span class="fw-bold">Tasks</span>
@@ -204,10 +207,13 @@
                 </div>
 
                 <div t-if="state.editing" class="card mb-3">
-                    <div class="card-header py-2 fw-bold">Content blocks (JSON)</div>
+                    <div class="card-header py-2 fw-bold">Document source (JSON blocks)</div>
                     <div class="card-body">
                         <div t-if="state.error" class="alert alert-danger py-2"><t t-esc="state.error"/></div>
-                        <textarea class="form-control font-monospace" rows="18" t-model="state.draft"/>
+                        <label class="form-label small fw-bold">Intro (above the tasks)</label>
+                        <textarea class="form-control font-monospace mb-3" rows="8" t-model="state.draftIntro"/>
+                        <label class="form-label small fw-bold">Content (below the tasks)</label>
+                        <textarea class="form-control font-monospace" rows="14" t-model="state.draft"/>
                         <div class="d-flex mt-2">
                             <button class="btn btn-primary btn-sm me-2" t-on-click="() => this.saveContent()">
                                 Save content

@@ -146,6 +146,7 @@ export class SummariesDocument extends Component {
             newTask: "",
             editing: false,
             draft: "",
+            draftIntro: "",
             error: false,
         });
         this.openRef = this.openRef.bind(this);
@@ -240,6 +241,7 @@ export class SummariesDocument extends Component {
         this.state.error = false;
         if (!this.state.editing) {
             this.state.draft = this.state.doc ? this.state.doc.content : "[]";
+            this.state.draftIntro = this.state.doc ? this.state.doc.intro : "[]";
         }
         this.state.editing = !this.state.editing;
     }
@@ -247,6 +249,7 @@ export class SummariesDocument extends Component {
     async saveContent() {
         this.state.error = false;
         try {
+            await this.orm.call("summaries.summary", "set_intro", [[this.resId], this.state.draftIntro]);
             await this.orm.call("summaries.summary", "set_content", [[this.resId], this.state.draft]);
         } catch (error) {
             this.state.error =

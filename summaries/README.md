@@ -1,7 +1,7 @@
 # Summaries
 
-One document per user per business day: a task list at the top, then content blocks
-written by bots. Created automatically each business day by the
+One document per user per business day: free-form intro blocks, a task list, then
+content blocks written by bots. Created automatically each business day by the
 `Summaries: Create Daily Summaries` scheduled action.
 
 ## Writing a summary
@@ -10,7 +10,8 @@ written by bots. Created automatically each business day by the
 env["summaries.summary"].upsert_summary(
     "derek@example.com",          # user id or login
     day="2026-09-15",             # defaults to today
-    content=[...],                # list of blocks, see below
+    intro=[...],                  # blocks ABOVE the tasks, free-form
+    content=[...],                # blocks BELOW the tasks, see below
     objectives=[                  # the tasks pinned at the top
         {"name": "Follow up with this quote",
          "record_ref": "sale.order,42",
@@ -20,6 +21,17 @@ env["summaries.summary"].upsert_summary(
 ```
 
 `env["summaries.summary"].get_content_schema()` returns this reference at runtime.
+
+## The three areas
+
+| Field | Where | Use |
+|---|---|---|
+| `intro` | above the tasks | Whatever this particular day needs: a briefing, meeting notes, a heads-up. No fixed structure. |
+| *(tasks)* | middle, always | `objectives`: checkable records with document links. |
+| `content` | below the tasks | Objectives of the day, insights for tomorrow, stats. |
+
+Both `intro` and `content` take the same blocks and are set the same way
+(`set_intro`, `set_content`). An empty `intro` renders nothing.
 
 ## Tasks
 

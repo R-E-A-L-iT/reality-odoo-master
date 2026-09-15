@@ -37,6 +37,12 @@ class SummariesSummary(models.Model):
         "res.company", default=lambda self: self.env.company, index=True
     )
 
+    intro = fields.Text(
+        string="Intro",
+        default="[]",
+        help="JSON list of content blocks rendered above the tasks. Free-form: "
+             "whatever the day needs (briefing, meeting notes, warnings).",
+    )
     content = fields.Text(
         string="Content",
         default=lambda self: json.dumps(DEFAULT_CONTENT, indent=2),
@@ -138,13 +144,15 @@ class SummariesSummary(models.Model):
     # ------------------------------------------------------------------
 
     @api.model
-    def upsert_summary(self, user_ref, day=None, content=None, objectives=None, replace_objectives=True):
+    def upsert_summary(self, user_ref, day=None, content=None, objectives=None,
+                       replace_objectives=True, intro=None):
         """Create or update one user's summary for a day.
 
         :param user_ref: user id, or login
         :param day: date string, defaults to today
-        :param content: list of content blocks, replaces the current content
-            when given (see get_content_schema())
+        :param content: list of content blocks below the tasks, replaces the
+            current content when given (see get_content_schema())
+        :param intro: list of content blocks above the tasks, free-form
         :param objectives: list of dicts with keys name, note, done, record_ref
             ("model,id" string), sequence
         :param replace_objectives: drop the existing objectives first
@@ -153,6 +161,9 @@ class SummariesSummary(models.Model):
         user = self._resolve_user(user_ref)
         day = fields.Date.to_date(day) if day else fields.Date.context_today(self)
         summary = self._get_or_create(user, day)
+
+        if intro is not None:
+            summary.set_intro(intro)
 
         if content is not None:
             summary.set_content(content)
@@ -197,12 +208,12 @@ class SummariesSummary(models.Model):
     )
     BLOCK_STYLES = ("default", "primary", "success", "warning", "danger", "info", "muted")
 
-    def _parse_content(self):
+    def _parse_blocks(self, field_name="content"):
         self.ensure_one()
         try:
-            blocks = json.loads(self.content or "[]")
+            blocks = json.loads(self[field_name] or "[]")
         except (TypeError, ValueError):
-            _logger.warning("Summaries: summary %s holds invalid JSON content", self.id)
+            _logger.warning("Summaries: summary %s holds invalid JSON in %s", self.id, field_name)
             return []
         return blocks if isinstance(blocks, list) else []
 
@@ -238,16 +249,24 @@ class SummariesSummary(models.Model):
             cleaned.append(clean)
         return cleaned
 
-    def set_content(self, blocks):
-        """Replace the content blocks. Accepts a list or a JSON string."""
+    def _set_blocks(self, blocks, field_name="content"):
         self.ensure_one()
         if isinstance(blocks, str):
             try:
                 blocks = json.loads(blocks or "[]")
             except ValueError as error:
-                raise UserError(_("Content is not valid JSON: %s", error))
-        self.content = json.dumps(self._clean_blocks(blocks), ensure_ascii=False, indent=2)
+                raise UserError(_("%(field)s is not valid JSON: %(error)s",
+                                  field=field_name.capitalize(), error=error))
+        self[field_name] = json.dumps(self._clean_blocks(blocks), ensure_ascii=False, indent=2)
         return True
+
+    def set_content(self, blocks):
+        """Replace the blocks shown below the tasks. List or JSON string."""
+        return self._set_blocks(blocks, "content")
+
+    def set_intro(self, blocks):
+        """Replace the free-form blocks shown above the tasks. List or JSON string."""
+        return self._set_blocks(blocks, "intro")
 
     def get_document(self):
         """Everything the document view renders, in one call."""
@@ -259,7 +278,9 @@ class SummariesSummary(models.Model):
             "task_count": self.objective_count,
             "task_done_count": self.objective_done_count,
             "tasks": [task._task_data() for task in self.objective_ids],
-            "blocks": self._parse_content(),
+            "intro_blocks": self._parse_blocks("intro"),
+            "intro": self.intro or "[]",
+            "blocks": self._parse_blocks("content"),
             "content": self.content or "[]",
         }
 
@@ -267,6 +288,11 @@ class SummariesSummary(models.Model):
     def get_content_schema(self):
         """Block reference, for the bots writing these summaries."""
         return {
+            "fields": {
+                "intro": "Blocks rendered above the tasks. Free-form: briefing, "
+                         "meeting notes, anything the day needs.",
+                "content": "Blocks rendered below the tasks: objectives, insights, stats.",
+            },
             "styles": list(self.BLOCK_STYLES),
             "inline_markup": {
                 "bold": "**bold**",
