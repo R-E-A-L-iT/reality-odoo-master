@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_enginelly_test_root"
+              name="Enginelly Test"
+              parent="sale.sale_menu_root"
+              sequence="95"
+              groups="sales_team.group_sale_salesman"/>
+
+    <menuitem id="menu_enginelly_test_rebuild"
+              name="Rebuild Enginelly test suite"
+              parent="menu_enginelly_test_root"
+              action="action_pro_upgrade_testkit_rebuild"
+              sequence="10"
+              groups="sales_team.group_sale_salesman"/>
+
+    <menuitem id="menu_enginelly_test_runs"
+              name="Test Runs"
+              parent="menu_enginelly_test_root"
+              action="action_pro_upgrade_test_run"
+              sequence="20"
+              groups="sales_team.group_sale_salesman"/>
+
+</odoo>

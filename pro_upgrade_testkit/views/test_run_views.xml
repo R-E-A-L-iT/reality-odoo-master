@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_pro_upgrade_test_run_list" model="ir.ui.view">
+        <field name="name">pro.upgrade.test.run.list</field>
+        <field name="model">pro.upgrade.test.run</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'done'"
+                  decoration-warning="state == 'partial'"
+                  decoration-danger="state == 'failed'">
+                <field name="create_date"/>
+                <field name="name"/>
+                <field name="state"/>
+                <field name="pass_count" string="PASS"/>
+                <field name="fail_count" string="FAIL"/>
+                <field name="skip_count" string="SKIP"/>
+                <field name="order_count" string="Orders"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pro_upgrade_test_run_form" model="ir.ui.view">
+        <field name="name">pro.upgrade.test.run.form</field>
+        <field name="model">pro.upgrade.test.run</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_rebuild_new_run"
+                            type="object"
+                            string="Rebuild suite (new run)"
+                            class="btn-primary"
+                            confirm="This cancels prior Enginelly-tagged test documents and creates a new run. Continue?"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_orders"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-usd">
+                            <field name="order_count" widget="statinfo" string="Orders"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="create_date" readonly="1"/>
+                            <field name="create_uid" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="pass_count"/>
+                            <field name="fail_count"/>
+                            <field name="skip_count"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Steps" name="steps">
+                            <field name="line_ids" nolabel="1">
+                                <list decoration-success="status == 'pass'"
+                                      decoration-danger="status == 'fail'"
+                                      decoration-muted="status == 'skip'">
+                                    <field name="sequence" optional="hide"/>
+                                    <field name="name"/>
+                                    <field name="status"/>
+                                    <field name="document_name"/>
+                                    <field name="amount_total" widget="monetary"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="note"/>
+                                    <field name="error_message"/>
+                                    <button name="action_open_document"
+                                            type="object"
+                                            string="Open"
+                                            icon="fa-external-link"
+                                            invisible="not res_id"/>
+                                    <field name="res_id" column_invisible="1"/>
+                                    <field name="res_model" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Report" name="report">
+                            <field name="report_html" nolabel="1" colspan="2"/>
+                        </page>
+                    </notebook>
+                    <field name="sale_order_ids" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pro_upgrade_test_run_search" model="ir.ui.view">
+        <field name="name">pro.upgrade.test.run.search</field>
+        <field name="model">pro.upgrade.test.run</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter name="failed" string="Failed / partial" domain="[('state', 'in', ('failed', 'partial'))]"/>
+                <filter name="done" string="Done" domain="[('state', '=', 'done')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pro_upgrade_test_run" model="ir.actions.act_window">
+        <field name="name">Enginelly test runs</field>
+        <field name="res_model">pro.upgrade.test.run</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pro_upgrade_test_run_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No test runs yet</p>
+            <p>Use <em>Rebuild Enginelly test suite</em> to create the first comparable OriginCopy run.</p>
+        </field>
+    </record>
+
+</odoo>
