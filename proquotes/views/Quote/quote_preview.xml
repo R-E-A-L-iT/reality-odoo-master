@@ -998,13 +998,21 @@
                                    type="checkbox" style="display: none;"/>
                             <div class="product_fold" style="width: 100%;">
                                 <t t-set="kit_bom" t-value="line.product_id.product_tmpl_id.bom_ids.filtered(lambda b: b.type == 'phantom')[:1]"/>
+                                <!-- Quantities here default to the raw BOM ratio, but the
+                                     quote's "Edit Kit Qty" wizard may have overridden some
+                                     component's quantity (stored in ba_kit_description) —
+                                     use that instead when present, same lookup as the
+                                     delivery-side sync (sale_order_line._get_kit_qty_overrides). -->
+                                <t t-set="kit_qty_overrides" t-value="line._get_kit_qty_overrides()"/>
 
                                 <t t-if="kit_bom and kit_bom.bom_line_ids">
                                     <ul style="color: #777; margin: 4px 0; padding-left: 18px;">
                                         <t t-foreach="kit_bom.bom_line_ids" t-as="bom_line">
                                             <li>
-                                                <t t-set="qty_int" t-value="int(bom_line.product_qty)"/>
-                                                <t t-set="qty_display" t-value="str(qty_int) if bom_line.product_qty == qty_int else str(bom_line.product_qty)"/>
+                                                <t t-set="bom_line_sku" t-value="bom_line.product_id.product_tmpl_id.sku or ''"/>
+                                                <t t-set="bom_qty" t-value="kit_qty_overrides.get(bom_line_sku) or kit_qty_overrides.get(bom_line.product_id.name) or bom_line.product_qty"/>
+                                                <t t-set="qty_int" t-value="int(bom_qty)"/>
+                                                <t t-set="qty_display" t-value="str(qty_int) if bom_qty == qty_int else str(bom_qty)"/>
 
                                                 <span t-out="qty_display"/>x
                                                 <span t-out="bom_line.product_id.name"/>
