@@ -1109,6 +1109,32 @@ class order(models.Model):
         )
         extra.invalidate_recordset()
 
+    def action_confirm(self):
+        """Override to re-sync any kit lines' "Edit Kit Qty" overrides onto the
+        stock moves Odoo's own standard confirmation/procurement just created.
+
+        Confirming the order (the normal path, not action_open_pickup below)
+        triggers core's own stock procurement, which explodes each kit line's
+        BOM into component moves via mrp's stock.move._action_confirm ->
+        action_explode(). That explosion only ever uses the raw BOM ratio and
+        has no idea ba_kit_description exists — so a custom quantity set via
+        the wizard was silently dropped the moment the order got confirmed,
+        regardless of what _sync_kit_qty_to_delivery already did (there was
+        nothing to sync to yet, since no stock.move existed before
+        confirmation). Running the sync again here, once the moves genuinely
+        exist, closes that gap.
+        """
+        res = super().action_confirm()
+        for order in self:
+            kit_lines = order.order_line.filtered(
+                lambda l: not l.display_type
+                and not l.x_is_rental_kit_component
+                and l.ba_kit_description
+            )
+            if kit_lines:
+                kit_lines._sync_kit_qty_to_delivery()
+        return res
+
     def action_open_pickup(self):
         self.ensure_one()
 
