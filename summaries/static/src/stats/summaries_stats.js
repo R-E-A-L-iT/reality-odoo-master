@@ -11,7 +11,11 @@ const COLORS = ["#714B67", "#00A09D", "#F0AD4E", "#5CB85C", "#D9534F"];
 
 export class SummariesStats extends Component {
     static template = "summaries.SummariesStats";
-    static props = { ...standardWidgetProps };
+    static props = {
+        ...standardWidgetProps,
+        record: { type: Object, optional: true },
+        resId: { type: [Number, Boolean], optional: true },
+    };
 
     setup() {
         this.orm = useService("orm");
@@ -36,7 +40,7 @@ export class SummariesStats extends Component {
     }
 
     get resId() {
-        return this.props.record.resId;
+        return this.props.resId || (this.props.record && this.props.record.resId);
     }
 
     get periods() {

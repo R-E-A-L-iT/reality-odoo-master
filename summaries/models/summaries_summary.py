@@ -1,12 +1,24 @@
+import json
 import logging
 from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import html_sanitize
 
 _logger = logging.getLogger(__name__)
 
 DEFAULT_WEEKS = 12
+DEFAULT_CONTENT = [
+    {"type": "section", "title": "Main objectives", "style": "primary", "blocks": [
+        {"type": "text", "text": "*No objectives written yet.*"},
+    ]},
+    {"type": "section", "title": "Looking ahead", "style": "info", "blocks": [
+        {"type": "text", "text": "*No insights yet.*"},
+    ]},
+    {"type": "stats"},
+]
+
 MAX_WEEKS = 52
 
 
@@ -25,9 +37,11 @@ class SummariesSummary(models.Model):
         "res.company", default=lambda self: self.env.company, index=True
     )
 
-    body = fields.Html(
-        string="Notes", sanitize_attributes=False,
-        help="Free-form notes: checklists written as text, images, tables, links.",
+    content = fields.Text(
+        string="Content",
+        default=lambda self: json.dumps(DEFAULT_CONTENT, indent=2),
+        help="JSON list of content blocks rendered below the tasks. "
+             "Call get_content_schema() for the accepted block types.",
     )
     objective_ids = fields.One2many("summaries.objective", "summary_id", string="Objectives")
 
@@ -124,12 +138,13 @@ class SummariesSummary(models.Model):
     # ------------------------------------------------------------------
 
     @api.model
-    def upsert_summary(self, user_ref, day=None, body=None, objectives=None, replace_objectives=True):
+    def upsert_summary(self, user_ref, day=None, content=None, objectives=None, replace_objectives=True):
         """Create or update one user's summary for a day.
 
         :param user_ref: user id, or login
         :param day: date string, defaults to today
-        :param body: HTML notes, replaces the current notes when given
+        :param content: list of content blocks, replaces the current content
+            when given (see get_content_schema())
         :param objectives: list of dicts with keys name, note, done, record_ref
             ("model,id" string), sequence
         :param replace_objectives: drop the existing objectives first
@@ -139,8 +154,8 @@ class SummariesSummary(models.Model):
         day = fields.Date.to_date(day) if day else fields.Date.context_today(self)
         summary = self._get_or_create(user, day)
 
-        if body is not None:
-            summary.body = body
+        if content is not None:
+            summary.set_content(content)
 
         if objectives is not None:
             if replace_objectives:
@@ -171,6 +186,117 @@ class SummariesSummary(models.Model):
         if not user:
             raise UserError(_("No user found for %s.", user_ref))
         return user
+
+    # ------------------------------------------------------------------
+    # document content
+    # ------------------------------------------------------------------
+
+    BLOCK_TYPES = (
+        "heading", "text", "callout", "list", "checklist", "kpi", "progress",
+        "table", "links", "image", "divider", "html", "section", "stats",
+    )
+    BLOCK_STYLES = ("default", "primary", "success", "warning", "danger", "info", "muted")
+
+    def _parse_content(self):
+        self.ensure_one()
+        try:
+            blocks = json.loads(self.content or "[]")
+        except (TypeError, ValueError):
+            _logger.warning("Summaries: summary %s holds invalid JSON content", self.id)
+            return []
+        return blocks if isinstance(blocks, list) else []
+
+    @api.model
+    def _clean_blocks(self, blocks, depth=0):
+        """Validate blocks, drop unknown keys, sanitize raw html."""
+        if depth > 3:
+            raise UserError(_("Content blocks are nested too deeply."))
+        if not isinstance(blocks, (list, tuple)):
+            raise UserError(_("Content must be a list of blocks."))
+
+        cleaned = []
+        for block in blocks:
+            if not isinstance(block, dict):
+                raise UserError(_("Every content block must be an object."))
+            block_type = block.get("type")
+            if block_type not in self.BLOCK_TYPES:
+                raise UserError(_(
+                    "Unknown content block type %(type)s. Allowed types: %(allowed)s",
+                    type=block_type, allowed=", ".join(self.BLOCK_TYPES),
+                ))
+            clean = dict(block)
+            style = clean.get("style")
+            if block_type in ("callout", "kpi", "progress", "heading") and style and style not in self.BLOCK_STYLES:
+                raise UserError(_(
+                    "Unknown style %(style)s. Allowed styles: %(allowed)s",
+                    style=style, allowed=", ".join(self.BLOCK_STYLES),
+                ))
+            if block_type == "html":
+                clean["html"] = html_sanitize(clean.get("html") or "")
+            if block_type == "section":
+                clean["blocks"] = self._clean_blocks(clean.get("blocks") or [], depth + 1)
+            cleaned.append(clean)
+        return cleaned
+
+    def set_content(self, blocks):
+        """Replace the content blocks. Accepts a list or a JSON string."""
+        self.ensure_one()
+        if isinstance(blocks, str):
+            try:
+                blocks = json.loads(blocks or "[]")
+            except ValueError as error:
+                raise UserError(_("Content is not valid JSON: %s", error))
+        self.content = json.dumps(self._clean_blocks(blocks), ensure_ascii=False, indent=2)
+        return True
+
+    def get_document(self):
+        """Everything the document view renders, in one call."""
+        self.ensure_one()
+        return {
+            "id": self.id,
+            "name": self.name,
+            "progress": self.progress,
+            "task_count": self.objective_count,
+            "task_done_count": self.objective_done_count,
+            "tasks": [task._task_data() for task in self.objective_ids],
+            "blocks": self._parse_content(),
+            "content": self.content or "[]",
+        }
+
+    @api.model
+    def get_content_schema(self):
+        """Block reference, for the bots writing these summaries."""
+        return {
+            "styles": list(self.BLOCK_STYLES),
+            "inline_markup": {
+                "bold": "**bold**",
+                "italic": "*italic*",
+                "code": "`code`",
+                "link": "[label](https://example.com)",
+                "document": "[label](odoo:sale.order:42) opens that record in Odoo",
+            },
+            "blocks": [
+                {"type": "heading", "text": "Main objectives", "level": 2, "style": "primary"},
+                {"type": "text", "text": "Any **inline** markup, [a quote](odoo:sale.order:42)."},
+                {"type": "callout", "style": "warning", "title": "Watch out",
+                 "text": "Renewal expires Friday."},
+                {"type": "list", "style": "bullet", "items": ["First", "Second"]},
+                {"type": "checklist", "items": [{"text": "Reviewed", "done": True}]},
+                {"type": "kpi", "items": [
+                    {"label": "Quotes sent", "value": "12", "delta": "+3", "style": "success"}]},
+                {"type": "progress", "label": "Pipeline target", "value": 65, "style": "success"},
+                {"type": "table", "columns": ["Quote", "Value"], "rows": [["QT-1", "$1,200"]]},
+                {"type": "links", "items": [
+                    {"label": "QT-123456", "model": "sale.order", "id": 42},
+                    {"label": "Docs", "url": "https://example.com"}]},
+                {"type": "image", "src": "/web/image/...", "alt": "Chart", "width": "100%"},
+                {"type": "divider"},
+                {"type": "html", "html": "<b>sanitized</b> raw html"},
+                {"type": "section", "title": "Tomorrow", "style": "info", "blocks": [
+                    {"type": "text", "text": "Nested blocks go here."}]},
+                {"type": "stats", "note": "Renders this user's role-based performance graphs."},
+            ],
+        }
 
     # ------------------------------------------------------------------
     # performance stats

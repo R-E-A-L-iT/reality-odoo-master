@@ -1,4 +1,5 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 # documents an objective can point at, when the module is installed
 LINKABLE_MODELS = [
@@ -35,6 +36,11 @@ class SummariesObjective(models.Model):
         string="Related Document",
         help="The quote, opportunity, task or other document this objective is about.",
     )
+    execute_enabled = fields.Boolean(
+        string="Can Be Executed",
+        help="Shows an Execute button on the task, for an AI to carry it out. "
+             "The webhook behind it is not wired up yet.",
+    )
 
     @api.model
     def _selection_target_model(self):
@@ -61,3 +67,33 @@ class SummariesObjective(models.Model):
             "view_mode": "form",
             "views": [(False, "form")],
         }
+
+    def _task_data(self):
+        """Values the document view renders for one task."""
+        self.ensure_one()
+        reference = False
+        if self.record_ref:
+            try:
+                reference = {
+                    "model": self.record_ref._name,
+                    "id": self.record_ref.id,
+                    "display_name": self.record_ref.sudo().display_name,
+                }
+            except Exception:
+                reference = False
+        return {
+            "id": self.id,
+            "name": self.name,
+            "note": self.note or "",
+            "done": self.done,
+            "sequence": self.sequence,
+            "execute_enabled": self.execute_enabled,
+            "ref": reference,
+        }
+
+    def action_execute(self):
+        """Placeholder for handing the task to an AI over a webhook."""
+        self.ensure_one()
+        raise UserError(_(
+            "Executing a task automatically is not set up yet."
+        ))

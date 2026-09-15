@@ -25,35 +25,10 @@
                             <field name="date" readonly="not is_summaries_manager"/>
                         </group>
                         <group>
-                            <label for="objective_done_count" string="Objectives done"/>
-                            <div>
-                                <field name="objective_done_count" class="oe_inline" readonly="1"/>
-                                <span> / </span>
-                                <field name="objective_count" class="oe_inline" readonly="1"/>
-                            </div>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="To-Do" name="todo">
-                            <field name="objective_ids">
-                                <tree editable="bottom" decoration-muted="done">
-                                    <field name="sequence" widget="handle"/>
-                                    <field name="done" widget="boolean_toggle"/>
-                                    <field name="name"/>
-                                    <field name="record_ref" string="Related Document"/>
-                                    <field name="note"/>
-                                    <field name="done_date" optional="hide" readonly="1"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="Notes" name="notes">
-                            <field name="body" placeholder="Notes, checklists, images, tables..."/>
-                        </page>
-                        <page string="Performance" name="performance">
-                            <widget name="summaries_stats"/>
-                        </page>
-                    </notebook>
+                    <widget name="summaries_document"/>
                 </sheet>
             </form>
         </field>
