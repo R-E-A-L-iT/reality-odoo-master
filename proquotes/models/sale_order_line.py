@@ -506,6 +506,31 @@ class SaleOrderLine(models.Model):
             if not qty_by_key:
                 continue
 
+            # Rental kits: _ensure_rental_kit_component_lines (sale_order.py)
+            # creates a SEPARATE sale.order.line per BOM component, and it's
+            # those lines — not this kit line — that own the actual delivery
+            # stock moves. Update the component lines' own quantity plus any
+            # pending move already generated for them.
+            component_lines = self.env['sale.order.line'].sudo().search([
+                ('x_parent_rental_kit_line_id', '=', line.id),
+                ('x_is_rental_kit_component', '=', True),
+            ])
+            for comp_line in component_lines:
+                product = comp_line.product_id.sudo()
+                sku = product.product_tmpl_id.sku or ''
+                custom_qty = qty_by_key.get(sku) or qty_by_key.get(product.name)
+                if custom_qty is None or custom_qty == comp_line.product_uom_qty:
+                    continue
+                comp_line.with_context(
+                    skip_procurement=True, mail_notrack=True, tracking_disable=True,
+                ).write({'product_uom_qty': custom_qty})
+                self.env['stock.move'].sudo().search([
+                    ('sale_line_id', '=', comp_line.id),
+                    ('state', 'not in', ['done', 'cancel']),
+                ]).write({'product_uom_qty': custom_qty})
+
+            # Plain (non-rental) kits: standard Odoo BOM/kit explosion keeps
+            # sale_line_id pointing at this line's own id.
             moves = self.env['stock.move'].sudo().search([
                 ('sale_line_id', '=', line.id),
                 ('state', 'not in', ['done', 'cancel']),
