@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="module_category_summaries" model="ir.module.category">
+            <field name="name">Summaries</field>
+            <field name="description">Access to other people's daily summaries.</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <record id="group_summaries_manager" model="res.groups">
+            <field name="name">Summaries Manager</field>
+            <field name="category_id" ref="module_category_summaries"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Can view and edit the daily summaries of every user.</field>
+        </record>
+    </data>
+</odoo>
