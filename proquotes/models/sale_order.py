@@ -923,10 +923,21 @@ class order(models.Model):
                 # Explode the BOM directly — no component SOLs are created.
                 # All component moves point to the kit parent SOL so Odoo does
                 # not add "extra" lines for the component products.
+                # If the quote's "Edit Kit Qty" wizard set a custom quantity
+                # for a component (ba_kit_description), honor it instead of
+                # the raw BOM ratio.
+                overrides = line._get_kit_qty_overrides()
                 for bom_line in bom.bom_line_ids:
                     comp = bom_line.product_id
-                    qty = bom_line.product_qty * (line.product_uom_qty or 1.0)
-                    if not comp or qty <= 0:
+                    if not comp:
+                        continue
+                    sku = comp.product_tmpl_id.sku or ''
+                    qty = overrides.get(sku)
+                    if qty is None:
+                        qty = overrides.get(comp.name)
+                    if qty is None:
+                        qty = bom_line.product_qty * (line.product_uom_qty or 1.0)
+                    if qty <= 0:
                         continue
                     move_vals_list.append({
                         'product_id': comp.id,
@@ -966,10 +977,20 @@ class order(models.Model):
 
             bom = self._get_phantom_bom_for_line(line)
             if bom:
+                # See _build_rental_move_vals — honor any custom per-component
+                # quantity from the "Edit Kit Qty" wizard.
+                overrides = line._get_kit_qty_overrides()
                 for bom_line in bom.bom_line_ids:
                     comp = bom_line.product_id
-                    qty = bom_line.product_qty * (line.product_uom_qty or 1.0)
-                    if not comp or qty <= 0:
+                    if not comp:
+                        continue
+                    sku = comp.product_tmpl_id.sku or ''
+                    qty = overrides.get(sku)
+                    if qty is None:
+                        qty = overrides.get(comp.name)
+                    if qty is None:
+                        qty = bom_line.product_qty * (line.product_uom_qty or 1.0)
+                    if qty <= 0:
                         continue
                     move_vals_list.append({
                         'product_id': comp.id,

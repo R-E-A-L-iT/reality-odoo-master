@@ -481,56 +481,51 @@ class SaleOrderLine(models.Model):
             'context': {'default_sale_line_id': self.id},
         }
 
+    def _get_kit_qty_overrides(self):
+        """Parse ba_kit_description ('4x SKU - Name' or '4x Name' per line) into
+        {sku_or_name: qty}. Empty dict if there's no custom breakdown yet.
+
+        Shared by _sync_kit_qty_to_delivery below and by sale_order.py's
+        rental pickup/return move builders, which need the same overrides
+        when exploding a kit's BOM into component moves.
+        """
+        self.ensure_one()
+        overrides = {}
+        if not self.ba_kit_description:
+            return overrides
+        for text in self.ba_kit_description.split('\n'):
+            text = text.strip()
+            m = re.match(r'^(\d+(?:\.\d+)?)\s*x\s+(.+)$', text)
+            if not m:
+                continue
+            qty = float(m.group(1))
+            rest = m.group(2).strip()
+            if ' - ' in rest:
+                sku_part, name_part = rest.split(' - ', 1)
+                overrides[sku_part.strip()] = qty
+                overrides[name_part.strip()] = qty
+            else:
+                overrides[rest] = qty
+        return overrides
+
     def _sync_kit_qty_to_delivery(self):
-        """Push ba_kit_description quantities to pending stock moves for kit lines."""
+        """Push ba_kit_description quantities to any already-existing, still-pending
+        delivery moves for this kit line. (For a rental pickup/return that hasn't
+        been created yet, there's nothing to push to yet — see
+        sale_order._build_rental_move_vals / _build_rental_return_move_vals, which
+        read the same overrides at move-creation time instead.)
+        """
         for line in self:
             if not line.is_kit_product or not line.ba_kit_description:
                 continue
 
-            # Parse "4x SKU - Name" or "4x Name" lines into {sku_or_name: qty}
-            qty_by_key = {}
-            for text in line.ba_kit_description.split('\n'):
-                text = text.strip()
-                m = re.match(r'^(\d+(?:\.\d+)?)\s*x\s+(.+)$', text)
-                if not m:
-                    continue
-                qty = float(m.group(1))
-                rest = m.group(2).strip()
-                if ' - ' in rest:
-                    sku_part, name_part = rest.split(' - ', 1)
-                    qty_by_key[sku_part.strip()] = qty
-                    qty_by_key[name_part.strip()] = qty
-                else:
-                    qty_by_key[rest] = qty
-
-            if not qty_by_key:
+            overrides = line._get_kit_qty_overrides()
+            if not overrides:
                 continue
 
-            # Rental kits: _ensure_rental_kit_component_lines (sale_order.py)
-            # creates a SEPARATE sale.order.line per BOM component, and it's
-            # those lines — not this kit line — that own the actual delivery
-            # stock moves. Update the component lines' own quantity plus any
-            # pending move already generated for them.
-            component_lines = self.env['sale.order.line'].sudo().search([
-                ('x_parent_rental_kit_line_id', '=', line.id),
-                ('x_is_rental_kit_component', '=', True),
-            ])
-            for comp_line in component_lines:
-                product = comp_line.product_id.sudo()
-                sku = product.product_tmpl_id.sku or ''
-                custom_qty = qty_by_key.get(sku) or qty_by_key.get(product.name)
-                if custom_qty is None or custom_qty == comp_line.product_uom_qty:
-                    continue
-                comp_line.with_context(
-                    skip_procurement=True, mail_notrack=True, tracking_disable=True,
-                ).write({'product_uom_qty': custom_qty})
-                self.env['stock.move'].sudo().search([
-                    ('sale_line_id', '=', comp_line.id),
-                    ('state', 'not in', ['done', 'cancel']),
-                ]).write({'product_uom_qty': custom_qty})
-
-            # Plain (non-rental) kits: standard Odoo BOM/kit explosion keeps
-            # sale_line_id pointing at this line's own id.
+            # Both plain-kit BOM explosion and this codebase's rental pickup/
+            # return move building (_build_rental_move_vals) point every
+            # component move's sale_line_id at the kit line's own id.
             moves = self.env['stock.move'].sudo().search([
                 ('sale_line_id', '=', line.id),
                 ('state', 'not in', ['done', 'cancel']),
@@ -538,7 +533,7 @@ class SaleOrderLine(models.Model):
             for move in moves:
                 product = move.product_id.sudo()
                 sku = product.product_tmpl_id.sku or ''
-                custom_qty = qty_by_key.get(sku) or qty_by_key.get(product.name)
+                custom_qty = overrides.get(sku) or overrides.get(product.name)
                 if custom_qty is not None and custom_qty != move.product_uom_qty:
                     move.sudo().write({'product_uom_qty': custom_qty})
 
