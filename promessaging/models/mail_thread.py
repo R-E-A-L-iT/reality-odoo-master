@@ -9,6 +9,11 @@ class MailThread(models.AbstractModel):
     _inherit = "mail.thread"
 
     def message_post(self, **kwargs):
+        if kwargs.get("body") and self._name != "discuss.channel":
+            try:
+                kwargs["body"] = self.env["promessaging.subuser"]._highlight_mentions(kwargs["body"])
+            except Exception:
+                _logger.exception("ProMessaging: could not highlight sub-user mentions")
         message = super().message_post(**kwargs)
         try:
             self._promessaging_dispatch_subusers(message)

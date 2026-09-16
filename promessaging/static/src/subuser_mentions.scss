@@ -1,0 +1,9 @@
+// a ~subuser ping, styled like an @mention
+.o_promessaging_mention {
+    color: var(--primary, #714b67) !important;
+    background-color: rgba(113, 75, 103, 0.12);
+    border-radius: 3px;
+    padding: 0 3px;
+    font-weight: 600;
+    white-space: nowrap;
+}

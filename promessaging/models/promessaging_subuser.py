@@ -7,6 +7,7 @@ import uuid
 from datetime import datetime
 
 import requests
+from markupsafe import Markup, escape
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -143,6 +144,35 @@ class PromessagingSubuser(models.Model):
             {"id": s.id, "name": s.name, "handle": s.handle, "description": s.description or ""}
             for s in subusers
         ]
+
+    @api.model
+    def _highlight_mentions(self, body):
+        """Wrap every ~handle of a real sub-user so it reads as a ping, not text."""
+        body = body or ""
+        if MENTION_PREFIX not in str(body):
+            return body
+        if "o_promessaging_mention" in str(body):
+            return body  # already highlighted, don't nest
+        handles = {
+            subuser.handle: subuser
+            for subuser in self.sudo().search([("user_id.is_ai_user", "=", True)])
+        }
+        if not handles:
+            return body
+
+        def replace(match):
+            subuser = handles.get(match.group(1).lower())
+            if not subuser:
+                return match.group(0)
+            return (
+                '<span class="o_promessaging_mention" '
+                'style="color:#714B67;background-color:rgba(113,75,103,0.12);'
+                'border-radius:3px;padding:0 3px;font-weight:600;" '
+                'data-oe-model="promessaging.subuser" data-oe-id="%s">~%s</span>'
+            ) % (subuser.id, escape(subuser.handle))
+
+        highlighted = MENTION_RE.sub(replace, str(body))
+        return Markup(highlighted)
 
     @api.model
     def _find_mentioned(self, text):
