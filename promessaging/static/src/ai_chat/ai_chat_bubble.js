@@ -12,6 +12,8 @@ import {
 } from "@odoo/owl";
 
 const POLL_INTERVAL = 8000;
+// stop polling a conversation that has been quiet this long (resumes on send)
+const POLL_IDLE_TIMEOUT = 3 * 60 * 1000;
 
 export class AiChatBubble extends Component {
     static template = "promessaging.AiChatBubble";
@@ -101,6 +103,7 @@ export class AiChatBubble extends Component {
                 body,
             ]);
             this.appendMessages(result.messages || []);
+            this.startPolling();
         } catch (error) {
             this.state.error = this.errorMessage(error);
         } finally {
@@ -127,8 +130,17 @@ export class AiChatBubble extends Component {
 
     startPolling() {
         this.stopPolling();
+        this._pollSince = Date.now();
         this._poll = setInterval(async () => {
             if (!this.state.chat || this.state.sending) {
+                return;
+            }
+            // don't poll a background tab, and give up on a quiet conversation
+            if (document.hidden) {
+                return;
+            }
+            if (Date.now() - this._pollSince > POLL_IDLE_TIMEOUT) {
+                this.stopPolling();
                 return;
             }
             try {
@@ -139,6 +151,7 @@ export class AiChatBubble extends Component {
                 );
                 const messages = result.messages || [];
                 if (messages.length) {
+                    this._pollSince = Date.now();
                     this.appendMessages(messages);
                     this.scrollToEnd();
                 }

@@ -6,6 +6,10 @@
         <field name="model">promessaging.subuser</field>
         <field name="arch" type="xml">
             <form string="AI Sub-user">
+                <header>
+                    <button name="action_test_webhook" type="object" string="Test Webhook"
+                            class="oe_highlight" groups="base.group_system"/>
+                </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_logs" type="object" class="oe_stat_button" icon="fa-exchange">
@@ -128,6 +132,12 @@
                     <field name="error" invisible="not error" readonly="1"/>
                     <notebook>
                         <page string="Request" name="request">
+                            <group>
+                                <field name="request_url" readonly="1"/>
+                            </group>
+                            <label for="request_headers"/>
+                            <field name="request_headers" readonly="1"/>
+                            <label for="request_body"/>
                             <field name="request_body" widget="ace" options="{'mode': 'json'}" readonly="1"/>
                         </page>
                         <page string="Response" name="response">

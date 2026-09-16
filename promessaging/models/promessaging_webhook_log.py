@@ -22,6 +22,8 @@ class PromessagingWebhookLog(models.Model):
         default="pending", required=True, index=True,
     )
     status_code = fields.Integer()
+    request_url = fields.Char(string="URL")
+    request_headers = fields.Text(string="Headers Sent")
     request_body = fields.Text()
     response_body = fields.Text()
     error = fields.Text()

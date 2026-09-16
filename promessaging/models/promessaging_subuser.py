@@ -339,16 +339,17 @@ class PromessagingSubuser(models.Model):
             "X-REAL-Event": envelope["event_id"],
             "X-REAL-Type": payload_type,
         }
-        if subuser.auth_key:
+        auth_key = (subuser.auth_key or "").strip()
+        if auth_key:
             header_name = (subuser.auth_header or "Authorization").strip()
             prefix = (subuser.auth_prefix or "").strip()
-            headers[header_name] = (
-                "%s %s" % (prefix, subuser.auth_key) if prefix else subuser.auth_key
-            )
+            headers[header_name] = "%s %s" % (prefix, auth_key) if prefix else auth_key
         if subuser.webhook_secret:
             headers["X-REAL-Signature"] = hmac.new(
                 subuser.webhook_secret.encode("utf-8"), body, hashlib.sha256
             ).hexdigest()
+
+        log.write({"request_url": url, "request_headers": self._masked_headers(headers)})
 
         try:
             response = requests.post(
@@ -364,6 +365,13 @@ class PromessagingSubuser(models.Model):
             "response_body": (response.text or "")[:20000],
         })
         if response.status_code >= 300:
+            # surface it in the server log too: the body usually says why
+            _logger.warning(
+                "ProMessaging: webhook for ~%s -> HTTP %s\n  url: %s\n  sent headers: %s\n  response: %s",
+                subuser.handle, response.status_code, url,
+                self._masked_headers(headers).replace("\n", " | "),
+                (response.text or "")[:1000] or "<empty body>",
+            )
             log.write({"state": "error", "error": _("HTTP %s", response.status_code)})
             return {"ok": False, "error": "http_%s" % response.status_code}
 
@@ -373,6 +381,50 @@ class PromessagingSubuser(models.Model):
             data = {}
         log.write({"state": "done"})
         return {"ok": True, "data": data if isinstance(data, dict) else {}}
+
+    @api.model
+    def _masked_headers(self, headers):
+        """Headers as sent, with the secret parts shortened."""
+        sensitive = ("authorization", "x-real-signature", "x-api-key", "api-key", "token")
+        lines = []
+        for name, value in headers.items():
+            shown = value
+            if name.lower() in sensitive and len(value) > 12:
+                shown = "%s…%s (%s chars)" % (value[:8], value[-4:], len(value))
+            lines.append("%s: %s" % (name, shown))
+        return "\n".join(lines)
+
+    def action_test_webhook(self):
+        """Send a ping so the credentials can be checked without posting a note."""
+        self.ensure_one()
+        result = self.dispatch("ping", {"message": "Test call from Odoo."})
+        log = self.env["promessaging.webhook.log"].sudo().search(
+            [("subuser_id", "=", self.id)], order="id desc", limit=1
+        )
+        if result.get("ok"):
+            title, message, kind = _("Webhook reached"), _("%s answered.", self.name), "success"
+        else:
+            title = _("Webhook failed")
+            message = _("%(error)s — open the call log for the full response.",
+                        error=result.get("error") or _("unknown error"))
+            kind = "danger"
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": title,
+                "message": message,
+                "type": kind,
+                "sticky": not result.get("ok"),
+                "next": {
+                    "type": "ir.actions.act_window",
+                    "res_model": "promessaging.webhook.log",
+                    "res_id": log.id,
+                    "view_mode": "form",
+                    "views": [(False, "form")],
+                } if log else {"type": "ir.actions.act_window_close"},
+            },
+        }
 
     def notify_prompt(self, message, record):
         """A user pinged this sub-user in a message: send it as a prompt."""
