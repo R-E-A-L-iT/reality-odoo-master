@@ -47,8 +47,22 @@ class PromessagingWebhookLog(models.Model):
         record = None
         if self.res_model and self.res_id and self.res_model in self.env:
             record = self.env[self.res_model].browse(self.res_id).exists()
-        return self.subuser_id.dispatch(
+        result = self.subuser_id.dispatch(
             envelope.get("type") or self.webhook_type,
             envelope.get("payload") or {},
             record=record,
         )
+        ok = bool(result.get("ok"))
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Webhook resent") if ok else _("Webhook failed"),
+                "message": _("The receiver accepted the call.") if ok else _(
+                    "%(error)s — see the newest call for the response.",
+                    error=result.get("error") or _("unknown error"),
+                ),
+                "type": "success" if ok else "danger",
+                "sticky": not ok,
+            },
+        }
