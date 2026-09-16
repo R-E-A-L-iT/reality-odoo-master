@@ -14,6 +14,7 @@
                     </div>
                     <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
                             invisible="active"/>
+                    <field name="image_1920" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1><field name="name" placeholder="e.g. Grok Sales"/></h1>
@@ -29,11 +30,24 @@
                         </group>
                         <group>
                             <field name="post_reply"/>
+                            <field name="partner_id" readonly="1"
+                                   invisible="not partner_id" options="{'no_create': True}"/>
                         </group>
+                    </group>
+                    <group string="Identity" groups="base.group_system">
+                        <field name="pin" password="True"
+                               placeholder="secret this AI sends to act as this sub-user"/>
+                        <div colspan="2" class="text-muted">
+                            The AI signs in as this sub-user's owning account and adds
+                            <code>{"subuser_handle": "...", "subuser_pin": "..."}</code> to the call
+                            context. Everything it does is then logged under this sub-user's name.
+                        </div>
                     </group>
                     <group string="Webhook" groups="base.group_system">
                         <field name="webhook_url" placeholder="https://grokbot.example.com/hooks/odoo" widget="url"/>
-                        <field name="webhook_token" password="True"/>
+                        <field name="auth_key" password="True" placeholder="crsr_0cd..."/>
+                        <field name="auth_header" placeholder="Authorization"/>
+                        <field name="auth_prefix" placeholder="Bearer (leave empty to send the key alone)"/>
                         <field name="webhook_secret" password="True"/>
                         <field name="webhook_timeout"/>
                     </group>

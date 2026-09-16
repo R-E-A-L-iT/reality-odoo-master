@@ -22,6 +22,22 @@ class MailThread(models.AbstractModel):
             _logger.exception("ProMessaging: sub-user dispatch failed")
         return message
 
+    def _message_compute_author(self, author_id=None, email_from=None, raise_on_email=True):
+        """Attribute anything an AI sub-user does to that sub-user's identity.
+
+        Covers messages, notifications and the tracking logs Odoo posts when a
+        record is created or changed.
+        """
+        if author_id is None and not email_from:
+            subuser = self.env["promessaging.subuser"]._active_subuser()
+            if subuser:
+                partner = subuser.sudo()._ensure_partner()
+                if partner:
+                    return partner.id, partner.email_formatted or email_from
+        return super()._message_compute_author(
+            author_id=author_id, email_from=email_from, raise_on_email=raise_on_email
+        )
+
     def _promessaging_dispatch_subusers(self, message):
         """Send the message to every sub-user pinged in it."""
         if self.env.context.get("promessaging_skip_subuser_dispatch"):
@@ -29,6 +45,8 @@ class MailThread(models.AbstractModel):
         if not message or self._name == "discuss.channel" or len(self) != 1:
             return
         # never let one bot's message trigger another round
+        if message.subuser_id:
+            return
         author_user = message.author_id.user_ids[:1]
         if author_user and author_user.is_ai_user:
             return

@@ -1,9 +1,18 @@
-// a ~subuser ping, styled like an @mention
+// a ~subuser ping, styled like an @mention.
+// !important so it wins over the inline style carried in the message body
+// (that inline copy only exists so the ping still reads as one inside emails).
 .o_promessaging_mention {
-    color: var(--primary, #714b67) !important;
-    background-color: rgba(113, 75, 103, 0.12);
+    color: #c264b6 !important;
+    background-color: rgba(194, 100, 182, 0.16) !important;
     border-radius: 3px;
     padding: 0 3px;
     font-weight: 600;
     white-space: nowrap;
+}
+
+@media (prefers-color-scheme: dark) {
+    .o_promessaging_mention {
+        color: #e79fdc !important;
+        background-color: rgba(231, 159, 220, 0.18) !important;
+    }
 }

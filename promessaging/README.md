@@ -19,13 +19,38 @@ prompt. Messages authored by an AI user never trigger a webhook, so bots cannot 
 Every call is recorded under Settings → Technical → Email → **Sub-user Webhook Calls**,
 with the exact request, the response, and a **Retry** button.
 
+## Acting as a sub-user
+
+Several AIs can share one Odoo account and still be told apart. Give each sub-user a
+**PIN / API Key**, then have the AI sign in as the shared account and pass its handle and
+PIN in the call context:
+
+```python
+models.execute_kw(db, uid, password, "sale.order", "write", [[42], {"state": "sent"}],
+                  {"context": {"subuser_handle": "jerry", "subuser_pin": "…"}})
+```
+
+Everything written during that call is attributed to the sub-user: chatter messages,
+log notes, and the tracking entries Odoo posts by itself ("Quotation confirmed",
+field changes). The chatter shows the sub-user's name and avatar instead of the shared
+account's, and every message carries a `subuser_id` for filtering later.
+
+`promessaging.subuser.authenticate(handle, pin)` returns the sub-user's identity, or
+`false`, so an AI can check its credentials before starting.
+
+A wrong or missing PIN is not an error: the action simply proceeds under the shared
+account, as before.
+
+The sub-user's identity is a contact created automatically on first use, named after
+the sub-user, carrying its avatar and the owning account's email address.
+
 ## Webhook request
 
 `POST` to the sub-user's URL, `Content-Type: application/json`. Headers:
 
 | Header | Value |
 |---|---|
-| `Authorization` | `Bearer <token>`, when a token is set |
+| *Auth Header* (default `Authorization`) | the **Auth Key**, optionally preceded by **Auth Prefix** (e.g. `Bearer`) |
 | `X-REAL-Signature` | HMAC-SHA256 of the raw body, hex, when a signing secret is set |
 | `X-REAL-Event` | the envelope's `event_id` |
 | `X-REAL-Type` | the envelope's `type` |

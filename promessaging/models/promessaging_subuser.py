@@ -52,10 +52,29 @@ class PromessagingSubuser(models.Model):
         help="What this sub-user is for. Sent to the webhook so the bot knows its role."
     )
 
+    pin = fields.Char(
+        string="PIN / API Key", groups="base.group_system",
+        help="Secret this sub-user sends to identify itself. Actions carried out with "
+             "it are attributed to this sub-user in the chatter.",
+    )
+    partner_id = fields.Many2one(
+        "res.partner", string="Identity", readonly=True, copy=False,
+        help="Contact used as the author of everything this sub-user does.",
+    )
+    image_1920 = fields.Image(string="Avatar", max_width=1024, max_height=1024)
+
     webhook_url = fields.Char(string="Webhook URL", groups="base.group_system")
-    webhook_token = fields.Char(
-        string="Bearer Token", groups="base.group_system",
-        help="Sent as 'Authorization: Bearer <token>' when set.",
+    auth_key = fields.Char(
+        string="Auth Key", groups="base.group_system",
+        help="The key the receiver expects, sent in the header named below.",
+    )
+    auth_header = fields.Char(
+        string="Auth Header", default="Authorization", groups="base.group_system",
+        help="Header the key is sent in. Usually Authorization.",
+    )
+    auth_prefix = fields.Char(
+        string="Auth Prefix", groups="base.group_system",
+        help="Put before the key, e.g. Bearer. Leave empty to send the key on its own.",
     )
     webhook_secret = fields.Char(
         string="Signing Secret", groups="base.group_system",
@@ -130,6 +149,66 @@ class PromessagingSubuser(models.Model):
         }
 
     # ------------------------------------------------------------------
+    # identity and authentication
+    # ------------------------------------------------------------------
+
+    def _ensure_partner(self):
+        """The contact every action of this sub-user is attributed to."""
+        self.ensure_one()
+        subuser = self.sudo()
+        # an author without an email cannot post a comment, so fall back to the
+        # owning user's address
+        email = subuser.user_id.email or subuser.user_id.company_id.email or ""
+        values = {
+            "name": subuser.name,
+            "email": email,
+            "image_1920": subuser.image_1920 or False,
+            "promessaging_subuser_id": subuser.id,
+        }
+        if subuser.partner_id:
+            subuser.partner_id.write(values)
+        else:
+            partner = self.env["res.partner"].sudo().create(values)
+            subuser.partner_id = partner.id
+        return subuser.partner_id
+
+    @api.model
+    def _active_subuser(self):
+        """The sub-user acting in this call, identified by its PIN in the context.
+
+        The AI signs in as the shared account and adds
+        {"subuser_handle": "jerry", "subuser_pin": "..."} to the call context.
+        """
+        context = self.env.context
+        pin = context.get("subuser_pin")
+        handle = context.get("subuser_handle")
+        if not pin:
+            return self.browse()
+
+        domain = [("user_id", "=", self.env.uid)]
+        if handle:
+            domain.append(("handle", "=", str(handle).strip().lower()))
+        for subuser in self.sudo().search(domain):
+            if subuser.pin and hmac.compare_digest(str(subuser.pin), str(pin)):
+                return subuser
+        return self.browse()
+
+    @api.model
+    def authenticate(self, handle, pin):
+        """Check a sub-user's credentials. Returns its identity, or False."""
+        subuser = self.with_context(
+            subuser_handle=handle, subuser_pin=pin
+        )._active_subuser()
+        if not subuser:
+            return False
+        return {
+            "id": subuser.id,
+            "name": subuser.name,
+            "handle": subuser.handle,
+            "partner_id": subuser.sudo()._ensure_partner().id,
+        }
+
+    # ------------------------------------------------------------------
     # mentions
     # ------------------------------------------------------------------
 
@@ -166,7 +245,7 @@ class PromessagingSubuser(models.Model):
                 return match.group(0)
             return (
                 '<span class="o_promessaging_mention" '
-                'style="color:#714B67;background-color:rgba(113,75,103,0.12);'
+                'style="color:#C264B6;background-color:rgba(194,100,182,0.16);'
                 'border-radius:3px;padding:0 3px;font-weight:600;" '
                 'data-oe-model="promessaging.subuser" data-oe-id="%s">~%s</span>'
             ) % (subuser.id, escape(subuser.handle))
@@ -260,8 +339,12 @@ class PromessagingSubuser(models.Model):
             "X-REAL-Event": envelope["event_id"],
             "X-REAL-Type": payload_type,
         }
-        if subuser.webhook_token:
-            headers["Authorization"] = "Bearer %s" % subuser.webhook_token
+        if subuser.auth_key:
+            header_name = (subuser.auth_header or "Authorization").strip()
+            prefix = (subuser.auth_prefix or "").strip()
+            headers[header_name] = (
+                "%s %s" % (prefix, subuser.auth_key) if prefix else subuser.auth_key
+            )
         if subuser.webhook_secret:
             headers["X-REAL-Signature"] = hmac.new(
                 subuser.webhook_secret.encode("utf-8"), body, hashlib.sha256
@@ -324,7 +407,7 @@ class PromessagingSubuser(models.Model):
     def _post_reply(self, record, reply):
         """Post the bot's answer as a log note, authored by the AI user."""
         self.ensure_one()
-        author = self.user_id.partner_id
+        author = self._ensure_partner() or self.user_id.partner_id
         body = "<b>%s</b><br/>%s" % (
             self.name, "<br/>".join(str(reply).splitlines()),
         )
