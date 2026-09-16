@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="promessaging.AiChatBubble">
+        <div t-if="state.available" class="o_promessaging_aichat">
+
+            <!-- open conversation -->
+            <div t-if="state.chat" class="o_promessaging_aichat_window shadow rounded">
+                <div class="o_promessaging_aichat_header d-flex align-items-center px-2 py-2">
+                    <img class="rounded-circle me-2" width="24" height="24"
+                         t-att-src="state.chat.subuser.avatar" alt=""/>
+                    <span class="fw-bold text-truncate" t-esc="state.chat.subuser.name"/>
+                    <span class="text-muted ms-2 small">~<t t-esc="state.chat.subuser.handle"/></span>
+                    <div class="flex-grow-1"/>
+                    <button class="btn btn-sm btn-link text-reset py-0" title="Close"
+                            t-on-click="() => this.closeChat()">&#215;</button>
+                </div>
+                <div class="o_promessaging_aichat_thread px-2 py-2" t-ref="thread">
+                    <div t-if="!state.messages.length" class="text-muted small p-2">
+                        Say something to <t t-esc="state.chat.subuser.name"/>.
+                    </div>
+                    <div t-foreach="state.messages" t-as="message" t-key="message.id"
+                         class="o_promessaging_aichat_msg mb-2"
+                         t-att-class="'o-' + message.author">
+                        <div class="small text-muted">
+                            <t t-esc="message.name"/>
+                        </div>
+                        <div class="o_promessaging_aichat_bubble px-2 py-1 rounded"
+                             style="white-space: pre-wrap;" t-esc="message.body"/>
+                    </div>
+                    <div t-if="state.sending" class="text-muted small fst-italic px-1">
+                        <t t-esc="state.chat.subuser.name"/> is thinking...
+                    </div>
+                </div>
+                <div t-if="state.error" class="alert alert-warning py-1 px-2 m-2 small"
+                     t-esc="state.error"/>
+                <div class="d-flex p-2 border-top">
+                    <textarea class="form-control form-control-sm me-2" rows="1"
+                              placeholder="Message..." t-model="state.draft"
+                              t-on-keydown="(ev) => this.onKeydown(ev)"/>
+                    <button class="btn btn-sm btn-primary" t-att-disabled="state.sending"
+                            t-on-click="() => this.send()">Send</button>
+                </div>
+            </div>
+
+            <!-- directory -->
+            <div t-elif="state.open" class="o_promessaging_aichat_window shadow rounded">
+                <div class="o_promessaging_aichat_header d-flex align-items-center px-2 py-2">
+                    <span class="fw-bold">AI assistants</span>
+                    <div class="flex-grow-1"/>
+                    <button class="btn btn-sm btn-link text-reset py-0" title="Close"
+                            t-on-click="() => this.togglePanel()">&#215;</button>
+                </div>
+                <div class="o_promessaging_aichat_thread">
+                    <div t-foreach="state.directory" t-as="subuser" t-key="subuser.id"
+                         class="o_promessaging_aichat_item d-flex align-items-center px-2 py-2"
+                         t-on-click="() => this.openChat(subuser)">
+                        <img class="rounded-circle me-2" width="32" height="32"
+                             t-att-src="subuser.avatar" alt=""/>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <div class="fw-bold text-truncate"><t t-esc="subuser.name"/></div>
+                            <div class="small text-muted text-truncate">
+                                <t t-if="subuser.description" t-esc="subuser.description"/>
+                                <t t-else="">~<t t-esc="subuser.handle"/></t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- the bubble itself -->
+            <button class="o_promessaging_aichat_toggle btn btn-primary rounded-circle shadow"
+                    title="AI assistants" t-on-click="() => this.togglePanel()">
+                <i class="fa fa-magic" role="img"/>
+            </button>
+        </div>
+    </t>
+</templates>

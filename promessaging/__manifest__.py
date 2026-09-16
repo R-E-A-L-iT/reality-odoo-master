@@ -10,6 +10,7 @@ messages or emails from any document.""",
     "depends": ["mail", "account"],
     "data": [
         "security/ir.model.access.csv",
+        "security/promessaging_rules.xml",
         "views/res_users_views.xml",
         "views/promessaging_subuser_views.xml",
     ],

@@ -3,6 +3,7 @@ from . import promessaging_subuser
 from . import promessaging_webhook_log
 from . import res_partner
 from . import mail_message
+from . import promessaging_ai_chat
 from . import promessaging_draft
 from . import ir_http
 from . import mail_thread

@@ -1,0 +1,67 @@
+.o_promessaging_aichat {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1040;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .o_promessaging_aichat_toggle {
+        width: 3rem;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .o_promessaging_aichat_window {
+        width: 22rem;
+        max-width: calc(100vw - 2rem);
+        max-height: 60vh;
+        margin-bottom: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background-color: var(--o-view-background-color, #fff);
+        border: 1px solid rgba(128, 128, 128, 0.25);
+    }
+
+    .o_promessaging_aichat_header {
+        background-color: rgba(128, 128, 128, 0.12);
+        border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+    }
+
+    .o_promessaging_aichat_thread {
+        overflow-y: auto;
+        flex: 1 1 auto;
+        min-height: 8rem;
+    }
+
+    .o_promessaging_aichat_item {
+        cursor: pointer;
+        &:hover {
+            background-color: rgba(128, 128, 128, 0.12);
+        }
+    }
+
+    .o_promessaging_aichat_bubble {
+        background-color: rgba(128, 128, 128, 0.14);
+        display: inline-block;
+        max-width: 100%;
+    }
+
+    .o_promessaging_aichat_msg.o-user {
+        text-align: right;
+        .o_promessaging_aichat_bubble {
+            background-color: rgba(194, 100, 182, 0.18);
+            text-align: left;
+        }
+    }
+
+    .o_promessaging_aichat_msg.o-system .o_promessaging_aichat_bubble {
+        background-color: rgba(220, 53, 69, 0.15);
+        font-style: italic;
+    }
+}
