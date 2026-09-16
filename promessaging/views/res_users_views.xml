@@ -8,6 +8,20 @@
             <xpath expr="//page[@name='access_rights']/group[1]" position="before">
                 <group string="Messaging" name="promessaging" invisible="share">
                     <field name="can_send_message"/>
+                    <field name="is_ai_user"/>
+                </group>
+                <group string="AI Sub-users" name="promessaging_subusers"
+                       invisible="share or not is_ai_user" groups="base.group_system">
+                    <field name="subuser_ids" nolabel="1" colspan="2" context="{'default_user_id': id}">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="handle"/>
+                            <field name="webhook_url" widget="url"/>
+                            <field name="webhook_token" password="True"/>
+                            <field name="webhook_secret" password="True"/>
+                            <field name="post_reply"/>
+                        </tree>
+                    </field>
                 </group>
             </xpath>
         </field>

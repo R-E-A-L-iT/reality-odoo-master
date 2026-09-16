@@ -1,4 +1,6 @@
 from . import res_users
+from . import promessaging_subuser
+from . import promessaging_webhook_log
 from . import promessaging_draft
 from . import ir_http
 from . import mail_thread

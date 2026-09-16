@@ -5,6 +5,15 @@ from odoo.exceptions import UserError
 class ResUsers(models.Model):
     _inherit = "res.users"
 
+    is_ai_user = fields.Boolean(
+        string="AI User",
+        help="Marks this account as an AI. AI users can have sub-users, each pinged "
+             "with ~handle in a message.",
+    )
+    subuser_ids = fields.One2many(
+        "promessaging.subuser", "user_id", string="Sub-users",
+    )
+
     can_send_message = fields.Boolean(
         string="Can Send Messages",
         default=True,

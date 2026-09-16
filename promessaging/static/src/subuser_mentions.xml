@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="promessaging.Composer.suggestionSubuser">
+        <span class="d-flex align-items-center">
+            <i class="fa fa-magic me-2 text-muted" role="img"/>
+            <span class="fw-bold" t-esc="option.subuserName"/>
+            <span class="text-muted ms-2">~<t t-esc="option.label"/></span>
+            <span t-if="option.subuserDescription" class="text-muted ms-2 small text-truncate"
+                  t-esc="option.subuserDescription"/>
+        </span>
+    </t>
+</templates>
