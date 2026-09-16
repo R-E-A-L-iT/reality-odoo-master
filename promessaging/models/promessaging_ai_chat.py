@@ -45,6 +45,8 @@ class PromessagingAiChat(models.Model):
                 "handle": subuser.handle,
                 "description": subuser.description or "",
                 "avatar": "/web/image/promessaging.subuser/%s/image_1920/40x40" % subuser.id,
+                "has_avatar": bool(subuser.image_1920),
+                "initial": (subuser.name or "?")[:1].upper(),
             }
             for subuser in subusers
         ]
@@ -72,6 +74,8 @@ class PromessagingAiChat(models.Model):
                 "name": self.subuser_id.sudo().name,
                 "handle": self.subuser_id.sudo().handle,
                 "avatar": "/web/image/promessaging.subuser/%s/image_1920/40x40" % self.subuser_id.id,
+                "has_avatar": bool(self.subuser_id.sudo().image_1920),
+                "initial": (self.subuser_id.sudo().name or "?")[:1].upper(),
             },
             "messages": [message._message_data() for message in messages],
         }
