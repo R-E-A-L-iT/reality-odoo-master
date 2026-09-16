@@ -12,16 +12,12 @@
                 </group>
                 <group string="AI Sub-users" name="promessaging_subusers"
                        invisible="share or not is_ai_user" groups="base.group_system">
-                    <field name="subuser_ids" nolabel="1" colspan="2" context="{'default_user_id': id}">
-                        <tree editable="bottom">
-                            <field name="name"/>
-                            <field name="handle"/>
-                            <field name="webhook_url" widget="url"/>
-                            <field name="webhook_token" password="True"/>
-                            <field name="webhook_secret" password="True"/>
-                            <field name="post_reply"/>
-                        </tree>
-                    </field>
+                    <label for="subuser_count" string="Sub-users"/>
+                    <div>
+                        <field name="subuser_count" class="oe_inline" readonly="1"/>
+                        <button name="action_view_subusers" type="object" string="Manage"
+                                class="btn-link" invisible="not id"/>
+                    </div>
                 </group>
             </xpath>
         </field>

@@ -66,7 +66,10 @@ class PromessagingSubuser(models.Model):
         help="When the webhook answers with a \"reply\", post it as a log note on the document.",
     )
 
-    log_ids = fields.One2many("promessaging.webhook.log", "subuser_id", string="Webhook Calls")
+    log_ids = fields.One2many(
+        "promessaging.webhook.log", "subuser_id", string="Webhook Calls",
+        groups="base.group_system",
+    )
     log_count = fields.Integer(compute="_compute_log_count")
 
     _sql_constraints = [
@@ -74,10 +77,15 @@ class PromessagingSubuser(models.Model):
          "That sub-user handle is already taken."),
     ]
 
-    @api.depends("log_ids")
     def _compute_log_count(self):
+        counts = {}
+        if self.ids:
+            groups = self.env["promessaging.webhook.log"].sudo().read_group(
+                [("subuser_id", "in", self.ids)], ["subuser_id"], ["subuser_id"]
+            )
+            counts = {group["subuser_id"][0]: group["subuser_id_count"] for group in groups}
         for subuser in self:
-            subuser.log_count = len(subuser.log_ids)
+            subuser.log_count = counts.get(subuser.id, 0)
 
     @api.model_create_multi
     def create(self, vals_list):
