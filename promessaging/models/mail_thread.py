@@ -28,12 +28,21 @@ class MailThread(models.AbstractModel):
         Covers messages, notifications and the tracking logs Odoo posts when a
         record is created or changed.
         """
-        if author_id is None and not email_from:
+        # never create anything here: building the identity itself posts
+        # messages, which would come straight back into this method
+        if (
+            author_id is None
+            and not email_from
+            and not self.env.context.get("promessaging_building_identity")
+        ):
             subuser = self.env["promessaging.subuser"]._active_subuser()
-            if subuser:
-                partner = subuser.sudo()._ensure_partner()
-                if partner:
-                    return partner.id, partner.email_formatted or email_from
+            partner = subuser.sudo().partner_id if subuser else None
+            if partner:
+                return partner.id, (
+                    partner.email_formatted
+                    or subuser.sudo().user_id.partner_id.email_formatted
+                    or email_from
+                )
         return super()._message_compute_author(
             author_id=author_id, email_from=email_from, raise_on_email=raise_on_email
         )

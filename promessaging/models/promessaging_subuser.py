@@ -113,12 +113,21 @@ class PromessagingSubuser(models.Model):
         for vals in vals_list:
             if vals.get("handle"):
                 vals["handle"] = vals["handle"].strip().lower()
-        return super().create(vals_list)
+        subusers = super().create(vals_list)
+        for subuser in subusers:
+            subuser._ensure_partner()
+        return subusers
 
     def write(self, vals):
         if vals.get("handle"):
             vals["handle"] = vals["handle"].strip().lower()
-        return super().write(vals)
+        result = super().write(vals)
+        if not self.env.context.get("promessaging_building_identity") and (
+            "name" in vals or "image_1920" in vals or "user_id" in vals
+        ):
+            for subuser in self:
+                subuser._ensure_partner()
+        return result
 
     @api.constrains("handle")
     def _check_handle(self):
@@ -154,7 +163,11 @@ class PromessagingSubuser(models.Model):
     # ------------------------------------------------------------------
 
     def _ensure_partner(self):
-        """The contact every action of this sub-user is attributed to."""
+        """The contact every action of this sub-user is attributed to.
+
+        Creating a partner posts tracking messages, which ask who the author is,
+        so the identity flag keeps that from coming back here.
+        """
         self.ensure_one()
         subuser = self.sudo()
         # an author without an email cannot post a comment, so fall back to the
@@ -166,12 +179,32 @@ class PromessagingSubuser(models.Model):
             "image_1920": subuser.image_1920 or False,
             "promessaging_subuser_id": subuser.id,
         }
+        Partner = self.env["res.partner"].sudo().with_context(
+            promessaging_building_identity=True
+        )
         if subuser.partner_id:
-            subuser.partner_id.write(values)
+            subuser.partner_id.with_context(promessaging_building_identity=True).write(values)
         else:
-            partner = self.env["res.partner"].sudo().create(values)
-            subuser.partner_id = partner.id
+            subuser.with_context(promessaging_building_identity=True).partner_id = Partner.create(values).id
+        subuser._cleanup_duplicate_identities()
         return subuser.partner_id
+
+    def _cleanup_duplicate_identities(self):
+        """Drop stray identity contacts, e.g. left by a failed run."""
+        self.ensure_one()
+        subuser = self.sudo()
+        if not subuser.partner_id:
+            return
+        duplicates = self.env["res.partner"].sudo().search([
+            ("promessaging_subuser_id", "=", subuser.id),
+            ("id", "!=", subuser.partner_id.id),
+        ])
+        for partner in duplicates:
+            try:
+                partner.with_context(promessaging_building_identity=True).unlink()
+            except Exception:
+                # referenced somewhere: keep it, just get it out of the way
+                partner.with_context(promessaging_building_identity=True).active = False
 
     @api.model
     def _active_subuser(self):
@@ -222,6 +255,7 @@ class PromessagingSubuser(models.Model):
             return self.browse()
         if not hmac.compare_digest(str(subuser.pin), str(pin)):
             return self.browse()
+        subuser._ensure_partner()
         return subuser
 
     @api.model
