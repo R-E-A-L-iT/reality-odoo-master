@@ -58,14 +58,19 @@ the sub-user, carrying its avatar and the owning account's email address.
 
 ## Webhook request
 
-`POST` to the sub-user's URL, `Content-Type: application/json`. Headers:
+`POST` to the sub-user's URL, `Content-Type: application/json`.
 
-| Header | Value |
+A sub-user's webhook settings mirror what the receiver gives you, one for one:
+
+| Receiver shows | Sub-user field |
 |---|---|
-| *Auth Header* (default `Authorization`) | the **Auth Key**, optionally preceded by **Auth Prefix** (e.g. `Bearer`) |
-| `X-REAL-Signature` | HMAC-SHA256 of the raw body, hex, when a signing secret is set |
-| `X-REAL-Event` | the envelope's `event_id` |
-| `X-REAL-Type` | the envelope's `type` |
+| POST to | **POST to** |
+| key | **key** |
+| header | **header** — paste the whole line, e.g. `Authorization: Bearer crsr_...` |
+
+The **header** line is sent verbatim. If it holds only a header name, the **key** is sent
+as its value; with nothing but a key, `Authorization: Bearer <key>` is used. Odoo also
+sends `X-REAL-Event` and `X-REAL-Type` so a receiver can route by event.
 
 Every call shares one envelope; only `payload` changes per type:
 

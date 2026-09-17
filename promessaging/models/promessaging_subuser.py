@@ -1,4 +1,3 @@
-import hashlib
 import hmac
 import json
 import logging
@@ -64,22 +63,20 @@ class PromessagingSubuser(models.Model):
     )
     image_1920 = fields.Image(string="Avatar", max_width=1024, max_height=1024)
 
-    webhook_url = fields.Char(string="Webhook URL", groups="base.group_system")
+    webhook_url = fields.Char(
+        string="POST to", groups="base.group_system",
+        help="The webhook URL, copied from the receiver.",
+    )
     auth_key = fields.Char(
-        string="Auth Key", groups="base.group_system",
-        help="The key the receiver expects, sent in the header named below.",
+        string="key", groups="base.group_system",
+        help="The key, copied from the receiver. Kept for reference; the header "
+             "below is what gets sent.",
     )
     auth_header = fields.Char(
-        string="Auth Header", default="Authorization", groups="base.group_system",
-        help="Header the key is sent in. Usually Authorization.",
-    )
-    auth_prefix = fields.Char(
-        string="Auth Prefix", groups="base.group_system",
-        help="Put before the key, e.g. Bearer. Leave empty to send the key on its own.",
-    )
-    webhook_secret = fields.Char(
-        string="Signing Secret", groups="base.group_system",
-        help="When set, the body is signed with HMAC-SHA256 in the X-REAL-Signature header.",
+        string="header", groups="base.group_system",
+        help="The full header line, pasted exactly as the receiver shows it, "
+             "e.g. 'Authorization: Bearer crsr_...'. A bare header name also works, "
+             "in which case the key above is sent as its value.",
     )
     webhook_timeout = fields.Integer(string="Timeout (seconds)", default=20, groups="base.group_system")
     post_reply = fields.Boolean(
@@ -429,15 +426,7 @@ class PromessagingSubuser(models.Model):
             "X-REAL-Event": envelope["event_id"],
             "X-REAL-Type": payload_type,
         }
-        auth_key = (subuser.auth_key or "").strip()
-        if auth_key:
-            header_name = (subuser.auth_header or "Authorization").strip()
-            prefix = (subuser.auth_prefix or "").strip()
-            headers[header_name] = "%s %s" % (prefix, auth_key) if prefix else auth_key
-        if subuser.webhook_secret:
-            headers["X-REAL-Signature"] = hmac.new(
-                subuser.webhook_secret.encode("utf-8"), body, hashlib.sha256
-            ).hexdigest()
+        headers.update(subuser._auth_headers())
 
         log.write({"request_url": url, "request_headers": self._masked_headers(headers)})
 
@@ -471,6 +460,26 @@ class PromessagingSubuser(models.Model):
             data = {}
         log.write({"state": "done"})
         return {"ok": True, "data": data if isinstance(data, dict) else {}}
+
+    def _auth_headers(self):
+        """Whatever the receiver asked for, from the header line or the key."""
+        self.ensure_one()
+        subuser = self.sudo()
+        header_line = (subuser.auth_header or "").strip()
+        key = (subuser.auth_key or "").strip()
+
+        # "Authorization: Bearer crsr_..." pasted whole
+        if ":" in header_line:
+            name, _separator, value = header_line.partition(":")
+            if name.strip() and value.strip():
+                return {name.strip(): value.strip()}
+        # just a header name, with the key as its value
+        if header_line and key:
+            return {header_line: key}
+        # nothing but a key: the common default
+        if key:
+            return {"Authorization": "Bearer %s" % key}
+        return {}
 
     @api.model
     def _masked_headers(self, headers):

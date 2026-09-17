@@ -48,11 +48,14 @@
                         </div>
                     </group>
                     <group string="Webhook" groups="base.group_system">
-                        <field name="webhook_url" placeholder="https://grokbot.example.com/hooks/odoo" widget="url"/>
-                        <field name="auth_key" password="True" placeholder="crsr_0cd..."/>
-                        <field name="auth_header" placeholder="Authorization"/>
-                        <field name="auth_prefix" placeholder="Bearer (leave empty to send the key alone)"/>
-                        <field name="webhook_secret" password="True"/>
+                        <div colspan="2" class="text-muted mb-2">
+                            Copy these straight from the receiver's webhook settings.
+                        </div>
+                        <field name="webhook_url" widget="url"
+                               placeholder="https://api2.cursor.sh/automations/webhook/..."/>
+                        <field name="auth_key" password="True" placeholder="crsr_..."/>
+                        <field name="auth_header" password="True"
+                               placeholder="Authorization: Bearer crsr_..."/>
                         <field name="webhook_timeout"/>
                     </group>
                     <group string="Role">
