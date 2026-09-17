@@ -19,7 +19,19 @@ prompt. Messages authored by an AI user never trigger a webhook, so bots cannot 
 Every call is recorded under Settings → Technical → Email → **Sub-user Webhook Calls**,
 with the exact request, the response, and a **Retry** button.
 
-## Acting as a sub-user
+## Signing in as a sub-user (browser)
+
+When someone opens Odoo on a new device or session while logged into an **AI User**
+account, a full-screen prompt asks which sub-user they are and for that sub-user's PIN.
+Nothing else in the web client can be used until it is answered.
+
+The choice is stored in the Odoo session, so it holds for every request from that
+device until logout. A systray badge at the top right names the sub-user in charge;
+clicking it re-opens the prompt to switch identity.
+
+Accounts that are not marked as AI users see none of this.
+
+## Acting as a sub-user (API)
 
 Several AIs can share one Odoo account and still be told apart. Give each sub-user a
 **PIN / API Key**, then have the AI sign in as the shared account and pass its handle and

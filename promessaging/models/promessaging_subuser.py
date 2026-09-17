@@ -10,6 +10,7 @@ import requests
 from markupsafe import Markup, escape
 
 from odoo import _, api, fields, models
+from odoo.http import request
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -174,24 +175,79 @@ class PromessagingSubuser(models.Model):
 
     @api.model
     def _active_subuser(self):
-        """The sub-user acting in this call, identified by its PIN in the context.
+        """The sub-user acting right now.
 
-        The AI signs in as the shared account and adds
-        {"subuser_handle": "jerry", "subuser_pin": "..."} to the call context.
+        Either passed per call by an AI
+        ({"subuser_handle": "jerry", "subuser_pin": "..."} in the context), or
+        chosen once for the browser session through the PIN prompt.
         """
         context = self.env.context
         pin = context.get("subuser_pin")
         handle = context.get("subuser_handle")
-        if not pin:
+        if pin:
+            domain = [("user_id", "=", self.env.uid)]
+            if handle:
+                domain.append(("handle", "=", str(handle).strip().lower()))
+            for subuser in self.sudo().search(domain):
+                if subuser.pin and hmac.compare_digest(str(subuser.pin), str(pin)):
+                    return subuser
             return self.browse()
+        return self._session_subuser()
 
-        domain = [("user_id", "=", self.env.uid)]
-        if handle:
-            domain.append(("handle", "=", str(handle).strip().lower()))
-        for subuser in self.sudo().search(domain):
-            if subuser.pin and hmac.compare_digest(str(subuser.pin), str(pin)):
-                return subuser
-        return self.browse()
+    @api.model
+    def _session_subuser(self):
+        """The sub-user this browser session signed in as, if any."""
+        try:
+            session = request.session if request else None
+        except Exception:
+            session = None
+        if not session:
+            return self.browse()
+        subuser_id = session.get("promessaging_subuser_id")
+        if not subuser_id:
+            return self.browse()
+        subuser = self.sudo().browse(int(subuser_id)).exists()
+        # the session is only valid for sub-users of the account that is logged in
+        if not subuser or subuser.user_id.id != self.env.uid:
+            return self.browse()
+        return subuser
+
+    @api.model
+    def _verify_pin(self, subuser_id, pin):
+        """Check a PIN against one sub-user of the current account."""
+        subuser = self.sudo().browse(int(subuser_id or 0)).exists()
+        if not subuser or subuser.user_id.id != self.env.uid:
+            return self.browse()
+        if not subuser.pin or not pin:
+            return self.browse()
+        if not hmac.compare_digest(str(subuser.pin), str(pin)):
+            return self.browse()
+        return subuser
+
+    @api.model
+    def get_session_state(self):
+        """What the PIN prompt needs: who I am, and who I could be."""
+        user = self.env.user
+        options = self.sudo().search([("user_id", "=", user.id)])
+        current = self._session_subuser()
+        return {
+            "is_ai_user": bool(user.is_ai_user),
+            "required": bool(user.is_ai_user and options and not current),
+            "current": {
+                "id": current.id,
+                "name": current.name,
+                "handle": current.handle,
+            } if current else False,
+            "options": [
+                {
+                    "id": option.id,
+                    "name": option.name,
+                    "handle": option.handle,
+                    "description": option.description or "",
+                }
+                for option in options
+            ],
+        }
 
     @api.model
     def authenticate(self, handle, pin):
