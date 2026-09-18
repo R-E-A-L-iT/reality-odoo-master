@@ -4,6 +4,7 @@ import { Chatter } from "@mail/core/web/chatter";
 import { patch } from "@web/core/utils/patch";
 import { session } from "@web/session";
 import { useState } from "@odoo/owl";
+import { _t } from "@web/core/l10n/translation";
 
 patch(Chatter.prototype, {
     setup() {
@@ -12,6 +13,7 @@ patch(Chatter.prototype, {
             draft: false,
             editing: false,
             value: "",
+            regenerating: false,
         });
     },
 
@@ -92,6 +94,33 @@ patch(Chatter.prototype, {
         await this.orm.call("promessaging.draft", "action_send_draft", [[draft.id]]);
         this.promessagingResetDraft();
         this.load(this.state.thread, ["messages"]);
+    },
+
+    async promessagingRegenerateDraft() {
+        const draft = this.promessagingDraft.draft;
+        if (!draft || this.promessagingDraft.regenerating) {
+            return;
+        }
+        this.promessagingDraft.regenerating = true;
+        try {
+            const result = await this.orm.call("promessaging.draft", "action_regenerate", [
+                [draft.id],
+            ]);
+            await this.reload();
+            if (result && !result.ok) {
+                this.notification.add(
+                    _t("Could not reach %s (%s).", draft.author, result.error || _t("unknown error")),
+                    { type: "warning" }
+                );
+            } else if (result && !result.updated) {
+                this.notification.add(
+                    _t("%s was asked to rewrite the draft and will update it shortly.", draft.author),
+                    { type: "info" }
+                );
+            }
+        } finally {
+            this.promessagingDraft.regenerating = false;
+        }
     },
 
     async promessagingDiscardDraft() {

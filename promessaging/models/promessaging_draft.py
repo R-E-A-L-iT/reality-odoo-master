@@ -14,6 +14,10 @@ class PromessagingDraft(models.Model):
     res_model = fields.Char(string="Document Model", required=True, index=True)
     res_id = fields.Integer(string="Document ID", required=True, index=True)
     body = fields.Text(string="Draft Message")
+    subuser_id = fields.Many2one(
+        "promessaging.subuser", string="Written By (AI)", ondelete="set null",
+        help="Set when an AI sub-user wrote this draft.",
+    )
 
     _sql_constraints = [
         ("promessaging_draft_unique_document", "unique(res_model, res_id)",
@@ -46,10 +50,14 @@ class PromessagingDraft(models.Model):
         if not self:
             return False
         self.ensure_one()
+        subuser = self.subuser_id.sudo()
         return {
             "id": self.id,
             "body": self.body or "",
-            "author": self.create_uid.display_name,
+            "author": subuser.name if subuser else self.create_uid.display_name,
+            "is_ai": bool(subuser),
+            "subuser": {"id": subuser.id, "name": subuser.name, "handle": subuser.handle}
+            if subuser else False,
             "date": fields.Datetime.to_string(self.write_date),
         }
 
@@ -65,15 +73,13 @@ class PromessagingDraft(models.Model):
         body = (body or "").strip()
         if not body:
             raise UserError(_("The draft message is empty."))
+        acting = self.env["promessaging.subuser"]._active_subuser()
         draft = self._find_draft(res_model, res_id)
+        values = {"body": body, "subuser_id": acting.id if acting else False}
         if draft:
-            draft.write({"body": body})
+            draft.write(values)
         else:
-            draft = self.create({
-                "res_model": res_model,
-                "res_id": int(res_id),
-                "body": body,
-            })
+            draft = self.create(dict(values, res_model=res_model, res_id=int(res_id)))
         return draft._draft_data()
 
     def _body_html(self):
@@ -115,6 +121,48 @@ class PromessagingDraft(models.Model):
 
         self.unlink()
         return True
+
+    def action_regenerate(self, instructions=None):
+        """Ask the sub-user that wrote this draft to rewrite it."""
+        self.ensure_one()
+        subuser = self.subuser_id.sudo()
+        if not subuser:
+            raise UserError(_("This draft was not written by an AI sub-user."))
+        record = self._get_document(self.res_model, self.res_id)
+        payload = {
+            "prompt": instructions or _(
+                "Rewrite this draft using the current state of the document."
+            ),
+            "draft": {
+                "id": self.id,
+                "body": self.body or "",
+                "written_at": fields.Datetime.to_string(self.write_date),
+            },
+            "requested_by": {
+                "user_id": self.env.user.id,
+                "name": self.env.user.name,
+            },
+            "reply": subuser._reply_instructions(
+                thread_model=self.res_model, thread_id=self.res_id
+            ),
+        }
+        # answers come back to the draft, not the chatter
+        payload["reply"]["async"]["body"]["draft_id"] = self.id
+        payload["reply"]["async"]["body"].pop("thread_model", None)
+        payload["reply"]["async"]["body"].pop("thread_id", None)
+        payload["reply"]["sync"] = _(
+            "Answer with JSON {\"reply\": \"text\"} to replace the draft immediately."
+        )
+
+        result = subuser.dispatch("draft_rewrite", payload, record=record)
+        reply = (result.get("data") or {}).get("reply") if result.get("ok") else None
+        if reply:
+            self.write({"body": str(reply), "subuser_id": subuser.id})
+        return {
+            "ok": bool(result.get("ok")),
+            "error": result.get("error"),
+            "updated": bool(reply),
+        }
 
     def action_discard_draft(self):
         self.ensure_one()

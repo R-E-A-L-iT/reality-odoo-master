@@ -606,12 +606,26 @@ class PromessagingSubuser(models.Model):
         }
 
     def _receive_reply(self, message, chat_id=None, user_id=None, user_login=None,
-                       thread_model=None, thread_id=None):
+                       thread_model=None, thread_id=None, draft_id=None):
         """Route an answer coming back from the AI to the right place."""
         self.ensure_one()
         subuser = self.sudo()
 
-        # 1. a direct conversation, by id or by who it is with
+        # 1. a rewritten chatter draft
+        if draft_id:
+            draft = self.env["promessaging.draft"].sudo().browse(int(draft_id)).exists()
+            if not draft:
+                return {"ok": False, "error": "unknown_draft"}
+            draft.write({"body": str(message), "subuser_id": subuser.id})
+            return {
+                "ok": True,
+                "target": "draft",
+                "draft_id": draft.id,
+                "res_model": draft.res_model,
+                "res_id": draft.res_id,
+            }
+
+        # 2. a direct conversation, by id or by who it is with
         chat = self.env["promessaging.ai.chat"].sudo()
         if chat_id:
             chat = chat.browse(int(chat_id)).exists()
@@ -637,7 +651,7 @@ class PromessagingSubuser(models.Model):
                 "message_id": posted.id,
             }
 
-        # 2. or a log note on the document the prompt came from
+        # 3. or a log note on the document the prompt came from
         if thread_model and thread_id:
             if thread_model not in self.env:
                 return {"ok": False, "error": "unknown_model"}

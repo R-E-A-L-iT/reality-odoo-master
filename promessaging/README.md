@@ -112,6 +112,23 @@ Sent when a user pings the sub-user in a message.
 sub-user has **Post Replies** on, that text is posted as a log note authored by the AI
 user. Return nothing to stay silent and post back through the Odoo API later.
 
+### type: `draft_rewrite`
+
+Sent when someone presses **Regenerate** on a chatter draft an AI wrote. The payload
+carries the current draft and who asked:
+
+```json
+"payload": {
+  "prompt": "Rewrite this draft using the current state of the document.",
+  "draft": {"id": 8, "body": "...", "written_at": "2026-09-18 09:12:44"},
+  "requested_by": {"user_id": 7, "name": "Ezekiel deBlois"},
+  "reply": {"sync": "...", "async": {"url": "...", "body": {"draft_id": 8, "...": "..."}}}
+}
+```
+
+Answer with `{"reply": "text"}` to replace the draft on the spot, or post to the reply
+endpoint later with `draft_id`.
+
 ### type: `lead_log`
 
 Reserved for lead logging requests. The envelope is identical; only `payload` differs.
@@ -151,8 +168,9 @@ Every prompt Odoo sends carries a `payload.reply` block describing both ways to 
 | `chat_id` | the direct conversation to answer, as given in the prompt payload |
 | `user_id` / `user_login` | answer a person directly; the conversation with them is created if needed |
 | `thread_model` + `thread_id` | instead post a log note on that document, for answers to a `~handle` ping |
+| `draft_id` | replace that chatter draft, for answers to a `draft_rewrite` request |
 
-Give either `chat_id`, or `user_id`/`user_login`, or `thread_model` + `thread_id`.
+Give one of `chat_id`, `user_id`/`user_login`, `draft_id`, or `thread_model` + `thread_id`.
 
 ### Response
 

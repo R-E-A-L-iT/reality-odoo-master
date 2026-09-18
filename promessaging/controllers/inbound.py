@@ -28,6 +28,7 @@ class PromessagingInbound(http.Controller):
             return subuser._receive_reply(
                 message,
                 chat_id=payload.get("chat_id"),
+                draft_id=payload.get("draft_id"),
                 user_id=payload.get("user_id"),
                 user_login=payload.get("user_login"),
                 thread_model=payload.get("thread_model"),

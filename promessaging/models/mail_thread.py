@@ -47,6 +47,27 @@ class MailThread(models.AbstractModel):
             author_id=author_id, email_from=email_from, raise_on_email=raise_on_email
         )
 
+    def _notify_get_recipients(self, message, msg_vals, **kwargs):
+        """A ping in a log note must reach the person by email.
+
+        Odoo only emails a mentioned user whose notification preference is
+        "email"; anyone on "inbox" would just get a bell. Mentions in notes are
+        deliberate, so they are forced to email.
+        """
+        recipients = super()._notify_get_recipients(message, msg_vals, **kwargs)
+        values = msg_vals or {}
+        mentioned = set(values.get("partner_ids") or message.sudo().partner_ids.ids or [])
+        if not mentioned:
+            return recipients
+        subtype_id = values.get("subtype_id") or message.sudo().subtype_id.id
+        note_subtype = self.env.ref("mail.mt_note", raise_if_not_found=False)
+        if not note_subtype or subtype_id != note_subtype.id:
+            return recipients
+        for recipient in recipients:
+            if recipient.get("id") in mentioned and recipient.get("notif") == "inbox":
+                recipient["notif"] = "email"
+        return recipients
+
     def _promessaging_dispatch_subusers(self, message):
         """Send the message to every sub-user pinged in it."""
         if self.env.context.get("promessaging_skip_subuser_dispatch"):
