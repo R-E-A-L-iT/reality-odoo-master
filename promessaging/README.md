@@ -121,3 +121,48 @@ Not emitted yet.
 
 Call `subuser.dispatch("your_type", payload_dict, record=record)`. The envelope,
 signing, logging and retry all come for free.
+
+
+## Replies from the AI (inbound webhook)
+
+Every prompt Odoo sends carries a `payload.reply` block describing both ways to answer:
+
+- **Immediately**: answer the webhook request with `{"reply": "text"}`.
+- **Later**: `POST` to `/promessaging/webhook/reply` on the Odoo instance. Use this when
+  the receiver acknowledges first and thinks afterwards (Cursor automations do this:
+  they return a run id right away).
+
+### Request
+
+```json
+{
+  "subuser": "jerry",
+  "key": "pmsg_...",
+  "chat_id": 12,
+  "message": "Here is what I found."
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `subuser` | the sub-user's handle (optional, but it makes the key lookup exact) |
+| `key` | that sub-user's **Reply Key**, from its settings. May instead be sent as `Authorization: Bearer <key>` |
+| `message` | the text to post (`reply` and `text` are accepted too) |
+| `chat_id` | the direct conversation to answer, as given in the prompt payload |
+| `user_id` / `user_login` | answer a person directly; the conversation with them is created if needed |
+| `thread_model` + `thread_id` | instead post a log note on that document, for answers to a `~handle` ping |
+
+Give either `chat_id`, or `user_id`/`user_login`, or `thread_model` + `thread_id`.
+
+### Response
+
+```json
+{"ok": true, "target": "chat", "chat_id": 12, "user_id": 7, "message_id": 88}
+```
+
+Errors come back as `{"ok": false, "error": "invalid_key"}`; other codes are
+`missing_message`, `unknown_chat`, `unknown_user`, `unknown_model`,
+`unknown_document` and `no_target`.
+
+The reply appears in that person's AI assistants panel, authored by the sub-user, and
+the open window picks it up within seconds.

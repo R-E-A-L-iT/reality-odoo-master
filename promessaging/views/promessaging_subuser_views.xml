@@ -58,6 +58,15 @@
                                placeholder="Authorization: Bearer crsr_..."/>
                         <field name="webhook_timeout"/>
                     </group>
+                    <group string="Replies from the AI" groups="base.group_system">
+                        <div colspan="2" class="text-muted mb-2">
+                            The AI posts answers back to
+                            <code>/promessaging/webhook/reply</code> using this key.
+                        </div>
+                        <field name="inbound_key" password="True"/>
+                        <button name="action_regenerate_inbound_key" type="object"
+                                string="Generate a new reply key" class="btn-link" colspan="2"/>
+                    </group>
                     <group string="Role">
                         <field name="description" nolabel="1" colspan="2"
                                placeholder="What this sub-user does. Sent to the bot with every call."/>

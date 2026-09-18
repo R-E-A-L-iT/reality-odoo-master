@@ -35,8 +35,10 @@ class PromessagingAiChat(models.Model):
     @api.model
     def get_directory(self):
         """The AI sub-users the current user can talk to."""
+        acting = self.env["promessaging.subuser"]._active_subuser()
         subusers = self.env["promessaging.subuser"].sudo().search([
             ("user_id.is_ai_user", "=", True),
+            ("id", "!=", acting.id or 0),
         ])
         return [
             {
@@ -57,6 +59,8 @@ class PromessagingAiChat(models.Model):
         subuser = self.env["promessaging.subuser"].sudo().browse(int(subuser_id)).exists()
         if not subuser:
             raise UserError(_("That sub-user no longer exists."))
+        if subuser == self.env["promessaging.subuser"]._active_subuser():
+            raise UserError(_("A sub-user cannot open a conversation with itself."))
         chat = self.search([
             ("user_id", "=", self.env.uid), ("subuser_id", "=", subuser.id),
         ], limit=1)
@@ -125,12 +129,7 @@ class PromessagingAiChat(models.Model):
                 "with": {"user_id": self.user_id.id, "name": self.user_id.name},
                 "history": self._history(),
             },
-            "reply": {
-                "mode": "ai_chat",
-                "chat_id": self.id,
-                "how": "Answer with JSON {\"reply\": \"text\"}, or call "
-                       "promessaging.ai.chat.post_reply(chat_id, text) later.",
-            },
+            "reply": subuser._reply_instructions(chat_id=self.id),
         }
         result = subuser.dispatch("prompt", payload, record=None, actor=self.env.user)
         reply = (result.get("data") or {}).get("reply") if result.get("ok") else None

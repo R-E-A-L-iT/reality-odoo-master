@@ -52,6 +52,12 @@ class PromessagingSubuser(models.Model):
         help="What this sub-user is for. Sent to the webhook so the bot knows its role."
     )
 
+    inbound_key = fields.Char(
+        string="Reply Key", groups="base.group_system", copy=False,
+        default=lambda self: "pmsg_" + uuid.uuid4().hex,
+        help="Secret this sub-user sends back when posting replies to "
+             "/promessaging/webhook/reply.",
+    )
     pin = fields.Char(
         string="PIN / API Key", groups="base.group_system",
         help="Secret this sub-user sends to identify itself. Actions carried out with "
@@ -493,6 +499,26 @@ class PromessagingSubuser(models.Model):
             lines.append("%s: %s" % (name, shown))
         return "\n".join(lines)
 
+    def action_regenerate_inbound_key(self):
+        """Issue a new reply key, invalidating the old one."""
+        for subuser in self:
+            subuser.sudo().inbound_key = "pmsg_" + uuid.uuid4().hex
+        return True
+
+    @api.model
+    def _authenticate_inbound(self, handle, key):
+        """The sub-user behind an inbound reply, or an empty recordset."""
+        key = (key or "").strip()
+        if not key:
+            return self.browse()
+        domain = [("inbound_key", "!=", False)]
+        if handle:
+            domain.append(("handle", "=", str(handle).strip().lower()))
+        for subuser in self.sudo().search(domain):
+            if hmac.compare_digest(str(subuser.inbound_key), key):
+                return subuser
+        return self.browse()
+
     def action_test_webhook(self):
         """Send a ping so the credentials can be checked without posting a note."""
         self.ensure_one()
@@ -542,18 +568,91 @@ class PromessagingSubuser(models.Model):
                     "name": message.author_id.display_name,
                 },
             },
-            "reply": {
-                "mode": "chatter_note",
-                "thread_model": record._name if record else False,
-                "thread_id": record.id if record else False,
-                "how": "Answer with JSON {\"reply\": \"text\"} to have it posted as a log note.",
-            },
+            "reply": self.sudo()._reply_instructions(
+                thread_model=record._name if record else False,
+                thread_id=record.id if record else False,
+            ),
         }
         result = self.dispatch(WEBHOOK_TYPE_PROMPT, payload, record=record)
         reply = (result.get("data") or {}).get("reply") if result.get("ok") else None
         if reply and self.post_reply and record:
             self._post_reply(record, reply)
         return result
+
+    def _reply_instructions(self, chat_id=None, thread_model=None, thread_id=None):
+        """How to answer this call, sent along with every prompt."""
+        self.ensure_one()
+        target = {}
+        if chat_id:
+            target["chat_id"] = chat_id
+        if thread_model:
+            target["thread_model"] = thread_model
+            target["thread_id"] = thread_id
+        return {
+            "sync": "Answer this request with JSON {\"reply\": \"text\"} to post it immediately.",
+            "async": {
+                "url": "%s/promessaging/webhook/reply" % self.get_base_url(),
+                "method": "POST",
+                "headers": {"Content-Type": "application/json"},
+                "body": dict(
+                    {
+                        "subuser": self.handle,
+                        "key": "<reply key from the sub-user settings>",
+                        "message": "<your answer>",
+                    },
+                    **target
+                ),
+            },
+        }
+
+    def _receive_reply(self, message, chat_id=None, user_id=None, user_login=None,
+                       thread_model=None, thread_id=None):
+        """Route an answer coming back from the AI to the right place."""
+        self.ensure_one()
+        subuser = self.sudo()
+
+        # 1. a direct conversation, by id or by who it is with
+        chat = self.env["promessaging.ai.chat"].sudo()
+        if chat_id:
+            chat = chat.browse(int(chat_id)).exists()
+            if not chat or chat.subuser_id != subuser:
+                return {"ok": False, "error": "unknown_chat"}
+        elif user_id or user_login:
+            user = self.env["res.users"].sudo().browse(int(user_id)).exists() if user_id else (
+                self.env["res.users"].sudo().search([("login", "=", user_login)], limit=1)
+            )
+            if not user:
+                return {"ok": False, "error": "unknown_user"}
+            chat = chat.search([
+                ("user_id", "=", user.id), ("subuser_id", "=", subuser.id),
+            ], limit=1) or chat.create({"user_id": user.id, "subuser_id": subuser.id})
+
+        if chat:
+            posted = chat._create_ai_message(message)
+            return {
+                "ok": True,
+                "target": "chat",
+                "chat_id": chat.id,
+                "user_id": chat.user_id.id,
+                "message_id": posted.id,
+            }
+
+        # 2. or a log note on the document the prompt came from
+        if thread_model and thread_id:
+            if thread_model not in self.env:
+                return {"ok": False, "error": "unknown_model"}
+            record = self.env[thread_model].sudo().browse(int(thread_id)).exists()
+            if not record:
+                return {"ok": False, "error": "unknown_document"}
+            subuser._post_reply(record, message)
+            return {
+                "ok": True,
+                "target": "chatter",
+                "thread_model": thread_model,
+                "thread_id": record.id,
+            }
+
+        return {"ok": False, "error": "no_target"}
 
     def _post_reply(self, record, reply):
         """Post the bot's answer as a log note, authored by the AI user."""
