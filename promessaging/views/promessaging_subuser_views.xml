@@ -63,7 +63,7 @@
                             The AI posts answers back to
                             <code>/promessaging/webhook/reply</code> using this key.
                         </div>
-                        <field name="inbound_key" password="True"/>
+                        <field name="inbound_key" widget="CopyClipboardChar" readonly="1"/>
                         <button name="action_regenerate_inbound_key" type="object"
                                 string="Generate a new reply key" class="btn-link" colspan="2"/>
                     </group>
