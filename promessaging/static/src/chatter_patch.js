@@ -106,7 +106,7 @@ patch(Chatter.prototype, {
             const result = await this.orm.call("promessaging.draft", "action_regenerate", [
                 [draft.id],
             ]);
-            await this.reload();
+            await this.promessagingLoadDraft(this.props.threadModel, this.props.threadId);
             if (result && !result.ok) {
                 this.notification.add(
                     _t("Could not reach %s (%s).", draft.author, result.error || _t("unknown error")),
