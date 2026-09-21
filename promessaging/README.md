@@ -140,6 +140,23 @@ Call `subuser.dispatch("your_type", payload_dict, record=record)`. The envelope,
 signing, logging and retry all come for free.
 
 
+## What a bot is allowed to do
+
+Each sub-user has its own **Permissions** — the same Odoo groups a user has. Leave the
+list empty and the sub-user simply inherits the AI account's permissions. Fill it in and
+its actions are limited to those groups *as well as* the account's: a sub-user can never
+do more than the account it runs under, only less.
+
+**Mirror Permissions Of** copies a chosen user's groups onto the sub-user, and re-applies
+them every time that sub-user signs in, so it keeps matching that person. This is how a
+bot shared with one team is kept away from what that team cannot do itself, while the
+same kind of bot used by an admin keeps the wider rights.
+
+Enforced on every model access check and on `has_group`, so menus, buttons and CRUD all
+respect it. Two things still follow the account rather than the sub-user: **record rules**
+(which rows are visible) and **field-level group restrictions**. Narrow the account
+itself if those matter.
+
 ## Who can use which bot
 
 Each sub-user has a **Usable By** list on its form. Leave it empty and everyone can use

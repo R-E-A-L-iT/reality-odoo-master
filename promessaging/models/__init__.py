@@ -6,6 +6,7 @@ from . import mail_message
 from . import promessaging_ai_chat
 from . import promessaging_draft
 from . import ir_http
+from . import ir_model_access
 from . import mail_thread
 from . import mail_activity_mixin
 from . import mail_compose_message

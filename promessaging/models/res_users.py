@@ -38,6 +38,20 @@ class ResUsers(models.Model):
         for user in self:
             user.subuser_count = counts.get(user.id, 0)
 
+    def has_group(self, group_ext_id):
+        result = super().has_group(group_ext_id)
+        if not result or self.env.su:
+            return result
+        # only the user actually acting is limited, not lookups about other users
+        if self.id and self.id != self.env.uid:
+            return result
+        subuser = self.env["promessaging.subuser"]._active_subuser()
+        groups = subuser._effective_groups() if subuser else None
+        if not groups:
+            return result
+        group = self.env.ref(group_ext_id, raise_if_not_found=False)
+        return bool(group) and group in groups
+
     def _promessaging_default_subuser(self):
         """This user's default assistant, if they are allowed to use it."""
         self.ensure_one()

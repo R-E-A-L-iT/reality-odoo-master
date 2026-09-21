@@ -18,9 +18,11 @@ class PromessagingSubuserSession(http.Controller):
         if not subuser:
             return {"ok": False, "error": "invalid_pin"}
         request.session[SESSION_KEY] = subuser.id
+        request._promessaging_subuser = None
         return {"ok": True, "state": Subuser.get_session_state()}
 
     @http.route("/promessaging/subuser/clear", type="json", auth="user")
     def subuser_clear(self):
         request.session.pop(SESSION_KEY, None)
+        request._promessaging_subuser = None
         return request.env["promessaging.subuser"].get_session_state()
