@@ -75,7 +75,7 @@ class MailThread(models.AbstractModel):
         if not message or self._name == "discuss.channel" or len(self) != 1:
             return
         # never let one bot's message trigger another round
-        if message.subuser_id:
+        if message.sudo().subuser_id:
             return
         author_user = message.author_id.user_ids[:1]
         if author_user and author_user.is_ai_user:
