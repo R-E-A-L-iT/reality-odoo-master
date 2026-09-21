@@ -1,2 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_promessaging_draft_user,promessaging.draft.user,model_promessaging_draft,base.group_user,1,1,1,1
+access_promessaging_subuser_user,promessaging.subuser.user,model_promessaging_subuser,base.group_user,1,0,0,0
+access_promessaging_subuser_system,promessaging.subuser.system,model_promessaging_subuser,base.group_system,1,1,1,1
+access_promessaging_webhook_log_system,promessaging.webhook.log.system,model_promessaging_webhook_log,base.group_system,1,1,1,1
+access_promessaging_ai_chat_user,promessaging.ai.chat.user,model_promessaging_ai_chat,base.group_user,1,1,1,0
+access_promessaging_ai_chat_system,promessaging.ai.chat.system,model_promessaging_ai_chat,base.group_system,1,1,1,1
+access_promessaging_ai_chat_message_user,promessaging.ai.chat.message.user,model_promessaging_ai_chat_message,base.group_user,1,1,1,0
+access_promessaging_ai_chat_message_system,promessaging.ai.chat.message.system,model_promessaging_ai_chat_message,base.group_system,1,1,1,1

@@ -1,0 +1,27 @@
+.o_summaries_doc {
+    .o_summaries_task {
+        &:hover {
+            background-color: rgba(128, 128, 128, 0.06);
+        }
+        .btn-link {
+            opacity: 0;
+        }
+        &:hover .btn-link {
+            opacity: 1;
+        }
+    }
+
+    .o_summaries_taskname:focus {
+        background-color: var(--o-white, #fff) !important;
+        box-shadow: none;
+    }
+
+    .o_summaries_doclink {
+        text-decoration: underline dotted;
+        cursor: pointer;
+    }
+
+    .o_summaries_blocks {
+        max-width: 60rem;
+    }
+}

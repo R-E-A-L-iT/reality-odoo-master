@@ -28,6 +28,11 @@
                     <small t-if="promessagingDraft.draft" class="text-muted ms-2">
                         by <t t-esc="promessagingDraft.draft.author"/>
                     </small>
+                    <span t-if="promessagingDraft.draft and promessagingDraft.draft.is_ai"
+                          class="badge text-bg-light border ms-1"
+                          t-att-title="'Written by the AI sub-user ~' + promessagingDraft.draft.subuser.handle">
+                        AI
+                    </span>
                     <small class="text-muted ms-2">not sent to anyone</small>
                 </div>
                 <t t-if="promessagingDraft.editing">
@@ -57,6 +62,13 @@
                         <button class="btn btn-secondary btn-sm me-1"
                                 t-on-click="() => this.promessagingEditDraft()">
                             Edit
+                        </button>
+                        <button t-if="promessagingDraft.draft.can_regenerate" class="btn btn-secondary btn-sm me-1"
+                                t-att-disabled="promessagingDraft.regenerating"
+                                t-att-title="'Ask an AI assistant to rewrite this draft'"
+                                t-on-click="() => this.promessagingRegenerateDraft()">
+                            <t t-if="promessagingDraft.regenerating">Regenerating...</t>
+                            <t t-else="">Regenerate</t>
                         </button>
                         <button class="btn btn-link btn-sm text-danger"
                                 t-on-click="() => this.promessagingDiscardDraft()">

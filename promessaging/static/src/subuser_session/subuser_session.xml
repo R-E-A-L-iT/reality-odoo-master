@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="promessaging.SubuserGate">
+        <div t-if="state.prompting and state.options.length" class="o_promessaging_gate">
+            <div class="o_promessaging_gate_card shadow-lg rounded p-4">
+                <h4 class="mb-1">Who is working?</h4>
+                <p class="o_promessaging_gate_muted mb-3">
+                    This account is shared by several AI sub-users. Pick yours and enter its PIN
+                    so everything you do is recorded under that name.
+                </p>
+
+                <label class="form-label small fw-bold">Sub-user</label>
+                <select class="form-select mb-3" t-on-change="(ev) => this.onSelectChange(ev)">
+                    <option t-foreach="options" t-as="option" t-key="option.id"
+                            t-att-value="option.id" t-att-selected="option.id === selectedId">
+                        <t t-esc="option.name"/> (~<t t-esc="option.handle"/>)
+                    </option>
+                </select>
+
+                <label class="form-label small fw-bold">PIN</label>
+                <input type="password" class="form-control" autocomplete="off"
+                       placeholder="PIN for this sub-user" t-model="form.pin"
+                       t-on-keydown="(ev) => this.onKeydown(ev)"/>
+
+                <div t-if="state.error" class="alert alert-danger py-2 px-3 mt-3 mb-0">
+                    <t t-esc="state.error"/>
+                </div>
+
+                <div class="d-flex mt-4">
+                    <button class="btn btn-primary" t-att-disabled="form.busy"
+                            t-on-click="() => this.confirm()">
+                        <t t-if="form.busy">Checking...</t>
+                        <t t-else="">Continue</t>
+                    </button>
+                    <button t-if="canCancel" class="btn btn-link ms-2"
+                            t-on-click="() => this.cancel()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="promessaging.SubuserSystray">
+        <div t-if="state.isAiUser" class="o_promessaging_systray o-dropdown dropdown d-flex align-items-center">
+            <button class="btn btn-link d-flex align-items-center px-2" t-on-click="() => this.onClick()"
+                    t-att-title="state.current ? 'Acting as ' + state.current.name : 'Choose a sub-user'">
+                <i class="fa fa-magic me-1" role="img"/>
+                <span t-if="state.current" class="o_promessaging_systray_name">
+                    <t t-esc="state.current.name"/>
+                </span>
+                <span t-else="" class="o_promessaging_systray_none">Not identified</span>
+            </button>
+        </div>
+    </t>
+
+</templates>

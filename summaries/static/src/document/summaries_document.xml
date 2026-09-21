@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="summaries.InlineText">
+        <span>
+            <t t-foreach="tokens" t-as="token" t-key="token_index">
+                <b t-if="token.type === 'bold'" t-esc="token.text"/>
+                <i t-elif="token.type === 'italic'" t-esc="token.text"/>
+                <code t-elif="token.type === 'code'" t-esc="token.text"/>
+                <a t-elif="token.type === 'doc'" href="#" class="o_summaries_doclink"
+                   t-on-click.prevent="() => this.onDocClick(token)" t-esc="token.text"/>
+                <a t-elif="token.type === 'link'" t-att-href="token.url" target="_blank"
+                   rel="noopener noreferrer" t-esc="token.text"/>
+                <t t-else="" t-esc="token.text"/>
+            </t>
+        </span>
+    </t>
+
+    <t t-name="summaries.SummariesBlocks">
+        <div class="o_summaries_blocks">
+            <t t-foreach="props.blocks" t-as="block" t-key="block_index">
+
+                <h2 t-if="block.type === 'heading' and (block.level || 2) &lt;= 1"
+                    class="mt-3 mb-2" t-att-class="textClass(block)">
+                    <InlineText text="block.text" openRef="props.openRef"/>
+                </h2>
+                <h3 t-elif="block.type === 'heading' and (block.level || 2) === 2"
+                    class="mt-3 mb-2" t-att-class="textClass(block)">
+                    <InlineText text="block.text" openRef="props.openRef"/>
+                </h3>
+                <h5 t-elif="block.type === 'heading'" class="mt-3 mb-2" t-att-class="textClass(block)">
+                    <InlineText text="block.text" openRef="props.openRef"/>
+                </h5>
+
+                <p t-elif="block.type === 'text'" class="mb-2" t-att-class="textClass(block)">
+                    <InlineText text="block.text" openRef="props.openRef"/>
+                </p>
+
+                <div t-elif="block.type === 'callout'" class="alert py-2 px-3 mb-3"
+                     t-att-class="alertClass(block)">
+                    <div t-if="block.title" class="fw-bold">
+                        <InlineText text="block.title" openRef="props.openRef"/>
+                    </div>
+                    <div t-if="block.text">
+                        <InlineText text="block.text" openRef="props.openRef"/>
+                    </div>
+                </div>
+
+                <ol t-elif="block.type === 'list' and block.style === 'number'" class="mb-3">
+                    <li t-foreach="block.items || []" t-as="item" t-key="item_index">
+                        <InlineText text="item" openRef="props.openRef"/>
+                    </li>
+                </ol>
+                <ul t-elif="block.type === 'list'" class="mb-3">
+                    <li t-foreach="block.items || []" t-as="item" t-key="item_index">
+                        <InlineText text="item" openRef="props.openRef"/>
+                    </li>
+                </ul>
+
+                <div t-elif="block.type === 'checklist'" class="mb-3">
+                    <div t-foreach="block.items || []" t-as="item" t-key="item_index"
+                         class="d-flex align-items-start">
+                        <input type="checkbox" class="form-check-input me-2 mt-1" disabled="disabled"
+                               t-att-checked="item.done"/>
+                        <span t-att-class="item.done ? 'text-muted text-decoration-line-through' : ''">
+                            <InlineText text="item.text" openRef="props.openRef"/>
+                        </span>
+                    </div>
+                </div>
+
+                <div t-elif="block.type === 'kpi'" class="row g-2 mb-3">
+                    <div t-foreach="block.items || []" t-as="item" t-key="item_index"
+                         class="col-6 col-lg-3">
+                        <div class="border rounded p-2 h-100">
+                            <div class="small text-muted"><t t-esc="item.label"/></div>
+                            <div class="fs-4 fw-bold" t-att-class="textClass(item)">
+                                <t t-esc="item.value"/>
+                            </div>
+                            <div t-if="item.delta" class="small" t-att-class="textClass(item)">
+                                <t t-esc="item.delta"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div t-elif="block.type === 'progress'" class="mb-3">
+                    <div class="d-flex justify-content-between small">
+                        <span><InlineText text="block.label" openRef="props.openRef"/></span>
+                        <span class="text-muted"><t t-esc="block.value"/>%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar" t-att-class="barClass(block)"
+                             t-att-style="barWidth(block)"/>
+                    </div>
+                </div>
+
+                <div t-elif="block.type === 'table'" class="table-responsive mb-3">
+                    <table class="table table-sm align-middle">
+                        <thead t-if="block.columns">
+                            <tr>
+                                <th t-foreach="block.columns" t-as="column" t-key="column_index"
+                                    t-esc="column"/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="block.rows || []" t-as="row" t-key="row_index">
+                                <td t-foreach="row" t-as="cell" t-key="cell_index">
+                                    <InlineText text="cell" openRef="props.openRef"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div t-elif="block.type === 'links'" class="d-flex flex-wrap gap-2 mb-3">
+                    <t t-foreach="block.items || []" t-as="item" t-key="item_index">
+                        <a t-if="item.model" href="#" class="badge text-bg-light border text-decoration-none"
+                           t-on-click.prevent="() => this.onLinkClick(item)" t-esc="item.label"/>
+                        <a t-else="" t-att-href="item.url" target="_blank" rel="noopener noreferrer"
+                           class="badge text-bg-light border text-decoration-none" t-esc="item.label"/>
+                    </t>
+                </div>
+
+                <div t-elif="block.type === 'image'" class="mb-3">
+                    <img t-att-src="block.src" t-att-alt="block.alt || ''" t-att-style="imageStyle(block)"/>
+                </div>
+
+                <hr t-elif="block.type === 'divider'" class="my-3"/>
+
+                <div t-elif="block.type === 'stats'" class="mb-3">
+                    <SummariesStats resId="props.resId"/>
+                </div>
+
+                <div t-elif="block.type === 'html'" class="mb-3" t-out="markupHtml(block.html)"/>
+
+                <div t-elif="block.type === 'section'" class="card mb-3">
+                    <div t-if="block.title" class="card-header py-2 fw-bold"
+                         t-att-class="textClass(block)">
+                        <InlineText text="block.title" openRef="props.openRef"/>
+                    </div>
+                    <div class="card-body py-2">
+                        <SummariesBlocks blocks="block.blocks || []" openRef="props.openRef"
+                                         resId="props.resId"/>
+                    </div>
+                </div>
+
+            </t>
+        </div>
+    </t>
+
+    <t t-name="summaries.SummariesDocument">
+        <div class="o_summaries_doc w-100">
+            <div t-if="state.loading" class="text-muted p-3">Loading...</div>
+            <div t-elif="!state.doc" class="text-muted p-3">Save this summary to start writing it.</div>
+            <t t-else="">
+
+                <SummariesBlocks t-if="state.doc.intro_blocks.length" blocks="state.doc.intro_blocks"
+                                 openRef="openRef" resId="resId"/>
+
+                <div class="card mb-3 o_summaries_tasks">
+                    <div class="card-header d-flex align-items-center py-2">
+                        <span class="fw-bold">Tasks</span>
+                        <span class="badge text-bg-secondary ms-2">
+                            <t t-esc="state.doc.task_done_count"/> / <t t-esc="state.doc.task_count"/>
+                        </span>
+                        <div class="flex-grow-1"/>
+                        <button class="btn btn-sm btn-link" t-on-click="() => this.toggleSource()">
+                            <t t-if="state.editing">Close editor</t>
+                            <t t-else="">Edit content</t>
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div t-if="!state.doc.tasks.length" class="text-muted px-3 py-2">
+                            No tasks yet.
+                        </div>
+                        <div t-foreach="state.doc.tasks" t-as="task" t-key="task.id"
+                             class="o_summaries_task d-flex align-items-start px-3 py-2 border-bottom">
+                            <input type="checkbox" class="form-check-input mt-1 me-2"
+                                   t-att-checked="task.done" t-att-disabled="readonly"
+                                   t-on-change="() => this.toggleTask(task)"/>
+                            <div class="flex-grow-1">
+                                <input t-if="!readonly" class="o_summaries_taskname form-control form-control-sm border-0 bg-transparent p-0"
+                                       t-att-value="task.name"
+                                       t-att-class="task.done ? 'text-muted text-decoration-line-through' : ''"
+                                       t-on-change="(ev) => this.renameTask(task, ev)"/>
+                                <span t-else=""
+                                      t-att-class="task.done ? 'text-muted text-decoration-line-through' : ''">
+                                    <InlineText text="task.name" openRef="openRef"/>
+                                </span>
+                                <div t-if="task.note" class="small text-muted"><t t-esc="task.note"/></div>
+                            </div>
+                            <a t-if="task.ref" href="#" class="badge text-bg-light border text-decoration-none ms-2"
+                               t-on-click.prevent="() => this.openRef(task.ref)"
+                               t-esc="task.ref.display_name"/>
+                            <button t-if="task.execute_enabled" class="btn btn-sm btn-outline-primary ms-2"
+                                    t-on-click="() => this.executeTask(task)">Execute</button>
+                            <button t-if="!readonly" class="btn btn-sm btn-link text-danger ms-1 py-0"
+                                    title="Remove task" t-on-click="() => this.deleteTask(task)">&#215;</button>
+                        </div>
+                        <div t-if="!readonly" class="d-flex p-2">
+                            <input class="form-control form-control-sm me-2" placeholder="Add a task..."
+                                   t-model="state.newTask" t-on-keydown="(ev) => this.onNewTaskKeydown(ev)"/>
+                            <button class="btn btn-sm btn-primary text-nowrap"
+                                    t-on-click="() => this.addTask()">Add</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div t-if="state.editing" class="card mb-3">
+                    <div class="card-header py-2 fw-bold">Document source (JSON blocks)</div>
+                    <div class="card-body">
+                        <div t-if="state.error" class="alert alert-danger py-2"><t t-esc="state.error"/></div>
+                        <label class="form-label small fw-bold">Intro (above the tasks)</label>
+                        <textarea class="form-control font-monospace mb-3" rows="8" t-model="state.draftIntro"/>
+                        <label class="form-label small fw-bold">Content (below the tasks)</label>
+                        <textarea class="form-control font-monospace" rows="14" t-model="state.draft"/>
+                        <div class="d-flex mt-2">
+                            <button class="btn btn-primary btn-sm me-2" t-on-click="() => this.saveContent()">
+                                Save content
+                            </button>
+                            <button class="btn btn-link btn-sm" t-on-click="() => this.toggleSource()">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <SummariesBlocks t-else="" blocks="state.doc.blocks" openRef="openRef"
+                                 resId="resId"/>
+
+            </t>
+        </div>
+    </t>
+
+</templates>

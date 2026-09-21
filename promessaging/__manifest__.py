@@ -1,6 +1,6 @@
 {
     "name": "ProMessaging",
-    "summary": "Control which internal users can send messages to followers from the chatter.",
+    "summary": "Messaging controls: who may send messages, chatter drafts, and AI sub-users pinged with ~handle.",
     "description": """Adds a "Can Send Messages" checkbox on internal users (checked by default).
 Unchecked users can still log notes and mention internal users, but cannot send
 messages or emails from any document.""",
@@ -10,7 +10,9 @@ messages or emails from any document.""",
     "depends": ["mail", "account"],
     "data": [
         "security/ir.model.access.csv",
+        "security/promessaging_rules.xml",
         "views/res_users_views.xml",
+        "views/promessaging_subuser_views.xml",
     ],
     "assets": {
         "web.assets_backend": [

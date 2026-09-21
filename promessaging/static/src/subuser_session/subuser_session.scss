@@ -1,0 +1,64 @@
+.o_promessaging_gate {
+    position: fixed;
+    inset: 0;
+    z-index: 2000; // above everything, including dialogs
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(10, 11, 14, 0.72);
+    backdrop-filter: blur(2px);
+
+    .o_promessaging_gate_card {
+        width: 26rem;
+        max-width: calc(100vw - 2rem);
+        color: #e9e7ec;
+        background-color: #1c1f24;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .o_promessaging_gate_muted {
+        color: #9aa0ab;
+        font-size: 0.9rem;
+    }
+
+    .form-select,
+    .form-control {
+        color: #e9e7ec;
+        background-color: #262a32;
+        border-color: rgba(255, 255, 255, 0.15);
+
+        &::placeholder { color: #9aa0ab; }
+        &:focus {
+            color: #e9e7ec;
+            background-color: #262a32;
+            border-color: #c264b6;
+            box-shadow: 0 0 0 0.15rem rgba(194, 100, 182, 0.25);
+        }
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #c264b6;
+        border-color: #c264b6;
+
+        &:hover, &:focus {
+            color: #2a1b27;
+            background-color: #e79fdc;
+            border-color: #e79fdc;
+        }
+    }
+
+    .btn-link { color: #9aa0ab; }
+}
+
+.o_promessaging_systray {
+    .o_promessaging_systray_name {
+        color: #e79fdc;
+        font-weight: 600;
+    }
+
+    .o_promessaging_systray_none {
+        color: #ffb3bb;
+        font-weight: 600;
+    }
+}

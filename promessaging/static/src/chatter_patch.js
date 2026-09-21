@@ -2,20 +2,20 @@
 
 import { Chatter } from "@mail/core/web/chatter";
 import { patch } from "@web/core/utils/patch";
-import { session } from "@web/session";
 import { useService } from "@web/core/utils/hooks";
-import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
-import { _t } from "@web/core/l10n/translation";
+import { session } from "@web/session";
 import { useState } from "@odoo/owl";
+import { _t } from "@web/core/l10n/translation";
 
 patch(Chatter.prototype, {
     setup() {
         super.setup();
-        this.promessagingDialog = useService("dialog");
+        this.notification = useService("notification");
         this.promessagingDraft = useState({
             draft: false,
             editing: false,
             value: "",
+            regenerating: false,
         });
     },
 
@@ -88,27 +88,41 @@ patch(Chatter.prototype, {
         this.promessagingDraft.value = "";
     },
 
-    promessagingSendDraft() {
+    async promessagingSendDraft() {
         const draft = this.promessagingDraft.draft;
         if (!draft) {
             return;
         }
-        this.promessagingDialog.add(ConfirmationDialog, {
-            title: _t("Send draft as message"),
-            body: _t(
-                "This draft will be posted as a message and emailed to the followers of this document, customers included. This cannot be undone."
-            ),
-            confirmLabel: _t("Send message"),
-            confirm: () => this.promessagingConfirmSendDraft(draft),
-            cancelLabel: _t("Cancel"),
-            cancel: () => {},
-        });
-    },
-
-    async promessagingConfirmSendDraft(draft) {
         await this.orm.call("promessaging.draft", "action_send_draft", [[draft.id]]);
         this.promessagingResetDraft();
         this.load(this.state.thread, ["messages"]);
+    },
+
+    async promessagingRegenerateDraft() {
+        const draft = this.promessagingDraft.draft;
+        if (!draft || this.promessagingDraft.regenerating) {
+            return;
+        }
+        this.promessagingDraft.regenerating = true;
+        try {
+            const result = await this.orm.call("promessaging.draft", "action_regenerate", [
+                [draft.id],
+            ]);
+            await this.promessagingLoadDraft(this.props.threadModel, this.props.threadId);
+            if (result && !result.ok) {
+                this.notification.add(
+                    _t("Could not reach %s (%s).", draft.author, result.error || _t("unknown error")),
+                    { type: "warning" }
+                );
+            } else if (result && !result.updated) {
+                this.notification.add(
+                    _t("%s was asked to rewrite the draft and will update it shortly.", draft.author),
+                    { type: "info" }
+                );
+            }
+        } finally {
+            this.promessagingDraft.regenerating = false;
+        }
     },
 
     async promessagingDiscardDraft() {

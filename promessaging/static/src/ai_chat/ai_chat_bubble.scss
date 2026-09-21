@@ -1,0 +1,155 @@
+// AI chat bubble: dark by design, so it reads the same in every theme
+$o-aichat-accent: #c264b6;
+$o-aichat-accent-bright: #e79fdc;
+$o-aichat-surface: #1c1f24;
+$o-aichat-surface-alt: #262a32;
+$o-aichat-border: rgba(255, 255, 255, 0.12);
+$o-aichat-text: #e9e7ec;
+$o-aichat-muted: #9aa0ab;
+
+// make room for the bubble so Discuss windows never sit under it
+.o-mail-ChatWindow:not(.o-mobile),
+.o-mail-ChatWindow-hiddenMenuContainer {
+    margin-right: 4.75rem;
+}
+
+.o_promessaging_aichat {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1040;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .o_promessaging_aichat_toggle {
+        width: 3.25rem;
+        height: 3.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: #fff;
+        background-color: $o-aichat-accent;
+        border: 0;
+        transition: background-color 0.15s ease, transform 0.15s ease;
+
+        &:hover, &:focus {
+            background-color: $o-aichat-accent-bright;
+            color: #2a1b27;
+            transform: translateY(-1px);
+        }
+    }
+
+    .o_promessaging_aichat_window {
+        width: 23rem;
+        max-width: calc(100vw - 2rem);
+        max-height: 62vh;
+        margin-bottom: 0.65rem;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        color: $o-aichat-text;
+        background-color: $o-aichat-surface;
+        border: 1px solid $o-aichat-border;
+    }
+
+    .o_promessaging_aichat_header {
+        color: $o-aichat-text;
+        background-color: $o-aichat-surface-alt;
+        border-bottom: 1px solid $o-aichat-border;
+
+        .btn { color: $o-aichat-muted !important; }
+        .btn:hover { color: $o-aichat-text !important; }
+        .text-muted { color: $o-aichat-accent-bright !important; }
+    }
+
+    .o_promessaging_aichat_thread {
+        overflow-y: auto;
+        flex: 1 1 auto;
+        min-height: 9rem;
+        background-color: $o-aichat-surface;
+
+        .text-muted { color: $o-aichat-muted !important; }
+    }
+
+    .o_promessaging_aichat_item {
+        cursor: pointer;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+        &:hover { background-color: rgba(194, 100, 182, 0.14); }
+    }
+
+    .o_promessaging_aichat_initial {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.7rem;
+        color: #2a1b27;
+        background-color: $o-aichat-accent-bright;
+        flex: 0 0 auto;
+
+        &.o-lg { width: 32px; height: 32px; font-size: 0.9rem; }
+    }
+
+    .o_promessaging_aichat_bubble {
+        display: inline-block;
+        max-width: 100%;
+        color: $o-aichat-text;
+        background-color: $o-aichat-surface-alt;
+        border: 1px solid $o-aichat-border;
+    }
+
+    .o_promessaging_aichat_msg.o-user .o_promessaging_aichat_bubble {
+        color: #fdf3fb;
+        background-color: rgba(194, 100, 182, 0.35);
+        border-color: rgba(231, 159, 220, 0.45);
+        text-align: left;
+    }
+
+    .o_promessaging_aichat_msg.o-system .o_promessaging_aichat_bubble {
+        color: #ffd5da;
+        background-color: rgba(220, 53, 69, 0.22);
+        border-color: rgba(220, 53, 69, 0.4);
+        font-style: italic;
+    }
+
+    .border-top { border-color: $o-aichat-border !important; }
+
+    textarea.form-control {
+        color: $o-aichat-text;
+        background-color: $o-aichat-surface-alt;
+        border-color: $o-aichat-border;
+        resize: none;
+
+        &::placeholder { color: $o-aichat-muted; }
+        &:focus {
+            color: $o-aichat-text;
+            background-color: $o-aichat-surface-alt;
+            border-color: $o-aichat-accent;
+            box-shadow: 0 0 0 0.15rem rgba(194, 100, 182, 0.25);
+        }
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: $o-aichat-accent;
+        border-color: $o-aichat-accent;
+
+        &:hover, &:focus {
+            color: #2a1b27;
+            background-color: $o-aichat-accent-bright;
+            border-color: $o-aichat-accent-bright;
+        }
+    }
+
+    .alert-warning {
+        color: #ffe0a3;
+        background-color: rgba(255, 193, 7, 0.18);
+        border-color: rgba(255, 193, 7, 0.35);
+    }
+}

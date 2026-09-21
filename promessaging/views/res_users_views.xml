@@ -8,6 +8,18 @@
             <xpath expr="//page[@name='access_rights']/group[1]" position="before">
                 <group string="Messaging" name="promessaging" invisible="share">
                     <field name="can_send_message"/>
+                    <field name="is_ai_user"/>
+                    <field name="promessaging_default_subuser_id" options="{'no_create': True}"
+                           groups="base.group_system"/>
+                </group>
+                <group string="AI Sub-users" name="promessaging_subusers"
+                       invisible="share or not is_ai_user" groups="base.group_system">
+                    <label for="subuser_count" string="Sub-users"/>
+                    <div>
+                        <field name="subuser_count" class="oe_inline" readonly="1"/>
+                        <button name="action_view_subusers" type="object" string="Manage"
+                                class="btn-link" invisible="not id"/>
+                    </div>
                 </group>
             </xpath>
         </field>

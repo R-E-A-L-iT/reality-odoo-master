@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_summaries_root" name="Summaries" sequence="45"/>
+
+    <menuitem id="menu_summaries_today" name="Today" parent="menu_summaries_root"
+              action="summaries_summary_action_today" sequence="10"/>
+
+    <menuitem id="menu_summaries_mine" name="My Summaries" parent="menu_summaries_root"
+              action="summaries_summary_action_my" sequence="20"/>
+
+    <menuitem id="menu_summaries_all" name="All Summaries" parent="menu_summaries_root"
+              action="summaries_summary_action_all" sequence="30"
+              groups="summaries.group_summaries_manager"/>
+</odoo>

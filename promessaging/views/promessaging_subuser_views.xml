@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="promessaging_subuser_view_form" model="ir.ui.view">
+        <field name="name">promessaging.subuser.form</field>
+        <field name="model">promessaging.subuser</field>
+        <field name="arch" type="xml">
+            <form string="AI Sub-user">
+                <header>
+                    <button name="action_test_webhook" type="object" string="Test Webhook"
+                            class="oe_highlight" groups="base.group_system"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_logs" type="object" class="oe_stat_button" icon="fa-exchange">
+                            <field name="log_count" widget="statinfo" string="Calls"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <field name="image_1920" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Grok Sales"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="active" invisible="1"/>
+                            <label for="handle"/>
+                            <div>
+                                <span>~</span><field name="handle" class="oe_inline" placeholder="groksales"/>
+                            </div>
+                            <field name="user_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="post_reply"/>
+                            <field name="allowed_user_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"
+                                   placeholder="Everyone (leave empty)"/>
+                            <field name="partner_id" readonly="1"
+                                   invisible="not partner_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <group string="Identity" groups="base.group_system">
+                        <field name="pin" password="True"
+                               placeholder="secret this AI sends to act as this sub-user"/>
+                        <div colspan="2" class="text-muted">
+                            The AI signs in as this sub-user's owning account and adds
+                            <code>{"subuser_handle": "...", "subuser_pin": "..."}</code> to the call
+                            context. Everything it does is then logged under this sub-user's name.
+                        </div>
+                    </group>
+                    <group string="Webhook" groups="base.group_system">
+                        <div colspan="2" class="text-muted mb-2">
+                            Copy these straight from the receiver's webhook settings.
+                        </div>
+                        <field name="webhook_url" widget="url"
+                               placeholder="https://api2.cursor.sh/automations/webhook/..."/>
+                        <field name="auth_key" password="True" placeholder="crsr_..."/>
+                        <field name="auth_header" password="True"
+                               placeholder="Authorization: Bearer crsr_..."/>
+                        <field name="webhook_timeout"/>
+                    </group>
+                    <group string="Replies from the AI" groups="base.group_system">
+                        <div colspan="2" class="text-muted mb-2">
+                            The AI posts answers back to
+                            <code>/promessaging/webhook/reply</code> using this key.
+                        </div>
+                        <field name="inbound_key" widget="CopyClipboardChar" readonly="1"/>
+                        <button name="action_regenerate_inbound_key" type="object"
+                                string="Generate a new reply key" class="btn-link" colspan="2"/>
+                    </group>
+                    <group string="Role">
+                        <field name="description" nolabel="1" colspan="2"
+                               placeholder="What this sub-user does. Sent to the bot with every call."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="promessaging_subuser_view_tree" model="ir.ui.view">
+        <field name="name">promessaging.subuser.tree</field>
+        <field name="model">promessaging.subuser</field>
+        <field name="arch" type="xml">
+            <tree string="AI Sub-users">
+                <field name="name"/>
+                <field name="handle"/>
+                <field name="user_id"/>
+                <field name="allowed_user_ids" widget="many2many_tags" optional="show"/>
+                <field name="post_reply" optional="hide"/>
+                <field name="log_count" string="Calls" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="promessaging_subuser_action" model="ir.actions.act_window">
+        <field name="name">AI Sub-users</field>
+        <field name="res_model">promessaging.subuser</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a sub-user</p>
+            <p>Sub-users belong to an AI user and are pinged with ~handle in any message.</p>
+        </field>
+    </record>
+
+    <record id="promessaging_webhook_log_view_tree" model="ir.ui.view">
+        <field name="name">promessaging.webhook.log.tree</field>
+        <field name="model">promessaging.webhook.log</field>
+        <field name="arch" type="xml">
+            <tree string="Webhook Calls" decoration-danger="state == 'error'"
+                  decoration-muted="state == 'pending'" create="false">
+                <field name="create_date" string="Sent"/>
+                <field name="subuser_id"/>
+                <field name="webhook_type"/>
+                <field name="res_model" optional="show"/>
+                <field name="res_id" optional="hide"/>
+                <field name="status_code"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="promessaging_webhook_log_view_form" model="ir.ui.view">
+        <field name="name">promessaging.webhook.log.form</field>
+        <field name="model">promessaging.webhook.log</field>
+        <field name="arch" type="xml">
+            <form string="Webhook Call" create="false">
+                <header>
+                    <button name="action_retry" type="object" string="Retry" class="oe_highlight"/>
+                    <button name="action_open_document" type="object" string="Open Document"
+                            invisible="not res_model"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,done,error"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="subuser_id"/>
+                            <field name="webhook_type"/>
+                            <field name="event_id"/>
+                        </group>
+                        <group>
+                            <field name="status_code"/>
+                            <field name="res_model"/>
+                            <field name="res_id"/>
+                        </group>
+                    </group>
+                    <field name="error" invisible="not error" readonly="1"/>
+                    <notebook>
+                        <page string="Request" name="request">
+                            <group>
+                                <field name="request_url" readonly="1"/>
+                            </group>
+                            <label for="request_headers"/>
+                            <field name="request_headers" readonly="1"/>
+                            <label for="request_body"/>
+                            <field name="request_body" widget="ace" options="{'mode': 'json'}" readonly="1"/>
+                        </page>
+                        <page string="Response" name="response">
+                            <field name="response_body" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="promessaging_webhook_log_action" model="ir.actions.act_window">
+        <field name="name">Sub-user Webhook Calls</field>
+        <field name="res_model">promessaging.webhook.log</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_promessaging_subuser" name="AI Sub-users"
+              parent="base.menu_email" action="promessaging_subuser_action" sequence="50"
+              groups="base.group_system"/>
+    <menuitem id="menu_promessaging_webhook_log" name="Sub-user Webhook Calls"
+              parent="base.menu_email" action="promessaging_webhook_log_action" sequence="51"
+              groups="base.group_system"/>
+
+</odoo>
