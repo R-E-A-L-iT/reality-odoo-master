@@ -2,6 +2,7 @@
 
 import { Chatter } from "@mail/core/web/chatter";
 import { patch } from "@web/core/utils/patch";
+import { useService } from "@web/core/utils/hooks";
 import { session } from "@web/session";
 import { useState } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
@@ -9,6 +10,7 @@ import { _t } from "@web/core/l10n/translation";
 patch(Chatter.prototype, {
     setup() {
         super.setup();
+        this.notification = useService("notification");
         this.promessagingDraft = useState({
             draft: false,
             editing: false,
