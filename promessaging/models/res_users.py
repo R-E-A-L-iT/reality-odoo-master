@@ -38,7 +38,10 @@ class ResUsers(models.Model):
         for user in self:
             user.subuser_count = counts.get(user.id, 0)
 
+    @api.model
     def has_group(self, group_ext_id):
+        # @api.model matches the base signature: without it, call_kw dispatches
+        # this as a record method and the argument never arrives
         result = super().has_group(group_ext_id)
         if not result or self.env.su:
             return result
