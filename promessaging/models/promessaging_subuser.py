@@ -54,6 +54,23 @@ class PromessagingSubuser(models.Model):
         help="Users allowed to ping, message and assign this sub-user. "
              "Leave empty to let everyone use it.",
     )
+    group_ids = fields.Many2many(
+        "res.groups", "promessaging_subuser_groups_rel", "subuser_id", "group_id",
+        string="Permissions", groups="base.group_system",
+        help="What this sub-user may do. Leave empty and it simply inherits the AI "
+             "account's own permissions. Otherwise its actions are limited to these "
+             "groups as well as the account's, never beyond them.",
+    )
+    sync_user_id = fields.Many2one(
+        "res.users", string="Mirror Permissions Of", groups="base.group_system",
+        ondelete="set null",
+        help="Copy this user's permissions onto the sub-user. Re-applied every time "
+             "the sub-user signs in, so it keeps matching that user.",
+    )
+    permissions_synced_on = fields.Datetime(
+        string="Permissions Synced", readonly=True, groups="base.group_system",
+    )
+
     description = fields.Text(
         help="What this sub-user is for. Sent to the webhook so the bot knows its role."
     )
@@ -131,6 +148,8 @@ class PromessagingSubuser(models.Model):
         if vals.get("handle"):
             vals["handle"] = vals["handle"].strip().lower()
         result = super().write(vals)
+        if "group_ids" in vals:
+            self.env.registry.clear_cache()
         if not self.env.context.get("promessaging_building_identity") and (
             "name" in vals or "image_1920" in vals or "user_id" in vals
         ):
@@ -248,10 +267,21 @@ class PromessagingSubuser(models.Model):
         subuser_id = session.get("promessaging_subuser_id")
         if not subuser_id:
             return self.browse()
+
+        # this runs on every access check, so resolve it once per request
+        key = (self.env.uid, subuser_id)
+        cached = getattr(request, "_promessaging_subuser", None)
+        if cached and cached[0] == key:
+            return self.browse(cached[1]) if cached[1] else self.browse()
+
         subuser = self.sudo().browse(int(subuser_id)).exists()
         # the session is only valid for sub-users of the account that is logged in
         if not subuser or subuser.user_id.id != self.env.uid:
-            return self.browse()
+            subuser = self.browse()
+        try:
+            request._promessaging_subuser = (key, subuser.id or False)
+        except Exception:
+            pass
         return subuser
 
     @api.model
@@ -265,6 +295,7 @@ class PromessagingSubuser(models.Model):
         if not hmac.compare_digest(str(subuser.pin), str(pin)):
             return self.browse()
         subuser._ensure_partner()
+        subuser._sync_permissions()
         return subuser
 
     @api.model
@@ -521,6 +552,41 @@ class PromessagingSubuser(models.Model):
                 shown = "%s…%s (%s chars)" % (value[:8], value[-4:], len(value))
             lines.append("%s: %s" % (name, shown))
         return "\n".join(lines)
+
+    def action_sync_permissions(self):
+        """Copy the mirrored user's permissions onto this sub-user."""
+        for subuser in self:
+            subuser._sync_permissions()
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Permissions synced"),
+                "message": _("The sub-user now matches its mirrored user."),
+                "type": "success",
+            },
+        }
+
+    def _sync_permissions(self, only_if_changed=True):
+        """Bring group_ids in line with the mirrored user, if one is set."""
+        self.ensure_one()
+        subuser = self.sudo()
+        source = subuser.sync_user_id
+        if not source:
+            return False
+        wanted = source.groups_id
+        if only_if_changed and set(wanted.ids) == set(subuser.group_ids.ids):
+            return False
+        subuser.write({
+            "group_ids": [(6, 0, wanted.ids)],
+            "permissions_synced_on": fields.Datetime.now(),
+        })
+        return True
+
+    def _effective_groups(self):
+        """The groups limiting this sub-user, or an empty set for no limit."""
+        self.ensure_one()
+        return self.sudo().group_ids
 
     def action_regenerate_inbound_key(self):
         """Issue a new reply key, invalidating the old one."""

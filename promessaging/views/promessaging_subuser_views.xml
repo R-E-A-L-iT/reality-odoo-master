@@ -41,6 +41,26 @@
                                    invisible="not partner_id" options="{'no_create': True}"/>
                         </group>
                     </group>
+                    <group string="Permissions" groups="base.group_system">
+                        <div colspan="2" class="text-muted mb-2">
+                            What this sub-user may do. Leave empty and it inherits the AI
+                            account's permissions; otherwise it is limited to these, and
+                            never gets more than the account has.
+                        </div>
+                        <field name="sync_user_id" options="{'no_create': True}"/>
+                        <div colspan="2" class="mb-2">
+                            <button name="action_sync_permissions" type="object"
+                                    string="Sync permissions now" class="btn-link"
+                                    invisible="not sync_user_id"/>
+                            <span class="text-muted" invisible="not permissions_synced_on">
+                                last synced <field name="permissions_synced_on" readonly="1"
+                                                   class="oe_inline"/>
+                            </span>
+                        </div>
+                        <field name="group_ids" widget="many2many_tags"
+                               options="{'no_create': True}"
+                               placeholder="Same as the AI account (leave empty)"/>
+                    </group>
                     <group string="Identity" groups="base.group_system">
                         <field name="pin" password="True"
                                placeholder="secret this AI sends to act as this sub-user"/>
@@ -88,6 +108,7 @@
                 <field name="handle"/>
                 <field name="user_id"/>
                 <field name="allowed_user_ids" widget="many2many_tags" optional="show"/>
+                <field name="sync_user_id" optional="show"/>
                 <field name="post_reply" optional="hide"/>
                 <field name="log_count" string="Calls" optional="hide"/>
             </tree>

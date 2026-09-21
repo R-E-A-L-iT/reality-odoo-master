@@ -55,11 +55,23 @@ export class AiChatBubble extends Component {
         }
     }
 
+    get onlyAssistant() {
+        return this.state.directory.length === 1 ? this.state.directory[0] : null;
+    }
+
     togglePanel() {
-        this.state.open = !this.state.open;
-        if (!this.state.open) {
+        if (this.state.open || this.state.chat) {
+            this.state.open = false;
             this.closeChat();
+            return;
         }
+        // with a single assistant there is nothing to choose from
+        if (this.onlyAssistant) {
+            this.state.open = true;
+            this.openChat(this.onlyAssistant);
+            return;
+        }
+        this.state.open = true;
     }
 
     async openChat(subuser) {
@@ -76,6 +88,9 @@ export class AiChatBubble extends Component {
     }
 
     closeChat() {
+        if (this.onlyAssistant) {
+            this.state.open = false;
+        }
         this.stopPolling();
         this.state.chat = null;
         this.state.messages = [];
@@ -169,12 +184,14 @@ export class AiChatBubble extends Component {
     }
 
     scrollToEnd() {
-        Promise.resolve().then(() => {
+        // the thread is not in the DOM yet on open, so wait for the paint after render
+        const scroll = () => {
             const el = this.threadRef.el;
             if (el) {
                 el.scrollTop = el.scrollHeight;
             }
-        });
+        };
+        requestAnimationFrame(() => requestAnimationFrame(scroll));
     }
 
     errorMessage(error) {
