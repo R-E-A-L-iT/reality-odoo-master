@@ -9,6 +9,8 @@
                 <group string="Messaging" name="promessaging" invisible="share">
                     <field name="can_send_message"/>
                     <field name="is_ai_user"/>
+                    <field name="promessaging_default_subuser_id" options="{'no_create': True}"
+                           groups="base.group_system"/>
                 </group>
                 <group string="AI Sub-users" name="promessaging_subusers"
                        invisible="share or not is_ai_user" groups="base.group_system">

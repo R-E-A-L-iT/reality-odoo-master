@@ -35,11 +35,12 @@ class PromessagingAiChat(models.Model):
     @api.model
     def get_directory(self):
         """The AI sub-users the current user can talk to."""
-        acting = self.env["promessaging.subuser"]._active_subuser()
-        subusers = self.env["promessaging.subuser"].sudo().search([
-            ("user_id.is_ai_user", "=", True),
-            ("id", "!=", acting.id or 0),
-        ])
+        Subuser = self.env["promessaging.subuser"]
+        acting = Subuser._active_subuser()
+        subusers = Subuser.sudo().search(
+            [("user_id.is_ai_user", "=", True), ("id", "!=", acting.id or 0)]
+            + Subuser._allowed_domain()
+        )
         return [
             {
                 "id": subuser.id,
@@ -61,6 +62,8 @@ class PromessagingAiChat(models.Model):
             raise UserError(_("That sub-user no longer exists."))
         if subuser == self.env["promessaging.subuser"]._active_subuser():
             raise UserError(_("A sub-user cannot open a conversation with itself."))
+        if not subuser._allowed_for(self.env.user):
+            raise UserError(_("You are not allowed to use %s.", subuser.name))
         chat = self.search([
             ("user_id", "=", self.env.uid), ("subuser_id", "=", subuser.id),
         ], limit=1)

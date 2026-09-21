@@ -10,6 +10,13 @@ class ResUsers(models.Model):
         help="Marks this account as an AI. AI users can have sub-users, each pinged "
              "with ~handle in a message.",
     )
+    promessaging_default_subuser_id = fields.Many2one(
+        "promessaging.subuser", string="Default AI Assistant",
+        groups="base.group_system", ondelete="set null",
+        help="Used when a request needs a bot and none is already assigned, "
+             "for instance rewriting a draft nobody wrote.",
+    )
+
     # counted through sudo on purpose: res.users records are read in contexts
     # (portal, public) that have no access to promessaging.subuser
     subuser_count = fields.Integer(compute="_compute_subuser_count")
@@ -30,6 +37,12 @@ class ResUsers(models.Model):
             counts = {group["user_id"][0]: group["user_id_count"] for group in groups}
         for user in self:
             user.subuser_count = counts.get(user.id, 0)
+
+    def _promessaging_default_subuser(self):
+        """This user's default assistant, if they are allowed to use it."""
+        self.ensure_one()
+        subuser = self.sudo().promessaging_default_subuser_id
+        return subuser._allowed_for(self) if subuser else subuser
 
     def action_view_subusers(self):
         self.ensure_one()

@@ -56,6 +56,7 @@ class PromessagingDraft(models.Model):
             "body": self.body or "",
             "author": subuser.name if subuser else self.create_uid.display_name,
             "is_ai": bool(subuser),
+            "can_regenerate": bool(self._regenerate_subuser()),
             "subuser": {"id": subuser.id, "name": subuser.name, "handle": subuser.handle}
             if subuser else False,
             "date": fields.Datetime.to_string(self.write_date),
@@ -125,9 +126,12 @@ class PromessagingDraft(models.Model):
     def action_regenerate(self, instructions=None):
         """Ask the sub-user that wrote this draft to rewrite it."""
         self.ensure_one()
-        subuser = self.subuser_id.sudo()
+        subuser = self._regenerate_subuser()
         if not subuser:
-            raise UserError(_("This draft was not written by an AI sub-user."))
+            raise UserError(_(
+                "No AI assistant to ask. Set a default AI assistant on your user, "
+                "or have one write the draft first."
+            ))
         record = self._get_document(self.res_model, self.res_id)
         payload = {
             "prompt": instructions or _(
@@ -163,6 +167,14 @@ class PromessagingDraft(models.Model):
             "error": result.get("error"),
             "updated": bool(reply),
         }
+
+    def _regenerate_subuser(self):
+        """Who to ask: whoever wrote it, else the reader's default assistant."""
+        self.ensure_one()
+        written_by = self.subuser_id.sudo()
+        if written_by and written_by._allowed_for(self.env.user):
+            return written_by
+        return self.env.user._promessaging_default_subuser()
 
     def action_discard_draft(self):
         self.ensure_one()

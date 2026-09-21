@@ -63,9 +63,9 @@
                                 t-on-click="() => this.promessagingEditDraft()">
                             Edit
                         </button>
-                        <button t-if="promessagingDraft.draft.is_ai" class="btn btn-secondary btn-sm me-1"
+                        <button t-if="promessagingDraft.draft.can_regenerate" class="btn btn-secondary btn-sm me-1"
                                 t-att-disabled="promessagingDraft.regenerating"
-                                t-att-title="'Ask ' + promessagingDraft.draft.author + ' to rewrite this draft'"
+                                t-att-title="'Ask an AI assistant to rewrite this draft'"
                                 t-on-click="() => this.promessagingRegenerateDraft()">
                             <t t-if="promessagingDraft.regenerating">Regenerating...</t>
                             <t t-else="">Regenerate</t>

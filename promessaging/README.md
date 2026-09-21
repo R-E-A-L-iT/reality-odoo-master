@@ -140,6 +140,21 @@ Call `subuser.dispatch("your_type", payload_dict, record=record)`. The envelope,
 signing, logging and retry all come for free.
 
 
+## Who can use which bot
+
+Each sub-user has a **Usable By** list on its form. Leave it empty and everyone can use
+that bot; fill it in and only those users can. The limit is complete:
+
+- only permitted bots appear in the `~` list and in the AI assistants panel;
+- typing `~handle` for a bot you may not use leaves plain text, sends no webhook, and
+  is not highlighted, so it is visible that nothing was pinged;
+- opening a conversation with it is refused server-side.
+
+Users also have an optional **Default AI Assistant** (Settings → Users → Access Rights →
+Messaging). It is used when a request needs a bot and none is assigned yet — for
+example rewriting a draft that a person wrote. A bot the user may not use is never
+chosen, even when set as their default.
+
 ## Replies from the AI (inbound webhook)
 
 Every prompt Odoo sends carries a `payload.reply` block describing both ways to answer:

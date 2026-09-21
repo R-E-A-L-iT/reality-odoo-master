@@ -34,6 +34,9 @@
                         </group>
                         <group>
                             <field name="post_reply"/>
+                            <field name="allowed_user_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"
+                                   placeholder="Everyone (leave empty)"/>
                             <field name="partner_id" readonly="1"
                                    invisible="not partner_id" options="{'no_create': True}"/>
                         </group>
@@ -84,7 +87,8 @@
                 <field name="name"/>
                 <field name="handle"/>
                 <field name="user_id"/>
-                <field name="post_reply" optional="show"/>
+                <field name="allowed_user_ids" widget="many2many_tags" optional="show"/>
+                <field name="post_reply" optional="hide"/>
                 <field name="log_count" string="Calls" optional="hide"/>
             </tree>
         </field>

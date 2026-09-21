@@ -48,6 +48,12 @@ class PromessagingSubuser(models.Model):
         help="The AI user this sub-user belongs to. Replies are posted as that user.",
     )
     active = fields.Boolean(default=True)
+    allowed_user_ids = fields.Many2many(
+        "res.users", "promessaging_subuser_allowed_users_rel", "subuser_id", "user_id",
+        string="Usable By",
+        help="Users allowed to ping, message and assign this sub-user. "
+             "Leave empty to let everyone use it.",
+    )
     description = fields.Text(
         help="What this sub-user is for. Sent to the webhook so the bot knows its role."
     )
@@ -306,9 +312,22 @@ class PromessagingSubuser(models.Model):
     # ------------------------------------------------------------------
 
     @api.model
+    def _allowed_domain(self, user=None):
+        """Restrict a search to the sub-users this user may use."""
+        user = user or self.env.user
+        return ["|", ("allowed_user_ids", "=", False), ("allowed_user_ids", "in", user.id)]
+
+    def _allowed_for(self, user=None):
+        """Sub-users of this set the user may use."""
+        user = user or self.env.user
+        return self.sudo().filtered(
+            lambda s: not s.allowed_user_ids or user in s.allowed_user_ids
+        )
+
+    @api.model
     def get_mention_suggestions(self, search="", limit=8):
         """Sub-users matching what was typed after ~, for the composer."""
-        domain = [("user_id.is_ai_user", "=", True)]
+        domain = [("user_id.is_ai_user", "=", True)] + self._allowed_domain()
         if search:
             domain += ["|", ("handle", "ilike", search), ("name", "ilike", search)]
         subusers = self.sudo().search(domain, limit=min(int(limit or 8), 20))
@@ -327,7 +346,9 @@ class PromessagingSubuser(models.Model):
             return body  # already highlighted, don't nest
         handles = {
             subuser.handle: subuser
-            for subuser in self.sudo().search([("user_id.is_ai_user", "=", True)])
+            for subuser in self.sudo().search(
+                [("user_id.is_ai_user", "=", True)] + self._allowed_domain()
+            )
         }
         if not handles:
             return body
@@ -352,7 +373,9 @@ class PromessagingSubuser(models.Model):
         handles = {match.lower() for match in MENTION_RE.findall(text or "")}
         if not handles:
             return self.browse()
-        return self.sudo().search([("handle", "in", list(handles))])
+        found = self.sudo().search([("handle", "in", list(handles))])
+        # a bot the poster may not use is left as plain text, and never pinged
+        return found._allowed_for()
 
     # ------------------------------------------------------------------
     # webhooks
