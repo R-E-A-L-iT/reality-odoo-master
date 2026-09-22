@@ -154,7 +154,7 @@ class SummariesSummary(models.Model):
             current content when given (see get_content_schema())
         :param intro: list of content blocks above the tasks, free-form
         :param objectives: list of dicts with keys name, note, done, record_ref
-            ("model,id" string), sequence
+            ("model,id" string), sequence, and plan ({"steps": [...]})
         :param replace_objectives: drop the existing objectives first
         :return: the summary id
         """
@@ -183,7 +183,9 @@ class SummariesSummary(models.Model):
                 }
                 if not values["name"]:
                     raise UserError(_("Every objective needs a name."))
-                self.env["summaries.objective"].create(values)
+                task = self.env["summaries.objective"].create(values)
+                if objective.get("plan"):
+                    task.set_plan(objective["plan"])
                 sequence += 10
         return summary.id
 

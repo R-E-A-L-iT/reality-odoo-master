@@ -745,26 +745,48 @@ class PromessagingSubuser(models.Model):
                 "summary_id": task.summary_id.id,
             }
 
-        # 2. the body of a daily summary
-        if summary_id:
+        # 2. a daily summary: an existing one by id, or a new one for a user
+        if summary_id or summary_values:
             Summary = self.env.get("summaries.summary")
             if Summary is None:
                 return {"ok": False, "error": "summaries_not_installed"}
-            summary = Summary.sudo().browse(int(summary_id)).exists()
-            if not summary:
-                return {"ok": False, "error": "unknown_summary"}
             values = summary_values if isinstance(summary_values, dict) else {}
-            if values.get("intro") is not None:
-                summary.set_intro(values["intro"])
-            if values.get("content") is not None:
-                summary.set_content(values["content"])
-            if values.get("objectives") is not None:
-                Summary.upsert_summary(
-                    summary.user_id.id,
-                    day=fields.Date.to_string(summary.date),
-                    objectives=values["objectives"],
+
+            if summary_id:
+                summary = Summary.sudo().browse(int(summary_id)).exists()
+                if not summary:
+                    return {"ok": False, "error": "unknown_summary"}
+                owner, day = summary.user_id.id, fields.Date.to_string(summary.date)
+            else:
+                owner = user_id or user_login
+                if not owner:
+                    return {"ok": False, "error": "missing_user"}
+                day = values.get("date")
+
+            try:
+                created_id = Summary.sudo().upsert_summary(
+                    owner,
+                    day=day,
+                    intro=values.get("intro"),
+                    content=values.get("content"),
+                    objectives=values.get("objectives"),
                 )
-            return {"ok": True, "target": "summary", "summary_id": summary.id}
+            except UserError as error:
+                return {"ok": False, "error": str(error)}
+
+            summary = Summary.sudo().browse(created_id)
+            return {
+                "ok": True,
+                "target": "summary",
+                "summary_id": summary.id,
+                "user_id": summary.user_id.id,
+                "date": fields.Date.to_string(summary.date),
+                # ids let a bot come back later to plan or report on a task
+                "objectives": [
+                    {"id": task.id, "name": task.name, "has_plan": task.has_plan}
+                    for task in summary.objective_ids
+                ],
+            }
 
         # 3. a rewritten chatter draft
         if draft_id:
