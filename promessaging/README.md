@@ -152,6 +152,12 @@ them every time that sub-user signs in, so it keeps matching that person. This i
 bot shared with one team is kept away from what that team cannot do itself, while the
 same kind of bot used by an admin keeps the wider rights.
 
+**Allowed Companies** works the same way: leave it empty to inherit the account's
+companies, or list them to limit the sub-user to a subset. The company switcher only
+offers what the sub-user may use, and `env.companies` is narrowed server-side, so
+records of other companies stay out of reach. A **Default Company** picks which one it
+starts in.
+
 Enforced on every model access check and on `has_group`, so menus, buttons and CRUD all
 respect it. Two things still follow the account rather than the sub-user: **record rules**
 (which rows are visible) and **field-level group restrictions**. Narrow the account

@@ -61,6 +61,18 @@ class PromessagingSubuser(models.Model):
              "account's own permissions. Otherwise its actions are limited to these "
              "groups as well as the account's, never beyond them.",
     )
+    company_ids = fields.Many2many(
+        "res.company", "promessaging_subuser_companies_rel", "subuser_id", "company_id",
+        string="Allowed Companies", groups="base.group_system",
+        help="Companies this sub-user may work in. Leave empty and it inherits the AI "
+             "account's companies. Otherwise it is limited to these, and never gets a "
+             "company the account itself lacks.",
+    )
+    company_id = fields.Many2one(
+        "res.company", string="Default Company", groups="base.group_system",
+        ondelete="set null",
+        help="Company selected when this sub-user signs in.",
+    )
     sync_user_id = fields.Many2one(
         "res.users", string="Mirror Permissions Of", groups="base.group_system",
         ondelete="set null",
@@ -575,13 +587,26 @@ class PromessagingSubuser(models.Model):
         if not source:
             return False
         wanted = source.groups_id
-        if only_if_changed and set(wanted.ids) == set(subuser.group_ids.ids):
+        wanted_companies = source.company_ids
+        unchanged = (
+            set(wanted.ids) == set(subuser.group_ids.ids)
+            and set(wanted_companies.ids) == set(subuser.company_ids.ids)
+            and subuser.company_id == source.company_id
+        )
+        if only_if_changed and unchanged:
             return False
         subuser.write({
             "group_ids": [(6, 0, wanted.ids)],
+            "company_ids": [(6, 0, wanted_companies.ids)],
+            "company_id": source.company_id.id,
             "permissions_synced_on": fields.Datetime.now(),
         })
         return True
+
+    def _effective_companies(self):
+        """The companies limiting this sub-user, or an empty set for no limit."""
+        self.ensure_one()
+        return self.sudo().company_ids
 
     def _effective_groups(self):
         """The groups limiting this sub-user, or an empty set for no limit."""

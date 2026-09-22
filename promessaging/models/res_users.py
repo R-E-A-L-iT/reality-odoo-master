@@ -1,5 +1,6 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.http import request
 
 
 class ResUsers(models.Model):
@@ -37,6 +38,37 @@ class ResUsers(models.Model):
             counts = {group["user_id"][0]: group["user_id_count"] for group in groups}
         for user in self:
             user.subuser_count = counts.get(user.id, 0)
+
+    def _get_company_ids(self):
+        """Companies available right now.
+
+        env.companies validates against this, so narrowing it here is what stops a
+        sub-user reaching a company its profile excludes.
+        """
+        company_ids = super()._get_company_ids()
+        if self.env.su or not self.id or self.id != self.env.uid:
+            return company_ids
+        # resolving the sub-user reads records, which can evaluate company rules
+        # and land back here; one level is enough
+        if getattr(request, "_promessaging_resolving_companies", False):
+            return company_ids
+        try:
+            request._promessaging_resolving_companies = True
+        except Exception:
+            pass
+        try:
+            subuser = self.env["promessaging.subuser"]._active_subuser()
+        finally:
+            try:
+                request._promessaging_resolving_companies = False
+            except Exception:
+                pass
+        allowed = subuser._effective_companies() if subuser else None
+        if not allowed:
+            return company_ids
+        # intersection: never a company the account itself lacks
+        narrowed = tuple(cid for cid in company_ids if cid in set(allowed.ids))
+        return narrowed or company_ids[:1]
 
     @api.model
     def has_group(self, group_ext_id):
