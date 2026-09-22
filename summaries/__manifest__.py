@@ -9,7 +9,7 @@ Summaries Managers can view and edit everyone's summaries.""",
     "author": "Ezekiel J. deBlois",
     "license": "LGPL-3",
     "version": "17.0",
-    "depends": ["base", "web"],
+    "depends": ["base", "web", "promessaging"],
     "data": [
         "security/summaries_groups.xml",
         "security/ir.model.access.csv",

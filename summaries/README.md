@@ -41,6 +41,53 @@ later executed. Each accepts `name`, `note`, `done`, `sequence`, `record_ref`
 button on the task; the webhook behind it is not wired up yet and the button reports
 that when pressed.
 
+## Plans on a task
+
+A task can carry a **plan**: the steps needed to finish it, each marked as something the
+**AI** can do or something a **human** must do. A **Plan** button appears on the right of
+the task only once a plan exists; it opens a window where the steps can be read, edited,
+reordered by hand, or sent off with **Execute**.
+
+**Execute** hands the task and its plan to the reader's **Default AI Assistant**
+(Settings → Users → Access Rights → Messaging) as a `task_execute` webhook. Editing then
+pressing Execute saves first, so the assistant always receives what is on screen.
+
+A plan is stored as JSON:
+
+```json
+{
+  "summary": "Chase the renewal before Friday",
+  "steps": [
+    {"text": "Pull the last quote and its line items", "actor": "ai"},
+    {"text": "Draft the follow-up email", "actor": "ai"},
+    {"text": "Call the customer to confirm the budget", "actor": "human"}
+  ]
+}
+```
+
+`actor` is `ai` or `human`; anything else is rejected. A step may also carry `note` and
+`done`.
+
+## Writing plans and summaries as a bot
+
+Both go through ProMessaging's reply endpoint, `POST /promessaging/webhook/reply`, with
+the sub-user's Reply Key:
+
+```json
+{"subuser": "jerry", "key": "pmsg_...", "objective_id": 12,
+ "plan": {"steps": [{"text": "...", "actor": "ai"}]}}
+```
+
+| Field | Meaning |
+|---|---|
+| `objective_id` + `plan` | write the plan for that task |
+| `objective_id` + `message` | report back on the task; the text lands in its detail line |
+| `summary_id` + `summary` | `{"intro": [...], "content": [...], "objectives": [...]}` to fill a day's summary |
+
+The `task_execute` webhook already carries `objective_id` in
+`payload.reply.async.body`, so a bot can answer the request it was given. Answering the
+webhook directly with `{"plan": {"steps": [...]}}` updates the plan on the spot.
+
 ## Inline markup
 
 Usable in any block text, and in task names:

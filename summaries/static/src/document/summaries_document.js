@@ -4,6 +4,8 @@ import { registry } from "@web/core/registry";
 import { standardWidgetProps } from "@web/views/widgets/standard_widget_props";
 import { useService } from "@web/core/utils/hooks";
 import { Component, markup, onWillStart, useState } from "@odoo/owl";
+import { Dialog } from "@web/core/dialog/dialog";
+import { _t } from "@web/core/l10n/translation";
 import { SummariesStats } from "@summaries/stats/summaries_stats";
 
 const TEXT_CLASS = {
@@ -132,14 +134,104 @@ export class SummariesBlocks extends Component {
 }
 SummariesBlocks.components = { SummariesBlocks, InlineText, SummariesStats };
 
+export class SummariesPlanDialog extends Component {
+    static template = "summaries.SummariesPlanDialog";
+    static components = { Dialog };
+    static props = {
+        plan: { type: Object },
+        readonly: { type: Boolean, optional: true },
+        onSave: { type: Function },
+        onExecute: { type: Function },
+        close: { type: Function },
+    };
+
+    setup() {
+        this.state = useState({
+            steps: this.props.plan.steps.map((step) => ({ ...step })),
+            summary: this.props.plan.summary || "",
+            busy: false,
+            error: false,
+        });
+    }
+
+    get aiCount() {
+        return this.state.steps.filter((step) => step.actor === "ai").length;
+    }
+
+    get humanCount() {
+        return this.state.steps.filter((step) => step.actor !== "ai").length;
+    }
+
+    setActor(step, actor) {
+        step.actor = actor;
+    }
+
+    updateText(step, ev) {
+        step.text = ev.target.value;
+    }
+
+    addStep() {
+        this.state.steps.push({ text: "", actor: "human", note: "", done: false });
+    }
+
+    removeStep(index) {
+        this.state.steps.splice(index, 1);
+    }
+
+    get cleanedSteps() {
+        return this.state.steps
+            .filter((step) => (step.text || "").trim())
+            .map((step) => ({ ...step, text: step.text.trim() }));
+    }
+
+    async save() {
+        this.state.busy = true;
+        try {
+            await this.props.onSave({ summary: this.state.summary, steps: this.cleanedSteps });
+            this.props.close();
+        } catch (error) {
+            this.state.error = this.constructor.errorOf(error);
+        } finally {
+            this.state.busy = false;
+        }
+    }
+
+    async execute() {
+        this.state.busy = true;
+        try {
+            // save first: executing an edited plan should use what is on screen
+            await this.props.onSave({ summary: this.state.summary, steps: this.cleanedSteps });
+            const result = await this.props.onExecute();
+            if (result && !result.ok) {
+                this.state.error = result.error || _t("The assistant could not be reached.");
+                return;
+            }
+            this.props.close();
+        } catch (error) {
+            this.state.error = this.constructor.errorOf(error);
+        } finally {
+            this.state.busy = false;
+        }
+    }
+
+    static errorOf(error) {
+        return (
+            (error && error.data && error.data.message) ||
+            (error && error.message) ||
+            String(error)
+        );
+    }
+}
+
 export class SummariesDocument extends Component {
     static template = "summaries.SummariesDocument";
-    static components = { SummariesBlocks, InlineText };
+    static components = { SummariesBlocks, InlineText, SummariesPlanDialog };
     static props = { ...standardWidgetProps };
 
     setup() {
         this.orm = useService("orm");
         this.action = useService("action");
+        this.dialog = useService("dialog");
         this.state = useState({
             loading: true,
             doc: null,
@@ -219,7 +311,22 @@ export class SummariesDocument extends Component {
     }
 
     async executeTask(task) {
-        await this.orm.call("summaries.objective", "action_execute", [[task.id]]);
+        const result = await this.orm.call("summaries.objective", "action_execute", [[task.id]]);
+        await this.reload();
+        return result;
+    }
+
+    async openPlan(task) {
+        const plan = await this.orm.call("summaries.objective", "get_plan", [[task.id]]);
+        this.dialog.add(SummariesPlanDialog, {
+            plan,
+            readonly: this.readonly,
+            onSave: async (edited) => {
+                await this.orm.call("summaries.objective", "set_plan", [[task.id], edited]);
+                await this.reload();
+            },
+            onExecute: () => this.executeTask(task),
+        });
     }
 
     openRef(ref) {

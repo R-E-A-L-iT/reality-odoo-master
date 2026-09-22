@@ -21,7 +21,8 @@ class PromessagingInbound(http.Controller):
             return {"ok": False, "error": "invalid_key"}
 
         message = payload.get("message") or payload.get("reply") or payload.get("text")
-        if not message:
+        # a plan or summary update carries no message of its own
+        if not message and not payload.get("plan") and not payload.get("summary"):
             return {"ok": False, "error": "missing_message"}
 
         try:
@@ -29,6 +30,10 @@ class PromessagingInbound(http.Controller):
                 message,
                 chat_id=payload.get("chat_id"),
                 draft_id=payload.get("draft_id"),
+                objective_id=payload.get("objective_id"),
+                plan=payload.get("plan"),
+                summary_id=payload.get("summary_id"),
+                summary_values=payload.get("summary"),
                 user_id=payload.get("user_id"),
                 user_login=payload.get("user_login"),
                 thread_model=payload.get("thread_model"),
