@@ -720,12 +720,53 @@ class PromessagingSubuser(models.Model):
         }
 
     def _receive_reply(self, message, chat_id=None, user_id=None, user_login=None,
-                       thread_model=None, thread_id=None, draft_id=None):
+                       thread_model=None, thread_id=None, draft_id=None,
+                       objective_id=None, plan=None, summary_id=None, summary_values=None):
         """Route an answer coming back from the AI to the right place."""
         self.ensure_one()
         subuser = self.sudo()
 
-        # 1. a rewritten chatter draft
+        # 1. a plan, or a report, on a daily summary task
+        if objective_id:
+            Objective = self.env.get("summaries.objective")
+            if Objective is None:
+                return {"ok": False, "error": "summaries_not_installed"}
+            task = Objective.sudo().browse(int(objective_id)).exists()
+            if not task:
+                return {"ok": False, "error": "unknown_task"}
+            if plan is not None:
+                task.set_plan(plan)
+            if message:
+                task.sudo().note = str(message)
+            return {
+                "ok": True,
+                "target": "task",
+                "objective_id": task.id,
+                "summary_id": task.summary_id.id,
+            }
+
+        # 2. the body of a daily summary
+        if summary_id:
+            Summary = self.env.get("summaries.summary")
+            if Summary is None:
+                return {"ok": False, "error": "summaries_not_installed"}
+            summary = Summary.sudo().browse(int(summary_id)).exists()
+            if not summary:
+                return {"ok": False, "error": "unknown_summary"}
+            values = summary_values if isinstance(summary_values, dict) else {}
+            if values.get("intro") is not None:
+                summary.set_intro(values["intro"])
+            if values.get("content") is not None:
+                summary.set_content(values["content"])
+            if values.get("objectives") is not None:
+                Summary.upsert_summary(
+                    summary.user_id.id,
+                    day=fields.Date.to_string(summary.date),
+                    objectives=values["objectives"],
+                )
+            return {"ok": True, "target": "summary", "summary_id": summary.id}
+
+        # 3. a rewritten chatter draft
         if draft_id:
             draft = self.env["promessaging.draft"].sudo().browse(int(draft_id)).exists()
             if not draft:
@@ -739,7 +780,7 @@ class PromessagingSubuser(models.Model):
                 "res_id": draft.res_id,
             }
 
-        # 2. a direct conversation, by id or by who it is with
+        # 4. a direct conversation, by id or by who it is with
         chat = self.env["promessaging.ai.chat"].sudo()
         if chat_id:
             chat = chat.browse(int(chat_id)).exists()
@@ -765,7 +806,7 @@ class PromessagingSubuser(models.Model):
                 "message_id": posted.id,
             }
 
-        # 3. or a log note on the document the prompt came from
+        # 5. or a log note on the document the prompt came from
         if thread_model and thread_id:
             if thread_model not in self.env:
                 return {"ok": False, "error": "unknown_model"}
