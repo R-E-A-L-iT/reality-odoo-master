@@ -719,6 +719,37 @@ class PromessagingSubuser(models.Model):
             },
         }
 
+    @api.model
+    def _split_message_and_plan(self, message):
+        """Tell a written report apart from a plan sent in the message slot.
+
+        Bots answer in both shapes, and a raw payload written onto a task as its
+        note is unreadable, so pull the plan out and keep only real text.
+        """
+        if message is None:
+            return None, None
+
+        payload = message
+        if isinstance(payload, str):
+            text = payload.strip()
+            if text[:1] not in "{[":
+                return text[:500], None
+            try:
+                payload = json.loads(text)
+            except ValueError:
+                return text[:500], None
+
+        if isinstance(payload, dict):
+            plan = payload.get("plan")
+            if plan is None and payload.get("steps"):
+                plan = payload
+            note = payload.get("message") or payload.get("note") or payload.get("text")
+            note = note.strip()[:500] if isinstance(note, str) else None
+            return note, plan
+        if isinstance(payload, list):
+            return None, {"steps": payload}
+        return None, None
+
     def _receive_reply(self, message, chat_id=None, user_id=None, user_login=None,
                        thread_model=None, thread_id=None, draft_id=None,
                        objective_id=None, plan=None, summary_id=None, summary_values=None,
@@ -735,6 +766,9 @@ class PromessagingSubuser(models.Model):
             task = Objective.sudo().browse(int(objective_id)).exists()
             if not task:
                 return {"ok": False, "error": "unknown_task"}
+            note, plan_in_message = self._split_message_and_plan(message)
+            if plan is None and plan_in_message is not None:
+                plan = plan_in_message
             if plan is not None:
                 task.set_plan(plan)
             if steps_done is not None or steps_done_actor:
@@ -742,8 +776,8 @@ class PromessagingSubuser(models.Model):
                     [steps_done] if steps_done is not None else []
                 )
                 task.mark_steps(indexes=indexes, done=True, actor=steps_done_actor)
-            if message:
-                task.sudo().note = str(message)
+            if note:
+                task.sudo().note = note
             plan_now = task.get_plan()
             return {
                 "ok": True,

@@ -252,6 +252,18 @@ class SummariesObjective(models.Model):
             "executed_on": fields.Datetime.to_string(self.plan_executed_on),
         }
 
+    def _display_note(self):
+        """The note, unless it is a raw payload a bot wrote there by mistake."""
+        self.ensure_one()
+        text = (self.note or "").strip()
+        if text[:1] in "{[":
+            try:
+                json.loads(text)
+                return ""
+            except ValueError:
+                pass
+        return text
+
     def _task_data(self):
         """Values the document view renders for one task."""
         self.ensure_one()
@@ -268,7 +280,7 @@ class SummariesObjective(models.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "note": self.note or "",
+            "note": self._display_note(),
             "done": self.done,
             "sequence": self.sequence,
             "execute_enabled": self.execute_enabled,
@@ -312,7 +324,7 @@ class SummariesObjective(models.Model):
             "task": {
                 "id": self.id,
                 "name": self.name,
-                "note": self.note or "",
+                "note": self._display_note(),
                 "done": self.done,
                 "document": reference,
             },

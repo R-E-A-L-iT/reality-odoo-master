@@ -254,10 +254,10 @@
                                         : task.plan_state === 'human_next' ? 'Under way, the rest is yours'
                                         : task.plan_state === 'human_only' ? 'Not started, every step is yours'
                                         : ''">
-                            <input type="checkbox" class="form-check-input mt-1 me-2"
+                            <input type="checkbox" class="form-check-input flex-shrink-0 mt-1 me-2"
                                    t-att-checked="task.done" t-att-disabled="readonly"
                                    t-on-change="() => this.toggleTask(task)"/>
-                            <div class="flex-grow-1">
+                            <div class="flex-grow-1 min-w-0">
                                 <input t-if="!readonly" class="o_summaries_taskname form-control form-control-sm border-0 bg-transparent p-0"
                                        t-att-value="task.name"
                                        t-att-class="task.done ? 'text-muted text-decoration-line-through' : ''"
@@ -266,7 +266,8 @@
                                       t-att-class="task.done ? 'text-muted text-decoration-line-through' : ''">
                                     <InlineText text="task.name" openRef="openRef"/>
                                 </span>
-                                <div t-if="task.note" class="small text-muted"><t t-esc="task.note"/></div>
+                                <div t-if="task.note" class="o_summaries_task_note small text-muted"
+                                     t-att-title="task.note"><t t-esc="task.note"/></div>
                             </div>
                             <a t-if="task.ref" href="#" class="badge text-bg-light border text-decoration-none ms-2"
                                t-on-click.prevent="() => this.openRef(task.ref)"

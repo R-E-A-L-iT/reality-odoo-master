@@ -69,3 +69,18 @@ $o-summaries-done: #5cb85c;
         background-color: transparent;
     }
 }
+
+.o_summaries_doc {
+    // a long note stays two lines; the row keeps its shape
+    .o_summaries_task_note {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        overflow-wrap: anywhere;
+    }
+
+    .o_summaries_task .min-w-0 {
+        min-width: 0; // lets the flex child shrink instead of pushing the checkbox
+    }
+}

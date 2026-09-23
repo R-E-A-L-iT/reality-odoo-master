@@ -81,6 +81,10 @@ A bot ticks off what it did without resending the plan:
  "message": "Quote pulled and follow-up drafted."}
 ```
 
+A report sent as `message` must be plain text; a plan sent in the `message` slot is
+recognised as a plan and stored as one, rather than being written onto the task as an
+unreadable note.
+
 `steps_done` takes step positions (0 is the first). `"steps_done_actor": "ai"` ticks off
 every AI step at once. The reply reports back `task_done`, `plan_state` and the counts,
 so the bot knows what it left for the person.
