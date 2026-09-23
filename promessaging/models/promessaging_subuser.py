@@ -753,7 +753,7 @@ class PromessagingSubuser(models.Model):
     def _receive_reply(self, message, chat_id=None, user_id=None, user_login=None,
                        thread_model=None, thread_id=None, draft_id=None,
                        objective_id=None, plan=None, summary_id=None, summary_values=None,
-                       steps_done=None, steps_done_actor=None):
+                       steps_done=None, steps_done_actor=None, document=None):
         """Route an answer coming back from the AI to the right place."""
         self.ensure_one()
         subuser = self.sudo()
@@ -776,6 +776,8 @@ class PromessagingSubuser(models.Model):
                     [steps_done] if steps_done is not None else []
                 )
                 task.mark_steps(indexes=indexes, done=True, actor=steps_done_actor)
+            if document is not None:
+                task.set_document(document)
             if note:
                 task.sudo().note = note
             plan_now = task.get_plan()

@@ -84,3 +84,11 @@ $o-summaries-done: #5cb85c;
         min-width: 0; // lets the flex child shrink instead of pushing the checkbox
     }
 }
+
+.o_summaries_doc {
+    // Jump sits beside Plan and keeps its width whatever the task name is
+    .o_summaries_jump {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+}

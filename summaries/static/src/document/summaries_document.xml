@@ -269,9 +269,11 @@
                                 <div t-if="task.note" class="o_summaries_task_note small text-muted"
                                      t-att-title="task.note"><t t-esc="task.note"/></div>
                             </div>
-                            <a t-if="task.ref" href="#" class="badge text-bg-light border text-decoration-none ms-2"
-                               t-on-click.prevent="() => this.openRef(task.ref)"
-                               t-esc="task.ref.display_name"/>
+                            <button t-if="task.ref" class="o_summaries_jump btn btn-sm btn-outline-secondary ms-2"
+                                    t-att-title="'Open ' + task.ref.display_name"
+                                    t-on-click="() => this.openRef(task.ref)">
+                                <i class="fa fa-arrow-right me-1" role="img"/>Jump
+                            </button>
                             <button t-if="task.has_plan" class="btn btn-sm btn-outline-primary ms-2"
                                     title="See the plan for this task"
                                     t-on-click="() => this.openPlan(task)">

@@ -89,6 +89,29 @@ unreadable note.
 every AI step at once. The reply reports back `task_done`, `plan_state` and the counts,
 so the bot knows what it left for the person.
 
+### Jumping to the document
+
+A task that is about a specific record shows a **Jump** button next to Plan, which opens
+that record. Hovering it names the document.
+
+The link is set when the task is written, with `record_ref` on the objective:
+
+```json
+{"name": "Follow up on the RTC360 renewal quote", "record_ref": "sale.order,3874"}
+```
+
+or afterwards through the reply endpoint, by id or by name:
+
+```json
+{"subuser": "jerry", "key": "pmsg_...", "objective_id": 34,
+ "document": {"model": "sale.order", "name": "QT-260622-528"}}
+```
+
+A name that matches nothing, or more than one record, is refused rather than guessed.
+Linkable models: `sale.order`, `crm.lead`, `account.move`, `project.task`,
+`purchase.order`, `stock.picking`, `helpdesk.ticket`, `res.partner`. Send
+`"document": false` to clear the link.
+
 ### Colours in the task list
 
 Each task carries a stripe showing where it stands, with a tally above the list:

@@ -252,6 +252,55 @@ class SummariesObjective(models.Model):
             "executed_on": fields.Datetime.to_string(self.plan_executed_on),
         }
 
+    def set_document(self, document):
+        """Link the document this task is about, so Jump can reach it.
+
+        Accepts "sale.order,42", {"model": "sale.order", "id": 42}, or
+        {"model": "sale.order", "name": "QT-260622-528"} when the bot knows the
+        number but not the id. False clears the link.
+        """
+        self.ensure_one()
+        if not document:
+            self.record_ref = False
+            return self._task_data()
+
+        if isinstance(document, str):
+            model, _sep, res_id = document.partition(",")
+            document = {"model": model.strip(), "id": res_id.strip()}
+        if not isinstance(document, dict):
+            raise UserError(_("A document must be a string or an object."))
+
+        model = (document.get("model") or "").strip()
+        if model not in LINKABLE_MODELS:
+            raise UserError(_(
+                "Tasks cannot link to %(model)s. Linkable models: %(allowed)s",
+                model=model or "?", allowed=", ".join(LINKABLE_MODELS),
+            ))
+        if model not in self.env:
+            raise UserError(_("%s is not installed here.", model))
+
+        Model = self.env[model].sudo()
+        record = Model.browse(int(document["id"])).exists() if document.get("id") else None
+        if not record and document.get("name"):
+            # bots know the quote number, rarely the id
+            matches = Model.name_search(document["name"], limit=2)
+            if not matches:
+                raise UserError(_(
+                    "No %(model)s found named %(name)s.",
+                    model=model, name=document["name"],
+                ))
+            if len(matches) > 1:
+                raise UserError(_(
+                    "%(name)s matches more than one %(model)s. Send its id instead.",
+                    name=document["name"], model=model,
+                ))
+            record = Model.browse(matches[0][0])
+        if not record:
+            raise UserError(_("That %s no longer exists.", model))
+
+        self.record_ref = "%s,%s" % (model, record.id)
+        return self._task_data()
+
     def _display_note(self):
         """The note, unless it is a raw payload a bot wrote there by mistake."""
         self.ensure_one()
