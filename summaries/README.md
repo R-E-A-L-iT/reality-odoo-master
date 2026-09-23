@@ -33,6 +33,9 @@ env["summaries.summary"].upsert_summary(
 Both `intro` and `content` take the same blocks and are set the same way
 (`set_intro`, `set_content`). An empty `intro` renders nothing.
 
+The **Edit content** button, which opens the raw JSON of both areas, only appears in
+developer mode. Day to day the document is written by bots and read by people.
+
 ## Tasks
 
 Tasks are records, not markup, so they can be checked off, linked to a document and

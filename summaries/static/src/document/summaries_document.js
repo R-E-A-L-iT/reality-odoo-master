@@ -278,6 +278,11 @@ export class SummariesDocument extends Component {
         return Boolean(this.props.readonly);
     }
 
+    /** The raw JSON editor is a maintenance tool, not everyday UI. */
+    get isDebugMode() {
+        return Boolean(this.env.debug);
+    }
+
     /** How many tasks sit in each state, for the line above the list. */
     get taskTally() {
         const tasks = (this.state.doc && this.state.doc.tasks) || [];
