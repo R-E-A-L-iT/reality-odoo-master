@@ -125,6 +125,42 @@
                     <img t-att-src="block.src" t-att-alt="block.alt || ''" t-att-style="imageStyle(block)"/>
                 </div>
 
+                <div t-elif="block.type === 'routines'" class="row g-2 mb-3">
+                    <div t-foreach="block.items || []" t-as="routine" t-key="routine.key || routine_index"
+                         class="col-12 col-md-6 col-xl-4">
+                        <div class="o_summaries_routine h-100 p-2 rounded border"
+                             t-att-style="'border-left: 3px solid ' + routineColor(routine) + ';'">
+                            <div class="d-flex align-items-start">
+                                <span class="o_summaries_routine_status mt-1 me-2"
+                                      t-att-style="'background-color: ' + routineStatusColor(routine) + ';'"
+                                      t-att-title="routineStatusLabel(routine)"/>
+                                <div class="flex-grow-1 min-w-0">
+                                    <div class="fw-bold text-truncate" t-att-title="routine.name">
+                                        <t t-esc="routine.name"/>
+                                    </div>
+                                </div>
+                                <button t-if="routine.trigger" class="btn btn-sm btn-outline-secondary ms-2"
+                                        t-att-title="'Ask your assistant to run ' + routine.name"
+                                        t-on-click="() => this.triggerRoutine(routine)">
+                                    <t t-esc="routine.trigger.label"/>
+                                </button>
+                            </div>
+                            <div t-if="routine.description" class="small text-muted mt-1">
+                                <InlineText text="routine.description" openRef="props.openRef"/>
+                            </div>
+                            <div t-if="routine.activity" class="small mt-1"
+                                 t-att-style="'color: ' + routineColor(routine) + ';'">
+                                <t t-esc="routine.activity"/>
+                            </div>
+                            <div t-if="routine.status !== 'ok' and routine.status_note"
+                                 class="small mt-1"
+                                 t-att-style="'color: ' + routineStatusColor(routine) + ';'">
+                                <t t-esc="routine.status_note"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <hr t-elif="block.type === 'divider'" class="my-3"/>
 
                 <div t-elif="block.type === 'stats'" class="mb-3">
@@ -140,7 +176,8 @@
                     </div>
                     <div class="card-body py-2">
                         <SummariesBlocks blocks="block.blocks || []" openRef="props.openRef"
-                                         resId="props.resId"/>
+                                         resId="props.resId"
+                                         onTriggerRoutine="props.onTriggerRoutine"/>
                     </div>
                 </div>
 
@@ -218,7 +255,7 @@
             <t t-else="">
 
                 <SummariesBlocks t-if="state.doc.intro_blocks.length" blocks="state.doc.intro_blocks"
-                                 openRef="openRef" resId="resId"/>
+                                 openRef="openRef" resId="resId" onTriggerRoutine="triggerRoutine"/>
 
                 <div class="card mb-3 o_summaries_tasks">
                     <div class="card-header d-flex align-items-center py-2">
@@ -317,7 +354,7 @@
                     </div>
                 </div>
                 <SummariesBlocks t-else="" blocks="state.doc.blocks" openRef="openRef"
-                                 resId="resId"/>
+                                 resId="resId" onTriggerRoutine="triggerRoutine"/>
 
             </t>
         </div>

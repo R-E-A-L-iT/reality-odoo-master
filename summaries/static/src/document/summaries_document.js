@@ -98,6 +98,7 @@ export class SummariesBlocks extends Component {
         blocks: { type: Array },
         openRef: { type: Function, optional: true },
         resId: { type: [Number, Boolean], optional: true },
+        onTriggerRoutine: { type: Function, optional: true },
     };
 
     textClass(block) {
@@ -119,6 +120,37 @@ export class SummariesBlocks extends Component {
 
     imageStyle(block) {
         return `max-width: 100%; width: ${block.width || "auto"};`;
+    }
+
+    /** A routine's accent: a style name maps to its colour, a hex is used as is. */
+    routineColor(routine) {
+        const named = {
+            default: "#6c757d",
+            primary: "#a855f7",
+            success: "#5cb85c",
+            warning: "#f0ad4e",
+            danger: "#d9534f",
+            info: "#5b8def",
+            muted: "#9aa0ab",
+        };
+        return named[routine.color] || routine.color || "#6c757d";
+    }
+
+    routineStatusColor(routine) {
+        return { ok: "#5cb85c", warning: "#f0ad4e", error: "#d9534f" }[routine.status] || "#5cb85c";
+    }
+
+    routineStatusLabel(routine) {
+        const label = { ok: "Running fine", warning: "Needs attention", error: "Failing" }[
+            routine.status
+        ];
+        return routine.status_note || label || "";
+    }
+
+    async triggerRoutine(routine) {
+        if (this.props.onTriggerRoutine) {
+            await this.props.onTriggerRoutine(routine);
+        }
     }
 
     markupHtml(html) {
@@ -257,6 +289,8 @@ export class SummariesDocument extends Component {
         this.orm = useService("orm");
         this.action = useService("action");
         this.dialog = useService("dialog");
+        this.notification = useService("notification");
+        this.triggerRoutine = this.triggerRoutine.bind(this);
         this.state = useState({
             loading: true,
             doc: null,
@@ -390,6 +424,20 @@ export class SummariesDocument extends Component {
             view_mode: "form",
             views: [[false, "form"]],
         });
+    }
+
+    async triggerRoutine(routine) {
+        const result = await this.orm.call("summaries.summary", "trigger_routine", [
+            [this.resId],
+            routine.key || routine.name,
+        ]);
+        await this.loadDocument();
+        this.notification.add(
+            result.ok
+                ? _t("%s is running %s.", result.subuser, result.routine)
+                : _t("Could not reach %s (%s).", result.subuser, result.error || _t("unknown error")),
+            { type: result.ok ? "info" : "warning" }
+        );
     }
 
     // ----- content

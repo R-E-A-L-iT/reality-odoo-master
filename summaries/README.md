@@ -180,11 +180,35 @@ Usable in any block text, and in task names:
   {"type": "divider"},
   {"type": "html", "html": "<b>sanitized</b> raw html"},
   {"type": "stats"},
+  {"type": "routines", "items": [
+    {"key": "ticket-sweep", "name": "Ticket sweep",
+     "description": "Checks new helpdesk tickets and tags them.",
+     "activity": "3 tickets triaged today",
+     "status": "ok", "color": "#a855f7", "trigger": {"label": "Run now"}}
+  ]},
   {"type": "section", "title": "Looking ahead", "style": "info",
    "blocks": [{"type": "text", "text": "Nested blocks, up to 3 levels deep."}]}
 ]
 ```
 
+- `routines` lays out routine cards across the width, wrapping onto as many rows as
+  needed. Each card takes:
+
+  | Field | Meaning |
+  |---|---|
+  | `name` | required; the routine's name |
+  | `description` | what it does |
+  | `activity` | free text on how often it has run: "Run twice in the last week", "3 tickets created today" — phrase it however suits the routine |
+  | `status` | `ok` (green), `warning` (orange) or `error` (red) |
+  | `status_note` | shown under the card when the status is not `ok`, and on hover of the dot |
+  | `color` | the card's accent: a hex like `#a855f7`, or a style name |
+  | `trigger` | `true`, or `{"label": "Run now"}`, to show a button that runs it now |
+  | `key` | stable id used when the button is pressed; defaults to the name |
+
+  Pressing a trigger sends a `routine_trigger` webhook to the reader's Default AI
+  Assistant, carrying that routine and the summary. Answer with
+  `{"summary": {"content": [...]}}` to refresh the dashboard, or `{"reply": "text"}` to
+  report back.
 - `stats` renders the user's role-based performance graphs (sales, CRM, projects,
   timesheets) with a 4/12/26-week selector; clicking a bar opens those records.
 - `html` is sanitized server-side; use it only when no other block fits.

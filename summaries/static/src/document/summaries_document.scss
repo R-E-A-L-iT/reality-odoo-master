@@ -92,3 +92,20 @@ $o-summaries-done: #5cb85c;
         white-space: nowrap;
     }
 }
+
+.o_summaries_doc {
+    // routine cards: one per column, wrapping to as many rows as needed
+    .o_summaries_routine {
+        background-color: rgba(128, 128, 128, 0.06);
+
+        .min-w-0 { min-width: 0; }
+    }
+
+    .o_summaries_routine_status {
+        width: 0.6rem;
+        height: 0.6rem;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: inline-block;
+    }
+}

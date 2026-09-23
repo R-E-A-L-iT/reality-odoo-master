@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from datetime import timedelta
 
 from odoo import _, api, fields, models
@@ -206,8 +207,9 @@ class SummariesSummary(models.Model):
 
     BLOCK_TYPES = (
         "heading", "text", "callout", "list", "checklist", "kpi", "progress",
-        "table", "links", "image", "divider", "html", "section", "stats",
+        "table", "links", "image", "divider", "html", "section", "stats", "routines",
     )
+    ROUTINE_STATUSES = ("ok", "warning", "error")
     BLOCK_STYLES = ("default", "primary", "success", "warning", "danger", "info", "muted")
 
     def _parse_blocks(self, field_name="content"):
@@ -248,6 +250,10 @@ class SummariesSummary(models.Model):
                 clean["html"] = html_sanitize(clean.get("html") or "")
             if block_type == "section":
                 clean["blocks"] = self._clean_blocks(clean.get("blocks") or [], depth + 1)
+            if block_type == "routines":
+                clean["items"] = [
+                    self._clean_routine(item) for item in (clean.get("items") or [])
+                ]
             cleaned.append(clean)
         return cleaned
 
@@ -261,6 +267,115 @@ class SummariesSummary(models.Model):
                                   field=field_name.capitalize(), error=error))
         self[field_name] = json.dumps(self._clean_blocks(blocks), ensure_ascii=False, indent=2)
         return True
+
+    @api.model
+    def _clean_color(self, color):
+        """A style name, or a hex colour the bot picked for this routine."""
+        color = (color or "").strip()
+        if not color:
+            return ""
+        if color in self.BLOCK_STYLES:
+            return color
+        if re.match(r"^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$", color):
+            return color
+        raise UserError(_(
+            "Unknown colour %(color)s. Use a hex colour like #a855f7, or one of: "
+            "%(allowed)s", color=color, allowed=", ".join(self.BLOCK_STYLES),
+        ))
+
+    @api.model
+    def _clean_routine(self, routine):
+        """One card in a routines block."""
+        if not isinstance(routine, dict):
+            raise UserError(_("Every routine must be an object."))
+        name = (routine.get("name") or "").strip()
+        if not name:
+            raise UserError(_("Every routine needs a name."))
+
+        status = (routine.get("status") or "ok").strip().lower()
+        if status not in self.ROUTINE_STATUSES:
+            raise UserError(_(
+                "Unknown routine status %(status)s. Use one of: %(allowed)s",
+                status=status, allowed=", ".join(self.ROUTINE_STATUSES),
+            ))
+
+        key = (routine.get("key") or name).strip()
+        trigger = routine.get("trigger")
+        if trigger is True:
+            trigger = {}
+        if trigger:
+            if not isinstance(trigger, dict):
+                raise UserError(_("A routine's trigger must be an object, or true."))
+            trigger = {"label": (trigger.get("label") or _("Run now")).strip()}
+
+        return {
+            "key": key,
+            "name": name,
+            "description": (routine.get("description") or "").strip(),
+            # free text: "Run twice this week", "3 tickets created today", anything
+            "activity": (routine.get("activity") or "").strip(),
+            "status": status,
+            "status_note": (routine.get("status_note") or "").strip(),
+            "color": self._clean_color(routine.get("color")),
+            "trigger": trigger or False,
+        }
+
+    def _find_routine(self, key):
+        """Look through both block areas for a routine with this key."""
+        self.ensure_one()
+        key = (key or "").strip()
+
+        def walk(blocks):
+            for block in blocks or []:
+                if block.get("type") == "routines":
+                    for item in block.get("items") or []:
+                        if item.get("key") == key or item.get("name") == key:
+                            return item
+                if block.get("type") == "section":
+                    found = walk(block.get("blocks"))
+                    if found:
+                        return found
+            return None
+
+        return walk(self._parse_blocks("intro")) or walk(self._parse_blocks("content"))
+
+    def trigger_routine(self, key):
+        """Ask the reader's assistant to run a routine now."""
+        self.ensure_one()
+        routine = self._find_routine(key)
+        if not routine:
+            raise UserError(_("No routine named %s on this summary.", key))
+        subuser = self.env.user._promessaging_default_subuser()
+        if not subuser:
+            raise UserError(_(
+                "No AI assistant to run this. Set a Default AI Assistant on your user, "
+                "under Settings, Users, Access Rights."
+            ))
+
+        payload = {
+            "prompt": _("Run this routine now."),
+            "routine": routine,
+            "summary": {
+                "id": self.id,
+                "date": fields.Date.to_string(self.date),
+                "user": {"id": self.user_id.id, "name": self.user_id.name},
+            },
+            "requested_by": {"user_id": self.env.user.id, "name": self.env.user.name},
+            "reply": subuser.sudo()._reply_instructions(),
+        }
+        payload["reply"]["async"]["body"]["summary_id"] = self.id
+        payload["reply"]["sync"] = _(
+            'Answer with JSON {"summary": {"content": [...]}} to refresh this summary, '
+            'or {"reply": "text"} to report back.'
+        )
+
+        result = subuser.sudo().dispatch("routine_trigger", payload)
+        return {
+            "ok": bool(result.get("ok")),
+            "error": result.get("error"),
+            "subuser": subuser.sudo().name,
+            "routine": routine["name"],
+        }
 
     def set_content(self, blocks):
         """Replace the blocks shown below the tasks. List or JSON string."""
@@ -323,6 +438,18 @@ class SummariesSummary(models.Model):
                 {"type": "section", "title": "Tomorrow", "style": "info", "blocks": [
                     {"type": "text", "text": "Nested blocks go here."}]},
                 {"type": "stats", "note": "Renders this user's role-based performance graphs."},
+                {"type": "routines", "items": [
+                    {"key": "ticket-sweep", "name": "Ticket sweep",
+                     "description": "Checks new helpdesk tickets and tags them.",
+                     "activity": "3 tickets triaged today",
+                     "status": "ok", "color": "#a855f7",
+                     "trigger": {"label": "Run now"}},
+                    {"key": "quote-chaser", "name": "Quote chaser",
+                     "description": "Chases quotes with no reply for a week.",
+                     "activity": "Run twice in the last week",
+                     "status": "warning", "status_note": "Two quotes had no contact email.",
+                     "color": "warning"},
+                ]},
             ],
         }
 
