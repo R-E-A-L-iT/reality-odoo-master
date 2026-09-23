@@ -721,7 +721,8 @@ class PromessagingSubuser(models.Model):
 
     def _receive_reply(self, message, chat_id=None, user_id=None, user_login=None,
                        thread_model=None, thread_id=None, draft_id=None,
-                       objective_id=None, plan=None, summary_id=None, summary_values=None):
+                       objective_id=None, plan=None, summary_id=None, summary_values=None,
+                       steps_done=None, steps_done_actor=None):
         """Route an answer coming back from the AI to the right place."""
         self.ensure_one()
         subuser = self.sudo()
@@ -736,13 +737,23 @@ class PromessagingSubuser(models.Model):
                 return {"ok": False, "error": "unknown_task"}
             if plan is not None:
                 task.set_plan(plan)
+            if steps_done is not None or steps_done_actor:
+                indexes = steps_done if isinstance(steps_done, (list, tuple)) else (
+                    [steps_done] if steps_done is not None else []
+                )
+                task.mark_steps(indexes=indexes, done=True, actor=steps_done_actor)
             if message:
                 task.sudo().note = str(message)
+            plan_now = task.get_plan()
             return {
                 "ok": True,
                 "target": "task",
                 "objective_id": task.id,
                 "summary_id": task.summary_id.id,
+                # so the bot can see what it left for the person
+                "task_done": plan_now["task_done"],
+                "plan_state": plan_now["state"],
+                "counts": plan_now["counts"],
             }
 
         # 2. a daily summary: an existing one by id, or a new one for a user

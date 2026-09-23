@@ -154,8 +154,9 @@
                 <div t-if="state.error" class="alert alert-danger py-2"><t t-esc="state.error"/></div>
 
                 <div class="d-flex align-items-center mb-2">
-                    <span class="badge text-bg-primary me-1"><t t-esc="aiCount"/> for the AI</span>
-                    <span class="badge text-bg-secondary"><t t-esc="humanCount"/> for a human</span>
+                    <span class="badge text-bg-primary me-1"><t t-esc="remainingForAi"/> left for the AI</span>
+                    <span class="badge text-bg-secondary"><t t-esc="remainingForHuman"/> left for you</span>
+                    <span t-if="state.taskDone" class="badge text-bg-success ms-1">task done</span>
                     <small t-if="props.plan.executed_on" class="text-muted ms-2">
                         last sent for execution <t t-esc="props.plan.executed_on"/>
                     </small>
@@ -169,7 +170,12 @@
                 <div t-if="!state.steps.length" class="text-muted p-2">This plan has no steps yet.</div>
 
                 <div t-foreach="state.steps" t-as="step" t-key="step_index"
-                     class="o_summaries_plan_step d-flex align-items-start mb-2">
+                     class="o_summaries_plan_step d-flex align-items-start mb-2"
+                     t-att-class="step.done ? 'o-done' : ''">
+                    <input type="checkbox" class="form-check-input mt-1 me-2"
+                           t-att-checked="step.done"
+                           t-att-title="step.done ? 'Mark as still to do' : 'Mark this step done'"
+                           t-on-change="() => this.toggleStep(step_index)"/>
                     <div class="btn-group btn-group-sm me-2" role="group">
                         <button class="btn" t-att-disabled="props.readonly"
                                 t-att-class="step.actor === 'ai' ? 'btn-primary' : 'btn-outline-secondary'"
@@ -180,8 +186,11 @@
                     </div>
                     <input t-if="!props.readonly" class="form-control form-control-sm flex-grow-1"
                            t-att-value="step.text" placeholder="What happens in this step"
+                           t-att-class="step.done ? 'text-muted text-decoration-line-through' : ''"
                            t-on-change="(ev) => this.updateText(step, ev)"/>
-                    <span t-else="" class="flex-grow-1"><t t-esc="step.text"/></span>
+                    <span t-else="" class="flex-grow-1"
+                          t-att-class="step.done ? 'text-muted text-decoration-line-through' : ''">
+                        <t t-esc="step.text"/></span>
                     <button t-if="!props.readonly" class="btn btn-sm btn-link text-danger ms-1 py-0"
                             title="Remove step" t-on-click="() => this.removeStep(step_index)">&#215;</button>
                 </div>
@@ -227,8 +236,24 @@
                         <div t-if="!state.doc.tasks.length" class="text-muted px-3 py-2">
                             No tasks yet.
                         </div>
+                        <div t-else="" class="o_summaries_tally d-flex flex-wrap align-items-center px-3 py-1 small">
+                            <span t-if="taskTally.aiReady" class="o_summaries_tally_chip o-ai_ready me-2">
+                                <t t-esc="taskTally.aiReady"/> the AI can start
+                            </span>
+                            <span t-if="taskTally.humanNext" class="o_summaries_tally_chip o-human_next me-2">
+                                <t t-esc="taskTally.humanNext"/> under way, need you
+                            </span>
+                            <span t-if="taskTally.humanOnly" class="o_summaries_tally_chip o-human_only me-2">
+                                <t t-esc="taskTally.humanOnly"/> not started, yours
+                            </span>
+                        </div>
                         <div t-foreach="state.doc.tasks" t-as="task" t-key="task.id"
-                             class="o_summaries_task d-flex align-items-start px-3 py-2 border-bottom">
+                             class="o_summaries_task d-flex align-items-start px-3 py-2 border-bottom"
+                             t-att-class="'o-state-' + task.plan_state"
+                             t-att-title="task.plan_state === 'ai_ready' ? 'The AI can still take steps on this'
+                                        : task.plan_state === 'human_next' ? 'Under way, the rest is yours'
+                                        : task.plan_state === 'human_only' ? 'Not started, every step is yours'
+                                        : ''">
                             <input type="checkbox" class="form-check-input mt-1 me-2"
                                    t-att-checked="task.done" t-att-disabled="readonly"
                                    t-on-change="() => this.toggleTask(task)"/>
@@ -250,6 +275,9 @@
                                     title="See the plan for this task"
                                     t-on-click="() => this.openPlan(task)">
                                 Plan
+                                <span class="ms-1 opacity-75">
+                                    <t t-esc="task.plan_counts.done"/>/<t t-esc="task.plan_counts.total"/>
+                                </span>
                             </button>
                             <button t-if="task.execute_enabled" class="btn btn-sm btn-outline-primary ms-2"
                                     t-on-click="() => this.executeTask(task)">Execute</button>

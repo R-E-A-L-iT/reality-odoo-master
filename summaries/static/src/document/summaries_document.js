@@ -142,6 +142,7 @@ export class SummariesPlanDialog extends Component {
         readonly: { type: Boolean, optional: true },
         onSave: { type: Function },
         onExecute: { type: Function },
+        onToggleStep: { type: Function },
         close: { type: Function },
     };
 
@@ -149,6 +150,7 @@ export class SummariesPlanDialog extends Component {
         this.state = useState({
             steps: this.props.plan.steps.map((step) => ({ ...step })),
             summary: this.props.plan.summary || "",
+            taskDone: this.props.plan.task_done,
             busy: false,
             error: false,
         });
@@ -164,6 +166,29 @@ export class SummariesPlanDialog extends Component {
 
     setActor(step, actor) {
         step.actor = actor;
+    }
+
+    async toggleStep(index) {
+        const step = this.state.steps[index];
+        step.done = !step.done;
+        try {
+            const plan = await this.props.onToggleStep(index, step.done);
+            if (plan) {
+                this.state.steps = plan.steps.map((one) => ({ ...one }));
+                this.state.taskDone = plan.task_done;
+            }
+        } catch (error) {
+            step.done = !step.done; // put it back
+            this.state.error = this.constructor.errorOf(error);
+        }
+    }
+
+    get remainingForAi() {
+        return this.state.steps.filter((step) => step.actor === "ai" && !step.done).length;
+    }
+
+    get remainingForHuman() {
+        return this.state.steps.filter((step) => step.actor !== "ai" && !step.done).length;
     }
 
     updateText(step, ev) {
@@ -253,6 +278,17 @@ export class SummariesDocument extends Component {
         return Boolean(this.props.readonly);
     }
 
+    /** How many tasks sit in each state, for the line above the list. */
+    get taskTally() {
+        const tasks = (this.state.doc && this.state.doc.tasks) || [];
+        const count = (state) => tasks.filter((task) => task.plan_state === state).length;
+        return {
+            aiReady: count("ai_ready"),
+            humanNext: count("human_next"),
+            humanOnly: count("human_only"),
+        };
+    }
+
     async loadDocument() {
         this.state.loading = true;
         try {
@@ -326,6 +362,15 @@ export class SummariesDocument extends Component {
                 await this.reload();
             },
             onExecute: () => this.executeTask(task),
+            onToggleStep: async (index, done) => {
+                const updated = await this.orm.call("summaries.objective", "mark_step", [
+                    [task.id],
+                    index,
+                    done,
+                ]);
+                await this.reload();
+                return updated;
+            },
         });
     }
 

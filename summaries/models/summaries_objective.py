@@ -99,6 +99,93 @@ class SummariesObjective(models.Model):
         steps = plan.get("steps") if isinstance(plan, dict) else plan
         return steps if isinstance(steps, list) else []
 
+    def _plan_counts(self):
+        """How much of the plan is left, and who it is left for."""
+        self.ensure_one()
+        steps = self._plan_steps()
+        remaining = [step for step in steps if not step.get("done")]
+        return {
+            "total": len(steps),
+            "done": len(steps) - len(remaining),
+            "ai_remaining": len([s for s in remaining if s.get("actor") == "ai"]),
+            "human_remaining": len([s for s in remaining if s.get("actor") != "ai"]),
+        }
+
+    def _plan_state(self):
+        """One word for how this task stands, used to colour the list.
+
+        done        the task is finished
+        ai_ready    the AI can still take steps on it
+        human_next  under way, but everything left needs a person
+        human_only  nothing done yet and every step needs a person
+        no_plan     no plan written
+        """
+        self.ensure_one()
+        if self.done:
+            return "done"
+        counts = self._plan_counts()
+        if not counts["total"]:
+            return "no_plan"
+        if counts["ai_remaining"]:
+            return "ai_ready"
+        if not counts["human_remaining"]:
+            return "done"
+        return "human_next" if counts["done"] else "human_only"
+
+    def _sync_done_from_plan(self):
+        """A task whose every step is done is itself done."""
+        self.ensure_one()
+        counts = self._plan_counts()
+        if counts["total"] and counts["done"] == counts["total"] and not self.done:
+            self.done = True
+        return self.done
+
+    def mark_step(self, index, done=True):
+        """Tick one step off, by position in the plan."""
+        self.ensure_one()
+        steps = self._plan_steps()
+        index = int(index)
+        if index < 0 or index >= len(steps):
+            raise UserError(_("That step is not in this plan."))
+        steps[index]["done"] = bool(done)
+        self._store_steps(steps)
+        return self.get_plan()
+
+    def mark_steps(self, indexes=None, done=True, actor=None):
+        """Tick off several steps: by position, or every step of one actor."""
+        self.ensure_one()
+        steps = self._plan_steps()
+        if actor:
+            actor = str(actor).strip().lower()
+            if actor not in ACTORS:
+                raise UserError(_(
+                    "Unknown actor %(actor)s. Use one of: %(allowed)s",
+                    actor=actor, allowed=", ".join(ACTORS),
+                ))
+            for step in steps:
+                if step.get("actor") == actor:
+                    step["done"] = bool(done)
+        for index in indexes or []:
+            index = int(index)
+            if 0 <= index < len(steps):
+                steps[index]["done"] = bool(done)
+        self._store_steps(steps)
+        return self.get_plan()
+
+    def _store_steps(self, steps):
+        self.ensure_one()
+        stored = {}
+        try:
+            stored = json.loads(self.plan or "{}")
+        except (TypeError, ValueError):
+            stored = {}
+        summary = stored.get("summary") if isinstance(stored, dict) else None
+        plan = {"steps": steps}
+        if summary:
+            plan["summary"] = summary
+        self.plan = json.dumps(plan, ensure_ascii=False, indent=2)
+        self._sync_done_from_plan()
+
     @api.model
     def _clean_plan(self, plan):
         """Validate a plan coming from an AI or from the editor."""
@@ -144,6 +231,8 @@ class SummariesObjective(models.Model):
         self.ensure_one()
         cleaned = self._clean_plan(plan)
         self.plan = json.dumps(cleaned, ensure_ascii=False, indent=2) if cleaned["steps"] else False
+        if cleaned["steps"]:
+            self._sync_done_from_plan()
         return self.get_plan()
 
     def get_plan(self):
@@ -157,6 +246,9 @@ class SummariesObjective(models.Model):
             "task_name": self.name,
             "summary": (stored or {}).get("summary", "") if isinstance(stored, dict) else "",
             "steps": self._plan_steps(),
+            "counts": self._plan_counts(),
+            "state": self._plan_state(),
+            "task_done": self.done,
             "executed_on": fields.Datetime.to_string(self.plan_executed_on),
         }
 
@@ -181,6 +273,8 @@ class SummariesObjective(models.Model):
             "sequence": self.sequence,
             "execute_enabled": self.execute_enabled,
             "has_plan": self.has_plan,
+            "plan_state": self._plan_state(),
+            "plan_counts": self._plan_counts(),
             "plan_executed_on": fields.Datetime.to_string(self.plan_executed_on),
             "ref": reference,
         }

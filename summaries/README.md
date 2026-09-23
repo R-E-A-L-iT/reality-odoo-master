@@ -68,6 +68,35 @@ A plan is stored as JSON:
 `actor` is `ai` or `human`; anything else is rejected. A step may also carry `note` and
 `done`.
 
+### Finishing steps
+
+Each step has a checkbox in the plan window. Ticking the last remaining step marks the
+whole task done. The task's own checkbox still works on its own, without opening the
+plan, for when it is finished some other way.
+
+A bot ticks off what it did without resending the plan:
+
+```json
+{"subuser": "jerry", "key": "pmsg_...", "objective_id": 34, "steps_done": [0, 1],
+ "message": "Quote pulled and follow-up drafted."}
+```
+
+`steps_done` takes step positions (0 is the first). `"steps_done_actor": "ai"` ticks off
+every AI step at once. The reply reports back `task_done`, `plan_state` and the counts,
+so the bot knows what it left for the person.
+
+### Colours in the task list
+
+Each task carries a stripe showing where it stands, with a tally above the list:
+
+| Colour | State | Meaning |
+|---|---|---|
+| purple | `ai_ready` | the AI can still take steps on it |
+| amber | `human_next` | under way, everything left needs a person |
+| blue | `human_only` | nothing done yet and every step needs a person |
+| green | `done` | finished |
+| none | `no_plan` | no plan written |
+
 ## Writing plans and summaries as a bot
 
 Both go through ProMessaging's reply endpoint, `POST /promessaging/webhook/reply`, with

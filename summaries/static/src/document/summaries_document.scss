@@ -25,3 +25,47 @@
         max-width: 60rem;
     }
 }
+
+// at-a-glance state of each task, by a stripe down its left edge
+$o-summaries-ai: #a855f7;       // the AI can still act
+$o-summaries-human-next: #f0ad4e; // under way, the rest needs a person
+$o-summaries-human-only: #5b8def; // untouched, every step needs a person
+$o-summaries-done: #5cb85c;
+
+.o_summaries_doc {
+    .o_summaries_task {
+        border-left: 3px solid transparent;
+
+        &.o-state-ai_ready { border-left-color: $o-summaries-ai; }
+        &.o-state-human_next { border-left-color: $o-summaries-human-next; }
+        &.o-state-human_only { border-left-color: $o-summaries-human-only; }
+        &.o-state-done { border-left-color: $o-summaries-done; }
+    }
+
+    .o_summaries_tally_chip {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 0 0.5rem;
+        border: 1px solid transparent;
+
+        &::before {
+            content: "";
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            margin-right: 0.35rem;
+            background-color: currentColor;
+        }
+
+        &.o-ai_ready { color: $o-summaries-ai; border-color: rgba(168, 85, 247, 0.4); }
+        &.o-human_next { color: $o-summaries-human-next; border-color: rgba(240, 173, 78, 0.4); }
+        &.o-human_only { color: $o-summaries-human-only; border-color: rgba(91, 141, 239, 0.4); }
+    }
+}
+
+.o_summaries_plan {
+    .o_summaries_plan_step.o-done .form-control {
+        background-color: transparent;
+    }
+}
