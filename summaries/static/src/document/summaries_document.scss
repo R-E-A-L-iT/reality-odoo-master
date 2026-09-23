@@ -22,7 +22,16 @@
     }
 
     .o_summaries_blocks {
-        max-width: 60rem;
+        // the dashboard uses the full width; only prose is held to a readable
+        // measure, so routines, stats and tables reach the edge
+        max-width: none;
+
+        > p,
+        > ul,
+        > ol,
+        > .alert {
+            max-width: 60rem;
+        }
     }
 }
 
