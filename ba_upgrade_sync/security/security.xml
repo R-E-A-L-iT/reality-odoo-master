@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Give this group (and an API key) to the technical user that the Odoo 19
+         upgrade-test instance uses to pull events. Read-only. -->
+    <record id="group_upgrade_sync_reader" model="res.groups">
+        <field name="name">Upgrade Sync Reader</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+</odoo>

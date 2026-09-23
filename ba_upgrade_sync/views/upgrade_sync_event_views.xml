@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="upgrade_sync_event_view_tree" model="ir.ui.view">
+        <field name="name">upgrade.sync.event.tree</field>
+        <field name="model">upgrade.sync.event</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false">
+                <field name="id" string="Seq"/>
+                <field name="create_date" string="Date"/>
+                <field name="event_type"/>
+                <field name="model"/>
+                <field name="res_id"/>
+                <field name="res_name"/>
+                <field name="user_id"/>
+                <field name="name" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="upgrade_sync_event_view_form" model="ir.ui.view">
+        <field name="name">upgrade.sync.event.form</field>
+        <field name="model">upgrade.sync.event</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <header>
+                    <button name="action_open_record" type="object" string="Open Record"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="event_type"/>
+                            <field name="create_date" string="Date"/>
+                            <field name="user_id"/>
+                            <field name="company_id"/>
+                        </group>
+                        <group>
+                            <field name="model"/>
+                            <field name="res_id"/>
+                            <field name="res_name"/>
+                            <field name="root_model"/>
+                            <field name="root_id"/>
+                        </group>
+                    </group>
+                    <label for="payload"/>
+                    <field name="payload" widget="ace" options="{'mode': 'javascript'}"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="upgrade_sync_event_view_search" model="ir.ui.view">
+        <field name="name">upgrade.sync.event.search</field>
+        <field name="model">upgrade.sync.event</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="res_name"/>
+                <field name="name"/>
+                <field name="event_type"/>
+                <field name="model"/>
+                <field name="user_id"/>
+                <filter name="today" string="Today"
+                        domain="[('create_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="sales" string="Sales" domain="[('model', '=', 'sale.order')]"/>
+                <filter name="invoices" string="Invoices" domain="[('model', '=', 'account.move')]"/>
+                <filter name="crm" string="CRM" domain="[('model', '=', 'crm.lead')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_type" string="Event Type" context="{'group_by': 'event_type'}"/>
+                    <filter name="group_model" string="Model" context="{'group_by': 'model'}"/>
+                    <filter name="group_user" string="User" context="{'group_by': 'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="upgrade_sync_event_action" model="ir.actions.act_window">
+        <field name="name">Upgrade Sync Events</field>
+        <field name="res_model">upgrade.sync.event</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

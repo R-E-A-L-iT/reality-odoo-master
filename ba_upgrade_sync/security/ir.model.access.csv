@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_upgrade_sync_event_reader,upgrade.sync.event reader,model_upgrade_sync_event,group_upgrade_sync_reader,1,0,0,0
+access_upgrade_sync_event_admin,upgrade.sync.event admin,model_upgrade_sync_event,base.group_system,1,0,0,1
