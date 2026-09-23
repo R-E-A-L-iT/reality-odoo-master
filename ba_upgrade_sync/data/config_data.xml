@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Safe defaults: no auto sync, dry run on. -->
+    <record id="upgrade_sync_config_default" model="upgrade.sync.config">
+        <field name="name">Odoo 17 source</field>
+        <field name="auto_sync" eval="False"/>
+        <field name="dry_run" eval="True"/>
+    </record>
+</odoo>

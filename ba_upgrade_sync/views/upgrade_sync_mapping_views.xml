@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="upgrade_sync_mapping_view_list" model="ir.ui.view">
+        <field name="name">upgrade.sync.mapping.list</field>
+        <field name="model">upgrade.sync.mapping</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="source_model"/>
+                <field name="source_id"/>
+                <field name="source_name"/>
+                <field name="target_model"/>
+                <field name="target_id"/>
+                <field name="target_display"/>
+                <field name="match_method"/>
+                <field name="write_date" string="Updated"/>
+                <button name="action_open_target" type="object" string="Open" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="upgrade_sync_mapping_view_search" model="ir.ui.view">
+        <field name="name">upgrade.sync.mapping.search</field>
+        <field name="model">upgrade.sync.mapping</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="source_name"/>
+                <field name="source_model"/>
+                <field name="source_id"/>
+                <field name="target_id"/>
+                <filter name="created" string="Created by sync" domain="[('match_method', 'in', ('created', 'created_from_ref'))]"/>
+                <filter name="manual" string="Manual" domain="[('match_method', '=', 'manual')]"/>
+                <group>
+                    <filter name="group_model" string="Model" context="{'group_by': 'source_model'}"/>
+                    <filter name="group_method" string="Match Method" context="{'group_by': 'match_method'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="upgrade_sync_mapping_action" model="ir.actions.act_window">
+        <field name="name">Record Mappings</field>
+        <field name="res_model">upgrade.sync.mapping</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_upgrade_sync_root" name="Upgrade Sync" sequence="200"
+              web_icon="base,static/description/settings.png"
+              groups="base.group_system,sales_team.group_sale_manager"/>
+    <menuitem id="menu_upgrade_sync_events" name="Events" parent="menu_upgrade_sync_root"
+              action="upgrade_sync_event_action" sequence="10"/>
+    <menuitem id="menu_upgrade_sync_failed" name="Failed Events" parent="menu_upgrade_sync_root"
+              action="upgrade_sync_event_action_failed" sequence="20"/>
+    <menuitem id="menu_upgrade_sync_waiting" name="Pending / Waiting" parent="menu_upgrade_sync_root"
+              action="upgrade_sync_event_action_waiting" sequence="30"/>
+    <menuitem id="menu_upgrade_sync_mappings" name="Record Mappings" parent="menu_upgrade_sync_root"
+              action="upgrade_sync_mapping_action" sequence="40"/>
+    <menuitem id="menu_upgrade_sync_config" name="Configuration" parent="menu_upgrade_sync_root"
+              action="upgrade_sync_config_action" sequence="50" groups="base.group_system"/>
+</odoo>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="upgrade_sync_config_view_form" model="ir.ui.view">
+        <field name="name">upgrade.sync.config.form</field>
+        <field name="model">upgrade.sync.config</field>
+        <field name="arch" type="xml">
+            <form create="false" delete="false">
+                <header>
+                    <button name="action_test_connection" type="object" string="Test Connection"/>
+                    <button name="action_set_api_key" type="object" string="Set API key"/>
+                    <button name="action_fetch" type="object" string="Fetch Now" class="oe_highlight"/>
+                    <button name="action_process" type="object" string="Process Now" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="not dry_run">
+                        Dry run is ON: events are replayed and rolled back, Odoo 19 data is not changed.
+                    </div>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Odoo 17 source">
+                            <field name="source_url" placeholder="https://..."/>
+                            <field name="source_db"/>
+                            <field name="source_login"/>
+                            <field name="api_key_set"/>
+                            <field name="timeout"/>
+                            <field name="allow_insecure_http"/>
+                        </group>
+                        <group string="Replay">
+                            <field name="auto_sync"/>
+                            <field name="dry_run"/>
+                            <field name="batch_size"/>
+                            <field name="max_attempts"/>
+                            <field name="event_types" placeholder="All supported event types"/>
+                            <field name="snapshot_cutoff"/>
+                            <field name="create_missing_partners"/>
+                            <field name="overlap_minutes"/>
+                        </group>
+                    </group>
+                    <group string="Status">
+                        <field name="last_cursor"/>
+                        <field name="last_fetch_date"/>
+                        <field name="last_fetch_message"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="upgrade_sync_config_action" model="ir.actions.act_window">
+        <field name="name">Configuration</field>
+        <field name="res_model">upgrade.sync.config</field>
+        <field name="view_mode">form</field>
+        <field name="res_id" ref="upgrade_sync_config_default"/>
+    </record>
+
+    <record id="upgrade_sync_api_key_wizard_view_form" model="ir.ui.view">
+        <field name="name">upgrade.sync.api.key.wizard.form</field>
+        <field name="model">upgrade.sync.api.key.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <p>The key is stored as a system parameter readable by administrators only.
+                    The environment variable UPGRADE_SYNC_API_KEY, when set, takes precedence.</p>
+                <group>
+                    <field name="api_key" password="True"/>
+                </group>
+                <footer>
+                    <button name="action_save" type="object" string="Save" class="oe_highlight"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

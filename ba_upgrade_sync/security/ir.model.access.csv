@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_upgrade_sync_config_admin,upgrade.sync.config admin,model_upgrade_sync_config,base.group_system,1,1,1,1
+access_upgrade_sync_event_admin,upgrade.sync.event admin,model_upgrade_sync_event,base.group_system,1,1,1,1
+access_upgrade_sync_event_manager,upgrade.sync.event sales manager,model_upgrade_sync_event,sales_team.group_sale_manager,1,0,0,0
+access_upgrade_sync_mapping_admin,upgrade.sync.mapping admin,model_upgrade_sync_mapping,base.group_system,1,1,1,1
+access_upgrade_sync_mapping_manager,upgrade.sync.mapping sales manager,model_upgrade_sync_mapping,sales_team.group_sale_manager,1,0,0,0
+access_upgrade_sync_api_key_wizard_admin,upgrade.sync.api.key.wizard admin,model_upgrade_sync_api_key_wizard,base.group_system,1,1,1,1
