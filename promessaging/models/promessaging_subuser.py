@@ -753,7 +753,8 @@ class PromessagingSubuser(models.Model):
     def _receive_reply(self, message, chat_id=None, user_id=None, user_login=None,
                        thread_model=None, thread_id=None, draft_id=None,
                        objective_id=None, plan=None, summary_id=None, summary_values=None,
-                       steps_done=None, steps_done_actor=None, document=None):
+                       steps_done=None, steps_done_actor=None, document=None,
+                       draft=None, subject=None):
         """Route an answer coming back from the AI to the right place."""
         self.ensure_one()
         subuser = self.sudo()
@@ -835,18 +836,43 @@ class PromessagingSubuser(models.Model):
                 ],
             }
 
-        # 3. a rewritten chatter draft
-        if draft_id:
-            draft = self.env["promessaging.draft"].sudo().browse(int(draft_id)).exists()
-            if not draft:
-                return {"ok": False, "error": "unknown_draft"}
-            draft.write({"body": str(message), "subuser_id": subuser.id})
+        # 3. a chatter draft: rewrite one by id, or write a new one on a document
+        if draft_id or draft:
+            Draft = self.env["promessaging.draft"].sudo()
+            values = draft if isinstance(draft, dict) else {}
+            body = values.get("body")
+            if body is None:
+                body = str(message) if message else None
+            subject_line = values.get("subject", subject)
+
+            if draft_id:
+                record = Draft.browse(int(draft_id)).exists()
+                if not record:
+                    return {"ok": False, "error": "unknown_draft"}
+                write_values = {"subuser_id": subuser.id}
+                if body is not None:
+                    write_values["body"] = body
+                if subject_line is not None:
+                    write_values["subject"] = (subject_line or "").strip()
+                record.write(write_values)
+            else:
+                res_model = values.get("res_model") or values.get("thread_model")
+                res_id = values.get("res_id") or values.get("thread_id")
+                if not res_model or not res_id:
+                    return {"ok": False, "error": "missing_document"}
+                if body is None:
+                    return {"ok": False, "error": "missing_body"}
+                Draft.set_draft(res_model, int(res_id), body, subject=subject_line)
+                record = Draft._find_draft(res_model, int(res_id))
+                record.subuser_id = subuser.id
+
             return {
                 "ok": True,
                 "target": "draft",
-                "draft_id": draft.id,
-                "res_model": draft.res_model,
-                "res_id": draft.res_id,
+                "draft_id": record.id,
+                "res_model": record.res_model,
+                "res_id": record.res_id,
+                "subject": record.subject or "",
             }
 
         # 4. a direct conversation, by id or by who it is with

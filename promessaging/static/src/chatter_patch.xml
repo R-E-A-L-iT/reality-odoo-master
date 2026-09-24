@@ -36,6 +36,9 @@
                     <small class="text-muted ms-2">not sent to anyone</small>
                 </div>
                 <t t-if="promessagingDraft.editing">
+                    <input class="form-control form-control-sm mb-2" type="text"
+                           placeholder="Subject (optional)"
+                           t-model="promessagingDraft.subject"/>
                     <textarea class="form-control" rows="6"
                               placeholder="Write a draft for someone to review and send..."
                               t-model="promessagingDraft.value"/>
@@ -52,6 +55,9 @@
                     </div>
                 </t>
                 <t t-else="">
+                    <div t-if="promessagingDraft.draft.subject" class="fw-bold mb-1">
+                        <t t-esc="promessagingDraft.draft.subject"/>
+                    </div>
                     <div class="o-promessaging-draft-body" style="white-space: pre-wrap;"
                          t-esc="promessagingDraft.draft.body"/>
                     <div class="d-flex mt-2">

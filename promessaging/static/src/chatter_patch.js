@@ -17,6 +17,7 @@ patch(Chatter.prototype, {
             draft: false,
             editing: false,
             value: "",
+            subject: "",
             regenerating: false,
         });
     },
@@ -44,7 +45,12 @@ patch(Chatter.prototype, {
     },
 
     promessagingResetDraft() {
-        Object.assign(this.promessagingDraft, { draft: false, editing: false, value: "" });
+        Object.assign(this.promessagingDraft, {
+            draft: false,
+            editing: false,
+            value: "",
+            subject: "",
+        });
     },
 
     async promessagingLoadDraft(threadModel, threadId) {
@@ -65,15 +71,16 @@ patch(Chatter.prototype, {
     },
 
     promessagingEditDraft() {
-        this.promessagingDraft.value = this.promessagingDraft.draft
-            ? this.promessagingDraft.draft.body
-            : "";
+        const draft = this.promessagingDraft.draft;
+        this.promessagingDraft.value = draft ? draft.body : "";
+        this.promessagingDraft.subject = draft ? draft.subject : "";
         this.promessagingDraft.editing = true;
     },
 
     promessagingCancelDraft() {
         this.promessagingDraft.editing = false;
         this.promessagingDraft.value = "";
+        this.promessagingDraft.subject = "";
     },
 
     async promessagingPostDraft() {
@@ -84,10 +91,12 @@ patch(Chatter.prototype, {
             this.props.threadModel,
             this.props.threadId,
             this.promessagingDraft.value,
+            this.promessagingDraft.subject,
         ]);
         this.promessagingDraft.draft = draft;
         this.promessagingDraft.editing = false;
         this.promessagingDraft.value = "";
+        this.promessagingDraft.subject = "";
     },
 
     promessagingSendDraft() {

@@ -178,6 +178,27 @@ Messaging). It is used when a request needs a bot and none is assigned yet — f
 example rewriting a draft that a person wrote. A bot the user may not use is never
 chosen, even when set as their default.
 
+## Drafts written by a bot
+
+A draft has a **subject** of its own, kept apart from the body, so nothing has to be
+written into the text. Both are set through the reply endpoint — either on an existing
+draft, or by writing a new one straight onto a document:
+
+```json
+{"subuser": "jerry", "key": "pmsg_...",
+ "draft": {"res_model": "sale.order", "res_id": 42,
+           "subject": "Following up on your quote",
+           "body": "Hi Ken, ..."}}
+```
+
+To change one that already exists, send `draft_id` with `subject`, `body`, or both;
+whatever is left out keeps its current value. A missing document or body is refused
+(`missing_document`, `missing_body`).
+
+When the draft is sent, its subject becomes the message's subject. On an opportunity
+that subject also satisfies the Email Subject requirement, so a draft carrying its own
+subject sends without one being set on the lead.
+
 ## Replies from the AI (inbound webhook)
 
 Every prompt Odoo sends carries a `payload.reply` block describing both ways to answer:
