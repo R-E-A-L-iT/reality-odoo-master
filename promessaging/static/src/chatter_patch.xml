@@ -48,6 +48,16 @@
                                 t-on-click="() => this.promessagingPostDraft()">
                             Post
                         </button>
+                        <button class="btn btn-secondary btn-sm me-1"
+                                t-att-disabled="promessagingDraft.generating"
+                                t-att-title="promessagingDraft.draft
+                                    ? 'Ask an AI assistant to rewrite this draft'
+                                    : 'Ask your AI assistant to write this draft'"
+                                t-on-click="() => this.promessagingGenerateDraft()">
+                            <t t-if="promessagingDraft.generating">Working...</t>
+                            <t t-elif="promessagingDraft.draft">Regenerate</t>
+                            <t t-else="">Generate</t>
+                        </button>
                         <button class="btn btn-link btn-sm"
                                 t-on-click="() => this.promessagingCancelDraft()">
                             Cancel
@@ -69,11 +79,11 @@
                                 t-on-click="() => this.promessagingEditDraft()">
                             Edit
                         </button>
-                        <button t-if="promessagingDraft.draft.can_regenerate" class="btn btn-secondary btn-sm me-1"
-                                t-att-disabled="promessagingDraft.regenerating"
+                        <button class="btn btn-secondary btn-sm me-1"
+                                t-att-disabled="promessagingDraft.generating"
                                 t-att-title="'Ask an AI assistant to rewrite this draft'"
-                                t-on-click="() => this.promessagingRegenerateDraft()">
-                            <t t-if="promessagingDraft.regenerating">Regenerating...</t>
+                                t-on-click="() => this.promessagingGenerateDraft()">
+                            <t t-if="promessagingDraft.generating">Working...</t>
                             <t t-else="">Regenerate</t>
                         </button>
                         <button class="btn btn-link btn-sm text-danger"

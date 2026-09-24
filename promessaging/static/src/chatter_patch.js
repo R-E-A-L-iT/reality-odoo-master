@@ -18,7 +18,7 @@ patch(Chatter.prototype, {
             editing: false,
             value: "",
             subject: "",
-            regenerating: false,
+            generating: false,
         });
     },
 
@@ -122,30 +122,48 @@ patch(Chatter.prototype, {
         this.load(this.state.thread, ["messages"]);
     },
 
-    async promessagingRegenerateDraft() {
-        const draft = this.promessagingDraft.draft;
-        if (!draft || this.promessagingDraft.regenerating) {
+    async promessagingGenerateDraft() {
+        if (this.promessagingDraft.generating) {
             return;
         }
-        this.promessagingDraft.regenerating = true;
+        const draft = this.promessagingDraft.draft;
+        this.promessagingDraft.generating = true;
         try {
-            const result = await this.orm.call("promessaging.draft", "action_regenerate", [
-                [draft.id],
-            ]);
+            const result = draft
+                ? await this.orm.call("promessaging.draft", "action_regenerate", [[draft.id]])
+                : await this.orm.call("promessaging.draft", "generate_draft", [
+                      this.props.threadModel,
+                      this.props.threadId,
+                  ]);
+            const wasEditing = this.promessagingDraft.editing;
             await this.promessagingLoadDraft(this.props.threadModel, this.props.threadId);
+
+            // keep the editor open on what came back, so it can be adjusted before posting
+            const written = result && result.draft;
+            if (wasEditing) {
+                this.promessagingDraft.editing = true;
+                this.promessagingDraft.value = written
+                    ? written.body
+                    : (this.promessagingDraft.draft ? this.promessagingDraft.draft.body : "");
+                this.promessagingDraft.subject = written
+                    ? written.subject
+                    : (this.promessagingDraft.draft ? this.promessagingDraft.draft.subject : "");
+            }
+
+            const who = (result && result.subuser) || (draft && draft.author) || _t("your assistant");
             if (result && !result.ok) {
                 this.notification.add(
-                    _t("Could not reach %s (%s).", draft.author, result.error || _t("unknown error")),
+                    _t("Could not reach %s (%s).", who, result.error || _t("unknown error")),
                     { type: "warning" }
                 );
-            } else if (result && !result.updated) {
+            } else if (result && !written && !result.updated) {
                 this.notification.add(
-                    _t("%s was asked to rewrite the draft and will update it shortly.", draft.author),
+                    _t("%s was asked to write the draft and will fill it in shortly.", who),
                     { type: "info" }
                 );
             }
         } finally {
-            this.promessagingDraft.regenerating = false;
+            this.promessagingDraft.generating = false;
         }
     },
 

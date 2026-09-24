@@ -182,6 +182,66 @@ class PromessagingDraft(models.Model):
             "updated": bool(reply),
         }
 
+    @api.model
+    def generate_draft(self, res_model, res_id, instructions=None):
+        """Ask the reader's assistant to write a first draft on a document."""
+        record = self._get_document(res_model, res_id)
+        subuser = self.env.user._promessaging_default_subuser()
+        if not subuser:
+            raise UserError(_(
+                "No AI assistant to ask. Set a Default AI Assistant on your user, "
+                "under Settings, Users, Access Rights."
+            ))
+
+        payload = {
+            "prompt": instructions or _(
+                "Write a draft message for this document. Give it a subject and a body; "
+                "it is not sent, a person reviews it first."
+            ),
+            "document": {
+                "model": record._name,
+                "id": record.id,
+                "name": record.sudo().display_name,
+            },
+            "requested_by": {"user_id": self.env.user.id, "name": self.env.user.name},
+            "reply": subuser.sudo()._reply_instructions(),
+        }
+        # answers come back as a draft on this document
+        async_body = payload["reply"]["async"]["body"]
+        async_body.pop("message", None)
+        async_body["draft"] = {
+            "res_model": record._name,
+            "res_id": record.id,
+            "subject": "<subject>",
+            "body": "<your draft>",
+        }
+        payload["reply"]["sync"] = _(
+            'Answer with JSON {"draft": {"subject": "...", "body": "..."}} to fill the '
+            "draft straight away."
+        )
+
+        result = subuser.sudo().dispatch("draft_write", payload, record=record)
+        data = result.get("data") or {}
+        written = data.get("draft") if isinstance(data.get("draft"), dict) else {}
+        body = written.get("body") or data.get("reply")
+
+        if body:
+            self.set_draft(res_model, res_id, body, subject=written.get("subject"))
+            draft = self._find_draft(res_model, res_id)
+            draft.subuser_id = subuser.id
+            return {
+                "ok": True,
+                "generated": True,
+                "draft": draft._draft_data(),
+                "subuser": subuser.sudo().name,
+            }
+        return {
+            "ok": bool(result.get("ok")),
+            "generated": False,
+            "error": result.get("error"),
+            "subuser": subuser.sudo().name,
+        }
+
     def _regenerate_subuser(self):
         """Who to ask: whoever wrote it, else the reader's default assistant."""
         self.ensure_one()

@@ -199,6 +199,23 @@ When the draft is sent, its subject becomes the message's subject. On an opportu
 that subject also satisfies the Email Subject requirement, so a draft carrying its own
 subject sends without one being set on the lead.
 
+### Generating one on demand
+
+The draft panel always carries the same button: **Generate** when there is no draft yet,
+**Regenerate** once there is. It asks the reader's Default AI Assistant — or, for an
+existing draft, whichever sub-user wrote it — over a `draft_write` (or `draft_rewrite`)
+webhook carrying the document.
+
+Answer straight away with `{"draft": {"subject": "...", "body": "..."}}` and the text
+appears in the editor for review. Answer later by posting a `draft` back to the reply
+endpoint; the panel picks it up.
+
+### On small screens
+
+The assistants bubble is hidden below Odoo's small-screen breakpoint (768px), where it
+would sit on top of the controls underneath. Everything else — drafts, pings, sub-user
+sign-in — works as usual on a phone.
+
 ## Replies from the AI (inbound webhook)
 
 Every prompt Odoo sends carries a `payload.reply` block describing both ways to answer:

@@ -153,3 +153,10 @@ $o-aichat-muted: #9aa0ab;
         border-color: rgba(255, 193, 7, 0.35);
     }
 }
+
+// belt and braces: even if something renders it, keep it off small screens
+@media (max-width: 767.98px) {
+    .o_promessaging_aichat {
+        display: none !important;
+    }
+}

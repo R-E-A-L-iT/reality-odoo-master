@@ -21,6 +21,8 @@ export class AiChatBubble extends Component {
 
     setup() {
         this.orm = useService("orm");
+        // Odoo's own breakpoint: below it the bubble would sit on top of the UI
+        this.ui = useState(useService("ui"));
         this.threadRef = useRef("thread");
         this.state = useState({
             available: false,
@@ -53,6 +55,11 @@ export class AiChatBubble extends Component {
             console.warn("ProMessaging: could not load the AI directory", error);
             this.state.available = false;
         }
+    }
+
+    /** Hidden on a narrow screen: there it covers what you are trying to tap. */
+    get visible() {
+        return this.state.available && !this.ui.isSmall;
     }
 
     get onlyAssistant() {
@@ -147,7 +154,7 @@ export class AiChatBubble extends Component {
         this.stopPolling();
         this._pollSince = Date.now();
         this._poll = setInterval(async () => {
-            if (!this.state.chat || this.state.sending) {
+            if (!this.state.chat || this.state.sending || this.ui.isSmall) {
                 return;
             }
             // don't poll a background tab, and give up on a quiet conversation
