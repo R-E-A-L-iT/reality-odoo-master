@@ -11,7 +11,7 @@ Install on the upgrade test / staging database (OriginCopy) only.
   read-only API key (Odoo 17 never calls out).
 * Resolves Odoo 17 records to Odoo 19 records through a mapping table, the same
   id checked by fingerprint (upgraded database copy) or business keys. Master
-  data (taxes, journals, accounts, pricelists, ...) is never created.
+  data (taxes, journals, accounts, pricelists, ...) is never created .
 * Transforms Odoo 17 payloads (renamed fields, proquotes optional / multiple
   sections -> Odoo 19 optional / single-choice sections, product types, ...).
 * Replays the business action with the Odoo 19 ORM methods (action_confirm,
