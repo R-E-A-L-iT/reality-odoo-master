@@ -15,7 +15,7 @@ class ProductTemplate(models.Model):
 	use_custom_rental_price = fields.Boolean(
 		string="Custom Rental Price",
 		default=True,
-		help="Apply the custom pricing formula (4 paid days per week, capped at 12 for the first 30 days, then linear).",
+		help="Apply the custom pricing formula (4 paid days per week, capped at 12 per 30-day month).",
 	)
 
 
@@ -106,25 +106,23 @@ class SaleOrderLine(models.Model):
 		display logic in quote_preview.xml.
 
 		Rules (matching the XML template exactly):
-		  • ≤ 30 days : 4 paid days per full week, up to 4 for the partial week,
-		                capped at 12 paid days total.
-		  • > 30 days : 12 paid days for the first 30 calendar days, then every
-		                additional calendar day counts as 1 paid day (linear).
+		  • Each full 30-day month : 12 paid days.
+		  • Remaining days (< 30)  : 4 paid days per full week, up to 4 for the
+		                             partial week, capped at 12 paid days.
 
-		Example: 48 days → 12 + (48 − 30) = 30 paid days → price = daily × 30.
+		Example: 61 days → 2 months (24) + 1 day (1) = 25 paid days.
 		"""
 		if days <= 0:
 			return 0
 
-		if days <= 30:
-			full_weeks = days // 7
-			extra_days = days % 7
-			paid_days = (full_weeks * 4) + min(extra_days, 4)
-			paid_days = min(paid_days, 12)
-		else:
-			# First 30 days → 12 paid days, then linear for the rest
-			paid_days = 12 + (days - 30)
+		full_months = days // 30
+		remaining_days = days % 30
 
+		full_weeks = remaining_days // 7
+		extra_days = remaining_days % 7
+		remainder_paid_days = min((full_weeks * 4) + min(extra_days, 4), 12)
+
+		paid_days = (full_months * 12) + remainder_paid_days
 		return daily_price * paid_days
 
 	def _partition_so_lines_by_rental_period(self):
