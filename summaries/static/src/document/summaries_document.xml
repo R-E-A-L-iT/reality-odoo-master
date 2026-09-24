@@ -194,6 +194,9 @@
                     <span class="badge text-bg-primary me-1"><t t-esc="remainingForAi"/> left for the AI</span>
                     <span class="badge text-bg-secondary"><t t-esc="remainingForHuman"/> left for you</span>
                     <span t-if="state.taskDone" class="badge text-bg-success ms-1">task done</span>
+                    <span t-if="blockedByStep" class="text-muted ms-2 small">
+                        the AI is waiting on your step above
+                    </span>
                     <small t-if="state.executedOn" class="text-muted ms-2">
                         <t t-if="state.sentTo">sent to <t t-esc="state.sentTo"/> </t>
                         <t t-esc="state.executedOn"/>
@@ -237,11 +240,14 @@
                         t-on-click="() => this.addStep()">Add a step</button>
             </div>
             <t t-set-slot="footer">
-                <button class="btn" t-att-disabled="state.busy"
-                        t-att-class="state.executedOn ? 'btn-success' : 'btn-primary'"
-                        t-att-title="state.executedOn
-                            ? 'Already sent ' + state.executedOn + '. Press to run it again.'
-                            : 'Send this plan to your AI assistant'"
+                <button class="btn" t-att-disabled="state.busy or blockedByStep"
+                        t-att-class="blockedByStep ? 'btn-secondary'
+                            : (state.executedOn ? 'btn-success' : 'btn-primary')"
+                        t-att-title="blockedByStep
+                            ? 'Waiting on your step first: ' + blockedByStep
+                            : (state.executedOn
+                                ? 'Already sent ' + state.executedOn + '. Press to run it again.'
+                                : 'Send this plan to your AI assistant')"
                         t-on-click="() => this.execute()">
                     <t t-if="state.busy">Working...</t>
                     <t t-else="">
@@ -325,13 +331,16 @@
                             </button>
                             <button t-if="task.plan_state === 'ai_ready' or task.execute_enabled"
                                     class="btn btn-sm ms-2"
-                                    t-att-class="task.plan_executed_on ? 'btn-outline-success' : 'btn-outline-primary'"
-                                    t-att-disabled="isExecuting(task)"
-                                    t-att-title="task.plan_executed_on
-                                        ? 'Already sent to your assistant on ' + task.plan_executed_on + '. Press to run it again.'
-                                        : (task.plan_counts.ai_remaining
-                                            ? 'Run the ' + task.plan_counts.ai_remaining + ' AI step(s) on this task now'
-                                            : 'Hand this task to your AI assistant')">
+                                    t-att-class="task.plan_counts.ai_blocked ? 'btn-outline-secondary'
+                                        : (task.plan_executed_on ? 'btn-outline-success' : 'btn-outline-primary')"
+                                    t-att-disabled="isExecuting(task) or task.plan_counts.ai_blocked"
+                                    t-att-title="task.plan_counts.ai_blocked
+                                        ? 'Waiting on your step first: ' + task.plan_counts.blocking_step
+                                        : (task.plan_executed_on
+                                            ? 'Already sent to your assistant on ' + task.plan_executed_on + '. Press to run it again.'
+                                            : (task.plan_counts.ai_remaining
+                                                ? 'Run the ' + task.plan_counts.ai_remaining + ' AI step(s) on this task now'
+                                                : 'Hand this task to your AI assistant'))">
                                 <t t-if="isExecuting(task)">Sending...</t>
                                 <t t-else="">
                                     <i t-if="task.plan_executed_on" class="fa fa-check me-1" role="img"/>Execute

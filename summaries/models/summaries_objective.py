@@ -104,11 +104,21 @@ class SummariesObjective(models.Model):
         self.ensure_one()
         steps = self._plan_steps()
         remaining = [step for step in steps if not step.get("done")]
+        ai_remaining = len([s for s in remaining if s.get("actor") == "ai"])
+
+        # a step of yours standing in front of the AI's next one blocks it:
+        # the plan runs in order, so the AI cannot skip ahead
+        blocking = None
+        if ai_remaining and remaining and remaining[0].get("actor") != "ai":
+            blocking = remaining[0]
+
         return {
             "total": len(steps),
             "done": len(steps) - len(remaining),
-            "ai_remaining": len([s for s in remaining if s.get("actor") == "ai"]),
+            "ai_remaining": ai_remaining,
             "human_remaining": len([s for s in remaining if s.get("actor") != "ai"]),
+            "ai_blocked": bool(blocking),
+            "blocking_step": (blocking or {}).get("text", ""),
         }
 
     def _plan_state(self):
@@ -350,6 +360,13 @@ class SummariesObjective(models.Model):
     def action_execute(self):
         """Hand the task, and its plan, to an AI to carry out."""
         self.ensure_one()
+        counts = self._plan_counts()
+        if counts["ai_blocked"]:
+            raise UserError(_(
+                "The AI is waiting on a step of yours: %s\n\n"
+                "Tick that step off in the plan, then run it.",
+                counts["blocking_step"],
+            ))
         subuser = self._execute_subuser()
         if not subuser:
             raise UserError(_(

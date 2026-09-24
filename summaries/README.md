@@ -51,6 +51,10 @@ A task can carry a **plan**: the steps needed to finish it, each marked as somet
 the task only once a plan exists; it opens a window where the steps can be read, edited,
 reordered by hand, or sent off with **Execute**.
 
+Steps run in order, so a step of yours standing in front of the AI's next one blocks
+it: **Execute** stays visible but greyed, saying which step it is waiting on. Tick that
+step off and it frees up. The server refuses a blocked run too, not just the button.
+
 **Execute** hands the task and its plan to the reader's **Default AI Assistant**
 (Settings → Users → Access Rights → Messaging) as a `task_execute` webhook. Editing then
 pressing Execute saves first, so the assistant always receives what is on screen.

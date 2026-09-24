@@ -217,6 +217,16 @@ export class SummariesPlanDialog extends Component {
         }
     }
 
+    /** The step of yours the AI is waiting behind, if any. */
+    get blockedByStep() {
+        const remaining = this.state.steps.filter((step) => !step.done);
+        const aiLeft = remaining.some((step) => step.actor === "ai");
+        if (!aiLeft || !remaining.length || remaining[0].actor === "ai") {
+            return "";
+        }
+        return remaining[0].text || "a step of yours";
+    }
+
     get remainingForAi() {
         return this.state.steps.filter((step) => step.actor === "ai" && !step.done).length;
     }

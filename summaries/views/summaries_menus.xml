@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_summaries_root" name="Summaries" sequence="45"/>
+    <menuitem id="menu_summaries_root" name="Summaries" sequence="45"
+              web_icon="summaries,static/description/icon.png"/>
 
     <menuitem id="menu_summaries_today" name="Today" parent="menu_summaries_root"
               action="summaries_summary_action_today" sequence="10"/>
