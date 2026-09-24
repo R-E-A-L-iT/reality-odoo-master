@@ -11,6 +11,10 @@
         }
     }
 
+    .o_summaries_taskname {
+        font-weight: 600; // stands apart from the note line beneath it
+    }
+
     .o_summaries_taskname:focus {
         background-color: var(--o-white, #fff) !important;
         box-shadow: none;
@@ -95,8 +99,8 @@ $o-summaries-done: #5cb85c;
 }
 
 .o_summaries_doc {
-    // Jump sits beside Plan and keeps its width whatever the task name is
-    .o_summaries_jump {
+    // every control on a task row keeps its width, whatever the note contains
+    .o_summaries_task > .btn {
         flex-shrink: 0;
         white-space: nowrap;
     }

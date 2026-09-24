@@ -121,7 +121,7 @@ Each task carries a stripe showing where it stands, with a tally above the list:
 
 | Colour | State | Meaning |
 |---|---|---|
-| purple | `ai_ready` | the AI can still take steps on it |
+| purple | `ai_ready` | the AI can still take steps on it; an **Execute** button appears on the row |
 | amber | `human_next` | under way, everything left needs a person |
 | blue | `human_only` | nothing done yet and every step needs a person |
 | green | `done` | finished |

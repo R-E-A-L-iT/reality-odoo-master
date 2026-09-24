@@ -183,6 +183,8 @@ export class SummariesPlanDialog extends Component {
             steps: this.props.plan.steps.map((step) => ({ ...step })),
             summary: this.props.plan.summary || "",
             taskDone: this.props.plan.task_done,
+            executedOn: this.props.plan.executed_on || false,
+            sentTo: false,
             busy: false,
             error: false,
         });
@@ -263,7 +265,9 @@ export class SummariesPlanDialog extends Component {
                 this.state.error = result.error || _t("The assistant could not be reached.");
                 return;
             }
-            this.props.close();
+            // stay open: the button turning green is how you know it went
+            this.state.executedOn = _t("just now");
+            this.state.sentTo = (result && result.subuser) || false;
         } catch (error) {
             this.state.error = this.constructor.errorOf(error);
         } finally {
@@ -385,10 +389,29 @@ export class SummariesDocument extends Component {
         await this.reload();
     }
 
-    async executeTask(task) {
-        const result = await this.orm.call("summaries.objective", "action_execute", [[task.id]]);
-        await this.reload();
+    async executeTask(task, notify = false) {
+        this.state.executing[task.id] = true;
+        let result;
+        try {
+            result = await this.orm.call("summaries.objective", "action_execute", [[task.id]]);
+            await this.reload();
+        } finally {
+            delete this.state.executing[task.id];
+        }
+        // the plan dialog reports errors inline, so it asks for no notification
+        if (notify && result) {
+            this.notification.add(
+                result.ok
+                    ? _t("%s is working on it.", result.subuser)
+                    : _t("Could not reach %s (%s).", result.subuser, result.error || _t("unknown error")),
+                { type: result.ok ? "info" : "warning" }
+            );
+        }
         return result;
+    }
+
+    isExecuting(task) {
+        return Boolean(this.state.executing[task.id]);
     }
 
     async openPlan(task) {
