@@ -303,6 +303,7 @@ export class SummariesDocument extends Component {
             draft: "",
             draftIntro: "",
             error: false,
+            executing: {},
         });
         this.openRef = this.openRef.bind(this);
         onWillStart(() => this.loadDocument());
