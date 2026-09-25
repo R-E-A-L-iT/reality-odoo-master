@@ -163,6 +163,16 @@ respect it. Two things still follow the account rather than the sub-user: **reco
 (which rows are visible) and **field-level group restrictions**. Narrow the account
 itself if those matter.
 
+## Pictures
+
+Each sub-user has an **Avatar** on its form, top right. Upload one and it is used
+everywhere that sub-user appears: as the author's face on chatter messages and log notes
+it writes, in the assistants panel, in the `~` suggestion list, and in the sub-user list.
+Without one, a coloured circle with the sub-user's initial is shown instead.
+
+The picture is copied onto the sub-user's identity contact, so changing it updates the
+face on everything it has already posted.
+
 ## Who can use which bot
 
 Each sub-user has a **Usable By** list on its form. Leave it empty and everyone can use

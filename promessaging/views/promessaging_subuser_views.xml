@@ -112,6 +112,8 @@
         <field name="model">promessaging.subuser</field>
         <field name="arch" type="xml">
             <tree string="AI Sub-users">
+                <field name="image_1920" widget="image" options="{'size': [30, 30]}"
+                       string="Picture" optional="show"/>
                 <field name="name"/>
                 <field name="handle"/>
                 <field name="user_id"/>

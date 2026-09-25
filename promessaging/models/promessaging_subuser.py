@@ -375,7 +375,15 @@ class PromessagingSubuser(models.Model):
             domain += ["|", ("handle", "ilike", search), ("name", "ilike", search)]
         subusers = self.sudo().search(domain, limit=min(int(limit or 8), 20))
         return [
-            {"id": s.id, "name": s.name, "handle": s.handle, "description": s.description or ""}
+            {
+                "id": s.id,
+                "name": s.name,
+                "handle": s.handle,
+                "description": s.description or "",
+                "has_avatar": bool(s.image_1920),
+                "avatar": "/web/image/promessaging.subuser/%s/image_1920/32x32" % s.id,
+                "initial": (s.name or "?")[:1].upper(),
+            }
             for s in subusers
         ]
 
