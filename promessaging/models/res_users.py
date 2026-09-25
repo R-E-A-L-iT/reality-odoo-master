@@ -93,6 +93,19 @@ class ResUsers(models.Model):
         group = self.env.ref(group_ext_id, raise_if_not_found=False)
         return bool(group) and group in groups
 
+    def _init_messaging(self):
+        """Drop chats with people who cannot be reached from the sidebar."""
+        values = super()._init_messaging()
+        channels = values.get("channels")
+        if not channels:
+            return values
+        ids = [channel["id"] for channel in channels if channel.get("id")]
+        blocked = self.env["discuss.channel"].sudo().browse(ids)._promessaging_blocked_chats()
+        if blocked:
+            hidden = set(blocked.ids)
+            values["channels"] = [c for c in channels if c.get("id") not in hidden]
+        return values
+
     def _promessaging_default_subuser(self):
         """This user's default assistant, if they are allowed to use it."""
         self.ensure_one()

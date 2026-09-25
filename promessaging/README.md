@@ -174,8 +174,12 @@ out of reach:
 - if someone types their name anyway, they are dropped from the recipients rather than
   notified.
 
+Conversations that already exist are hidden from the messaging menu and the Discuss
+sidebar, and nothing can be written into them.
+
 They can still message other people and take part in channels they are already in; the
-setting only stops others reaching them that way.
+setting only stops others reaching them that way. When they write to someone, that
+conversation naturally comes back into view for the person they wrote to.
 
 ## Pictures
 

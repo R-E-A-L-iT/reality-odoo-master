@@ -5,6 +5,24 @@ from odoo.exceptions import UserError
 class DiscussChannel(models.Model):
     _inherit = "discuss.channel"
 
+    def _promessaging_blocked_chats(self):
+        """Direct conversations with someone who cannot be reached."""
+        me = self.env.user.partner_id
+        blocked = self.env["discuss.channel"]
+        for channel in self.sudo():
+            if channel.channel_type != "chat":
+                continue
+            others = channel.channel_member_ids.partner_id - me
+            if others._promessaging_unpingable():
+                blocked |= channel
+        return blocked
+
+    def message_post(self, **kwargs):
+        """Nothing gets written into a chat with someone who is out of reach."""
+        if self._promessaging_blocked_chats():
+            raise UserError(_("This person cannot be reached by Direct Message."))
+        return super().message_post(**kwargs)
+
     @api.model
     def channel_get(self, partners_to, pin=True):
         """Refuse a Direct Message to someone who cannot be pinged."""
