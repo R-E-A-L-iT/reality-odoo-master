@@ -206,6 +206,31 @@ Messaging). It is used when a request needs a bot and none is assigned yet — f
 example rewriting a draft that a person wrote. A bot the user may not use is never
 chosen, even when set as their default.
 
+## How the send restriction is enforced
+
+**Can Send Messages** is checked on the model, not only in the UI, so reaching Odoo over
+XML-RPC or JSON-RPC hits the same wall as clicking a button. Every customer-facing path
+goes through one gate:
+
+| Path | Covered by |
+|---|---|
+| chatter Send message | `/mail/message/post` and `mail.thread.message_post` |
+| any API call to `message_post` | `mail.thread.message_post` |
+| `message_notify` | `mail.thread.message_notify` |
+| the email composer, single or mass | `mail.compose.message._action_send_mail` |
+| activity "Send" | `mail.activity.mixin.activity_send_mail` |
+| invoice Send & Print | `account.move.send.action_send_and_print` |
+| a hand-built email | `mail.mail.create` |
+| a mail template | `mail.template.send_mail` |
+
+A restricted account also **cannot post under another name**: an `author_id` or
+`email_from` that is not its own, or its acting sub-user's, is refused. That closes the
+trick of naming a colleague as the author to get a message out.
+
+Log notes are unaffected, and so is a bot replying to a `~` ping, which posts a note
+through the server rather than as the account itself. Every refusal is logged with the
+user and what was attempted, so repeated attempts are visible in the server log.
+
 ## Drafts written by a bot
 
 A draft has a **subject** of its own, kept apart from the body, so nothing has to be

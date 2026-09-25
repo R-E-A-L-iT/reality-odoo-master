@@ -9,6 +9,7 @@ from . import promessaging_draft
 from . import ir_http
 from . import ir_model_access
 from . import mail_thread
+from . import mail_mail
 from . import discuss_channel
 from . import mail_activity_mixin
 from . import mail_compose_message
