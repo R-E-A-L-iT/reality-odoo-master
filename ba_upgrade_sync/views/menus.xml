@@ -4,6 +4,8 @@
               parent="base.menu_custom" sequence="200" groups="base.group_system"/>
     <menuitem id="menu_upgrade_sync_events" name="Events" parent="menu_upgrade_sync_root"
               action="upgrade_sync_event_action" sequence="10"/>
+    <menuitem id="menu_upgrade_sync_export" name="Export User Actions" parent="menu_upgrade_sync_root"
+              action="upgrade_sync_export_wizard_action" sequence="15"/>
     <menuitem id="menu_upgrade_sync_config" name="Configuration" parent="menu_upgrade_sync_root"
               action="upgrade_sync_config_action" sequence="20"/>
 </odoo>

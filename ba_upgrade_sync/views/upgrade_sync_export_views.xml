@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="upgrade_sync_export_wizard_view_form" model="ir.ui.view">
+        <field name="name">upgrade.sync.export.wizard.form</field>
+        <field name="model">upgrade.sync.export.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Export User Actions">
+                <div class="text-muted mb-3">
+                    Lists every action users performed between the two dates (who, when, which record,
+                    what action), in date order, so it can be recreated in Odoo 19.
+                    History comes from creation dates and the chatter (works for any past date);
+                    captured events come from this module once capture is enabled.
+                </div>
+                <group>
+                    <group string="Period">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="source"/>
+                        <field name="output_format" widget="radio"/>
+                    </group>
+                    <group string="Documents">
+                        <field name="include_partners"/>
+                        <field name="include_products"/>
+                        <field name="include_crm"/>
+                        <field name="include_sales"/>
+                        <field name="include_invoices"/>
+                        <field name="include_field_changes"/>
+                        <field name="include_payload"/>
+                    </group>
+                </group>
+                <group string="Result" invisible="not file_name">
+                    <field name="line_count"/>
+                    <field name="file_data" filename="file_name"/>
+                    <field name="file_name" invisible="1"/>
+                    <field name="summary"/>
+                </group>
+                <footer>
+                    <button name="action_generate" type="object" string="Generate" class="oe_highlight"/>
+                    <button special="cancel" string="Close"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="upgrade_sync_export_wizard_action" model="ir.actions.act_window">
+        <field name="name">Export User Actions</field>
+        <field name="res_model">upgrade.sync.export.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

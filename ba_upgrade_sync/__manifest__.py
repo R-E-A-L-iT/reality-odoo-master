@@ -32,6 +32,7 @@ Capture is OFF by default (Settings > Technical > Upgrade Sync > Configuration).
         "security/ir.model.access.csv",
         "views/upgrade_sync_event_views.xml",
         "views/res_config_settings_views.xml",
+        "views/upgrade_sync_export_views.xml",
         "views/menus.xml",
     ],
     "installable": True,
