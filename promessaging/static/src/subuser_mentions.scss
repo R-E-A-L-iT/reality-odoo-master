@@ -16,3 +16,23 @@
         background-color: rgba(231, 159, 220, 0.18) !important;
     }
 }
+
+// stand-in when a sub-user has no picture yet
+.o_promessaging_suggestion_initial {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #2a1b27;
+    background-color: #e79fdc;
+    flex-shrink: 0;
+}
+
+.o_promessaging_suggestion_avatar {
+    object-fit: cover;
+    flex-shrink: 0;
+}

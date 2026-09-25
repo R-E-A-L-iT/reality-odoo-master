@@ -152,10 +152,44 @@ them every time that sub-user signs in, so it keeps matching that person. This i
 bot shared with one team is kept away from what that team cannot do itself, while the
 same kind of bot used by an admin keeps the wider rights.
 
+**Allowed Companies** works the same way: leave it empty to inherit the account's
+companies, or list them to limit the sub-user to a subset. The company switcher only
+offers what the sub-user may use, and `env.companies` is narrowed server-side, so
+records of other companies stay out of reach. A **Default Company** picks which one it
+starts in.
+
 Enforced on every model access check and on `has_group`, so menus, buttons and CRUD all
 respect it. Two things still follow the account rather than the sub-user: **record rules**
 (which rows are visible) and **field-level group restrictions**. Narrow the account
 itself if those matter.
+
+## Keeping a user out of pings and DMs
+
+**Cannot Be Pinged** on a user (Settings → Users → Access Rights → Messaging) takes them
+out of reach:
+
+- they no longer appear in the `@` list in any composer;
+- they no longer appear in Discuss "New message" or in channel invitations;
+- a Direct Message to them is refused, as is adding them to a conversation;
+- if someone types their name anyway, they are dropped from the recipients rather than
+  notified.
+
+Conversations that already exist are hidden from the messaging menu and the Discuss
+sidebar, and nothing can be written into them.
+
+They can still message other people and take part in channels they are already in; the
+setting only stops others reaching them that way. When they write to someone, that
+conversation naturally comes back into view for the person they wrote to.
+
+## Pictures
+
+Each sub-user has an **Avatar** on its form, top right. Upload one and it is used
+everywhere that sub-user appears: as the author's face on chatter messages and log notes
+it writes, in the assistants panel, in the `~` suggestion list, and in the sub-user list.
+Without one, a coloured circle with the sub-user's initial is shown instead.
+
+The picture is copied onto the sub-user's identity contact, so changing it updates the
+face on everything it has already posted.
 
 ## Who can use which bot
 
@@ -171,6 +205,44 @@ Users also have an optional **Default AI Assistant** (Settings → Users → Acc
 Messaging). It is used when a request needs a bot and none is assigned yet — for
 example rewriting a draft that a person wrote. A bot the user may not use is never
 chosen, even when set as their default.
+
+## Drafts written by a bot
+
+A draft has a **subject** of its own, kept apart from the body, so nothing has to be
+written into the text. Both are set through the reply endpoint — either on an existing
+draft, or by writing a new one straight onto a document:
+
+```json
+{"subuser": "jerry", "key": "pmsg_...",
+ "draft": {"res_model": "sale.order", "res_id": 42,
+           "subject": "Following up on your quote",
+           "body": "Hi Ken, ..."}}
+```
+
+To change one that already exists, send `draft_id` with `subject`, `body`, or both;
+whatever is left out keeps its current value. A missing document or body is refused
+(`missing_document`, `missing_body`).
+
+When the draft is sent, its subject becomes the message's subject. On an opportunity
+that subject also satisfies the Email Subject requirement, so a draft carrying its own
+subject sends without one being set on the lead.
+
+### Generating one on demand
+
+The draft panel always carries the same button: **Generate** when there is no draft yet,
+**Regenerate** once there is. It asks the reader's Default AI Assistant — or, for an
+existing draft, whichever sub-user wrote it — over a `draft_write` (or `draft_rewrite`)
+webhook carrying the document.
+
+Answer straight away with `{"draft": {"subject": "...", "body": "..."}}` and the text
+appears in the editor for review. Answer later by posting a `draft` back to the reply
+endpoint; the panel picks it up.
+
+### On small screens
+
+The assistants bubble is hidden below Odoo's small-screen breakpoint (768px), where it
+would sit on top of the controls underneath. Everything else — drafts, pings, sub-user
+sign-in — works as usual on a phone.
 
 ## Replies from the AI (inbound webhook)
 

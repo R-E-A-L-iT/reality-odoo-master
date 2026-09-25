@@ -61,6 +61,18 @@ class PromessagingSubuser(models.Model):
              "account's own permissions. Otherwise its actions are limited to these "
              "groups as well as the account's, never beyond them.",
     )
+    company_ids = fields.Many2many(
+        "res.company", "promessaging_subuser_companies_rel", "subuser_id", "company_id",
+        string="Allowed Companies", groups="base.group_system",
+        help="Companies this sub-user may work in. Leave empty and it inherits the AI "
+             "account's companies. Otherwise it is limited to these, and never gets a "
+             "company the account itself lacks.",
+    )
+    company_id = fields.Many2one(
+        "res.company", string="Default Company", groups="base.group_system",
+        ondelete="set null",
+        help="Company selected when this sub-user signs in.",
+    )
     sync_user_id = fields.Many2one(
         "res.users", string="Mirror Permissions Of", groups="base.group_system",
         ondelete="set null",
@@ -363,7 +375,15 @@ class PromessagingSubuser(models.Model):
             domain += ["|", ("handle", "ilike", search), ("name", "ilike", search)]
         subusers = self.sudo().search(domain, limit=min(int(limit or 8), 20))
         return [
-            {"id": s.id, "name": s.name, "handle": s.handle, "description": s.description or ""}
+            {
+                "id": s.id,
+                "name": s.name,
+                "handle": s.handle,
+                "description": s.description or "",
+                "has_avatar": bool(s.image_1920),
+                "avatar": "/web/image/promessaging.subuser/%s/image_1920/32x32" % s.id,
+                "initial": (s.name or "?")[:1].upper(),
+            }
             for s in subusers
         ]
 
@@ -575,13 +595,26 @@ class PromessagingSubuser(models.Model):
         if not source:
             return False
         wanted = source.groups_id
-        if only_if_changed and set(wanted.ids) == set(subuser.group_ids.ids):
+        wanted_companies = source.company_ids
+        unchanged = (
+            set(wanted.ids) == set(subuser.group_ids.ids)
+            and set(wanted_companies.ids) == set(subuser.company_ids.ids)
+            and subuser.company_id == source.company_id
+        )
+        if only_if_changed and unchanged:
             return False
         subuser.write({
             "group_ids": [(6, 0, wanted.ids)],
+            "company_ids": [(6, 0, wanted_companies.ids)],
+            "company_id": source.company_id.id,
             "permissions_synced_on": fields.Datetime.now(),
         })
         return True
+
+    def _effective_companies(self):
+        """The companies limiting this sub-user, or an empty set for no limit."""
+        self.ensure_one()
+        return self.sudo().company_ids
 
     def _effective_groups(self):
         """The groups limiting this sub-user, or an empty set for no limit."""
@@ -694,9 +727,42 @@ class PromessagingSubuser(models.Model):
             },
         }
 
+    @api.model
+    def _split_message_and_plan(self, message):
+        """Tell a written report apart from a plan sent in the message slot.
+
+        Bots answer in both shapes, and a raw payload written onto a task as its
+        note is unreadable, so pull the plan out and keep only real text.
+        """
+        if message is None:
+            return None, None
+
+        payload = message
+        if isinstance(payload, str):
+            text = payload.strip()
+            if text[:1] not in "{[":
+                return text[:500], None
+            try:
+                payload = json.loads(text)
+            except ValueError:
+                return text[:500], None
+
+        if isinstance(payload, dict):
+            plan = payload.get("plan")
+            if plan is None and payload.get("steps"):
+                plan = payload
+            note = payload.get("message") or payload.get("note") or payload.get("text")
+            note = note.strip()[:500] if isinstance(note, str) else None
+            return note, plan
+        if isinstance(payload, list):
+            return None, {"steps": payload}
+        return None, None
+
     def _receive_reply(self, message, chat_id=None, user_id=None, user_login=None,
                        thread_model=None, thread_id=None, draft_id=None,
-                       objective_id=None, plan=None, summary_id=None, summary_values=None):
+                       objective_id=None, plan=None, summary_id=None, summary_values=None,
+                       steps_done=None, steps_done_actor=None, document=None,
+                       draft=None, subject=None):
         """Route an answer coming back from the AI to the right place."""
         self.ensure_one()
         subuser = self.sudo()
@@ -709,50 +775,112 @@ class PromessagingSubuser(models.Model):
             task = Objective.sudo().browse(int(objective_id)).exists()
             if not task:
                 return {"ok": False, "error": "unknown_task"}
+            note, plan_in_message = self._split_message_and_plan(message)
+            if plan is None and plan_in_message is not None:
+                plan = plan_in_message
             if plan is not None:
                 task.set_plan(plan)
-            if message:
-                task.sudo().note = str(message)
+            if steps_done is not None or steps_done_actor:
+                indexes = steps_done if isinstance(steps_done, (list, tuple)) else (
+                    [steps_done] if steps_done is not None else []
+                )
+                task.mark_steps(indexes=indexes, done=True, actor=steps_done_actor)
+            if document is not None:
+                task.set_document(document)
+            if note:
+                task.sudo().note = note
+            plan_now = task.get_plan()
             return {
                 "ok": True,
                 "target": "task",
                 "objective_id": task.id,
                 "summary_id": task.summary_id.id,
+                # so the bot can see what it left for the person
+                "task_done": plan_now["task_done"],
+                "plan_state": plan_now["state"],
+                "counts": plan_now["counts"],
             }
 
-        # 2. the body of a daily summary
-        if summary_id:
+        # 2. a daily summary: an existing one by id, or a new one for a user
+        if summary_id or summary_values:
             Summary = self.env.get("summaries.summary")
             if Summary is None:
                 return {"ok": False, "error": "summaries_not_installed"}
-            summary = Summary.sudo().browse(int(summary_id)).exists()
-            if not summary:
-                return {"ok": False, "error": "unknown_summary"}
             values = summary_values if isinstance(summary_values, dict) else {}
-            if values.get("intro") is not None:
-                summary.set_intro(values["intro"])
-            if values.get("content") is not None:
-                summary.set_content(values["content"])
-            if values.get("objectives") is not None:
-                Summary.upsert_summary(
-                    summary.user_id.id,
-                    day=fields.Date.to_string(summary.date),
-                    objectives=values["objectives"],
-                )
-            return {"ok": True, "target": "summary", "summary_id": summary.id}
 
-        # 3. a rewritten chatter draft
-        if draft_id:
-            draft = self.env["promessaging.draft"].sudo().browse(int(draft_id)).exists()
-            if not draft:
-                return {"ok": False, "error": "unknown_draft"}
-            draft.write({"body": str(message), "subuser_id": subuser.id})
+            if summary_id:
+                summary = Summary.sudo().browse(int(summary_id)).exists()
+                if not summary:
+                    return {"ok": False, "error": "unknown_summary"}
+                owner, day = summary.user_id.id, fields.Date.to_string(summary.date)
+            else:
+                owner = user_id or user_login
+                if not owner:
+                    return {"ok": False, "error": "missing_user"}
+                day = values.get("date")
+
+            try:
+                created_id = Summary.sudo().upsert_summary(
+                    owner,
+                    day=day,
+                    intro=values.get("intro"),
+                    content=values.get("content"),
+                    objectives=values.get("objectives"),
+                )
+            except UserError as error:
+                return {"ok": False, "error": str(error)}
+
+            summary = Summary.sudo().browse(created_id)
+            return {
+                "ok": True,
+                "target": "summary",
+                "summary_id": summary.id,
+                "user_id": summary.user_id.id,
+                "date": fields.Date.to_string(summary.date),
+                # ids let a bot come back later to plan or report on a task
+                "objectives": [
+                    {"id": task.id, "name": task.name, "has_plan": task.has_plan}
+                    for task in summary.objective_ids
+                ],
+            }
+
+        # 3. a chatter draft: rewrite one by id, or write a new one on a document
+        if draft_id or draft:
+            Draft = self.env["promessaging.draft"].sudo()
+            values = draft if isinstance(draft, dict) else {}
+            body = values.get("body")
+            if body is None:
+                body = str(message) if message else None
+            subject_line = values.get("subject", subject)
+
+            if draft_id:
+                record = Draft.browse(int(draft_id)).exists()
+                if not record:
+                    return {"ok": False, "error": "unknown_draft"}
+                write_values = {"subuser_id": subuser.id}
+                if body is not None:
+                    write_values["body"] = body
+                if subject_line is not None:
+                    write_values["subject"] = (subject_line or "").strip()
+                record.write(write_values)
+            else:
+                res_model = values.get("res_model") or values.get("thread_model")
+                res_id = values.get("res_id") or values.get("thread_id")
+                if not res_model or not res_id:
+                    return {"ok": False, "error": "missing_document"}
+                if body is None:
+                    return {"ok": False, "error": "missing_body"}
+                Draft.set_draft(res_model, int(res_id), body, subject=subject_line)
+                record = Draft._find_draft(res_model, int(res_id))
+                record.subuser_id = subuser.id
+
             return {
                 "ok": True,
                 "target": "draft",
-                "draft_id": draft.id,
-                "res_model": draft.res_model,
-                "res_id": draft.res_id,
+                "draft_id": record.id,
+                "res_model": record.res_model,
+                "res_id": record.res_id,
+                "subject": record.subject or "",
             }
 
         # 4. a direct conversation, by id or by who it is with

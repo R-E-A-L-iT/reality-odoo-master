@@ -36,6 +36,9 @@
                     <small class="text-muted ms-2">not sent to anyone</small>
                 </div>
                 <t t-if="promessagingDraft.editing">
+                    <input class="form-control form-control-sm mb-2" type="text"
+                           placeholder="Subject (optional)"
+                           t-model="promessagingDraft.subject"/>
                     <textarea class="form-control" rows="6"
                               placeholder="Write a draft for someone to review and send..."
                               t-model="promessagingDraft.value"/>
@@ -45,6 +48,16 @@
                                 t-on-click="() => this.promessagingPostDraft()">
                             Post
                         </button>
+                        <button class="btn btn-secondary btn-sm me-1"
+                                t-att-disabled="promessagingDraft.generating"
+                                t-att-title="promessagingDraft.draft
+                                    ? 'Ask an AI assistant to rewrite this draft'
+                                    : 'Ask your AI assistant to write this draft'"
+                                t-on-click="() => this.promessagingGenerateDraft()">
+                            <t t-if="promessagingDraft.generating">Working...</t>
+                            <t t-elif="promessagingDraft.draft">Regenerate</t>
+                            <t t-else="">Generate</t>
+                        </button>
                         <button class="btn btn-link btn-sm"
                                 t-on-click="() => this.promessagingCancelDraft()">
                             Cancel
@@ -52,6 +65,9 @@
                     </div>
                 </t>
                 <t t-else="">
+                    <div t-if="promessagingDraft.draft.subject" class="fw-bold mb-1">
+                        <t t-esc="promessagingDraft.draft.subject"/>
+                    </div>
                     <div class="o-promessaging-draft-body" style="white-space: pre-wrap;"
                          t-esc="promessagingDraft.draft.body"/>
                     <div class="d-flex mt-2">
@@ -63,11 +79,11 @@
                                 t-on-click="() => this.promessagingEditDraft()">
                             Edit
                         </button>
-                        <button t-if="promessagingDraft.draft.can_regenerate" class="btn btn-secondary btn-sm me-1"
-                                t-att-disabled="promessagingDraft.regenerating"
+                        <button class="btn btn-secondary btn-sm me-1"
+                                t-att-disabled="promessagingDraft.generating"
                                 t-att-title="'Ask an AI assistant to rewrite this draft'"
-                                t-on-click="() => this.promessagingRegenerateDraft()">
-                            <t t-if="promessagingDraft.regenerating">Regenerating...</t>
+                                t-on-click="() => this.promessagingGenerateDraft()">
+                            <t t-if="promessagingDraft.generating">Working...</t>
                             <t t-else="">Regenerate</t>
                         </button>
                         <button class="btn btn-link btn-sm text-danger"

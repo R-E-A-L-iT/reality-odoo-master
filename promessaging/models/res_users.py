@@ -1,5 +1,6 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.http import request
 
 
 class ResUsers(models.Model):
@@ -21,6 +22,12 @@ class ResUsers(models.Model):
     # (portal, public) that have no access to promessaging.subuser
     subuser_count = fields.Integer(compute="_compute_subuser_count")
 
+    no_ping = fields.Boolean(
+        string="Cannot Be Pinged",
+        help="Hides this user from @mention lists and from Direct Messages, and stops "
+             "anyone notifying them that way. They can still write to other people.",
+    )
+
     can_send_message = fields.Boolean(
         string="Can Send Messages",
         default=True,
@@ -38,6 +45,37 @@ class ResUsers(models.Model):
         for user in self:
             user.subuser_count = counts.get(user.id, 0)
 
+    def _get_company_ids(self):
+        """Companies available right now.
+
+        env.companies validates against this, so narrowing it here is what stops a
+        sub-user reaching a company its profile excludes.
+        """
+        company_ids = super()._get_company_ids()
+        if self.env.su or not self.id or self.id != self.env.uid:
+            return company_ids
+        # resolving the sub-user reads records, which can evaluate company rules
+        # and land back here; one level is enough
+        if getattr(request, "_promessaging_resolving_companies", False):
+            return company_ids
+        try:
+            request._promessaging_resolving_companies = True
+        except Exception:
+            pass
+        try:
+            subuser = self.env["promessaging.subuser"]._active_subuser()
+        finally:
+            try:
+                request._promessaging_resolving_companies = False
+            except Exception:
+                pass
+        allowed = subuser._effective_companies() if subuser else None
+        if not allowed:
+            return company_ids
+        # intersection: never a company the account itself lacks
+        narrowed = tuple(cid for cid in company_ids if cid in set(allowed.ids))
+        return narrowed or company_ids[:1]
+
     @api.model
     def has_group(self, group_ext_id):
         # @api.model matches the base signature: without it, call_kw dispatches
@@ -54,6 +92,19 @@ class ResUsers(models.Model):
             return result
         group = self.env.ref(group_ext_id, raise_if_not_found=False)
         return bool(group) and group in groups
+
+    def _init_messaging(self):
+        """Drop chats with people who cannot be reached from the sidebar."""
+        values = super()._init_messaging()
+        channels = values.get("channels")
+        if not channels:
+            return values
+        ids = [channel["id"] for channel in channels if channel.get("id")]
+        blocked = self.env["discuss.channel"].sudo().browse(ids)._promessaging_blocked_chats()
+        if blocked:
+            hidden = set(blocked.ids)
+            values["channels"] = [c for c in channels if c.get("id") not in hidden]
+        return values
 
     def _promessaging_default_subuser(self):
         """This user's default assistant, if they are allowed to use it."""

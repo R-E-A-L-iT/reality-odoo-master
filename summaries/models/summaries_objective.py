@@ -99,6 +99,103 @@ class SummariesObjective(models.Model):
         steps = plan.get("steps") if isinstance(plan, dict) else plan
         return steps if isinstance(steps, list) else []
 
+    def _plan_counts(self):
+        """How much of the plan is left, and who it is left for."""
+        self.ensure_one()
+        steps = self._plan_steps()
+        remaining = [step for step in steps if not step.get("done")]
+        ai_remaining = len([s for s in remaining if s.get("actor") == "ai"])
+
+        # a step of yours standing in front of the AI's next one blocks it:
+        # the plan runs in order, so the AI cannot skip ahead
+        blocking = None
+        if ai_remaining and remaining and remaining[0].get("actor") != "ai":
+            blocking = remaining[0]
+
+        return {
+            "total": len(steps),
+            "done": len(steps) - len(remaining),
+            "ai_remaining": ai_remaining,
+            "human_remaining": len([s for s in remaining if s.get("actor") != "ai"]),
+            "ai_blocked": bool(blocking),
+            "blocking_step": (blocking or {}).get("text", ""),
+        }
+
+    def _plan_state(self):
+        """One word for how this task stands, used to colour the list.
+
+        done        the task is finished
+        ai_ready    the AI can still take steps on it
+        human_next  under way, but everything left needs a person
+        human_only  nothing done yet and every step needs a person
+        no_plan     no plan written
+        """
+        self.ensure_one()
+        if self.done:
+            return "done"
+        counts = self._plan_counts()
+        if not counts["total"]:
+            return "no_plan"
+        if counts["ai_remaining"]:
+            return "ai_ready"
+        if not counts["human_remaining"]:
+            return "done"
+        return "human_next" if counts["done"] else "human_only"
+
+    def _sync_done_from_plan(self):
+        """A task whose every step is done is itself done."""
+        self.ensure_one()
+        counts = self._plan_counts()
+        if counts["total"] and counts["done"] == counts["total"] and not self.done:
+            self.done = True
+        return self.done
+
+    def mark_step(self, index, done=True):
+        """Tick one step off, by position in the plan."""
+        self.ensure_one()
+        steps = self._plan_steps()
+        index = int(index)
+        if index < 0 or index >= len(steps):
+            raise UserError(_("That step is not in this plan."))
+        steps[index]["done"] = bool(done)
+        self._store_steps(steps)
+        return self.get_plan()
+
+    def mark_steps(self, indexes=None, done=True, actor=None):
+        """Tick off several steps: by position, or every step of one actor."""
+        self.ensure_one()
+        steps = self._plan_steps()
+        if actor:
+            actor = str(actor).strip().lower()
+            if actor not in ACTORS:
+                raise UserError(_(
+                    "Unknown actor %(actor)s. Use one of: %(allowed)s",
+                    actor=actor, allowed=", ".join(ACTORS),
+                ))
+            for step in steps:
+                if step.get("actor") == actor:
+                    step["done"] = bool(done)
+        for index in indexes or []:
+            index = int(index)
+            if 0 <= index < len(steps):
+                steps[index]["done"] = bool(done)
+        self._store_steps(steps)
+        return self.get_plan()
+
+    def _store_steps(self, steps):
+        self.ensure_one()
+        stored = {}
+        try:
+            stored = json.loads(self.plan or "{}")
+        except (TypeError, ValueError):
+            stored = {}
+        summary = stored.get("summary") if isinstance(stored, dict) else None
+        plan = {"steps": steps}
+        if summary:
+            plan["summary"] = summary
+        self.plan = json.dumps(plan, ensure_ascii=False, indent=2)
+        self._sync_done_from_plan()
+
     @api.model
     def _clean_plan(self, plan):
         """Validate a plan coming from an AI or from the editor."""
@@ -144,6 +241,8 @@ class SummariesObjective(models.Model):
         self.ensure_one()
         cleaned = self._clean_plan(plan)
         self.plan = json.dumps(cleaned, ensure_ascii=False, indent=2) if cleaned["steps"] else False
+        if cleaned["steps"]:
+            self._sync_done_from_plan()
         return self.get_plan()
 
     def get_plan(self):
@@ -157,8 +256,72 @@ class SummariesObjective(models.Model):
             "task_name": self.name,
             "summary": (stored or {}).get("summary", "") if isinstance(stored, dict) else "",
             "steps": self._plan_steps(),
+            "counts": self._plan_counts(),
+            "state": self._plan_state(),
+            "task_done": self.done,
             "executed_on": fields.Datetime.to_string(self.plan_executed_on),
         }
+
+    def set_document(self, document):
+        """Link the document this task is about, so Jump can reach it.
+
+        Accepts "sale.order,42", {"model": "sale.order", "id": 42}, or
+        {"model": "sale.order", "name": "QT-260622-528"} when the bot knows the
+        number but not the id. False clears the link.
+        """
+        self.ensure_one()
+        if not document:
+            self.record_ref = False
+            return self._task_data()
+
+        if isinstance(document, str):
+            model, _sep, res_id = document.partition(",")
+            document = {"model": model.strip(), "id": res_id.strip()}
+        if not isinstance(document, dict):
+            raise UserError(_("A document must be a string or an object."))
+
+        model = (document.get("model") or "").strip()
+        if model not in LINKABLE_MODELS:
+            raise UserError(_(
+                "Tasks cannot link to %(model)s. Linkable models: %(allowed)s",
+                model=model or "?", allowed=", ".join(LINKABLE_MODELS),
+            ))
+        if model not in self.env:
+            raise UserError(_("%s is not installed here.", model))
+
+        Model = self.env[model].sudo()
+        record = Model.browse(int(document["id"])).exists() if document.get("id") else None
+        if not record and document.get("name"):
+            # bots know the quote number, rarely the id
+            matches = Model.name_search(document["name"], limit=2)
+            if not matches:
+                raise UserError(_(
+                    "No %(model)s found named %(name)s.",
+                    model=model, name=document["name"],
+                ))
+            if len(matches) > 1:
+                raise UserError(_(
+                    "%(name)s matches more than one %(model)s. Send its id instead.",
+                    name=document["name"], model=model,
+                ))
+            record = Model.browse(matches[0][0])
+        if not record:
+            raise UserError(_("That %s no longer exists.", model))
+
+        self.record_ref = "%s,%s" % (model, record.id)
+        return self._task_data()
+
+    def _display_note(self):
+        """The note, unless it is a raw payload a bot wrote there by mistake."""
+        self.ensure_one()
+        text = (self.note or "").strip()
+        if text[:1] in "{[":
+            try:
+                json.loads(text)
+                return ""
+            except ValueError:
+                pass
+        return text
 
     def _task_data(self):
         """Values the document view renders for one task."""
@@ -176,11 +339,13 @@ class SummariesObjective(models.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "note": self.note or "",
+            "note": self._display_note(),
             "done": self.done,
             "sequence": self.sequence,
             "execute_enabled": self.execute_enabled,
             "has_plan": self.has_plan,
+            "plan_state": self._plan_state(),
+            "plan_counts": self._plan_counts(),
             "plan_executed_on": fields.Datetime.to_string(self.plan_executed_on),
             "ref": reference,
         }
@@ -195,6 +360,13 @@ class SummariesObjective(models.Model):
     def action_execute(self):
         """Hand the task, and its plan, to an AI to carry out."""
         self.ensure_one()
+        counts = self._plan_counts()
+        if counts["ai_blocked"]:
+            raise UserError(_(
+                "The AI is waiting on a step of yours: %s\n\n"
+                "Tick that step off in the plan, then run it.",
+                counts["blocking_step"],
+            ))
         subuser = self._execute_subuser()
         if not subuser:
             raise UserError(_(
@@ -218,7 +390,7 @@ class SummariesObjective(models.Model):
             "task": {
                 "id": self.id,
                 "name": self.name,
-                "note": self.note or "",
+                "note": self._display_note(),
                 "done": self.done,
                 "document": reference,
             },

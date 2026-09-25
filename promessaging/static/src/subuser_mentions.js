@@ -62,6 +62,8 @@ patch(Composer.prototype, {
                 label: subuser.handle,
                 subuserName: subuser.name,
                 subuserDescription: subuser.description || "",
+                subuserAvatar: subuser.has_avatar ? subuser.avatar : false,
+                subuserInitial: subuser.initial || "?",
                 classList: "o-mail-Composer-suggestion",
             })),
         };

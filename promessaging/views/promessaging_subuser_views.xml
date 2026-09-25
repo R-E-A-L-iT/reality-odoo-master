@@ -60,6 +60,14 @@
                         <field name="group_ids" widget="many2many_tags"
                                options="{'no_create': True}"
                                placeholder="Same as the AI account (leave empty)"/>
+                        <field name="company_ids" widget="many2many_tags"
+                               options="{'no_create': True}"
+                               groups="base.group_multi_company"
+                               placeholder="Same as the AI account (leave empty)"/>
+                        <field name="company_id" options="{'no_create': True}"
+                               groups="base.group_multi_company"
+                               domain="[('id', 'in', company_ids)]"
+                               invisible="not company_ids"/>
                     </group>
                     <group string="Identity" groups="base.group_system">
                         <field name="pin" password="True"
@@ -104,6 +112,8 @@
         <field name="model">promessaging.subuser</field>
         <field name="arch" type="xml">
             <tree string="AI Sub-users">
+                <field name="image_1920" widget="image" options="{'size': [30, 30]}"
+                       string="Picture" optional="show"/>
                 <field name="name"/>
                 <field name="handle"/>
                 <field name="user_id"/>

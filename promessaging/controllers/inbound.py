@@ -22,7 +22,11 @@ class PromessagingInbound(http.Controller):
 
         message = payload.get("message") or payload.get("reply") or payload.get("text")
         # a plan or summary update carries no message of its own
-        if not message and not payload.get("plan") and not payload.get("summary"):
+        if not message and not any(
+            payload.get(key)
+            for key in ("plan", "summary", "steps_done", "steps_done_actor",
+                        "document", "draft", "subject")
+        ):
             return {"ok": False, "error": "missing_message"}
 
         try:
@@ -30,8 +34,13 @@ class PromessagingInbound(http.Controller):
                 message,
                 chat_id=payload.get("chat_id"),
                 draft_id=payload.get("draft_id"),
+                draft=payload.get("draft"),
+                subject=payload.get("subject"),
                 objective_id=payload.get("objective_id"),
                 plan=payload.get("plan"),
+                steps_done=payload.get("steps_done"),
+                document=payload.get("document"),
+                steps_done_actor=payload.get("steps_done_actor"),
                 summary_id=payload.get("summary_id"),
                 summary_values=payload.get("summary"),
                 user_id=payload.get("user_id"),

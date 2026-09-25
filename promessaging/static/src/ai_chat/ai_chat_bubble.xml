@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <t t-name="promessaging.AiChatBubble">
-        <div t-if="state.available" class="o_promessaging_aichat">
+        <div t-if="visible" class="o_promessaging_aichat">
 
             <!-- open conversation -->
             <div t-if="state.chat" class="o_promessaging_aichat_window shadow rounded">

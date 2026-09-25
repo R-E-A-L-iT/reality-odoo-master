@@ -6,6 +6,7 @@ class MailMessage(models.Model):
 
     subuser_id = fields.Many2one(
         "promessaging.subuser", string="AI Sub-user", ondelete="set null", index=True,
+        groups="base.group_user",
         help="The AI sub-user that produced this message, when one was acting.",
     )
 

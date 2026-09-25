@@ -98,6 +98,7 @@ export class SummariesBlocks extends Component {
         blocks: { type: Array },
         openRef: { type: Function, optional: true },
         resId: { type: [Number, Boolean], optional: true },
+        onTriggerRoutine: { type: Function, optional: true },
     };
 
     textClass(block) {
@@ -121,6 +122,37 @@ export class SummariesBlocks extends Component {
         return `max-width: 100%; width: ${block.width || "auto"};`;
     }
 
+    /** A routine's accent: a style name maps to its colour, a hex is used as is. */
+    routineColor(routine) {
+        const named = {
+            default: "#6c757d",
+            primary: "#a855f7",
+            success: "#5cb85c",
+            warning: "#f0ad4e",
+            danger: "#d9534f",
+            info: "#5b8def",
+            muted: "#9aa0ab",
+        };
+        return named[routine.color] || routine.color || "#6c757d";
+    }
+
+    routineStatusColor(routine) {
+        return { ok: "#5cb85c", warning: "#f0ad4e", error: "#d9534f" }[routine.status] || "#5cb85c";
+    }
+
+    routineStatusLabel(routine) {
+        const label = { ok: "Running fine", warning: "Needs attention", error: "Failing" }[
+            routine.status
+        ];
+        return routine.status_note || label || "";
+    }
+
+    async triggerRoutine(routine) {
+        if (this.props.onTriggerRoutine) {
+            await this.props.onTriggerRoutine(routine);
+        }
+    }
+
     markupHtml(html) {
         // sanitized server-side in _clean_blocks
         return markup(html || "");
@@ -142,6 +174,7 @@ export class SummariesPlanDialog extends Component {
         readonly: { type: Boolean, optional: true },
         onSave: { type: Function },
         onExecute: { type: Function },
+        onToggleStep: { type: Function },
         close: { type: Function },
     };
 
@@ -149,6 +182,9 @@ export class SummariesPlanDialog extends Component {
         this.state = useState({
             steps: this.props.plan.steps.map((step) => ({ ...step })),
             summary: this.props.plan.summary || "",
+            taskDone: this.props.plan.task_done,
+            executedOn: this.props.plan.executed_on || false,
+            sentTo: false,
             busy: false,
             error: false,
         });
@@ -164,6 +200,39 @@ export class SummariesPlanDialog extends Component {
 
     setActor(step, actor) {
         step.actor = actor;
+    }
+
+    async toggleStep(index) {
+        const step = this.state.steps[index];
+        step.done = !step.done;
+        try {
+            const plan = await this.props.onToggleStep(index, step.done);
+            if (plan) {
+                this.state.steps = plan.steps.map((one) => ({ ...one }));
+                this.state.taskDone = plan.task_done;
+            }
+        } catch (error) {
+            step.done = !step.done; // put it back
+            this.state.error = this.constructor.errorOf(error);
+        }
+    }
+
+    /** The step of yours the AI is waiting behind, if any. */
+    get blockedByStep() {
+        const remaining = this.state.steps.filter((step) => !step.done);
+        const aiLeft = remaining.some((step) => step.actor === "ai");
+        if (!aiLeft || !remaining.length || remaining[0].actor === "ai") {
+            return "";
+        }
+        return remaining[0].text || "a step of yours";
+    }
+
+    get remainingForAi() {
+        return this.state.steps.filter((step) => step.actor === "ai" && !step.done).length;
+    }
+
+    get remainingForHuman() {
+        return this.state.steps.filter((step) => step.actor !== "ai" && !step.done).length;
     }
 
     updateText(step, ev) {
@@ -206,7 +275,9 @@ export class SummariesPlanDialog extends Component {
                 this.state.error = result.error || _t("The assistant could not be reached.");
                 return;
             }
-            this.props.close();
+            // stay open: the button turning green is how you know it went
+            this.state.executedOn = _t("just now");
+            this.state.sentTo = (result && result.subuser) || false;
         } catch (error) {
             this.state.error = this.constructor.errorOf(error);
         } finally {
@@ -232,6 +303,8 @@ export class SummariesDocument extends Component {
         this.orm = useService("orm");
         this.action = useService("action");
         this.dialog = useService("dialog");
+        this.notification = useService("notification");
+        this.triggerRoutine = this.triggerRoutine.bind(this);
         this.state = useState({
             loading: true,
             doc: null,
@@ -240,6 +313,7 @@ export class SummariesDocument extends Component {
             draft: "",
             draftIntro: "",
             error: false,
+            executing: {},
         });
         this.openRef = this.openRef.bind(this);
         onWillStart(() => this.loadDocument());
@@ -251,6 +325,22 @@ export class SummariesDocument extends Component {
 
     get readonly() {
         return Boolean(this.props.readonly);
+    }
+
+    /** The raw JSON editor is a maintenance tool, not everyday UI. */
+    get isDebugMode() {
+        return Boolean(this.env.debug);
+    }
+
+    /** How many tasks sit in each state, for the line above the list. */
+    get taskTally() {
+        const tasks = (this.state.doc && this.state.doc.tasks) || [];
+        const count = (state) => tasks.filter((task) => task.plan_state === state).length;
+        return {
+            aiReady: count("ai_ready"),
+            humanNext: count("human_next"),
+            humanOnly: count("human_only"),
+        };
     }
 
     async loadDocument() {
@@ -310,10 +400,29 @@ export class SummariesDocument extends Component {
         await this.reload();
     }
 
-    async executeTask(task) {
-        const result = await this.orm.call("summaries.objective", "action_execute", [[task.id]]);
-        await this.reload();
+    async executeTask(task, notify = false) {
+        this.state.executing[task.id] = true;
+        let result;
+        try {
+            result = await this.orm.call("summaries.objective", "action_execute", [[task.id]]);
+            await this.reload();
+        } finally {
+            delete this.state.executing[task.id];
+        }
+        // the plan dialog reports errors inline, so it asks for no notification
+        if (notify && result) {
+            this.notification.add(
+                result.ok
+                    ? _t("%s is working on it.", result.subuser)
+                    : _t("Could not reach %s (%s).", result.subuser, result.error || _t("unknown error")),
+                { type: result.ok ? "info" : "warning" }
+            );
+        }
         return result;
+    }
+
+    isExecuting(task) {
+        return Boolean(this.state.executing[task.id]);
     }
 
     async openPlan(task) {
@@ -326,6 +435,15 @@ export class SummariesDocument extends Component {
                 await this.reload();
             },
             onExecute: () => this.executeTask(task),
+            onToggleStep: async (index, done) => {
+                const updated = await this.orm.call("summaries.objective", "mark_step", [
+                    [task.id],
+                    index,
+                    done,
+                ]);
+                await this.reload();
+                return updated;
+            },
         });
     }
 
@@ -340,6 +458,20 @@ export class SummariesDocument extends Component {
             view_mode: "form",
             views: [[false, "form"]],
         });
+    }
+
+    async triggerRoutine(routine) {
+        const result = await this.orm.call("summaries.summary", "trigger_routine", [
+            [this.resId],
+            routine.key || routine.name,
+        ]);
+        await this.loadDocument();
+        this.notification.add(
+            result.ok
+                ? _t("%s is running %s.", result.subuser, result.routine)
+                : _t("Could not reach %s (%s).", result.subuser, result.error || _t("unknown error")),
+            { type: result.ok ? "info" : "warning" }
+        );
     }
 
     // ----- content
