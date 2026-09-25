@@ -8,7 +8,37 @@ _logger = logging.getLogger(__name__)
 class MailThread(models.AbstractModel):
     _inherit = "mail.thread"
 
+    def _promessaging_is_customer_facing(self, kwargs):
+        """True when this post would leave the building.
+
+        A log note is internal; anything else notifies followers, customers
+        included.
+        """
+        subtype_xmlid = kwargs.get("subtype_xmlid")
+        subtype_id = kwargs.get("subtype_id")
+        note_id = self.env["ir.model.data"]._xmlid_to_res_id("mail.mt_note")
+        if subtype_id:
+            return subtype_id != note_id
+        if subtype_xmlid:
+            return subtype_xmlid != "mail.mt_note"
+        # message_post falls back to a note when nothing is given
+        return False
+
     def message_post(self, **kwargs):
+        # the gate lives here, not only in the controller: a bot reaching
+        # message_post over the API must hit the same wall as the UI
+        Users = self.env["res.users"]
+        if self._name != "discuss.channel":
+            Users._promessaging_check_author(
+                kwargs.get("author_id"), kwargs.get("email_from")
+            )
+            if self._promessaging_is_customer_facing(kwargs):
+                Users._promessaging_guard_outgoing("message")
+            else:
+                Users._promessaging_check_note_recipients(
+                    self.env["res.partner"].browse(kwargs.get("partner_ids") or [])
+                )
+
         # someone typed the name anyway: drop them rather than notify them
         if kwargs.get("partner_ids"):
             partners = self.env["res.partner"].browse(kwargs["partner_ids"])
@@ -54,6 +84,13 @@ class MailThread(models.AbstractModel):
         return super()._message_compute_author(
             author_id=author_id, email_from=email_from, raise_on_email=raise_on_email
         )
+
+    def message_notify(self, **kwargs):
+        """Notifies partners directly, bypassing the chatter: same gate."""
+        Users = self.env["res.users"]
+        Users._promessaging_check_author(kwargs.get("author_id"), kwargs.get("email_from"))
+        Users._promessaging_guard_outgoing("notification")
+        return super().message_notify(**kwargs)
 
     def _notify_get_recipients(self, message, msg_vals, **kwargs):
         """A ping in a log note must reach the person by email.

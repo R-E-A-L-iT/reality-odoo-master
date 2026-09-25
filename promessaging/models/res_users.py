@@ -1,5 +1,9 @@
+import logging
+
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
+
+_logger = logging.getLogger(__name__)
 from odoo.http import request
 
 
@@ -136,6 +140,69 @@ class ResUsers(models.Model):
                 "You are not allowed to send messages from documents. "
                 "You can still log a note and mention internal users."
             ))
+
+    @api.model
+    def _promessaging_allowed_author_ids(self):
+        """Partners the current user may post as: itself, or its acting sub-user."""
+        allowed = {self.env.user.partner_id.id}
+        subuser = self.env["promessaging.subuser"]._active_subuser()
+        if subuser and subuser.sudo().partner_id:
+            allowed.add(subuser.sudo().partner_id.id)
+        return allowed
+
+    @api.model
+    def _promessaging_check_author(self, author_id, email_from=None):
+        """Refuse posting under someone else's name.
+
+        Restricted accounts and AI accounts otherwise reach a customer simply by
+        naming a colleague as the author.
+        """
+        user = self.env.user
+        if self.env.su or not user._is_internal():
+            return
+        if not (user.is_ai_user or not user.can_send_message):
+            return
+        if author_id and author_id not in self._promessaging_allowed_author_ids():
+            author = self.env["res.partner"].sudo().browse(author_id)
+            _logger.warning(
+                "ProMessaging: %s (uid %s) tried to post as %s",
+                user.name, user.id, author.display_name,
+            )
+            raise AccessError(_(
+                "You cannot post as %s. Messages are recorded under your own name.",
+                author.display_name or author_id,
+            ))
+        if email_from:
+            own = {
+                (user.email or "").strip().lower(),
+                (user.partner_id.email_formatted or "").strip().lower(),
+                (user.email_formatted or "").strip().lower(),
+            }
+            subuser = self.env["promessaging.subuser"]._active_subuser()
+            if subuser:
+                own.add((subuser.sudo().partner_id.email_formatted or "").strip().lower())
+            if str(email_from).strip().lower() not in {o for o in own if o}:
+                _logger.warning(
+                    "ProMessaging: %s (uid %s) tried to send from %s",
+                    user.name, user.id, email_from,
+                )
+                raise AccessError(_(
+                    "You cannot send from %s.", email_from,
+                ))
+
+    @api.model
+    def _promessaging_guard_outgoing(self, what="message"):
+        """The single gate every customer-facing path goes through."""
+        if not self._promessaging_is_restricted():
+            return
+        user = self.env.user
+        _logger.warning(
+            "ProMessaging: blocked %s attempt by %s (uid %s)", what, user.name, user.id,
+        )
+        raise AccessError(_(
+            "You are not allowed to send messages to customers. "
+            "Write a draft instead: someone who may send will review it."
+        ))
 
     @api.model
     def _promessaging_check_note_recipients(self, partners, emails=()):
