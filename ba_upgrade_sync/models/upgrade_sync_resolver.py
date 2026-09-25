@@ -91,12 +91,12 @@ class UpgradeSyncResolver(models.AbstractModel):
         return records
 
     @api.model
-    def _ids(self, refs, required=True):
+    def _resolve_ids(self, refs, required=True):
         records = self._resolve_many(refs, required=required)
         return records.ids if records else []
 
     @api.model
-    def _id(self, ref, required=True):
+    def _resolve_id(self, ref, required=True):
         record = self._resolve(ref, required=required)
         return record.id if record else False
 

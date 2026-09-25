@@ -57,7 +57,7 @@ class UpgradeSyncTransformer(models.AbstractModel):
         vals = {
             "name": snap["name"],
             "is_company": snap.get("is_company"),
-            "parent_id": r._id(snap.get("parent_id")),
+            "parent_id": r._resolve_id(snap.get("parent_id")),
             "type": snap.get("type") or "contact",
             "email": snap.get("email"),
             "phone": snap.get("phone"),
@@ -65,15 +65,15 @@ class UpgradeSyncTransformer(models.AbstractModel):
             "street2": snap.get("street2"),
             "city": snap.get("city"),
             "zip": snap.get("zip"),
-            "state_id": r._id(snap.get("state_id"), required=False),
-            "country_id": r._id(snap.get("country_id"), required=False),
+            "state_id": r._resolve_id(snap.get("state_id"), required=False),
+            "country_id": r._resolve_id(snap.get("country_id"), required=False),
             "vat": snap.get("vat"),
             "ref": snap.get("ref"),
             "website": snap.get("website"),
             "function": snap.get("function"),
-            "company_id": r._id(snap.get("company_id")),
-            "user_id": r._id(snap.get("user_id"), required=False),
-            "category_id": [(6, 0, r._ids(snap.get("category_ids"), required=False))],
+            "company_id": r._resolve_id(snap.get("company_id")),
+            "user_id": r._resolve_id(snap.get("user_id"), required=False),
+            "category_id": [(6, 0, r._resolve_ids(snap.get("category_ids"), required=False))],
             "active": snap.get("active", True),
         }
         # Odoo 19 core removed res.partner.mobile; proquotes/prophone re-add it.
@@ -82,9 +82,9 @@ class UpgradeSyncTransformer(models.AbstractModel):
         if snap.get("lang") and self.env["res.lang"].sudo().search_count([("code", "=", snap["lang"])]):
             vals["lang"] = snap["lang"]
         if snap.get("property_payment_term_id"):
-            vals["property_payment_term_id"] = r._id(snap["property_payment_term_id"], required=False)
+            vals["property_payment_term_id"] = r._resolve_id(snap["property_payment_term_id"], required=False)
         if snap.get("property_product_pricelist"):
-            vals["property_product_pricelist"] = r._id(snap["property_product_pricelist"], required=False)
+            vals["property_product_pricelist"] = r._resolve_id(snap["property_product_pricelist"], required=False)
         if vals["type"] not in dict(self.env["res.partner"]._fields["type"].selection):
             vals["type"] = "other"
         return vals
@@ -101,12 +101,12 @@ class UpgradeSyncTransformer(models.AbstractModel):
             "sale_ok": snap.get("sale_ok"),
             "purchase_ok": snap.get("purchase_ok"),
             "invoice_policy": snap.get("invoice_policy") or "order",
-            "categ_id": r._id(snap.get("categ_id")),
-            "uom_id": r._id(snap.get("uom_id")),
-            "taxes_id": [(6, 0, r._ids(snap.get("taxes_id")))],
-            "supplier_taxes_id": [(6, 0, r._ids(snap.get("supplier_taxes_id")))],
+            "categ_id": r._resolve_id(snap.get("categ_id")),
+            "uom_id": r._resolve_id(snap.get("uom_id")),
+            "taxes_id": [(6, 0, r._resolve_ids(snap.get("taxes_id")))],
+            "supplier_taxes_id": [(6, 0, r._resolve_ids(snap.get("supplier_taxes_id")))],
             "description_sale": snap.get("description_sale"),
-            "company_id": r._id(snap.get("company_id")),
+            "company_id": r._resolve_id(snap.get("company_id")),
             "active": snap.get("active", True),
         }
         # Odoo 17 detailed_type 'product' (storable) -> Odoo 19 consu + is_storable
@@ -128,19 +128,19 @@ class UpgradeSyncTransformer(models.AbstractModel):
         vals = {
             "name": snap["name"],
             "type": snap.get("type") or "opportunity",
-            "partner_id": r._id(snap.get("partner_id")),
+            "partner_id": r._resolve_id(snap.get("partner_id")),
             "contact_name": snap.get("contact_name"),
             "partner_name": snap.get("partner_name"),
             "email_from": snap.get("email_from"),
             "phone": snap.get("phone"),
-            "user_id": r._id(snap.get("user_id"), required=False),
-            "team_id": r._id(snap.get("team_id"), required=False),
+            "user_id": r._resolve_id(snap.get("user_id"), required=False),
+            "team_id": r._resolve_id(snap.get("team_id"), required=False),
             "expected_revenue": snap.get("expected_revenue"),
             "date_deadline": _date(snap.get("date_deadline")),
             "priority": snap.get("priority") or "0",
-            "tag_ids": [(6, 0, r._ids(snap.get("tag_ids"), required=False))],
+            "tag_ids": [(6, 0, r._resolve_ids(snap.get("tag_ids"), required=False))],
             "description": snap.get("description"),
-            "company_id": r._id(snap.get("company_id")),
+            "company_id": r._resolve_id(snap.get("company_id")),
         }
         if "mobile" in self.env["crm.lead"]._fields:
             vals["mobile"] = snap.get("mobile")
@@ -153,20 +153,20 @@ class UpgradeSyncTransformer(models.AbstractModel):
     def _sale_order_vals(self, snap):
         r = self._resolver
         vals = {
-            "partner_id": r._id(snap.get("partner_id")),
-            "partner_invoice_id": r._id(snap.get("partner_invoice_id")),
-            "partner_shipping_id": r._id(snap.get("partner_shipping_id")),
+            "partner_id": r._resolve_id(snap.get("partner_id")),
+            "partner_invoice_id": r._resolve_id(snap.get("partner_invoice_id")),
+            "partner_shipping_id": r._resolve_id(snap.get("partner_shipping_id")),
             "date_order": _datetime(snap.get("date_order")),
             "validity_date": _date(snap.get("validity_date")),
             "commitment_date": _datetime(snap.get("commitment_date")),
-            "pricelist_id": r._id(snap.get("pricelist_id")),
-            "payment_term_id": r._id(snap.get("payment_term_id")),
-            "fiscal_position_id": r._id(snap.get("fiscal_position_id")),
-            "user_id": r._id(snap.get("user_id"), required=False),
-            "team_id": r._id(snap.get("team_id"), required=False),
-            "company_id": r._id(snap.get("company_id")),
-            "opportunity_id": r._id(snap.get("opportunity_id")),
-            "sale_order_template_id": r._id(snap.get("sale_order_template_id"), required=False) or False,
+            "pricelist_id": r._resolve_id(snap.get("pricelist_id")),
+            "payment_term_id": r._resolve_id(snap.get("payment_term_id")),
+            "fiscal_position_id": r._resolve_id(snap.get("fiscal_position_id")),
+            "user_id": r._resolve_id(snap.get("user_id"), required=False),
+            "team_id": r._resolve_id(snap.get("team_id"), required=False),
+            "company_id": r._resolve_id(snap.get("company_id")),
+            "opportunity_id": r._resolve_id(snap.get("opportunity_id")),
+            "sale_order_template_id": r._resolve_id(snap.get("sale_order_template_id"), required=False) or False,
             "client_order_ref": snap.get("client_order_ref"),
             "origin": snap.get("origin"),
             "note": snap.get("note"),
@@ -213,9 +213,9 @@ class UpgradeSyncTransformer(models.AbstractModel):
         qty = line.get("product_uom_qty") or 0.0
         selected = line.get("selected") != "false" and line.get("sectionSelected") != "false"
         vals.update({
-            "product_id": r._id(line.get("product_id")),
-            "product_uom_id": r._id(line.get("product_uom")),   # 17: product_uom
-            "tax_ids": [(6, 0, r._ids(line.get("tax_id")))],     # 17: tax_id
+            "product_id": r._resolve_id(line.get("product_id")),
+            "product_uom_id": r._resolve_id(line.get("product_uom")),   # 17: product_uom
+            "tax_ids": [(6, 0, r._resolve_ids(line.get("tax_id")))],     # 17: tax_id
             "price_unit": line.get("price_unit"),
             "discount": line.get("discount"),
             # Odoo 17 keeps the qty of an unselected line and zeroes its subtotal;
@@ -246,16 +246,16 @@ class UpgradeSyncTransformer(models.AbstractModel):
         r = self._resolver
         vals = {
             "move_type": snap["move_type"],
-            "partner_id": r._id(snap.get("partner_id")),
-            "partner_shipping_id": r._id(snap.get("partner_shipping_id"), required=False),
+            "partner_id": r._resolve_id(snap.get("partner_id")),
+            "partner_shipping_id": r._resolve_id(snap.get("partner_shipping_id"), required=False),
             "invoice_date": _date(snap.get("invoice_date")),
             "invoice_date_due": _date(snap.get("invoice_date_due")),
-            "journal_id": r._id(snap.get("journal_id")),
-            "currency_id": r._id(snap.get("currency_id")),
-            "company_id": r._id(snap.get("company_id")),
-            "invoice_payment_term_id": r._id(snap.get("invoice_payment_term_id"), required=False),
-            "fiscal_position_id": r._id(snap.get("fiscal_position_id"), required=False),
-            "invoice_user_id": r._id(snap.get("invoice_user_id"), required=False),
+            "journal_id": r._resolve_id(snap.get("journal_id")),
+            "currency_id": r._resolve_id(snap.get("currency_id")),
+            "company_id": r._resolve_id(snap.get("company_id")),
+            "invoice_payment_term_id": r._resolve_id(snap.get("invoice_payment_term_id"), required=False),
+            "fiscal_position_id": r._resolve_id(snap.get("fiscal_position_id"), required=False),
+            "invoice_user_id": r._resolve_id(snap.get("invoice_user_id"), required=False),
             "ref": snap.get("ref"),
             "payment_reference": snap.get("payment_reference"),
             "invoice_origin": snap.get("invoice_origin"),
@@ -288,15 +288,15 @@ class UpgradeSyncTransformer(models.AbstractModel):
         if display_type != "product":
             return vals
         vals.update({
-            "product_id": r._id(line.get("product_id"), required=False),
+            "product_id": r._resolve_id(line.get("product_id"), required=False),
             "quantity": line.get("quantity"),
-            "product_uom_id": r._id(line.get("product_uom_id"), required=False),
+            "product_uom_id": r._resolve_id(line.get("product_uom_id"), required=False),
             "price_unit": line.get("price_unit"),
             "discount": line.get("discount"),
-            "tax_ids": [(6, 0, r._ids(line.get("tax_ids")))],
+            "tax_ids": [(6, 0, r._resolve_ids(line.get("tax_ids")))],
         })
         if line.get("account_id"):
-            vals["account_id"] = r._id(line["account_id"])
+            vals["account_id"] = r._resolve_id(line["account_id"])
         return _drop_empty(vals, ("product_uom_id",))
 
     @api.model
