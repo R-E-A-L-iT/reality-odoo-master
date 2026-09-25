@@ -38,6 +38,7 @@ Auto sync is OFF and dry run is ON by default.
         "views/upgrade_sync_event_views.xml",
         "views/upgrade_sync_mapping_views.xml",
         "views/upgrade_sync_config_views.xml",
+        "views/upgrade_sync_import_views.xml",
         "views/menus.xml",
     ],
     "installable": True,

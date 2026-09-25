@@ -46,6 +46,12 @@ class UpgradeSyncEvent(models.Model):
     source_user_login = fields.Char("Odoo 17 User", readonly=True)
     source_date = fields.Datetime("Date", readonly=True, index=True)
     payload = fields.Text(readonly=True)
+    origin = fields.Selection([
+        ("fetch", "Fetched from Odoo 17"),
+        ("import", "Imported file"),
+    ], default="fetch", required=True, readonly=True, index=True)
+    import_batch = fields.Char(readonly=True, index=True,
+                               help="File name and time of the import that created this event.")
 
     state = fields.Selection([
         ("pending", "Pending"),

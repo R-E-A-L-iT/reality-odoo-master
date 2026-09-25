@@ -9,6 +9,8 @@
               action="upgrade_sync_event_action_failed" sequence="20"/>
     <menuitem id="menu_upgrade_sync_waiting" name="Pending / Waiting" parent="menu_upgrade_sync_root"
               action="upgrade_sync_event_action_waiting" sequence="30"/>
+    <menuitem id="menu_upgrade_sync_import" name="Import Actions File" parent="menu_upgrade_sync_root"
+              action="upgrade_sync_import_wizard_action" sequence="35" groups="base.group_system"/>
     <menuitem id="menu_upgrade_sync_mappings" name="Record Mappings" parent="menu_upgrade_sync_root"
               action="upgrade_sync_mapping_action" sequence="40"/>
     <menuitem id="menu_upgrade_sync_config" name="Configuration" parent="menu_upgrade_sync_root"

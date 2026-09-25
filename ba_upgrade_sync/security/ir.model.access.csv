@@ -5,3 +5,4 @@ access_upgrade_sync_event_manager,upgrade.sync.event sales manager,model_upgrade
 access_upgrade_sync_mapping_admin,upgrade.sync.mapping admin,model_upgrade_sync_mapping,base.group_system,1,1,1,1
 access_upgrade_sync_mapping_manager,upgrade.sync.mapping sales manager,model_upgrade_sync_mapping,sales_team.group_sale_manager,1,0,0,0
 access_upgrade_sync_api_key_wizard_admin,upgrade.sync.api.key.wizard admin,model_upgrade_sync_api_key_wizard,base.group_system,1,1,1,1
+access_upgrade_sync_import_wizard_admin,upgrade.sync.import.wizard admin,model_upgrade_sync_import_wizard,base.group_system,1,1,1,1

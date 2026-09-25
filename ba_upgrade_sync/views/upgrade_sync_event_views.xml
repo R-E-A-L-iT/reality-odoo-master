@@ -10,6 +10,7 @@
                 <field name="source_date"/>
                 <field name="source_user_login"/>
                 <field name="event_type"/>
+                <field name="origin" optional="show"/>
                 <field name="source_model"/>
                 <field name="source_res_name"/>
                 <field name="target_display"/>
@@ -59,6 +60,8 @@
                             <field name="source_res_id"/>
                             <field name="source_res_name"/>
                             <field name="root_key"/>
+                            <field name="origin"/>
+                            <field name="import_batch" invisible="origin != 'import'"/>
                         </group>
                         <group string="Odoo 19">
                             <field name="target_model"/>
@@ -104,6 +107,9 @@
                 <filter name="success" string="Success" domain="[('state', 'in', ('success', 'dry_run_ok'))]"/>
                 <filter name="mismatch" string="Mismatch" domain="[('comparison_result', '=', 'mismatch')]"/>
                 <separator/>
+                <filter name="imported" string="Imported from file" domain="[('origin', '=', 'import')]"/>
+                <filter name="fetched" string="Fetched live" domain="[('origin', '=', 'fetch')]"/>
+                <separator/>
                 <filter name="today" string="Today" domain="[('source_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
                 <group>
                     <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
@@ -111,6 +117,7 @@
                     <filter name="group_model" string="Model" context="{'group_by': 'source_model'}"/>
                     <filter name="group_user" string="User" context="{'group_by': 'source_user_login'}"/>
                     <filter name="group_error" string="Error Kind" context="{'group_by': 'error_kind'}"/>
+                    <filter name="group_batch" string="Import Batch" context="{'group_by': 'import_batch'}"/>
                 </group>
             </search>
         </field>

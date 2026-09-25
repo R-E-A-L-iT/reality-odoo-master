@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="upgrade_sync_import_wizard_view_form" model="ir.ui.view">
+        <field name="name">upgrade.sync.import.wizard.form</field>
+        <field name="model">upgrade.sync.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import User Actions">
+                <field name="state" invisible="1"/>
+                <field name="config_id" invisible="1"/>
+                <div class="text-muted mb-3" invisible="state == 'done'">
+                    Upload the file made in Odoo 17 with <b>Upgrade Sync &gt; Export User Actions</b>
+                    (JSON or CSV, exported with "Include record snapshot").
+                    Every action is recreated in Odoo 19 in the original order, with the same
+                    safety rules as the live sync (no duplicates, missing data reported, retry).
+                </div>
+                <div class="alert alert-warning" role="alert" invisible="not dry_run or state == 'done'">
+                    Dry run is ON: actions are checked and rolled back, nothing is kept in Odoo 19.
+                </div>
+                <group invisible="state == 'done'">
+                    <field name="file_data" filename="file_name"/>
+                    <field name="file_name" invisible="1"/>
+                    <field name="process_now"/>
+                    <field name="dry_run"/>
+                </group>
+                <group invisible="state != 'done'">
+                    <group string="Result">
+                        <field name="imported_count"/>
+                        <field name="duplicate_count"/>
+                        <field name="skipped_count"/>
+                    </group>
+                    <group string="Replay">
+                        <field name="success_count"/>
+                        <field name="failed_count"/>
+                        <field name="import_batch"/>
+                    </group>
+                </group>
+                <field name="summary" invisible="state != 'done'" nolabel="1"/>
+                <footer>
+                    <button name="action_import" type="object" string="Import" class="oe_highlight"
+                            invisible="state == 'done'"/>
+                    <button name="action_open_events" type="object" string="Open Imported Actions"
+                            class="oe_highlight" invisible="state != 'done'"/>
+                    <button special="cancel" string="Close"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="upgrade_sync_import_wizard_action" model="ir.actions.act_window">
+        <field name="name">Import User Actions File</field>
+        <field name="res_model">upgrade.sync.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
