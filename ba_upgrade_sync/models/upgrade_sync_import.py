@@ -108,7 +108,7 @@ class UpgradeSyncImportWizard(models.TransientModel):
                     line.get("sequence"), line.get("action"), line.get("model"), line.get("record_id"), reason))
 
         missing_snapshot = [s for s in skipped if "snapshot" in s]
-        if lines and len(missing_snapshot) == len(lines):
+        if missing_snapshot and not prepared:
             raise UserError(_(
                 "The file has no record snapshots. In Odoo 17, run Export User Actions again with "
                 "'Include record snapshot' ticked, then import the new file."))
