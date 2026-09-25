@@ -25,6 +25,17 @@ class ResPartner(models.Model):
         ])
 
     @api.model
+    def im_search(self, name, limit=20, excluded_ids=None):
+        """Used by Discuss "New message": keep blocked users out of it."""
+        result = super().im_search(name, limit=limit, excluded_ids=excluded_ids)
+        if not result:
+            return result
+        blocked = set(
+            self.browse([p["id"] for p in result if p.get("id")])._promessaging_unpingable().ids
+        )
+        return [p for p in result if p.get("id") not in blocked] if blocked else result
+
+    @api.model
     def search_for_channel_invite(self, search_term, channel_id=None, limit=30):
         result = super().search_for_channel_invite(search_term, channel_id=channel_id, limit=limit)
         # also keep them out of "New message" and channel invitations

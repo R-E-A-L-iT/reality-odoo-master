@@ -9,6 +9,10 @@ class IrHttp(models.AbstractModel):
         user = self.env.user
         if user._is_internal():
             result["can_send_message"] = user.can_send_message
+            # the composer suggests people it already knows about, client-side,
+            # so the browser has to know who may not be pinged
+            blocked = self.env["res.users"].sudo().search([("no_ping", "=", True)])
+            result["promessaging_no_ping_partner_ids"] = blocked.partner_id.ids
         return self._promessaging_limit_companies(result)
 
     def _promessaging_limit_companies(self, session_info):
