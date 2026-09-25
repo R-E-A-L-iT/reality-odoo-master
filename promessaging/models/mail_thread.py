@@ -9,6 +9,14 @@ class MailThread(models.AbstractModel):
     _inherit = "mail.thread"
 
     def message_post(self, **kwargs):
+        # someone typed the name anyway: drop them rather than notify them
+        if kwargs.get("partner_ids"):
+            partners = self.env["res.partner"].browse(kwargs["partner_ids"])
+            blocked = partners._promessaging_unpingable()
+            if blocked:
+                kwargs["partner_ids"] = [
+                    pid for pid in kwargs["partner_ids"] if pid not in set(blocked.ids)
+                ]
         if kwargs.get("body") and self._name != "discuss.channel":
             try:
                 kwargs["body"] = self.env["promessaging.subuser"]._highlight_mentions(kwargs["body"])

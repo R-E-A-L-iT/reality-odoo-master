@@ -2,12 +2,14 @@ from . import res_users
 from . import promessaging_subuser
 from . import promessaging_webhook_log
 from . import res_partner
+from . import res_partner_ping
 from . import mail_message
 from . import promessaging_ai_chat
 from . import promessaging_draft
 from . import ir_http
 from . import ir_model_access
 from . import mail_thread
+from . import discuss_channel
 from . import mail_activity_mixin
 from . import mail_compose_message
 from . import account_move_send

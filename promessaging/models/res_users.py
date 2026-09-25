@@ -22,6 +22,12 @@ class ResUsers(models.Model):
     # (portal, public) that have no access to promessaging.subuser
     subuser_count = fields.Integer(compute="_compute_subuser_count")
 
+    no_ping = fields.Boolean(
+        string="Cannot Be Pinged",
+        help="Hides this user from @mention lists and from Direct Messages, and stops "
+             "anyone notifying them that way. They can still write to other people.",
+    )
+
     can_send_message = fields.Boolean(
         string="Can Send Messages",
         default=True,

@@ -163,6 +163,20 @@ respect it. Two things still follow the account rather than the sub-user: **reco
 (which rows are visible) and **field-level group restrictions**. Narrow the account
 itself if those matter.
 
+## Keeping a user out of pings and DMs
+
+**Cannot Be Pinged** on a user (Settings → Users → Access Rights → Messaging) takes them
+out of reach:
+
+- they no longer appear in the `@` list in any composer;
+- they no longer appear in Discuss "New message" or in channel invitations;
+- a Direct Message to them is refused, as is adding them to a conversation;
+- if someone types their name anyway, they are dropped from the recipients rather than
+  notified.
+
+They can still message other people and take part in channels they are already in; the
+setting only stops others reaching them that way.
+
 ## Pictures
 
 Each sub-user has an **Avatar** on its form, top right. Upload one and it is used
