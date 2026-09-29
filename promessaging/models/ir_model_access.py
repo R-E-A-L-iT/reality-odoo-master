@@ -2,6 +2,18 @@ from odoo import _, api, models, tools
 from odoo.exceptions import AccessError
 
 MODES = ("read", "write", "create", "unlink")
+CHANGING = ("write", "create", "unlink")
+
+# session bookkeeping an account writes just by being logged in; requiring a
+# sub-user for these would lock the account out rather than hold it to account
+IDENTITY_EXEMPT = {
+    "res.users.log",
+    "res.users.settings",
+    "res.users.settings.volumes",
+    "bus.presence",
+    "bus.bus",
+    "mail.notification",
+}
 
 
 class IrModelAccess(models.Model):
@@ -37,6 +49,12 @@ class IrModelAccess(models.Model):
         result = super().check(model, mode=mode, raise_exception=raise_exception)
         if not result or self.env.su:
             return result
+
+        # an AI account changing anything must first say who is acting
+        if mode in CHANGING and model not in IDENTITY_EXEMPT:
+            self.env["res.users"]._promessaging_check_identified(
+                "%s on %s" % (mode, model)
+            )
 
         subuser = self.env["promessaging.subuser"]._active_subuser()
         if not subuser or not subuser._effective_groups():

@@ -191,6 +191,40 @@ class ResUsers(models.Model):
                 ))
 
     @api.model
+    def _promessaging_requires_subuser(self):
+        """True when this AI account has to say which sub-user is acting."""
+        user = self.env.user
+        if self.env.su or not user.is_ai_user:
+            return False
+        if self.env["promessaging.subuser"]._active_subuser():
+            return False
+        # an AI account with no sub-users yet would otherwise lock itself out
+        return bool(self.env["promessaging.subuser"].sudo().search_count([
+            ("user_id", "=", user.id),
+        ]))
+
+    @api.model
+    def _promessaging_check_identified(self, what="this action"):
+        """AI accounts act through a sub-user, never as the shared account.
+
+        Without this an AI can skip the PIN entirely by calling the ORM, and its
+        work lands under the shared account with nothing to attribute it to.
+        """
+        if not self._promessaging_requires_subuser():
+            return
+        user = self.env.user
+        _logger.warning(
+            "ProMessaging: %s (uid %s) attempted %s without identifying as a sub-user",
+            user.name, user.id, what,
+        )
+        raise AccessError(_(
+            "%(user)s must act as one of its AI sub-users.\n\n"
+            "Sign in through the PIN prompt, or send "
+            '{"subuser_handle": "...", "subuser_pin": "..."} in the call context.',
+            user=user.name,
+        ))
+
+    @api.model
     def _promessaging_guard_outgoing(self, what="message"):
         """The single gate every customer-facing path goes through."""
         if not self._promessaging_is_restricted():

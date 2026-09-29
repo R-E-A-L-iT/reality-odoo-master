@@ -28,6 +28,7 @@ class MailThread(models.AbstractModel):
         # the gate lives here, not only in the controller: a bot reaching
         # message_post over the API must hit the same wall as the UI
         Users = self.env["res.users"]
+        Users._promessaging_check_identified("posting a message")
         if self._name != "discuss.channel":
             Users._promessaging_check_author(
                 kwargs.get("author_id"), kwargs.get("email_from")
@@ -88,6 +89,7 @@ class MailThread(models.AbstractModel):
     def message_notify(self, **kwargs):
         """Notifies partners directly, bypassing the chatter: same gate."""
         Users = self.env["res.users"]
+        Users._promessaging_check_identified("sending a notification")
         Users._promessaging_check_author(kwargs.get("author_id"), kwargs.get("email_from"))
         Users._promessaging_guard_outgoing("notification")
         return super().message_notify(**kwargs)

@@ -206,6 +206,22 @@ Messaging). It is used when a request needs a bot and none is assigned yet — f
 example rewriting a draft that a person wrote. A bot the user may not use is never
 chosen, even when set as their default.
 
+## AI accounts must act as a sub-user
+
+An account marked **AI User** cannot change anything as itself. Every create, write and
+delete is refused until it says which sub-user is acting — through the PIN prompt in the
+browser, or by sending `{"subuser_handle": "...", "subuser_pin": "..."}` in the call
+context over the API. Posting a message or a notification is refused the same way, with
+an error telling the bot what to do.
+
+Reading is untouched, so a bot can still look things up before signing in, and the
+session bookkeeping an account writes simply by being logged in (`res.users.log`,
+`bus.presence`, `res.users.settings`, `mail.notification`) is exempt so the account
+cannot lock itself out. An AI account with no sub-users configured is also exempt, for
+the same reason. Server-side flows running as sudo are unaffected.
+
+Attempts are logged with the account and what it tried, next to the refusals below.
+
 ## How the send restriction is enforced
 
 **Can Send Messages** is checked on the model, not only in the UI, so reaching Odoo over
