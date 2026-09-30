@@ -12,7 +12,7 @@ from urllib import request
 from dateutil.relativedelta import relativedelta
 from datetime import date, datetime
 from odoo.tools import format_date
-import logging
+import loggefding
 
 from odoo import api, fields, models, SUPERUSER_ID, _, tools
 from odoo.exceptions import AccessError, UserError, ValidationError
