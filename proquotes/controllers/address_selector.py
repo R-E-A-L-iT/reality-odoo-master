@@ -18,7 +18,7 @@ class AddressSelectorPortal(http.Controller):
 
     @http.route(
         ["/my/orders/<int:order_id>/select_invoice_address"],
-        type="json",
+        type="jsonrpc",
         auth="public",
         website=True,
     )
@@ -36,7 +36,7 @@ class AddressSelectorPortal(http.Controller):
 
     @http.route(
         ["/my/orders/<int:order_id>/select_delivery_address"],
-        type="json",
+        type="jsonrpc",
         auth="public",
         website=True,
     )
@@ -54,7 +54,7 @@ class AddressSelectorPortal(http.Controller):
 
     @http.route(
         ["/my/orders/<int:order_id>/create_typed_address"],
-        type="json",
+        type="jsonrpc",
         auth="public",
         website=True,
     )
@@ -100,7 +100,7 @@ class AddressSelectorPortal(http.Controller):
 
     @http.route(
         ["/my/orders/<int:order_id>/update_address"],
-        type="json",
+        type="jsonrpc",
         auth="public",
         website=True,
     )
@@ -141,7 +141,7 @@ class AddressSelectorPortal(http.Controller):
 
     @http.route(
         ["/my/orders/<int:order_id>/delete_address"],
-        type="json",
+        type="jsonrpc",
         auth="public",
         website=True,
     )

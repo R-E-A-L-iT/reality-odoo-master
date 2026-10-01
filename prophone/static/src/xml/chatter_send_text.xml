@@ -4,7 +4,7 @@
         <xpath expr="//button[contains(@class, 'o-mail-Chatter-sendMessage')]" position="after">
 
             <!-- Leads -->
-            <button t-if="props.hasMessageList and state.thread.model === 'crm.lead'"
+            <button t-if="state.thread and state.thread.model === 'crm.lead'"
                     class="btn text-nowrap me-1 btn-primary"
                     t-att-class="{'my-2': !props.compactHeight}"
                     t-att-disabled="!state.thread.hasWriteAccess and !(state.thread.hasReadAccess and state.thread.canPostOnReadonly) and props.threadId"
@@ -13,7 +13,7 @@
             </button>
 
             <!-- Quotes -->
-            <button t-if="props.hasMessageList and state.thread.model === 'sale.order'"
+            <button t-if="state.thread and state.thread.model === 'sale.order'"
                     class="btn text-nowrap me-1 btn-primary"
                     t-att-class="{'my-2': !props.compactHeight}"
                     t-on-click="() => this.prophoneOpenSendTextWizard()">
@@ -21,7 +21,7 @@
             </button>
 
             <!-- Tickets -->
-            <button t-if="props.hasMessageList and state.thread.model === 'helpdesk.ticket'"
+            <button t-if="state.thread and state.thread.model === 'helpdesk.ticket'"
                     class="btn text-nowrap me-1 btn-primary"
                     t-att-class="{'my-2': !props.compactHeight}"
                     t-on-click="() => this.prophoneOpenSendTextWizard()">
@@ -29,7 +29,7 @@
             </button>
 
             <!-- Partners -->
-            <button t-if="props.hasMessageList and state.thread.model === 'res.partner'"
+            <button t-if="state.thread and state.thread.model === 'res.partner'"
                     class="btn text-nowrap me-1 btn-primary"
                     t-att-class="{'my-2': !props.compactHeight}"
                     t-on-click="() => this.prophoneOpenSendTextWizard()">

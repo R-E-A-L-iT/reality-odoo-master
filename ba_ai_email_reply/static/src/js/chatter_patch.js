@@ -44,8 +44,8 @@ patch(Chatter.prototype, {
                 await Promise.resolve();
                 const composer = this.state.thread?.composer;
                 if (composer) {
-                    composer.textInputContent = result.reply;
-                    // Increment autofocus to trigger the textarea focus+resize effect
+                    // Odoo 19 stores the draft on composerText; composerHtml follows it.
+                    composer.composerText = result.reply;
                     composer.autofocus++;
                 }
             }

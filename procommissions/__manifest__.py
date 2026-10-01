@@ -4,10 +4,10 @@
     'summary': 'Module to manage commission reports',
     'category': 'Hidden',
     'author': 'Ezekiel J. deBlois',
+    'license': 'LGPL-3',
     'depends': ['base'],
     'data': [
         'security/ir.model.access.csv',
-        # Action must exist before the menuitem that references it.
         'views/commissions_views.xml',
         'views/menu_views.xml',
     ],

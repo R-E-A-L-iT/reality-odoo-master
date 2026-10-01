@@ -22,6 +22,13 @@ _logger = logging.getLogger(__name__)
 class products(models.Model):
     _inherit = "product.product"
 
+    def _proquotes_description_sale_html(self):
+        """Sales description as raw HTML. description_sale is Text that we author
+        with HTML; t-out escapes plain strings, so wrap it in Markup."""
+        from markupsafe import Markup
+        self.ensure_one()
+        return Markup(self.description_sale or "")
+
     def get_kit_description_text(self):
         bom = self.env['mrp.bom'].sudo().search([
             ('product_tmpl_id', '=', self.product_tmpl_id.id),

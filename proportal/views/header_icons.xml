@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!--
-        TODO(odoo19): temporarily disabled, restore after port.
-        portal_language_selector_globe replaced the portal language dropdown
-        button with a globe icon. The replacement uses a static class and
-        drops t-attf-class containing dropdown-toggle, so on upgrade
-        website.language_selector_inline cannot locate
-        //*[contains(@t-attf-class, 'dropdown-toggle')] in the combined
-        language selector. Disabled so the portal upgrade can finish.
-        Restore the globe button while keeping that t-attf-class.
-    -->
-    <!--
     <template id="portal_language_selector_globe" inherit_id="portal.language_selector">
-        <xpath expr="//button" position="replace">
-            <button type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn border-0 dropdown-toggle rounded-circle text-reset o_navlink_background show">
-                <i data-oe-model="ir.ui.view" data-oe-id="4452" data-oe-field="arch" data-oe-xpath="/t[1]/t[1]/li[1]/a[1]/div[1]/i[1]" class="fa fa-1x fa-fw fa-globe fa-stack"></i>
+        <!-- Keep t-attf-class="dropdown-toggle" and the label spans. website.language_selector
+             and website.language_selector_inline anchor on those, and replacing the
+             whole button makes the inline selector fail on upgrade. -->
+        <xpath expr="//button[contains(@t-attf-class, 'dropdown-toggle')]" position="replace">
+            <button type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
+                    t-attf-class="btn border-0 dropdown-toggle rounded-circle text-reset o_navlink_background #{_btn_class or ''}">
+                <span t-if="not no_text"
+                      t-attf-class="#{_txt_class}"
+                      t-esc="active_lang.name.split('/').pop()"/>
+                <span t-elif="codes" class="align-middle" t-esc="active_lang.url_code.split('_').pop(0).upper()"/>
+                <i class="fa fa-1x fa-fw fa-globe fa-stack"/>
             </button>
         </xpath>
     </template>
-    -->
-
 </odoo>

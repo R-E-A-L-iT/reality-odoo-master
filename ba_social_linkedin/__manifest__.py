@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'LinkedIn Social Media Fixes',
-    'version': '17.0.1.0.0',
+    'version': '19.0.1.0.0',
     'category': 'Social',
     'summary': 'Fixes LinkedIn image upload errors and adds video upload support',
     'author': 'Braincrew Apps',

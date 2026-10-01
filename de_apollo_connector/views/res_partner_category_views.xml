@@ -1,25 +1,17 @@
 <odoo>
     <data>
         
-        <!--
-            TODO(odoo19): temporarily disabled, restore after port.
-            Adds apl_id and apl_date_update to the contact tag list
-            (base.view_partner_category_list). Odoo 19 lists are <list>,
-            so xpath //tree cannot be located. Restore by targeting //list.
-        -->
-    <!--
         <record id="res_partner_category_view_tree_inherit" model="ir.ui.view">
             <field name="name">res.partner.category.view.tree.inherit</field>
             <field name="model">res.partner.category</field>
             <field name="inherit_id" ref="base.view_partner_category_list"/>
             <field name="arch" type="xml">
-                <xpath expr="//tree" position="inside">
+                <xpath expr="//list" position="inside">
                     <field name="apl_id" optional="hide"/>
                     <field name="apl_date_update" optional="hide"/>
                 </xpath>
             </field>
         </record>
-    -->
         
     </data>
 </odoo>

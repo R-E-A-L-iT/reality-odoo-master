@@ -34,6 +34,14 @@ class SaleOrderTemplateLine(models.Model):
         ('yes', "Yes"),
         ('no', "No")], string="Lock Quantity", default="yes", required=True, help="Field to Lock Quantity on Products")
 
+    # Quotation-template views saved before Odoo 19 still reference `optional`.
+    # The flag was renamed to `is_optional`. This alias keeps those views valid.
+    optional = fields.Boolean(
+        string="Optional",
+        related="is_optional",
+        readonly=False,
+    )
+
     def init(self):
         # This environment does not reliably create new columns on rebuild (same
         # problem proleads/proportal solve for their re-declared `mobile` fields).

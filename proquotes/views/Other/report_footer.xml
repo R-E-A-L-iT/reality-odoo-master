@@ -34,62 +34,37 @@
         </div>
     </template>
 
-    <!--
-        TODO(odoo19): temporarily disabled, restore after port.
-        custom_footer_boxed swapped the boxed external-layout footer for the quote footer image. xpath /t/div[3]/div/div cannot be located: Odoo 19 footers are div.footer with t-attf-class, not that path.
-        Disabled so PDF layouts can load. Restore against the v19 external layout footer.
-    -->
-    <!--
     <template id="custom_footer_boxed" name="Custom Boxed Footer" inherit_id="web.external_layout_boxed" priority="99">
-        <xpath expr="/t/div[3]/div/div" position="replace">
-            <div style="width: 100%; text-align: center; min-height: 150px;">
-
+        <xpath expr="//div[contains(@t-attf-class, 'footer')]" position="replace">
+            <div t-attf-class="footer o_company_#{company.id}_layout" style="width: 100%; text-align: center;">
                 <t t-set="source" t-value="doc if doc else o if o else sale_order if sale_order else False"/>
-
                 <t t-if="source and 'footer_id' in source._fields and source.footer_id and source.footer_id.url">
-                    <br/>
-                    <img t-att-src="source.footer_id.url"
-                        style="display: block; width: 100%; height: auto;"/>
+                    <img t-att-src="source.footer_id.url" alt="Footer" style="display: block; width: 100%; height: auto;"/>
                 </t>
             </div>
         </xpath>
-        <xpath expr="/t/div[3]/div/div[2]" position="replace"/>
     </template>
-    -->
 
-
-    <!--
-        TODO(odoo19): temporarily disabled, restore after port.
-        custom_footer_striped swapped the striped external-layout footer for the quote footer image. xpath on div footer o_background_footer cannot be located: that class is gone in Odoo 19.
-        Disabled so PDF layouts can load. Restore against the v19 external layout footer.
-    -->
-    <!--
     <template id="custom_footer_striped" inherit_id="web.external_layout_striped">
-        <xpath expr="//div[contains(@t-attf-class, 'footer') and contains(@t-attf-class, 'o_background_footer')]" position="replace">
-            <div t-attf-class="o_company_#{company.id}_layout footer o_background_footer">
-                <span>Test3</span>
-                <t t-call="proquotes.custom_footer_image_block"/>
+        <xpath expr="//div[contains(@t-attf-class, 'footer')]" position="replace">
+            <div t-attf-class="footer o_company_#{company.id}_layout" style="width: 100%; text-align: center;">
+                <t t-set="source" t-value="doc if doc else o if o else sale_order if sale_order else False"/>
+                <t t-if="source and 'footer_id' in source._fields and source.footer_id and source.footer_id.url">
+                    <img t-att-src="source.footer_id.url" alt="Footer" style="display: block; width: 100%; height: auto;"/>
+                </t>
             </div>
         </xpath>
     </template>
-    -->
 
-
-    <!--
-        TODO(odoo19): temporarily disabled, restore after port.
-        custom_footer_bold swapped the bold external-layout footer for the quote footer image. xpath on div footer o_clean_footer cannot be located: that class is gone in Odoo 19.
-        Disabled so PDF layouts can load. Restore against the v19 external layout footer.
-    -->
-    <!--
     <template id="custom_footer_bold" inherit_id="web.external_layout_bold">
-        <xpath expr="//div[contains(@t-attf-class, 'footer') and contains(@t-attf-class, 'o_clean_footer')]" position="replace">
-            <div t-attf-class="footer o_clean_footer o_company_#{company.id}_layout">
-                <span>Test4</span>
-                <t t-call="proquotes.custom_footer_image_block"/>
+        <xpath expr="//div[contains(@t-attf-class, 'footer')]" position="replace">
+            <div t-attf-class="footer o_company_#{company.id}_layout" style="width: 100%; text-align: center;">
+                <t t-set="source" t-value="doc if doc else o if o else sale_order if sale_order else False"/>
+                <t t-if="source and 'footer_id' in source._fields and source.footer_id and source.footer_id.url">
+                    <img t-att-src="source.footer_id.url" alt="Footer" style="display: block; width: 100%; height: auto;"/>
+                </t>
             </div>
         </xpath>
     </template>
-    -->
-
 
 </odoo>

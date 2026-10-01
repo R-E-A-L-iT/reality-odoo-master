@@ -92,6 +92,7 @@ class CcpTypeConfig(models.Model):
         # The value is persisted by the framework; no extra work required.
         return
 
-    _sql_constraints = [
-        ('name_unique', 'unique(name)', 'CCP Type Code must be unique!')
-    ]
+    _name_unique = models.Constraint(
+        "UNIQUE (name)",
+        "CCP Type Code must be unique!",
+    )

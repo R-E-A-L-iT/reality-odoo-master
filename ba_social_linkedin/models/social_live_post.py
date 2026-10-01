@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 import logging
 import requests
-from werkzeug.urls import url_join
+from urllib.parse import urljoin
 
 from odoo import models, _
 from odoo.exceptions import UserError
+
+
+def url_join(base, url):
+    """Join LinkedIn endpoint and path. urllib drops the last segment without a slash."""
+    if base and not str(base).endswith("/"):
+        base = str(base) + "/"
+    return urljoin(base, url)
 
 _logger = logging.getLogger(__name__)
 

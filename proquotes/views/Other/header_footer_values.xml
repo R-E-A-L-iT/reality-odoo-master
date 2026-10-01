@@ -16,13 +16,9 @@
         <field name="doc_class">preview</field>
         <field name="document_type">footer</field>
         <field name="url">https://cdn.r-e-a-l.it/images/footer/R-E-A-L.iTFooter_USA.png</field>
-        <!--
-            TODO(odoo19): temporarily disabled, restore after port.
-            Linked this US footer to res.company id 3. That company does not
-            exist on a fresh database, so the insert hits a foreign key and
-            aborts module install. Restore the link only when company 3 exists.
-        -->
-        <!-- <field name="company_ids" eval="[(4, 3)]"/> -->
+        <!-- Company 3 is the US company on the production database. A fresh
+             database does not have that id, so the link is applied in
+             post_init_hook only when the company exists. -->
     </record>
 
     <record id="footer_horia" model="quotation.document">

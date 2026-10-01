@@ -9,6 +9,7 @@
         are sent without headers and footers.
     ''',
     'author': 'RealIT Custom',
+    'license': 'LGPL-3',
     'depends': ['mail', 'crm', 'hr'],
     'data': [
         'views/res_users_extend.xml',

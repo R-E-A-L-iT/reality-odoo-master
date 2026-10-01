@@ -27,7 +27,7 @@ class ProwebsiteController(http.Controller):
 
     @http.route(
         '/omnigo/sync_pricelist',
-        type='json',
+        type='jsonrpc',
         auth='public',
         website=True,
         csrf=False,
@@ -96,7 +96,7 @@ class ProwebsiteController(http.Controller):
 
     @http.route(
         '/dereks_red_book/submit',
-        type='json',
+        type='jsonrpc',
         auth='public',
         website=True,
         csrf=False,
@@ -184,7 +184,7 @@ class ProwebsiteController(http.Controller):
 
     @http.route(
         '/dereks_red_book/attach',
-        type='json',
+        type='jsonrpc',
         auth='public',
         website=True,
         csrf=False,
@@ -254,7 +254,7 @@ class ProwebsiteController(http.Controller):
 
     @http.route(
         '/rtc_demo/submit',
-        type='json',
+        type='jsonrpc',
         auth='public',
         website=True,
         csrf=False,
@@ -328,7 +328,7 @@ class ProwebsiteController(http.Controller):
 
     @http.route(
         '/tradeshow_signup/submit',
-        type='json',
+        type='jsonrpc',
         auth='public',
         website=True,
         csrf=False,
@@ -403,7 +403,7 @@ class ProwebsiteController(http.Controller):
 
     @http.route(
         '/product_demo/submit',
-        type='json',
+        type='jsonrpc',
         auth='public',
         website=True,
         csrf=False,
@@ -483,7 +483,7 @@ class ProwebsiteController(http.Controller):
 
     @http.route(
         '/omnigo/get_pricelists',
-        type='json',
+        type='jsonrpc',
         auth='public',
         website=True,
         csrf=False,
@@ -522,7 +522,7 @@ class ProwebsiteController(http.Controller):
 
     @http.route(
         '/prowebsite/notify_signup',
-        type='json',
+        type='jsonrpc',
         auth='public',
         website=True,
         csrf=False,

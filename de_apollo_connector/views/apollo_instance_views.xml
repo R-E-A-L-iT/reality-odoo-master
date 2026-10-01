@@ -193,31 +193,22 @@
         </record>
 
         <!-- Define the tree view for Apollo Instance -->
-        <!--
-            TODO(odoo19): temporarily disabled, restore after port.
-            List of Apollo instances (name, state). The arch root is <tree>,
-            which Odoo 19 rejects: Invalid view type 'tree'. Allowed root is
-            <list>. Disabled so the Apollo instance screens can load.
-            Restore as a <list> view.
-        -->
-        <!--
         <record id="view_apollo_instance_tree" model="ir.ui.view">
             <field name="name">apollo.instance.tree</field>
             <field name="model">apl.instance</field>
             <field name="arch" type="xml">
-                <tree string="Apollo Instances">
+                <list string="Apollo Instances">
                     <field name="name"/>
                     <field name="state"/>
-                </tree>
+                </list>
             </field>
         </record>
-        -->
 
         <!-- Define the action for the Apollo Instance -->
         <record id="action_apollo_instance" model="ir.actions.act_window">
             <field name="name">Apollo Instances</field>
             <field name="res_model">apl.instance</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
         <!-- Create a menu item for Apollo Instance -->

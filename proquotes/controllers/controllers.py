@@ -48,7 +48,7 @@ class QuoteCustomerPortal(cPortal):
         return {}
 
     @http.route(
-        ["/my/orders/<int:order_id>/ponumber"], type="json", auth="public", website=True
+        ["/my/orders/<int:order_id>/ponumber"], type="jsonrpc", auth="public", website=True
     )
     def poNumber(self, order_id, ponumber, access_token=None, **post):
         # Confirm Access
@@ -87,7 +87,7 @@ class QuoteCustomerPortal(cPortal):
 
     @http.route(
         ["/my/orders/<int:order_id>/fold/<string:line_id>"],
-        type="json",
+        type="jsonrpc",
         auth="public",
         website=True,
     )
@@ -134,7 +134,7 @@ class QuoteCustomerPortal(cPortal):
 
     @http.route(
         ["/my/orders/<int:order_id>/changeQuantity/<string:line_id>"],
-        type="json",
+        type="jsonrpc",
         auth="public",
         website=True,
     )
@@ -198,7 +198,7 @@ class QuoteCustomerPortal(cPortal):
 
     @http.route(
         ["/my/orders/<int:order_id>/singleChoiceSelect/<string:line_id>"],
-        type="json",
+        type="jsonrpc",
         auth="public",
         website=True,
     )
@@ -266,7 +266,7 @@ class QuoteCustomerPortal(cPortal):
 
     @http.route(
         ["/my/orders/<int:order_id>/optionalSelect/<string:line_id>"],
-        type="json",
+        type="jsonrpc",
         auth="public",
         website=True,
     )
@@ -485,7 +485,7 @@ class QuotePortalFix(cPortal):
     should be triggered automatically by the order confirmation process.
     """
     
-    @http.route(['/my/orders/<int:order_id>/accept'], type='json', auth="public", website=True)
+    @http.route(['/my/orders/<int:order_id>/accept'], type='jsonrpc', auth="public", website=True)
     def portal_quote_accept(self, order_id, access_token=None, name=None, signature=None):
         # get from query string if not on json param
         access_token = access_token or request.httprequest.args.get('access_token')
@@ -528,7 +528,7 @@ class QuotePortalFix(cPortal):
             'redirect_url': order_sudo.get_portal_url(query_string=query_string),
         }
 
-    @http.route(['/my/orders/<int:order_id>/add_ccp_line'], type='json', auth="public", website=True)
+    @http.route(['/my/orders/<int:order_id>/add_ccp_line'], type='jsonrpc', auth="public", website=True)
     def add_ccp_line(self, order_id, access_token=None, scanner_name=None, ccp_type=None, period=None, section_name=None, **kw):
         """
         Add a CCP product line to the order based on scanner name, CCP type, and period.
@@ -663,7 +663,7 @@ class QuotePortalFix(cPortal):
 
         return results
 
-    @http.route(['/my/orders/<int:order_id>/remove_ccp_line'], type='json', auth="public", website=True)
+    @http.route(['/my/orders/<int:order_id>/remove_ccp_line'], type='jsonrpc', auth="public", website=True)
     def remove_ccp_line(self, order_id, access_token=None, line_id=None, section_name=None, **kw):
         """
         Remove a CCP product line from the order.

@@ -55,7 +55,7 @@ class APLCompaniesSearchWizard(models.TransientModel):
         # Return an action to open a new form view
         action = {
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'name': _('Search Results'),
             'res_model': 'apl.companies',
         }

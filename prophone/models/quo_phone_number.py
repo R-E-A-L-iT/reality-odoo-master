@@ -19,9 +19,10 @@ class QuoPhoneNumber(models.Model):
 
     display_name = fields.Char(compute="_compute_display_name", store=True)
 
-    _sql_constraints = [
-        ("quo_id_uniq", "unique(quo_id)", "Quo Phone Number ID must be unique."),
-    ]
+    _quo_id_uniq = models.Constraint(
+        "UNIQUE (quo_id)",
+        "Quo Phone Number ID must be unique.",
+    )
 
     @api.depends("name", "formatted_number", "quo_id")
     def _compute_display_name(self):

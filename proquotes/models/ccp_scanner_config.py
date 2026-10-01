@@ -109,7 +109,11 @@ class CcpScannerConfig(models.Model):
                     patterns.append(pattern)
         return patterns
 
-    _sql_constraints = [
-        ('internal_key_unique', 'unique(internal_key)', 'Scanner internal key must be unique!'),
-        ('name_unique', 'unique(name)', 'Scanner name must be unique!')
-    ]
+    _internal_key_unique = models.Constraint(
+        "UNIQUE (internal_key)",
+        "Scanner internal key must be unique!",
+    )
+    _name_unique = models.Constraint(
+        "UNIQUE (name)",
+        "Scanner name must be unique!",
+    )

@@ -5,7 +5,7 @@ from odoo.addons.website_sale.controllers.delivery import Delivery
 
 class WebsiteSalePerProductDelivery(http.Controller):
 
-    @http.route('/shop/update_carrier_for_line', type='json',
+    @http.route('/shop/update_carrier_for_line', type='jsonrpc',
                 auth='public', website=True, sitemap=False)
     def update_carrier_for_line(self, line_id, carrier_id, **kwargs):
         order = request.cart
@@ -33,7 +33,7 @@ class WebsiteSalePerProductDelivery(http.Controller):
             'order_amount_total': order_sudo.amount_total,
         }
 
-    @http.route('/shop/rate_carrier_for_line', type='json',
+    @http.route('/shop/rate_carrier_for_line', type='jsonrpc',
                 auth='public', website=True, sitemap=False)
     def rate_carrier_for_line(self, line_id, carrier_id, **kwargs):
         order = request.cart

@@ -11,7 +11,8 @@
         - Adding "Approved" stage with green color
         - JavaScript integration for proper color display in Kanban view
     """,
-    'author': '',
+    'author': 'RealIT',
+    'license': 'LGPL-3',
     'depends': ['project', 'web'],
     'data': [],
     'assets': {

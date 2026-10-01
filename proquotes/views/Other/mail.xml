@@ -91,7 +91,7 @@
                     <!-- CONTENT -->
                     <!-- <div t-out="message.body" style="font-size: 13px;"/> -->
                     <div style="font-size:13px;">
-                        <t t-raw="message.body"/>
+                        <t t-out="message.body"/>
                         <style>
                             div p:nth-of-type(2) a { display: none !important;padding-bottom:2px !important; } 
                         </style>

@@ -74,9 +74,10 @@ class QuoCall(models.Model):
         index=True,
     )
 
-    _sql_constraints = [
-        ("quo_call_id_unique", "unique(quo_call_id)", "Quo Call ID must be unique."),
-    ]
+    _quo_call_id_unique = models.Constraint(
+        "UNIQUE (quo_call_id)",
+        "Quo Call ID must be unique.",
+    )
 
     # ------------------------------------------------------------------
     # Smart-button counts (related quotes & opportunities)
@@ -1395,9 +1396,10 @@ class QuoCallTranscript(models.Model):
     raw_transcript_json = fields.Text(string="Raw Transcript (JSON)")
     line_ids = fields.One2many("quo.call.transcript.line", "transcript_id", string="Dialogue")
 
-    _sql_constraints = [
-        ("one_transcript_per_call", "unique(call_id)", "Only one transcript per call is stored."),
-    ]
+    _one_transcript_per_call = models.Constraint(
+        "UNIQUE (call_id)",
+        "Only one transcript per call is stored.",
+    )
 
     @api.model
     def upsert_from_transcript_payload(self, call_id, transcript_payload):
@@ -1560,9 +1562,10 @@ class QuoText(models.Model):
     media_json = fields.Text(string="Media (JSON)")
     raw_message_json = fields.Text(string="Raw Message (JSON)")
 
-    _sql_constraints = [
-        ("quo_message_id_unique", "unique(quo_message_id)", "Quo Message ID must be unique."),
-    ]
+    _quo_message_id_unique = models.Constraint(
+        "UNIQUE (quo_message_id)",
+        "Quo Message ID must be unique.",
+    )
 
     @api.depends("direction", "from_partner_id", "to_partner_id", "from_number", "to_number", "created_at")
     def _compute_name(self):

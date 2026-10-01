@@ -59,16 +59,7 @@
                         <notebook>
                             <page string="Employement History" name="employment_history">
                                 <field name="people_employment_history_ids">
-                                    <!--
-                                        TODO(odoo19): temporarily disabled, restore after port.
-                                        Inline employment-history list on the Apollo person form
-                                        (degree, dates, grade, kind, major, description).
-                                        Odoo 19 one2many subviews use <list>, not <tree>, and
-                                        the view RNG rejects <tree>. Disabled so the person
-                                        form can load. Restore as <list>.
-                                    -->
-                                    <!--
-                                    <tree string="Employement History" editable="bottom" create="false" edit="true"
+                                    <list string="Employement History" editable="bottom" create="false" edit="true"
                                           delete="false">
                                         <field name="degree"/>
                                         <field name="start_date"/>
@@ -77,8 +68,7 @@
                                         <field name="kind"/>
                                         <field name="major"/>
                                         <field name="description"/>
-                                    </tree>
-                                    -->
+                                    </list>
                                 </field>
                             </page>
                         </notebook>
@@ -88,19 +78,11 @@
         </record>
 
         <!-- Peole tree View -->
-        <!--
-            TODO(odoo19): temporarily disabled, restore after port.
-            Search People list (apl_people), including LinkedIn/Twitter/Facebook/
-            GitHub buttons and js_class apl_search_button_in_tree. Arch root
-            <tree> is an invalid view type in Odoo 19. Disabled so people search
-            views can load. Restore as a <list> view.
-        -->
-        <!--
         <record id="view_people_tree" model="ir.ui.view">
             <field name="name">people.tree</field>
             <field name="model">apl.people</field>
             <field name="arch" type="xml">
-                <tree string="Apollo Results" js_class="apl_search_button_in_tree">
+                <list string="Apollo Results" js_class="apl_search_button_in_tree">
                     <field name="apl_id" optional="hide"/>
                     <field name="first_name" optional="hide"/>
                     <field name="last_name" optional="hide"/>
@@ -114,25 +96,24 @@
                     <field name="apl_people_company_id" widget="many2one_link"/>
                     <field name="linkedin_url" widget="url" options="{'class': 'fa fa-linkedin', 'target': '_blank'}"
                            invisible="1"/>
-                    <button name="open_linkedin_profile" type="object" icon="fa-linkedin"/>
-                    <button name="open_twitter_profile" type="object" icon="fa-twitter"/>
-                    <button name="open_facebook_profile" type="object" icon="fa-facebook"/>
-                    <button name="open_github_profile" type="object" icon="fa-github"/>
+                    <button name="open_linkedin_profile" type="object" icon="fa-linkedin" title="LinkedIn"/>
+                    <button name="open_twitter_profile" type="object" icon="fa-twitter" title="Twitter"/>
+                    <button name="open_facebook_profile" type="object" icon="fa-facebook" title="Facebook"/>
+                    <button name="open_github_profile" type="object" icon="fa-github" title="GitHub"/>
                     <field name="country"/>
                     <field name="state"/>
                     <field name="city"/>
                     <button name="action_open_details" icon="fa-arrow-right" type="object" string="Open Details"/>
 
-                </tree>
+                </list>
 
             </field>
         </record>
-        -->
 
         <record id="action_apl_people" model="ir.actions.act_window">
             <field name="name">Search People</field>
             <field name="res_model">apl.people</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="context">{'create': false, 'edit': false}</field>
 
         </record>

@@ -70,9 +70,10 @@ class EnvioPackage(models.Model):
     label_image = fields.Binary(string="Label Image")
     label_image_filename = fields.Char(string="Label Image Filename")
 
-    _sql_constraints = [
-        ("envio_external_id_uniq", "unique(envio_external_id)", "Envio ID must be unique."),
-    ]
+    _envio_external_id_uniq = models.Constraint(
+        "UNIQUE (envio_external_id)",
+        "Envio ID must be unique.",
+    )
 
     lot_id = fields.Many2one(
         "stock.lot",

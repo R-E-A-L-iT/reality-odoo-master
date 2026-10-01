@@ -69,13 +69,10 @@ class ResUsersCompanyFooter(models.Model):
 
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [
-        (
-            "unique_user_company_footer",
-            "unique(user_id, company_id)",
-            "Only one default footer can be defined per user and company.",
-        ),
-    ]
+    _unique_user_company_footer = models.Constraint(
+        "UNIQUE (user_id, company_id)",
+        "Only one default footer can be defined per user and company.",
+    )
 
     @api.constrains("footer_id")
     def _check_footer_type(self):

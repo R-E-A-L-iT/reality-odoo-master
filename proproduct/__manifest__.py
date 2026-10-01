@@ -8,7 +8,7 @@
     "author": "Ezekiel deBlois",
     "license": "LGPL-3",
     "category": "Sales",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "depends": [
         "base",
         "website",
@@ -41,7 +41,6 @@
         # markup that changed. Re-anchor against the actual v19 rental_product
         # arch, then re-enable. See views/website_sale_product_renting.xml.
         # "views/website_sale_product_renting.xml",
-        # Odoo 19 migration: temporarily disabled to show the default store cart.
-        # "views/website_cart.xml",
+        "views/website_cart.xml",
     ],
 }

@@ -10,7 +10,7 @@
                         This feature not only enhances your website's structure but also boosts SEO and improves the overall user experience.
                         Take charge of your online presence with personalized product page URLs, making navigation smoother for your customers.""",
     "category": "eCommerce",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "author": "EWall Solutions Pvt. Ltd.",
     "support": "support@ewallsolutions.com",
     "website": "http://www.ewallsolutions.com",

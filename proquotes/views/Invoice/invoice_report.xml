@@ -73,8 +73,11 @@
             </t>
         </xpath>
 
-        <!-- Title -->
-        <xpath expr="//div[hasclass('page')]/h2[1]" position="replace">
+        <!-- Title. Odoo 19 renders layout_document_title in the external layout.
+             Keep the t-set node: other invoice inherits (and the UBL primary
+             copy) still anchor on it. -->
+        <xpath expr="//t[@t-set='layout_document_title']" position="replace">
+            <t t-set="layout_document_title">
             <h2 t-if="lang == 'en_CA' or lang == 'en_US'" style="color: #db0d0d;">
                 <span style="color: #db0d0d;" t-if="true and o.move_type == 'out_invoice' and o.state == 'posted'">
                     Invoice
@@ -115,6 +118,7 @@
                 <span style="color: #db0d0d;" t-if="o.move_type == 'in_invoice'">Factura del Proveedor</span>
                 <span style="color: #db0d0d;" t-if="o.name != '/'" t-field="o.name"/>
             </h2>
+            </t>
         </xpath>
 
         <!-- Translate Invoice Date Label -->
@@ -215,6 +219,9 @@
                     <b>
                         <span t-field="o.payment_reference"/>
                     </b>
+                    <t t-if="o.partner_bank_id">
+                        <br/> on this account: <span t-field="o.partner_bank_id" class="fw-bold"/>
+                    </t>
                 </p>
             </t>
             <t t-elif="lang == 'fr_CA'">
@@ -223,6 +230,9 @@
                     <b>
                         <span t-field="o.payment_reference"/>
                     </b>
+                    <t t-if="o.partner_bank_id">
+                        <br/> on this account: <span t-field="o.partner_bank_id" class="fw-bold"/>
+                    </t>
                 </p>
             </t>
             <t t-elif="lang == 'es_ES'">
@@ -231,12 +241,16 @@
                     <b>
                         <span t-field="o.payment_reference"/>
                     </b>
+                    <t t-if="o.partner_bank_id">
+                        <br/> on this account: <span t-field="o.partner_bank_id" class="fw-bold"/>
+                    </t>
                 </p>
             </t>
         </xpath>
 
-        <!-- Header Image -->
-        <xpath expr="//img" position="after">
+        <!-- Header Image. The invoice body no longer starts with an img; the
+             first //img is the payment QR, so anchor on the page instead. -->
+        <xpath expr="//div[hasclass('page')]/*[1]" position="before">
             <img src="https://www.r-e-a-l.it/web/image/website/1/logo/R-E-A-L.iT%20-%20CAPTURE" width="auto"
                  height="auto" style="margin-bottom: 0px;"/>
             <style>
@@ -257,9 +271,9 @@
         <xpath expr="//th[@name=&quot;th_taxes&quot;]" position="replace"/>
         <xpath expr="//td[@name=&quot;td_taxes&quot;]" position="replace"/>
 
-        <!-- Add Description -->
-        <xpath expr="//span[@t-field=&quot;line.name&quot;]" position="replace">
-            <span t-raw="line.product_id.name"></span>
+        <!-- Add Description (product lines only; section titles have their own spans) -->
+        <xpath expr="//td[@name='account_invoice_line_name']/span[@t-field='line.name']" position="replace">
+            <span t-out="line.product_id.name"/>
             <br/>
 
             <style>
@@ -270,30 +284,21 @@
                 }
             </style>
             <span class="description-root">
-                <span class="description-root" t-raw="line.product_id.description_sale" style="color: #777;"/>
+                <span class="description-root" t-out="line.product_id._proquotes_description_sale_html()" style="color: #777;"/>
             </span>
             <br/>
         </xpath>
 
-        <!-- Section name parsing -->
-        <xpath expr="//t[@t-elif=&quot;line.display_type == 'line_section'&quot;]" position="replace">
-            <t t-elif="line.display_type == 'line_section'">
-                <td t-if="line.name  == '$block+'" name="td_section_line" colspan="99">
-                    <span></span>
-                </td>
-                <td t-elif="line.name.startswith('#')" name="td_section_line"  colspan="99">
-                    <span>
-                        <t t-set="language" t-value="o.partner_id.lang or 'en_US'" />
-                        <t t-set="sname" t-value="line.name.strip()[1:]" />
-                        <t t-call="proquotes.section_name_resolution" />
-                    </span>
-                </td>
-                <td t-else="" name="td_section_line" colspan="99">
-                    <span t-field="line.name" t-options="{'widget': 'text'}">A section title</span>
-                </td>
-                <t t-set="current_section" t-value="line"/>
-                <t t-set="current_subtotal" t-value="0"/>
+        <!-- Section name parsing. v19 renders the section title in
+             td[@name='line_name_td'] and already tracks current_section. -->
+        <xpath expr="//td[@name='line_name_td']/span[@t-field='line.name']" position="replace">
+            <span t-if="line.name == '$block+'"/>
+            <t t-elif="line.name and line.name.startswith('#')">
+                <t t-set="language" t-value="o.partner_id.lang or 'en_US'"/>
+                <t t-set="sname" t-value="line.name.strip()[1:]"/>
+                <t t-call="proquotes.section_name_resolution"/>
             </t>
+            <span t-else="" t-field="line.name" t-options="{'widget': 'text'}">A section title</span>
         </xpath>
 
         <!-- Bank Info -->
@@ -353,12 +358,7 @@
             </t>
         </xpath>
 
-        <!-- Subtotal Lang -->
-        <xpath expr="//t[@t-if=&quot;current_section and (line_last or lines[line_index+1].display_type == 'line_section')&quot;]//strong"
-               position="replace">
-            <strong t-if="lang == 'en_CA' or lang == 'en_US'">Subtotal</strong>
-            <strong t-if="lang == 'fr_CA'">Sous-Total</strong>
-            <strong t-if="lang == 'es_ES'">Subtotal</strong>
-        </xpath>
+        <!-- v19 prints the section subtotal as a monetary amount with no
+             "Subtotal" label, so the old label translation has nothing to replace. -->
     </template>
 </odoo>

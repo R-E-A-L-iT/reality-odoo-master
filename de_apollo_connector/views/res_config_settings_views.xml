@@ -2,7 +2,7 @@
     <record id="action_apollo_instance_from_settings" model="ir.actions.act_window">
         <field name="name">Apollo Instances</field>
         <field name="res_model">apl.instance</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     
     <!--  Add Apollo Settings view  -->

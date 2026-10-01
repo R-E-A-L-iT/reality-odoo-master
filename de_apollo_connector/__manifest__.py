@@ -10,7 +10,7 @@
     'author': "Dynexcel",
     'website': "https://www.dynexcel.com",
     'category': 'Sales/Marketing',
-    'version': '0.4',
+    'version': '19.0.1.0.0',
     'live_test_url': 'https://youtu.be/_qKgJmMrVq4',
     'depends': ['base', 'crm'],
     'data': [

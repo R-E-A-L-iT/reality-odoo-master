@@ -33,6 +33,7 @@
         "website_crm",
         "sale_renting",
     ],
+    "post_init_hook": "post_init_hook",
     "assets": {
         # NOTE: web.assets_common was removed in Odoo 18/19. Its entries were
         # merged below: frontend-facing CSS into web.assets_frontend and
@@ -114,13 +115,7 @@
         "views/Quote/quote_template.xml",
         "views/Quote/quote_wizard.xml",
         # invoices
-        # TODO(odoo19): temporarily disabled, restore after port.
-        # invoice_pdf_content (proquotes.invoice_pdf_content) rewrites the
-        # invoice PDF: addresses, title, line descriptions, tax columns, logo.
-        # xpath //div[hasclass('page')]/h2[1] cannot be located. Odoo 19 puts
-        # the document title in t-set layout_document_title, not an h2.
-        # Disabled so account invoice reports can load.
-        # "views/Invoice/invoice_report.xml",
+        "views/Invoice/invoice_report.xml",
         "views/Invoice/invoice_preview.xml",
         "views/Invoice/invoice_internal.xml",
         # Odoo 19 migration: temporarily disabled. Inherits the Enterprise
@@ -130,24 +125,14 @@
         # Communication column), then re-enable.
         # "views/Invoice/follow_up_email.xml",
         # purchase
-        # TODO(odoo19): temporarily disabled, restore after port.
-        # purchase_pdf (proquotes.purchase_pdf) drops the date-required and
-        # tax columns and reprints the purchase PDF. xpath
-        # //th[@name="th_date_req"] cannot be located: that column is gone
-        # in Odoo 19. Disabled so purchase reports can load.
-        # "views/Purchase/purchase_report.xml",
+        "views/Purchase/purchase_report.xml",
         "views/Purchase/purchase_preview.xml",
         "views/Purchase/purchase_internal.xml",
         # other
         "views/Other/report_footer.xml",
         "views/Other/mail_templates.xml",
         "views/Other/stock_lot.xml",
-        # Odoo 19 migration: temporarily disabled. Inherits account.tax_groups_totals
-        # (removed in v19) and uses the old amount_by_group data structure (replaced
-        # by the tax_totals rendering). This shows French tax labels (TPS/TVH/TVQ) and
-        # per-company tax registration numbers on documents — IMPORTANT for CA/QC tax
-        # compliance. Rebuild against v19's tax_totals template, then re-enable.
-        # "views/Other/tax.xml",
+        "views/Other/tax.xml",
         "views/Other/rentalTerms.xml",
         "views/Other/normalTerms.xml",
         "views/Other/website_logo.xml",

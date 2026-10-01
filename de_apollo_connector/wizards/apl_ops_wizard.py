@@ -14,7 +14,7 @@ class AplOpsWizard(models.TransientModel):
     op_name = fields.Char(string='Operation')
     
     type = fields.Selection([
-        ('lead', 'Lead'), ('opportunity', 'Opportunity')], required=True, tracking=15, index=True,
+        ('lead', 'Lead'), ('opportunity', 'Opportunity')], required=True, index=True,
         default=lambda self: 'lead' if self.env['res.users'].has_group('crm.group_use_lead') else 'opportunity')
 
     @api.constrains('page_start', 'page_last')

@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class ApproveController(http.Controller):
 
-    @http.route('/approve/application_submitted/<int:order_id>', type='json', auth='public', website=True, csrf=False)
+    @http.route('/approve/application_submitted/<int:order_id>', type='jsonrpc', auth='public', website=True, csrf=False)
     def approve_application_submitted(self, order_id, **kwargs):
         order = request.env['sale.order'].sudo().browse(order_id)
         if not order or not order.exists():

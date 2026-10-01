@@ -80,6 +80,7 @@ class CcpPeriodConfig(models.Model):
             else:
                 record.display_name = record.display_name_en or record.name
 
-    _sql_constraints = [
-        ('name_unique', 'unique(name)', 'CCP Period Code must be unique!')
-    ]
+    _name_unique = models.Constraint(
+        "UNIQUE (name)",
+        "CCP Period Code must be unique!",
+    )
