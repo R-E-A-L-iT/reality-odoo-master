@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_form_promessaging" model="ir.ui.view">
+        <field name="name">res.users.form.promessaging</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='access_rights']/group[1]" position="before">
+                <group string="Messaging" name="promessaging" invisible="share">
+                    <field name="can_send_message"/>
+                    <field name="no_ping"/>
+                    <field name="is_ai_user"/>
+                    <field name="promessaging_default_subuser_id" options="{'no_create': True}"
+                           groups="base.group_system"/>
+                </group>
+                <group string="AI Sub-users" name="promessaging_subusers"
+                       invisible="share or not is_ai_user" groups="base.group_system">
+                    <label for="subuser_count" string="Sub-users"/>
+                    <div>
+                        <field name="subuser_count" class="oe_inline" readonly="1"/>
+                        <button name="action_view_subusers" type="object" string="Manage"
+                                class="btn-link" invisible="not id"/>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_users_tree_promessaging" model="ir.ui.view">
+        <field name="name">res.users.tree.promessaging</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='login_date']" position="after">
+                <field name="can_send_message" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_summaries_summary_user,summaries.summary.user,model_summaries_summary,base.group_user,1,1,1,1
+access_summaries_objective_user,summaries.objective.user,model_summaries_objective,base.group_user,1,1,1,1

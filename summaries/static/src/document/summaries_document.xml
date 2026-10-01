@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="summaries.InlineText">
+        <span>
+            <t t-foreach="tokens" t-as="token" t-key="token_index">
+                <b t-if="token.type === 'bold'" t-esc="token.text"/>
+                <i t-elif="token.type === 'italic'" t-esc="token.text"/>
+                <code t-elif="token.type === 'code'" t-esc="token.text"/>
+                <a t-elif="token.type === 'doc'" href="#" class="o_summaries_doclink"
+                   t-on-click.prevent="() => this.onDocClick(token)" t-esc="token.text"/>
+                <a t-elif="token.type === 'link'" t-att-href="token.url" target="_blank"
+                   rel="noopener noreferrer" t-esc="token.text"/>
+                <t t-else="" t-esc="token.text"/>
+            </t>
+        </span>
+    </t>
+
+    <t t-name="summaries.SummariesBlocks">
+        <div class="o_summaries_blocks">
+            <t t-foreach="props.blocks" t-as="block" t-key="block_index">
+
+                <h2 t-if="block.type === 'heading' and (block.level || 2) &lt;= 1"
+                    class="mt-3 mb-2" t-att-class="textClass(block)">
+                    <InlineText text="block.text" openRef="props.openRef"/>
+                </h2>
+                <h3 t-elif="block.type === 'heading' and (block.level || 2) === 2"
+                    class="mt-3 mb-2" t-att-class="textClass(block)">
+                    <InlineText text="block.text" openRef="props.openRef"/>
+                </h3>
+                <h5 t-elif="block.type === 'heading'" class="mt-3 mb-2" t-att-class="textClass(block)">
+                    <InlineText text="block.text" openRef="props.openRef"/>
+                </h5>
+
+                <p t-elif="block.type === 'text'" class="mb-2" t-att-class="textClass(block)">
+                    <InlineText text="block.text" openRef="props.openRef"/>
+                </p>
+
+                <div t-elif="block.type === 'callout'" class="alert py-2 px-3 mb-3"
+                     t-att-class="alertClass(block)">
+                    <div t-if="block.title" class="fw-bold">
+                        <InlineText text="block.title" openRef="props.openRef"/>
+                    </div>
+                    <div t-if="block.text">
+                        <InlineText text="block.text" openRef="props.openRef"/>
+                    </div>
+                </div>
+
+                <ol t-elif="block.type === 'list' and block.style === 'number'" class="mb-3">
+                    <li t-foreach="block.items || []" t-as="item" t-key="item_index">
+                        <InlineText text="item" openRef="props.openRef"/>
+                    </li>
+                </ol>
+                <ul t-elif="block.type === 'list'" class="mb-3">
+                    <li t-foreach="block.items || []" t-as="item" t-key="item_index">
+                        <InlineText text="item" openRef="props.openRef"/>
+                    </li>
+                </ul>
+
+                <div t-elif="block.type === 'checklist'" class="mb-3">
+                    <div t-foreach="block.items || []" t-as="item" t-key="item_index"
+                         class="d-flex align-items-start">
+                        <input type="checkbox" class="form-check-input me-2 mt-1" disabled="disabled"
+                               t-att-checked="item.done"/>
+                        <span t-att-class="item.done ? 'text-muted text-decoration-line-through' : ''">
+                            <InlineText text="item.text" openRef="props.openRef"/>
+                        </span>
+                    </div>
+                </div>
+
+                <div t-elif="block.type === 'kpi'" class="row g-2 mb-3">
+                    <div t-foreach="block.items || []" t-as="item" t-key="item_index"
+                         class="col-6 col-lg-3">
+                        <div class="border rounded p-2 h-100">
+                            <div class="small text-muted"><t t-esc="item.label"/></div>
+                            <div class="fs-4 fw-bold" t-att-class="textClass(item)">
+                                <t t-esc="item.value"/>
+                            </div>
+                            <div t-if="item.delta" class="small" t-att-class="textClass(item)">
+                                <t t-esc="item.delta"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div t-elif="block.type === 'progress'" class="mb-3">
+                    <div class="d-flex justify-content-between small">
+                        <span><InlineText text="block.label" openRef="props.openRef"/></span>
+                        <span class="text-muted"><t t-esc="block.value"/>%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar" t-att-class="barClass(block)"
+                             t-att-style="barWidth(block)"/>
+                    </div>
+                </div>
+
+                <div t-elif="block.type === 'table'" class="table-responsive mb-3">
+                    <table class="table table-sm align-middle">
+                        <thead t-if="block.columns">
+                            <tr>
+                                <th t-foreach="block.columns" t-as="column" t-key="column_index"
+                                    t-esc="column"/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="block.rows || []" t-as="row" t-key="row_index">
+                                <td t-foreach="row" t-as="cell" t-key="cell_index">
+                                    <InlineText text="cell" openRef="props.openRef"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div t-elif="block.type === 'links'" class="d-flex flex-wrap gap-2 mb-3">
+                    <t t-foreach="block.items || []" t-as="item" t-key="item_index">
+                        <a t-if="item.model" href="#" class="badge text-bg-light border text-decoration-none"
+                           t-on-click.prevent="() => this.onLinkClick(item)" t-esc="item.label"/>
+                        <a t-else="" t-att-href="item.url" target="_blank" rel="noopener noreferrer"
+                           class="badge text-bg-light border text-decoration-none" t-esc="item.label"/>
+                    </t>
+                </div>
+
+                <div t-elif="block.type === 'image'" class="mb-3">
+                    <img t-att-src="block.src" t-att-alt="block.alt || ''" t-att-style="imageStyle(block)"/>
+                </div>
+
+                <div t-elif="block.type === 'routines'" class="row g-2 mb-3">
+                    <div t-foreach="block.items || []" t-as="routine" t-key="routine.key || routine_index"
+                         class="col-12 col-md-6 col-xl-4">
+                        <div class="o_summaries_routine h-100 p-2 rounded border"
+                             t-att-style="'border-left: 3px solid ' + routineColor(routine) + ';'">
+                            <div class="d-flex align-items-start">
+                                <span class="o_summaries_routine_status mt-1 me-2"
+                                      t-att-style="'background-color: ' + routineStatusColor(routine) + ';'"
+                                      t-att-title="routineStatusLabel(routine)"/>
+                                <div class="flex-grow-1 min-w-0">
+                                    <div class="fw-bold text-truncate" t-att-title="routine.name">
+                                        <t t-esc="routine.name"/>
+                                    </div>
+                                </div>
+                                <button t-if="routine.trigger" class="btn btn-sm btn-outline-secondary ms-2"
+                                        t-att-title="'Ask your assistant to run ' + routine.name"
+                                        t-on-click="() => this.triggerRoutine(routine)">
+                                    <t t-esc="routine.trigger.label"/>
+                                </button>
+                            </div>
+                            <div t-if="routine.description" class="small text-muted mt-1">
+                                <InlineText text="routine.description" openRef="props.openRef"/>
+                            </div>
+                            <div t-if="routine.activity" class="small mt-1"
+                                 t-att-style="'color: ' + routineColor(routine) + ';'">
+                                <t t-esc="routine.activity"/>
+                            </div>
+                            <div t-if="routine.status !== 'ok' and routine.status_note"
+                                 class="small mt-1"
+                                 t-att-style="'color: ' + routineStatusColor(routine) + ';'">
+                                <t t-esc="routine.status_note"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr t-elif="block.type === 'divider'" class="my-3"/>
+
+                <div t-elif="block.type === 'stats'" class="mb-3">
+                    <SummariesStats resId="props.resId"/>
+                </div>
+
+                <div t-elif="block.type === 'html'" class="mb-3" t-out="markupHtml(block.html)"/>
+
+                <div t-elif="block.type === 'section'" class="card mb-3">
+                    <div t-if="block.title" class="card-header py-2 fw-bold"
+                         t-att-class="textClass(block)">
+                        <InlineText text="block.title" openRef="props.openRef"/>
+                    </div>
+                    <div class="card-body py-2">
+                        <SummariesBlocks blocks="block.blocks || []" openRef="props.openRef"
+                                         resId="props.resId"
+                                         onTriggerRoutine="props.onTriggerRoutine"/>
+                    </div>
+                </div>
+
+            </t>
+        </div>
+    </t>
+
+    <t t-name="summaries.SummariesPlanDialog">
+        <Dialog size="'lg'" title="props.plan.task_name or 'Plan'">
+            <div class="o_summaries_plan">
+                <div t-if="state.error" class="alert alert-danger py-2"><t t-esc="state.error"/></div>
+
+                <div class="d-flex align-items-center mb-2">
+                    <span class="badge text-bg-primary me-1"><t t-esc="remainingForAi"/> left for the AI</span>
+                    <span class="badge text-bg-secondary"><t t-esc="remainingForHuman"/> left for you</span>
+                    <span t-if="state.taskDone" class="badge text-bg-success ms-1">task done</span>
+                    <span t-if="blockedByStep" class="text-muted ms-2 small">
+                        the AI is waiting on your step above
+                    </span>
+                    <small t-if="state.executedOn" class="text-muted ms-2">
+                        <t t-if="state.sentTo">sent to <t t-esc="state.sentTo"/> </t>
+                        <t t-esc="state.executedOn"/>
+                    </small>
+                </div>
+
+                <textarea t-if="!props.readonly" class="form-control mb-3" rows="2"
+                          placeholder="What this plan is for (optional)"
+                          t-model="state.summary"/>
+                <p t-elif="state.summary" class="text-muted"><t t-esc="state.summary"/></p>
+
+                <div t-if="!state.steps.length" class="text-muted p-2">This plan has no steps yet.</div>
+
+                <div t-foreach="state.steps" t-as="step" t-key="step_index"
+                     class="o_summaries_plan_step d-flex align-items-start mb-2"
+                     t-att-class="step.done ? 'o-done' : ''">
+                    <input type="checkbox" class="form-check-input mt-1 me-2"
+                           t-att-checked="step.done"
+                           t-att-title="step.done ? 'Mark as still to do' : 'Mark this step done'"
+                           t-on-change="() => this.toggleStep(step_index)"/>
+                    <div class="btn-group btn-group-sm me-2" role="group">
+                        <button class="btn" t-att-disabled="props.readonly"
+                                t-att-class="step.actor === 'ai' ? 'btn-primary' : 'btn-outline-secondary'"
+                                t-on-click="() => this.setActor(step, 'ai')">AI</button>
+                        <button class="btn" t-att-disabled="props.readonly"
+                                t-att-class="step.actor !== 'ai' ? 'btn-secondary' : 'btn-outline-secondary'"
+                                t-on-click="() => this.setActor(step, 'human')">Human</button>
+                    </div>
+                    <input t-if="!props.readonly" class="form-control form-control-sm flex-grow-1"
+                           t-att-value="step.text" placeholder="What happens in this step"
+                           t-att-class="step.done ? 'text-muted text-decoration-line-through' : ''"
+                           t-on-change="(ev) => this.updateText(step, ev)"/>
+                    <span t-else="" class="flex-grow-1"
+                          t-att-class="step.done ? 'text-muted text-decoration-line-through' : ''">
+                        <t t-esc="step.text"/></span>
+                    <button t-if="!props.readonly" class="btn btn-sm btn-link text-danger ms-1 py-0"
+                            title="Remove step" t-on-click="() => this.removeStep(step_index)">&#215;</button>
+                </div>
+
+                <button t-if="!props.readonly" class="btn btn-sm btn-link px-0"
+                        t-on-click="() => this.addStep()">Add a step</button>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn" t-att-disabled="state.busy or blockedByStep"
+                        t-att-class="blockedByStep ? 'btn-secondary'
+                            : (state.executedOn ? 'btn-success' : 'btn-primary')"
+                        t-att-title="blockedByStep
+                            ? 'Waiting on your step first: ' + blockedByStep
+                            : (state.executedOn
+                                ? 'Already sent ' + state.executedOn + '. Press to run it again.'
+                                : 'Send this plan to your AI assistant')"
+                        t-on-click="() => this.execute()">
+                    <t t-if="state.busy">Working...</t>
+                    <t t-else="">
+                        <i t-if="state.executedOn" class="fa fa-check me-1" role="img"/>Execute
+                    </t>
+                </button>
+                <button t-if="!props.readonly" class="btn btn-secondary" t-att-disabled="state.busy"
+                        t-on-click="() => this.save()">Save</button>
+                <button class="btn btn-link" t-on-click="() => props.close()">Close</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="summaries.SummariesDocument">
+        <div class="o_summaries_doc w-100">
+            <div t-if="state.loading" class="text-muted p-3">Loading...</div>
+            <div t-elif="!state.doc" class="text-muted p-3">Save this summary to start writing it.</div>
+            <t t-else="">
+
+                <SummariesBlocks t-if="state.doc.intro_blocks.length" blocks="state.doc.intro_blocks"
+                                 openRef="openRef" resId="resId" onTriggerRoutine="triggerRoutine"/>
+
+                <div class="card mb-3 o_summaries_tasks">
+                    <div class="card-header d-flex align-items-center py-2">
+                        <span class="fw-bold">Tasks</span>
+                        <span class="badge text-bg-secondary ms-2">
+                            <t t-esc="state.doc.task_done_count"/> / <t t-esc="state.doc.task_count"/>
+                        </span>
+                        <div class="flex-grow-1"/>
+                        <button t-if="isDebugMode" class="btn btn-sm btn-link"
+                                title="Edit the document's JSON source (developer mode)"
+                                t-on-click="() => this.toggleSource()">
+                            <t t-if="state.editing">Close editor</t>
+                            <t t-else="">Edit content</t>
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div t-if="!state.doc.tasks.length" class="text-muted px-3 py-2">
+                            No tasks yet.
+                        </div>
+                        <div t-else="" class="o_summaries_tally d-flex flex-wrap align-items-center px-3 py-1 small">
+                            <span t-if="taskTally.aiReady" class="o_summaries_tally_chip o-ai_ready me-2">
+                                <t t-esc="taskTally.aiReady"/> the AI can start
+                            </span>
+                            <span t-if="taskTally.humanNext" class="o_summaries_tally_chip o-human_next me-2">
+                                <t t-esc="taskTally.humanNext"/> under way, need you
+                            </span>
+                            <span t-if="taskTally.humanOnly" class="o_summaries_tally_chip o-human_only me-2">
+                                <t t-esc="taskTally.humanOnly"/> not started, yours
+                            </span>
+                        </div>
+                        <div t-foreach="state.doc.tasks" t-as="task" t-key="task.id"
+                             class="o_summaries_task d-flex align-items-start px-3 py-2 border-bottom"
+                             t-att-class="'o-state-' + task.plan_state"
+                             t-att-title="task.plan_state === 'ai_ready' ? 'The AI can still take steps on this'
+                                        : task.plan_state === 'human_next' ? 'Under way, the rest is yours'
+                                        : task.plan_state === 'human_only' ? 'Not started, every step is yours'
+                                        : ''">
+                            <input type="checkbox" class="form-check-input flex-shrink-0 mt-1 me-2"
+                                   t-att-checked="task.done" t-att-disabled="readonly"
+                                   t-on-change="() => this.toggleTask(task)"/>
+                            <div class="flex-grow-1 min-w-0">
+                                <input t-if="!readonly" class="o_summaries_taskname fw-bold form-control form-control-sm border-0 bg-transparent p-0"
+                                       t-att-value="task.name"
+                                       t-att-class="task.done ? 'text-muted text-decoration-line-through' : ''"
+                                       t-on-change="(ev) => this.renameTask(task, ev)"/>
+                                <span t-else="" class="fw-bold"
+                                      t-att-class="task.done ? 'text-muted text-decoration-line-through' : ''">
+                                    <InlineText text="task.name" openRef="openRef"/>
+                                </span>
+                                <div t-if="task.note" class="o_summaries_task_note small text-muted"
+                                     t-att-title="task.note"><t t-esc="task.note"/></div>
+                            </div>
+                            <button t-if="task.has_plan" class="btn btn-sm btn-outline-primary ms-2"
+                                    title="See the plan for this task"
+                                    t-on-click="() => this.openPlan(task)">
+                                Plan
+                                <span class="ms-1 opacity-75">
+                                    <t t-esc="task.plan_counts.done"/>/<t t-esc="task.plan_counts.total"/>
+                                </span>
+                            </button>
+                            <button t-if="task.plan_state === 'ai_ready' or task.execute_enabled"
+                                    class="btn btn-sm ms-2"
+                                    t-att-class="task.plan_counts.ai_blocked ? 'btn-outline-secondary'
+                                        : (task.plan_executed_on ? 'btn-outline-success' : 'btn-outline-primary')"
+                                    t-att-disabled="isExecuting(task) or task.plan_counts.ai_blocked"
+                                    t-att-title="task.plan_counts.ai_blocked
+                                        ? 'Waiting on your step first: ' + task.plan_counts.blocking_step
+                                        : (task.plan_executed_on
+                                            ? 'Already sent to your assistant on ' + task.plan_executed_on + '. Press to run it again.'
+                                            : (task.plan_counts.ai_remaining
+                                                ? 'Run the ' + task.plan_counts.ai_remaining + ' AI step(s) on this task now'
+                                                : 'Hand this task to your AI assistant'))">
+                                <t t-if="isExecuting(task)">Sending...</t>
+                                <t t-else="">
+                                    <i t-if="task.plan_executed_on" class="fa fa-check me-1" role="img"/>Execute
+                                </t>
+                            </button>
+                            <button t-if="task.ref" class="o_summaries_jump btn btn-sm btn-outline-secondary ms-2"
+                                    t-att-title="'Open ' + task.ref.display_name"
+                                    t-on-click="() => this.openRef(task.ref)">
+                                <i class="fa fa-arrow-right me-1" role="img"/>Jump
+                            </button>
+                            <button t-if="!readonly" class="btn btn-sm btn-link text-danger ms-1 py-0"
+                                    title="Remove task" t-on-click="() => this.deleteTask(task)">&#215;</button>
+                        </div>
+                        <div t-if="!readonly" class="d-flex p-2">
+                            <input class="form-control form-control-sm me-2" placeholder="Add a task..."
+                                   t-model="state.newTask" t-on-keydown="(ev) => this.onNewTaskKeydown(ev)"/>
+                            <button class="btn btn-sm btn-primary text-nowrap"
+                                    t-on-click="() => this.addTask()">Add</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div t-if="state.editing and isDebugMode" class="card mb-3">
+                    <div class="card-header py-2 fw-bold">Document source (JSON blocks)</div>
+                    <div class="card-body">
+                        <div t-if="state.error" class="alert alert-danger py-2"><t t-esc="state.error"/></div>
+                        <label class="form-label small fw-bold">Intro (above the tasks)</label>
+                        <textarea class="form-control font-monospace mb-3" rows="8" t-model="state.draftIntro"/>
+                        <label class="form-label small fw-bold">Content (below the tasks)</label>
+                        <textarea class="form-control font-monospace" rows="14" t-model="state.draft"/>
+                        <div class="d-flex mt-2">
+                            <button class="btn btn-primary btn-sm me-2" t-on-click="() => this.saveContent()">
+                                Save content
+                            </button>
+                            <button class="btn btn-link btn-sm" t-on-click="() => this.toggleSource()">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <SummariesBlocks t-else="" blocks="state.doc.blocks" openRef="openRef"
+                                 resId="resId" onTriggerRoutine="triggerRoutine"/>
+
+            </t>
+        </div>
+    </t>
+
+</templates>

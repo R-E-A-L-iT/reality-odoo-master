@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="promessaging.Composer.suggestionSubuser">
+        <span class="d-flex align-items-center">
+            <img t-if="option.subuserAvatar" class="o_promessaging_suggestion_avatar rounded-circle me-2"
+                 width="20" height="20" t-att-src="option.subuserAvatar" alt=""/>
+            <span t-else="" class="o_promessaging_suggestion_initial me-2"
+                  t-esc="option.subuserInitial"/>
+            <span class="fw-bold" t-esc="option.subuserName"/>
+            <span class="text-muted ms-2">~<t t-esc="option.label"/></span>
+            <span t-if="option.subuserDescription" class="text-muted ms-2 small text-truncate"
+                  t-esc="option.subuserDescription"/>
+        </span>
+    </t>
+</templates>

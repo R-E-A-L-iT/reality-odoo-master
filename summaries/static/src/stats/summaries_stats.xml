@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="summaries.SummariesStats">
+        <div class="o_summaries_stats w-100 p-2">
+            <div t-if="state.loading" class="text-muted p-3">Loading performance data...</div>
+            <div t-elif="state.error" class="alert alert-warning m-3"><t t-esc="state.error"/></div>
+            <t t-else="">
+                <div class="d-flex align-items-center mb-3">
+                    <span class="fw-bold me-2">Period:</span>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button t-foreach="periods" t-as="weeks" t-key="weeks" type="button"
+                                class="btn"
+                                t-att-class="weeks === state.weeks ? 'btn-primary' : 'btn-secondary'"
+                                t-on-click="() => this.setPeriod(weeks)">
+                            <t t-esc="weeks"/> weeks
+                        </button>
+                    </div>
+                </div>
+                <div t-if="!hasCharts" class="text-muted p-3">
+                    No performance graphs for this user's role yet.
+                </div>
+                <div t-else="" class="row" t-ref="charts">
+                    <div t-foreach="state.data.charts" t-as="chart" t-key="chart.key"
+                         class="col-12 col-lg-6 mb-3">
+                        <div class="border rounded p-2 h-100">
+                            <div class="fw-bold mb-1"><t t-esc="chart.title"/></div>
+                            <div style="height: 240px;">
+                                <canvas t-att-data-key="chart.key"/>
+                            </div>
+                            <small class="text-muted">Click a bar or point to open those records.</small>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>
