@@ -91,7 +91,7 @@
         ],
     },
 
-    "version": "19.0.1.2.0",
+    "version": "19.0.1.3.0",
 
     # always loaded
     "data": [

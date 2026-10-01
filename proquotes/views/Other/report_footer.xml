@@ -1,39 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="custom_footer_image_block">
-        <div style="width: 100%; text-align: center; min-height: 90px; border-top: 2px solid #000; padding-top: 6px;">
-
-            <span>Test5</span>
-            <t t-if="o and 'footer_id' in o._fields and o.footer_id and o.footer_id.url">
-                <img t-att-src="o.footer_id.url"
-                    alt="Footer Image"
-                    style="display: block; width: 100%; height: auto;"/>
-
-                <span>Test6</span>
-
-                <!-- Temporary debug text -->
-                <div style="font-size: 10px; color: #777;">
-                    Footer URL:
-                    <span t-out="o.footer_id.url"/>
-                </div>
-            </t>
-
-            <t t-elif="o and 'footer_id' in o._fields and o.footer_id">
-                <div style="color: red; font-size: 13px;">
-                    Footer record is set, but footer_id.url is empty.
-                </div>
-            </t>
-
-            <t t-else="">
-                <div style="color: red; font-size: 13px;">
-                    No footer_id found on this document.
-                </div>
-            </t>
-
-        </div>
-    </template>
-
     <template id="custom_footer_boxed" name="Custom Boxed Footer" inherit_id="web.external_layout_boxed" priority="99">
         <xpath expr="//div[contains(@t-attf-class, 'footer')]" position="replace">
             <div t-attf-class="footer o_company_#{company.id}_layout" style="width: 100%; text-align: center;">
