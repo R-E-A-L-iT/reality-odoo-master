@@ -21,6 +21,7 @@
              t-att-data-fallback="'1' if is_fallback else None"
              t-att-data-name="addr.name or ''"
              t-att-data-street="addr.street or ''"
+             t-att-data-street2="addr.street2 or ''"
              t-att-data-city="addr.city or ''"
              t-att-data-zip="addr.zip or ''"
              t-att-data-country-id="addr.country_id.id or ''"
@@ -29,12 +30,12 @@
             <!-- ── VIEW MODE ── -->
             <div class="addr_card_view">
                 <div class="addr_card_actions">
-                    <button t-if="not is_fallback" class="addr_action_btn addr_edit_btn" t-att-title="lbl_edit_title">
+                    <button t-if="not is_fallback" type="button" class="addr_action_btn addr_edit_btn" t-att-title="lbl_edit_title">
                         <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
-                    <button t-if="not is_fallback" class="addr_action_btn addr_delete_btn" t-att-title="lbl_delete_title">
+                    <button t-if="not is_fallback" type="button" class="addr_action_btn addr_delete_btn" t-att-title="lbl_delete_title">
                         <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M2 3h8M5 3V2h2v1M4 3v6h4V3H4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -45,6 +46,7 @@
                 <div class="name" t-esc="addr.name"/>
                 <div class="lines">
                     <t t-if="addr.street"><t t-esc="addr.street"/><br/></t>
+                    <t t-if="addr.street2"><t t-esc="addr.street2"/><br/></t>
                     <t t-if="addr.city or addr.state_id or addr.zip">
                         <t t-if="addr.city"><t t-esc="addr.city"/><t t-if="addr.state_id or addr.zip">, </t></t>
                         <t t-if="addr.state_id"><t t-esc="addr.state_id.name"/> </t>
@@ -58,12 +60,12 @@
             <!-- ── EDIT MODE (hidden until toggled by JS) ── -->
             <div class="addr_card_edit" style="display:none;">
                 <div class="addr_card_actions">
-                    <button class="addr_action_btn addr_save_btn" t-att-title="lbl_save_title">
+                    <button type="button" class="addr_action_btn addr_save_btn" t-att-title="lbl_save_title">
                         <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <polyline points="1.5 6.5 4.5 9.5 10.5 2.5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
-                    <button class="addr_action_btn addr_cancel_btn" t-att-title="lbl_cancel_title">
+                    <button type="button" class="addr_action_btn addr_cancel_btn" t-att-title="lbl_cancel_title">
                         <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
                         </svg>
@@ -75,48 +77,61 @@
                 </div>
                 <div class="edit_row">
                     <input type="text" class="edit-street" t-att-value="addr.street or ''" t-att-placeholder="lbl_street"/>
+                    <div class="addr_field_error" data-field="street" hidden="hidden"></div>
+                </div>
+                <div class="edit_row">
+                    <input type="text" class="edit-street2" t-att-value="addr.street2 or ''" t-att-placeholder="lbl_street2"/>
                 </div>
                 <div class="edit_row">
                     <input type="text" class="edit-city" t-att-value="addr.city or ''" t-att-placeholder="lbl_city"/>
+                    <div class="addr_field_error" data-field="city" hidden="hidden"></div>
                 </div>
                 <div class="edit_row edit_row--split">
-                    <select class="edit-country">
-                        <option value=""><t t-esc="lbl_country"/></option>
-                        <t t-foreach="priority_countries" t-as="c">
-                            <option t-att-value="c.id" t-esc="c.name" t-att-selected="c.id == addr.country_id.id"/>
-                        </t>
-                        <option value="" disabled="disabled">──────────</option>
-                        <t t-foreach="other_countries" t-as="c">
-                            <option t-att-value="c.id" t-esc="c.name" t-att-selected="c.id == addr.country_id.id"/>
-                        </t>
-                    </select>
-                    <select class="edit-state">
-                        <option value=""><t t-esc="lbl_state"/></option>
-                        <t t-foreach="ca_states" t-as="s">
-                            <option t-att-value="s.id"
-                                    t-att-data-country-id="s.country_id.id"
-                                    t-esc="s.name"
-                                    t-att-selected="s.id == addr.state_id.id"/>
-                        </t>
-                        <option value="" disabled="disabled">──────────</option>
-                        <t t-foreach="us_states" t-as="s">
-                            <option t-att-value="s.id"
-                                    t-att-data-country-id="s.country_id.id"
-                                    t-esc="s.name"
-                                    t-att-selected="s.id == addr.state_id.id"/>
-                        </t>
-                        <option value="" disabled="disabled">──────────</option>
-                        <t t-foreach="other_states" t-as="s">
-                            <option t-att-value="s.id"
-                                    t-att-data-country-id="s.country_id.id"
-                                    t-esc="s.name"
-                                    t-att-selected="s.id == addr.state_id.id"/>
-                        </t>
-                    </select>
+                    <div class="edit_field">
+                        <select class="edit-country">
+                            <option value=""><t t-esc="lbl_country"/></option>
+                            <t t-foreach="priority_countries" t-as="c">
+                                <option t-att-value="c.id" t-esc="c.name" t-att-selected="c.id == addr.country_id.id"/>
+                            </t>
+                            <option value="" disabled="disabled">──────────</option>
+                            <t t-foreach="other_countries" t-as="c">
+                                <option t-att-value="c.id" t-esc="c.name" t-att-selected="c.id == addr.country_id.id"/>
+                            </t>
+                        </select>
+                        <div class="addr_field_error" data-field="country" hidden="hidden"></div>
+                    </div>
+                    <div class="edit_field">
+                        <select class="edit-state">
+                            <option value=""><t t-esc="lbl_state"/></option>
+                            <t t-foreach="ca_states" t-as="s">
+                                <option t-att-value="s.id"
+                                        t-att-data-country-id="s.country_id.id"
+                                        t-esc="s.name"
+                                        t-att-selected="s.id == addr.state_id.id"/>
+                            </t>
+                            <option value="" disabled="disabled">──────────</option>
+                            <t t-foreach="us_states" t-as="s">
+                                <option t-att-value="s.id"
+                                        t-att-data-country-id="s.country_id.id"
+                                        t-esc="s.name"
+                                        t-att-selected="s.id == addr.state_id.id"/>
+                            </t>
+                            <option value="" disabled="disabled">──────────</option>
+                            <t t-foreach="other_states" t-as="s">
+                                <option t-att-value="s.id"
+                                        t-att-data-country-id="s.country_id.id"
+                                        t-esc="s.name"
+                                        t-att-selected="s.id == addr.state_id.id"/>
+                            </t>
+                        </select>
+                        <div class="addr_field_error" data-field="state" hidden="hidden"></div>
+                    </div>
                 </div>
                 <div class="edit_row">
                     <input type="text" class="edit-zip" t-att-value="addr.zip or ''" t-att-placeholder="lbl_zip"/>
+                    <div class="addr_field_error" data-field="zip" hidden="hidden"></div>
                 </div>
+                <div class="addr_form_error" hidden="hidden"></div>
             </div>
         </div>
     </template>
@@ -1266,7 +1281,14 @@
                     <!-- Localized labels, computed once and reused by every card -->
                     <t t-set="lbl_name" t-value="'Nom' if language == 'fr_CA' else ('Nombre' if language == 'es_ES' else 'Name')"/>
                     <t t-set="lbl_street" t-value="'Rue' if language == 'fr_CA' else ('Calle' if language == 'es_ES' else 'Street')"/>
+                    <t t-set="lbl_street2" t-value="'Suite / Unité' if language == 'fr_CA' else ('Suite / Unidad' if language == 'es_ES' else 'Suite / Unit')"/>
                     <t t-set="lbl_city" t-value="'Ville' if language == 'fr_CA' else ('Ciudad' if language == 'es_ES' else 'City')"/>
+                    <t t-set="err_street" t-value="'La rue est obligatoire.' if language == 'fr_CA' else ('La calle es obligatoria.' if language == 'es_ES' else 'Street is required.')"/>
+                    <t t-set="err_city" t-value="'La ville est obligatoire.' if language == 'fr_CA' else ('La ciudad es obligatoria.' if language == 'es_ES' else 'City is required.')"/>
+                    <t t-set="err_country" t-value="'Le pays est obligatoire.' if language == 'fr_CA' else ('El país es obligatorio.' if language == 'es_ES' else 'Country is required.')"/>
+                    <t t-set="err_state" t-value="'La province est obligatoire.' if language == 'fr_CA' else ('El estado/provincia es obligatorio.' if language == 'es_ES' else 'State/Province is required.')"/>
+                    <t t-set="err_zip" t-value="'Le code postal est obligatoire.' if language == 'fr_CA' else ('El código postal es obligatorio.' if language == 'es_ES' else 'Zip/Postal code is required.')"/>
+                    <t t-set="err_save" t-value="'Impossible d\'enregistrer cette adresse. Veuillez réessayer.' if language == 'fr_CA' else ('No se pudo guardar esta dirección. Inténtelo de nuevo.' if language == 'es_ES' else 'Could not save this address. Please try again.')"/>
                     <t t-set="lbl_country" t-value="'Pays' if language == 'fr_CA' else ('País' if language == 'es_ES' else 'Country')"/>
                     <t t-set="lbl_state" t-value="'État/Province' if language == 'fr_CA' else ('Estado' if language == 'es_ES' else 'State/Province')"/>
                     <t t-set="lbl_zip" t-value="'Code postal' if language == 'fr_CA' else ('Código postal' if language == 'es_ES' else 'Zip/Postal Code')"/>
@@ -1276,6 +1298,15 @@
                     <t t-set="lbl_save_title" t-value="'Enregistrer' if language == 'fr_CA' else ('Guardar' if language == 'es_ES' else 'Save')"/>
                     <t t-set="lbl_cancel_title" t-value="'Annuler' if language == 'fr_CA' else ('Cancelar' if language == 'es_ES' else 'Cancel')"/>
                     <t t-set="lbl_default_badge" t-value="'Défaut' if language == 'fr_CA' else ('Predeterminado' if language == 'es_ES' else 'Default')"/>
+
+                    <div id="addr-error-labels" hidden="hidden">
+                        <span data-field="street" t-esc="err_street"/>
+                        <span data-field="city" t-esc="err_city"/>
+                        <span data-field="country" t-esc="err_country"/>
+                        <span data-field="state" t-esc="err_state"/>
+                        <span data-field="zip" t-esc="err_zip"/>
+                        <span data-field="save" t-esc="err_save"/>
+                    </div>
 
                     <!-- Hidden option lists: JS clones these when it needs to build a
                          brand-new blank "Add Address" card, so the country/state lists

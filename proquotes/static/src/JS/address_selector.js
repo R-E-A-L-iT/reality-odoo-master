@@ -27,6 +27,12 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         "click #new-address-trigger-delivery": "_onAddTrigger",
         // Per-card country/state filtering + keyboard shortcuts while editing
         "change .edit-country":     "_onEditCountryChange",
+        "change .edit-state":       "_onEditFieldInput",
+        "input .edit-name":         "_onEditFieldInput",
+        "input .edit-street":       "_onEditFieldInput",
+        "input .edit-street2":      "_onEditFieldInput",
+        "input .edit-city":         "_onEditFieldInput",
+        "input .edit-zip":          "_onEditFieldInput",
         "keydown .addr_card_edit":  "_onEditKeydown",
     },
 
@@ -109,6 +115,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         // guard anyway.)
         if (card.dataset.fallback === "1") return;
         this._closeAllEdits(card);
+        this._clearFieldErrors(card);
         this._setCardMode(card, "edit");
         card.querySelector(".edit-name")?.focus();
     },
@@ -120,6 +127,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
 
     _discardCardEdit(card) {
         if (!card) return;
+        this._clearFieldErrors(card);
         if (!card.dataset.partnerId) {
             // Never saved — just remove the blank card.
             card.remove();
@@ -140,7 +148,6 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const card = ev.currentTarget.closest(".addr_card");
         if (card.dataset.saving === "1") return; // already persisting this card
         const editDiv = card.querySelector(".addr_card_edit");
-        const viewDiv = card.querySelector(".addr_card_view");
         const addressType = card.dataset.addressType;
         // Only a blank new card (from "Add Address") needs creating. The
         // "Default" card always has a partner-id (the order's own contact)
@@ -148,43 +155,45 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         // company's main address.
         const isCreate = !card.dataset.partnerId;
 
+        this._clearFieldErrors(card);
+        const vals = this._readEditVals(editDiv);
+        const missing = this._missingFields(editDiv, vals);
+        if (missing.length) {
+            this._showFieldErrors(card, missing);
+            this._focusField(card, missing[0]);
+            return;
+        }
+
         const countryEl = editDiv.querySelector(".edit-country");
         const stateEl   = editDiv.querySelector(".edit-state");
-        const vals = {
-            name:    editDiv.querySelector(".edit-name")?.value.trim()   || "",
-            street:  editDiv.querySelector(".edit-street")?.value.trim() || "",
-            city:    editDiv.querySelector(".edit-city")?.value.trim()   || "",
-            state:   stateEl?.value   || "",
-            zip:     editDiv.querySelector(".edit-zip")?.value.trim()    || "",
-            country: countryEl?.value || "",
-        };
-
         // Optimistic UI: the user already sees exactly what they typed, so
         // reflect it immediately instead of making them wait on the network
         // round trip — the actual save happens in the background below.
         const optimistic = {
-            name: vals.name,
-            street: vals.street,
-            city: vals.city,
-            zip: vals.zip,
-            state: stateEl?.options[stateEl.selectedIndex]?.text || "",
-            country: countryEl?.options[countryEl.selectedIndex]?.text || "",
+            name: vals.name || "",
+            street: vals.street || "",
+            street2: vals.street2 !== undefined ? vals.street2 : (card.dataset.street2 || ""),
+            city: vals.city || "",
+            zip: vals.zip || "",
+            state: stateEl?.value ? (stateEl.options[stateEl.selectedIndex]?.text || "") : "",
+            country: countryEl?.value ? (countryEl.options[countryEl.selectedIndex]?.text || "") : "",
+            countryId: vals.country !== undefined ? vals.country : (card.dataset.countryId || ""),
+            stateId: vals.state !== undefined ? vals.state : (card.dataset.stateId || ""),
         };
-        card.dataset.name      = optimistic.name;
-        card.dataset.street    = optimistic.street;
-        card.dataset.city      = optimistic.city;
-        card.dataset.zip       = optimistic.zip;
-        card.dataset.countryId = vals.country;
-        card.dataset.stateId   = vals.state;
-        viewDiv.querySelector(".name").textContent = optimistic.name;
-        viewDiv.querySelector(".lines").innerHTML = this._formatLines(optimistic);
+        const snapshot = this._captureCard(card);
+        let twinSnapshot = null;
+        const twin = card.dataset.fallback === "1" ? this._twinDefaultCard(addressType) : null;
+        if (twin) twinSnapshot = this._captureCard(twin);
+
+        this._paintCard(card, optimistic);
         this._setCardMode(card, "view");
-        if (card.dataset.fallback === "1") {
-            this._syncTwinDefaultCard(card, addressType, optimistic);
-        }
+        if (twin) this._syncTwinDefaultCard(card, addressType, optimistic);
 
         card.dataset.saving = "1";
-        const params = { access_token: this.orderDetail.token, ...vals };
+        const params = { access_token: this.orderDetail.token };
+        Object.entries(vals).forEach(([key, value]) => {
+            if (value !== undefined) params[key] = value;
+        });
         let route;
         if (isCreate) {
             route = "create_typed_address";
@@ -194,23 +203,228 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
             params.partner_id = parseInt(card.dataset.partnerId);
         }
 
-        const result = await jsonrpc("/my/orders/" + this.orderDetail.orderId + "/" + route, params);
+        let result;
+        try {
+            result = await jsonrpc("/my/orders/" + this.orderDetail.orderId + "/" + route, params);
+        } catch (_err) {
+            result = null;
+        }
         delete card.dataset.saving;
 
         if (!result || !result.success) {
-            // Something went wrong server-side — don't leave the user
-            // thinking an unsaved change was saved. Reopen it for editing.
-            window.alert("Could not save this address. Please try again.");
+            // Don't leave the card looking saved, and don't wipe what they
+            // typed — the edit inputs still hold it. Dataset goes back so
+            // Cancel restores the last stored address.
+            this._restoreCard(card, snapshot);
+            if (twinSnapshot) this._restoreCard(twin, twinSnapshot);
             this._setCardMode(card, "edit");
+            if (result && result.fields && result.fields.length) {
+                this._showFieldErrors(card, result.fields);
+                this._focusField(card, result.fields[0]);
+            } else {
+                this._showFormError(card, (result && result.error) || this._labels.errSave);
+            }
             return;
         }
 
+        this._applyServerResult(card, result);
         if (isCreate) {
             const container = document.getElementById(this._containerId(addressType));
             container?.querySelectorAll(".addr_card[data-partner-id]").forEach(c => c.classList.remove("current"));
             card.classList.add("current");
             card.dataset.partnerId = result.partner_id;
         }
+    },
+
+    // Only inputs that are actually on the card are returned. A missing
+    // input stays undefined so it is left out of the payload and the server
+    // does not blank the stored value.
+    _readEditVals(editDiv) {
+        const read = (selector) => {
+            const el = editDiv.querySelector(selector);
+            if (!el) return undefined;
+            return (el.value || "").trim();
+        };
+        return {
+            name: read(".edit-name"),
+            street: read(".edit-street"),
+            street2: read(".edit-street2"),
+            city: read(".edit-city"),
+            state: read(".edit-state"),
+            zip: read(".edit-zip"),
+            country: read(".edit-country"),
+        };
+    },
+
+    _missingFields(editDiv, vals) {
+        const missing = [];
+        if (vals.street !== undefined && !vals.street) missing.push("street");
+        if (vals.city !== undefined && !vals.city) missing.push("city");
+        if (vals.country !== undefined && !vals.country) missing.push("country");
+        if (this._countryHasStates(editDiv) && vals.state !== undefined && !vals.state) {
+            missing.push("state");
+        }
+        if (vals.zip !== undefined && !vals.zip) missing.push("zip");
+        return missing;
+    },
+
+    _countryHasStates(editDiv) {
+        const countryEl = editDiv.querySelector(".edit-country");
+        const stateEl = editDiv.querySelector(".edit-state");
+        if (!countryEl || !stateEl || !countryEl.value) return false;
+        const selected = countryEl.value;
+        return Array.from(stateEl.options).some(
+            (opt) => opt.value && opt.dataset.countryId === selected
+        );
+    },
+
+    _showFieldErrors(card, fields) {
+        const messages = {
+            street: this._labels.errStreet,
+            city: this._labels.errCity,
+            state: this._labels.errState,
+            zip: this._labels.errZip,
+            country: this._labels.errCountry,
+        };
+        let shown = false;
+        fields.forEach((field) => {
+            const input = card.querySelector(".edit-" + field);
+            const err = card.querySelector('.addr_field_error[data-field="' + field + '"]');
+            if (input) {
+                input.classList.add("addr_invalid");
+                input.setAttribute("aria-invalid", "true");
+            }
+            if (err && messages[field]) {
+                err.textContent = messages[field];
+                err.hidden = false;
+                shown = true;
+            }
+        });
+        if (!shown) this._showFormError(card, this._labels.errSave);
+    },
+
+    _showFormError(card, message) {
+        const el = card.querySelector(".addr_form_error");
+        if (!el) {
+            window.alert(message);
+            return;
+        }
+        el.textContent = message;
+        el.hidden = false;
+    },
+
+    _clearFieldErrors(card) {
+        if (!card) return;
+        card.querySelectorAll(".addr_invalid").forEach((el) => {
+            el.classList.remove("addr_invalid");
+            el.removeAttribute("aria-invalid");
+        });
+        card.querySelectorAll(".addr_field_error, .addr_form_error").forEach((el) => {
+            el.textContent = "";
+            el.hidden = true;
+        });
+    },
+
+    _clearOneField(card, field) {
+        const input = card.querySelector(".edit-" + field);
+        if (input) {
+            input.classList.remove("addr_invalid");
+            input.removeAttribute("aria-invalid");
+        }
+        const err = card.querySelector('.addr_field_error[data-field="' + field + '"]');
+        if (err) {
+            err.textContent = "";
+            err.hidden = true;
+        }
+    },
+
+    _onEditFieldInput(ev) {
+        const input = ev.target.closest("input, select");
+        const card = input?.closest(".addr_card");
+        if (!input || !card) return;
+        const field = ["name", "street", "street2", "city", "state", "zip", "country"].find((name) =>
+            input.classList.contains("edit-" + name)
+        );
+        if (field) this._clearOneField(card, field);
+    },
+
+    _focusField(card, field) {
+        card.querySelector(".edit-" + field)?.focus();
+    },
+
+    _captureCard(card) {
+        const view = card.querySelector(".addr_card_view");
+        return {
+            name: card.dataset.name || "",
+            street: card.dataset.street || "",
+            street2: card.dataset.street2 || "",
+            city: card.dataset.city || "",
+            zip: card.dataset.zip || "",
+            countryId: card.dataset.countryId || "",
+            stateId: card.dataset.stateId || "",
+            nameText: view?.querySelector(".name")?.textContent || "",
+            linesHtml: view?.querySelector(".lines")?.innerHTML || "",
+        };
+    },
+
+    _restoreCard(card, snap) {
+        if (!card || !snap) return;
+        card.dataset.name = snap.name;
+        card.dataset.street = snap.street;
+        card.dataset.street2 = snap.street2;
+        card.dataset.city = snap.city;
+        card.dataset.zip = snap.zip;
+        card.dataset.countryId = snap.countryId;
+        card.dataset.stateId = snap.stateId;
+        const view = card.querySelector(".addr_card_view");
+        const nameEl = view?.querySelector(".name");
+        const linesEl = view?.querySelector(".lines");
+        if (nameEl) nameEl.textContent = snap.nameText;
+        if (linesEl) linesEl.innerHTML = snap.linesHtml;
+    },
+
+    _paintCard(card, data) {
+        card.dataset.name = data.name || "";
+        card.dataset.street = data.street || "";
+        card.dataset.street2 = data.street2 || "";
+        card.dataset.city = data.city || "";
+        card.dataset.zip = data.zip || "";
+        if (data.countryId !== undefined) card.dataset.countryId = data.countryId || "";
+        if (data.stateId !== undefined) card.dataset.stateId = data.stateId || "";
+        const view = card.querySelector(".addr_card_view");
+        const nameEl = view?.querySelector(".name");
+        const linesEl = view?.querySelector(".lines");
+        if (nameEl) nameEl.textContent = data.name || "";
+        if (linesEl) linesEl.innerHTML = this._formatLines(data);
+    },
+
+    _applyServerResult(card, result) {
+        this._paintCard(card, {
+            name: result.name || "",
+            street: result.street || "",
+            street2: result.street2 || "",
+            city: result.city || "",
+            zip: result.zip || "",
+            state: result.state || "",
+            country: result.country || "",
+            countryId: card.dataset.countryId || "",
+            stateId: card.dataset.stateId || "",
+        });
+        const edit = card.querySelector(".addr_card_edit");
+        const assign = (selector, value) => {
+            const input = edit?.querySelector(selector);
+            if (input && input.tagName === "INPUT") input.value = value || "";
+        };
+        assign(".edit-name", result.name);
+        assign(".edit-street", result.street);
+        assign(".edit-street2", result.street2);
+        assign(".edit-city", result.city);
+        assign(".edit-zip", result.zip);
+    },
+
+    _twinDefaultCard(addressType) {
+        const otherContainerId = addressType === "invoice" ? "delivery-address-cards" : "invoice-address-cards";
+        return document.querySelector(`#${otherContainerId} .addr_card[data-fallback="1"]`);
     },
 
     // Updates the Default card in the OTHER section so both stay in sync,
@@ -222,6 +436,7 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
 
         twin.dataset.name      = card.dataset.name;
         twin.dataset.street    = card.dataset.street;
+        twin.dataset.street2   = card.dataset.street2;
         twin.dataset.city      = card.dataset.city;
         twin.dataset.zip       = card.dataset.zip;
         twin.dataset.countryId = card.dataset.countryId;
@@ -244,6 +459,8 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         const d = card.dataset;
         editDiv.querySelector(".edit-name").value   = d.name   || "";
         editDiv.querySelector(".edit-street").value = d.street || "";
+        const street2El = editDiv.querySelector(".edit-street2");
+        if (street2El) street2El.value = d.street2 || "";
         editDiv.querySelector(".edit-city").value   = d.city   || "";
         editDiv.querySelector(".edit-zip").value    = d.zip    || "";
         editDiv.querySelector(".edit-country").value = d.countryId || "";
@@ -328,8 +545,8 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         view.className = "addr_card_view";
         view.innerHTML =
             '<div class="addr_card_actions">' +
-                '<button class="addr_action_btn addr_edit_btn" title="' + this._labels.editTitle + '">' + ICON_EDIT + '</button>' +
-                '<button class="addr_action_btn addr_delete_btn" title="' + this._labels.deleteTitle + '">' + ICON_DELETE + '</button>' +
+                '<button type="button" class="addr_action_btn addr_edit_btn" title="' + this._escAttr(this._labels.editTitle) + '">' + ICON_EDIT + '</button>' +
+                '<button type="button" class="addr_action_btn addr_delete_btn" title="' + this._escAttr(this._labels.deleteTitle) + '">' + ICON_DELETE + '</button>' +
             '</div>' +
             '<div class="name"></div>' +
             '<div class="lines"></div>';
@@ -339,17 +556,24 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         edit.style.display = "none";
         edit.innerHTML =
             '<div class="addr_card_actions">' +
-                '<button class="addr_action_btn addr_save_btn" title="' + this._labels.saveTitle + '">' + ICON_SAVE + '</button>' +
-                '<button class="addr_action_btn addr_cancel_btn" title="' + this._labels.cancelTitle + '">' + ICON_CANCEL + '</button>' +
+                '<button type="button" class="addr_action_btn addr_save_btn" title="' + this._escAttr(this._labels.saveTitle) + '">' + ICON_SAVE + '</button>' +
+                '<button type="button" class="addr_action_btn addr_cancel_btn" title="' + this._escAttr(this._labels.cancelTitle) + '">' + ICON_CANCEL + '</button>' +
             '</div>' +
-            '<div class="edit_row"><input type="text" class="edit-name" placeholder="' + this._labels.name + '"/></div>' +
-            '<div class="edit_row"><input type="text" class="edit-street" placeholder="' + this._labels.street + '"/></div>' +
-            '<div class="edit_row"><input type="text" class="edit-city" placeholder="' + this._labels.city + '"/></div>' +
+            '<div class="edit_row"><input type="text" class="edit-name" placeholder="' + this._escAttr(this._labels.name) + '"/></div>' +
+            '<div class="edit_row"><input type="text" class="edit-street" placeholder="' + this._escAttr(this._labels.street) + '"/>' +
+                '<div class="addr_field_error" data-field="street" hidden></div></div>' +
+            '<div class="edit_row"><input type="text" class="edit-street2" placeholder="' + this._escAttr(this._labels.street2) + '"/></div>' +
+            '<div class="edit_row"><input type="text" class="edit-city" placeholder="' + this._escAttr(this._labels.city) + '"/>' +
+                '<div class="addr_field_error" data-field="city" hidden></div></div>' +
             '<div class="edit_row edit_row--split">' +
-                '<select class="edit-country"></select>' +
-                '<select class="edit-state"></select>' +
+                '<div class="edit_field"><select class="edit-country"></select>' +
+                    '<div class="addr_field_error" data-field="country" hidden></div></div>' +
+                '<div class="edit_field"><select class="edit-state"></select>' +
+                    '<div class="addr_field_error" data-field="state" hidden></div></div>' +
             '</div>' +
-            '<div class="edit_row"><input type="text" class="edit-zip" placeholder="' + this._labels.zip + '"/></div>';
+            '<div class="edit_row"><input type="text" class="edit-zip" placeholder="' + this._escAttr(this._labels.zip) + '"/>' +
+                '<div class="addr_field_error" data-field="zip" hidden></div></div>' +
+            '<div class="addr_form_error" hidden></div>';
 
         this._cloneOptionsInto(edit.querySelector(".edit-country"), "addr-country-options-template");
         this._cloneOptionsInto(edit.querySelector(".edit-state"),   "addr-state-options-template");
@@ -377,10 +601,28 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         }
     },
 
+    _escAttr(value) {
+        return String(value == null ? "" : value)
+            .replace(/&/g, "&amp;")
+            .replace(/"/g, "&quot;")
+            .replace(/</g, "&lt;");
+    },
+
     _formatLines(data) {
+        let cityLine = "";
+        if (data.city) {
+            cityLine += data.city;
+            if (data.state || data.zip) cityLine += ", ";
+        }
+        if (data.state) {
+            cityLine += data.state;
+            if (data.zip) cityLine += " ";
+        }
+        if (data.zip) cityLine += data.zip;
         const parts = [
             data.street,
-            [data.city, data.state, data.zip].filter(Boolean).join(", "),
+            data.street2,
+            cityLine.trim(),
             data.country,
         ].filter(Boolean);
         // Build each line through textContent so any user-entered text is
@@ -400,7 +642,10 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
 
     _onEditCountryChange(ev) {
         const card = ev.target.closest(".addr_card");
-        if (card) this._filterCardStates(card);
+        if (!card) return;
+        this._filterCardStates(card);
+        this._clearOneField(card, "country");
+        this._clearOneField(card, "state");
     },
 
     _filterCardStates(card) {
@@ -440,15 +685,27 @@ publicWidget.registry.addressSelector = publicWidget.Widget.extend({
         // tooltip from any card that still has one (a non-default address).
         const editBtn  = document.querySelector("#rental-address-section .addr_edit_btn");
         const deleteBtn = document.querySelector("#rental-address-section .addr_delete_btn");
+        const errBox = document.getElementById("addr-error-labels");
+        const err = (field, fallback) => {
+            const text = errBox?.querySelector('[data-field="' + field + '"]')?.textContent?.trim();
+            return text || fallback;
+        };
         return {
             name:   editDiv?.querySelector(".edit-name")?.placeholder   || "Name",
             street: editDiv?.querySelector(".edit-street")?.placeholder || "Street",
+            street2: editDiv?.querySelector(".edit-street2")?.placeholder || "Suite / Unit",
             city:   editDiv?.querySelector(".edit-city")?.placeholder   || "City",
             zip:    editDiv?.querySelector(".edit-zip")?.placeholder    || "Zip/Postal Code",
             editTitle:    editBtn?.title    || "Edit",
             saveTitle:    editDiv?.querySelector(".addr_save_btn")?.title   || "Save",
             cancelTitle:  editDiv?.querySelector(".addr_cancel_btn")?.title || "Cancel",
             deleteTitle:  deleteBtn?.title || "Delete",
+            errStreet: err("street", "Street is required."),
+            errCity: err("city", "City is required."),
+            errCountry: err("country", "Country is required."),
+            errState: err("state", "State/Province is required."),
+            errZip: err("zip", "Zip/Postal code is required."),
+            errSave: err("save", "Could not save this address. Please try again."),
         };
     },
 });

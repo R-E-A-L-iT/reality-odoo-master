@@ -5,6 +5,8 @@ from odoo import http
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
 
+from .address_fields import plan_address_write
+
 
 class AddressSelectorPortal(http.Controller):
 
@@ -59,8 +61,8 @@ class AddressSelectorPortal(http.Controller):
         website=True,
     )
     def create_typed_address(
-        self, order_id, address_type=None, name=None, street=None, city=None,
-        state=None, zip=None, country=None, access_token=None, **post
+        self, order_id, address_type=None, name=None, street=None, street2=None,
+        city=None, state=None, zip=None, country=None, access_token=None, **post
     ):
         order = self._get_order(order_id, access_token)
         if not order:
@@ -68,18 +70,18 @@ class AddressSelectorPortal(http.Controller):
         if address_type not in ("invoice", "delivery"):
             return {"error": "Invalid address_type"}
 
-        vals = {
-            "type": address_type,
-            "parent_id": order.partner_id.id,
-            "name": name or order.partner_id.name,
-            "street": street,
-            "city": city,
-            "zip": zip,
-        }
-        if country:
-            vals["country_id"] = int(country)
-        if state:
-            vals["state_id"] = int(state)
+        submitted = self._submitted_address(
+            name, street, street2, city, state, zip, country
+        )
+        plan = self._plan_address(submitted, is_create=True)
+        if plan["missing"]:
+            return self._missing_address_error(plan["missing"])
+
+        vals = dict(plan["vals"])
+        if not vals.get("name"):
+            vals["name"] = order.partner_id.name or ""
+        vals["type"] = address_type
+        vals["parent_id"] = order.partner_id.id
 
         partner = request.env["res.partner"].sudo().create(vals)
         if address_type == "invoice":
@@ -87,16 +89,7 @@ class AddressSelectorPortal(http.Controller):
         else:
             order.sudo().partner_shipping_id = partner.id
 
-        return {
-            "success": True,
-            "partner_id": partner.id,
-            "name":    partner.name or "",
-            "street":  partner.street or "",
-            "city":    partner.city or "",
-            "state":   partner.state_id.name or "",
-            "zip":     partner.zip or "",
-            "country": partner.country_id.name or "",
-        }
+        return self._address_payload(partner)
 
     @http.route(
         ["/my/orders/<int:order_id>/update_address"],
@@ -105,8 +98,8 @@ class AddressSelectorPortal(http.Controller):
         website=True,
     )
     def update_address(
-        self, order_id, partner_id=None, name=None, street=None, city=None,
-        state=None, zip=None, country=None, access_token=None, **post
+        self, order_id, partner_id=None, name=None, street=None, street2=None,
+        city=None, state=None, zip=None, country=None, access_token=None, **post
     ):
         order = self._get_order(order_id, access_token)
         if not order:
@@ -123,18 +116,79 @@ class AddressSelectorPortal(http.Controller):
         if partner.id == order.partner_id.id:
             return {"error": "The default address cannot be edited"}
 
-        vals = {"name": name, "street": street, "city": city, "zip": zip}
-        if country:
-            vals["country_id"] = int(country)
-        if state:
-            vals["state_id"] = int(state)
+        submitted = self._submitted_address(
+            name, street, street2, city, state, zip, country
+        )
+        plan = self._plan_address(submitted, partner=partner, is_create=False)
+        if plan["missing"]:
+            return self._missing_address_error(plan["missing"])
+        # Keys the client did not send are absent from vals, so an edit cannot
+        # blank a stored street2 (or any other field) that was not on the form.
+        if plan["vals"]:
+            partner.sudo().write(plan["vals"])
 
-        partner.sudo().write(vals)
+        return self._address_payload(partner)
+
+    def _submitted_address(self, name, street, street2, city, state, zip_code, country):
+        # None stays None so plan_address_write can tell "not sent" from "".
+        return {
+            "name": name,
+            "street": street,
+            "street2": street2,
+            "city": city,
+            "state": state,
+            "zip": zip_code,
+            "country": country,
+        }
+
+    def _plan_address(self, submitted, partner=None, is_create=False):
+        existing = None
+        if partner is not None:
+            existing = {
+                "name": partner.name or "",
+                "street": partner.street or "",
+                "street2": partner.street2 or "",
+                "city": partner.city or "",
+                "zip": partner.zip or "",
+                "state_id": partner.state_id.id or False,
+                "country_id": partner.country_id.id or False,
+            }
+        return plan_address_write(
+            submitted,
+            existing,
+            is_create=is_create,
+            country_exists=self._country_exists,
+            country_has_states=self._country_has_states,
+            state_matches_country=self._state_matches_country,
+        )
+
+    def _country_exists(self, country_id):
+        return bool(request.env["res.country"].sudo().browse(int(country_id)).exists())
+
+    def _country_has_states(self, country_id):
+        return bool(
+            request.env["res.country.state"].sudo().search_count(
+                [("country_id", "=", int(country_id))], limit=1
+            )
+        )
+
+    def _state_matches_country(self, state_id, country_id):
+        state = request.env["res.country.state"].sudo().browse(int(state_id))
+        return bool(state.exists() and state.country_id.id == int(country_id))
+
+    def _missing_address_error(self, missing):
+        return {
+            "error": "Please complete the required fields.",
+            "fields": missing,
+        }
+
+    def _address_payload(self, partner):
         return {
             "success": True,
             "partner_id": partner.id,
             "name": partner.name or "",
             "street": partner.street or "",
+            "street2": partner.street2 or "",
             "city": partner.city or "",
             "state": partner.state_id.name or "",
             "zip": partner.zip or "",
