@@ -32,6 +32,22 @@ class QuotationDocument(models.Model):
     )
     # Only used by "preview" documents (native "report" documents use the PDF).
     url = fields.Char(string="Resource URL")
+    # Legacy alias of document_type. Custom account.move views still in the
+    # database filter footer_id with ('record_type', '=', 'Footer'), the old
+    # header.footer selection. Those views have no module xml id, so a module
+    # update does not rewrite them.
+    record_type = fields.Selection(
+        [("Footer", "Footer"), ("Header", "Header")],
+        string="Record Type",
+        compute="_compute_record_type",
+        store=True,
+    )
+
+    @api.depends("document_type")
+    def _compute_record_type(self):
+        mapping = {"footer": "Footer", "header": "Header"}
+        for document in self:
+            document.record_type = mapping.get(document.document_type) or False
     # Legacy per-company scoping for preview documents (the native model uses the
     # single company_id inherited from ir.attachment for report documents).
     company_ids = fields.Many2many(

@@ -113,11 +113,15 @@ class order(models.Model):
         required=True
     )
 
+    # Do not set required=True. Core leaves this column nullable, and production
+    # orders already have a null pricelist. required=True asks PostgreSQL to
+    # SET NOT NULL and the upgrade dies on those rows. New orders still get a
+    # pricelist from sale's _compute_pricelist_id.
     pricelist_id = fields.Many2one(
         'product.pricelist',
         string='Pricelist',
         domain="[('name', 'not ilike', 'Default')]",
-        required=True
+        required=False,
     )
 
     approve_financing = fields.Boolean(string="APPROVE Financing")

@@ -26,7 +26,7 @@ class company(models.Model):
 	logo_url = fields.Char(
 		string="Logo URL",
 		default="https://cdn.r-e-a-l.it//images/icons/REALiT-Header.gif",
-		required="True",
+		required=True,
 	)
 	
 	default_footer_id = fields.Many2one(
