@@ -5,14 +5,13 @@ import { rpc } from "@web/core/network/rpc";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
 
+// crm_livechat already registers "create-lead" (a name popover that runs /lead).
+// This module replaces that button with create-or-update plus the lead form.
+// A second key would show two Create Lead buttons; adding without force throws
+// and takes down web.assets_backend. Visibility stays with crm_livechat's
+// ThreadAction patch, which keys off this same id.
 threadActionsRegistry.add("create-lead", {
-    condition({ thread, owner }) {
-        return (
-            thread?.model === "discuss.channel" &&
-            thread?.channel_type === "livechat" &&
-            !owner.props.chatWindow
-        );
-    },
+    condition: false,
     setup() {
         this.notification = useService("notification");
         this.actionService = useService("action");
@@ -86,4 +85,4 @@ threadActionsRegistry.add("create-lead", {
         })();
     },
     sequence: 15,
-});
+}, { force: true });
