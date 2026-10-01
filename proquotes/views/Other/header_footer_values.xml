@@ -16,7 +16,13 @@
         <field name="doc_class">preview</field>
         <field name="document_type">footer</field>
         <field name="url">https://cdn.r-e-a-l.it/images/footer/R-E-A-L.iTFooter_USA.png</field>
-        <field name="company_ids" eval="[(4, 3)]"/>
+        <!--
+            TODO(odoo19): temporarily disabled, restore after port.
+            Linked this US footer to res.company id 3. That company does not
+            exist on a fresh database, so the insert hits a foreign key and
+            aborts module install. Restore the link only when company 3 exists.
+        -->
+        <!-- <field name="company_ids" eval="[(4, 3)]"/> -->
     </record>
 
     <record id="footer_horia" model="quotation.document">

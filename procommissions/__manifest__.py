@@ -7,8 +7,9 @@
     'depends': ['base'],
     'data': [
         'security/ir.model.access.csv',
-        'views/menu_views.xml',
+        # Action must exist before the menuitem that references it.
         'views/commissions_views.xml',
+        'views/menu_views.xml',
     ],
     'application': True,
     'installable': True,

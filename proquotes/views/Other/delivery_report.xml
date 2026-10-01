@@ -11,6 +11,15 @@
             </td>
         </xpath>
     </template>
+    <!--
+        TODO(odoo19): temporarily disabled, restore after port.
+        report_picking_inherit printed the product description under the
+        picking line. xpath //table[@class='table table-sm']/tbody/tr/td[1]
+        cannot be located: the Odoo 19 picking table is table.o_main_table
+        and the product is on the move, not that cell. Disabled so delivery
+        reports can load. Restore against the v19 picking arch.
+    -->
+    <!--
     <template id="report_picking_inherit" inherit_id="stock.report_picking">
         <xpath expr="//table[@class='table table-sm']/tbody/tr/td[1]" position="replace">
             <td>
@@ -20,6 +29,8 @@
             </td>
         </xpath>
     </template>
+    -->
+
     
 	<template id="deliver" name="Proquotes Deliver" inherit_id="stock.report_delivery_document" priority="17">
 

@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <!--
+        TODO(odoo19): temporarily disabled, restore after port.
+        portal_language_selector_globe replaced the portal language dropdown
+        button with a globe icon. The replacement uses a static class and
+        drops t-attf-class containing dropdown-toggle, so on upgrade
+        website.language_selector_inline cannot locate
+        //*[contains(@t-attf-class, 'dropdown-toggle')] in the combined
+        language selector. Disabled so the portal upgrade can finish.
+        Restore the globe button while keeping that t-attf-class.
+    -->
+    <!--
     <template id="portal_language_selector_globe" inherit_id="portal.language_selector">
         <xpath expr="//button" position="replace">
             <button type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn border-0 dropdown-toggle rounded-circle text-reset o_navlink_background show">
@@ -7,4 +18,6 @@
             </button>
         </xpath>
     </template>
+    -->
+
 </odoo>

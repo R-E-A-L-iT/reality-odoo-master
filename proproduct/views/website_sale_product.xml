@@ -68,12 +68,19 @@
     </template>
 
     <!--
-        APPROVE FINANCING SECTION.
-
-        Anchored after the cta_wrapper call inside the product details column —
-        the closest surviving equivalent to the old o_product_terms_and_share
-        position. USD-only, as before.
+        TODO(odoo19): temporarily disabled, restore after port.
+        proproduct_product_approve_financing inserts the USD-only Kwipped
+        Approve financing section on the product page, after the
+        website_sale.cta_wrapper call.
+        The odoo.sh update of OriginCopy dies while validating this view:
+        xpath //ol[@class='breadcrumb p-0 mb-2 m-lg-0']/li[@class='breadcrumb-item']
+        cannot be located in parent view website_sale.product. That xpath is
+        not in this file. Writing this inherit re-validates a sibling view
+        still stored on the staging database (retired SEO product inherit,
+        same breadcrumb xpath) and the registry fails before the database
+        can start. Disabled so the module update can finish.
     -->
+    <!--
     <template id="proproduct_product_approve_financing" inherit_id="website_sale.product">
 
         <xpath expr="//t[@t-call='website_sale.cta_wrapper']" position="after">
@@ -209,5 +216,7 @@
         </xpath>
 
     </template>
+    -->
+
 
 </odoo>

@@ -47,6 +47,14 @@
         </record>
 
         <!-- Companies tree view -->
+        <!--
+            TODO(odoo19): temporarily disabled, restore after port.
+            Search Companies list (apl_companies) with the Search People style
+            js_class apl_search_button_in_tree. Arch root <tree> is an invalid
+            view type in Odoo 19. Disabled so company search views can load.
+            Restore as a <list> view.
+        -->
+        <!--
         <record id="view_companies_tree" model="ir.ui.view">
             <field name="name">Comapnies.tree</field>
             <field name="model">apl.companies</field>
@@ -62,6 +70,7 @@
 
             </field>
         </record>
+        -->
 
         <!-- Define the action for the Apollo Instance -->
         <record id="action_apl_companies" model="ir.actions.act_window">
