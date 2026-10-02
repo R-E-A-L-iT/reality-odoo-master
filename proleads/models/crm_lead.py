@@ -50,6 +50,9 @@ LEICA_LEAD_STATUS_SEL = [
     ("denied", "Denied"),
 ]
 
+# Search terms on leica_lead_number. Other operators are left untouched.
+LEICA_LEAD_NUMBER_SEARCH_OPERATORS = frozenset({"=", "ilike", "like", "in"})
+
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
@@ -270,6 +273,70 @@ class CrmLead(models.Model):
         if text.startswith("#"):
             text = text[1:].strip()
         return text or False
+
+    @api.model
+    def _leica_lead_number_search_term(self, value):
+        """Normalise one search term. Non-strings and blank results stay as given.
+
+        Blank results stay put so a search for only '#' does not become a match-all.
+        """
+        if not isinstance(value, str):
+            return value
+        normalized = self._normalize_leica_lead_number(value)
+        return normalized or value
+
+    @api.model
+    def _normalize_leica_lead_number_domain(self, domain):
+        """Strip one leading '#' and whitespace from leica_lead_number leaves.
+
+        Applies to =, ilike, like and in. Every other leaf is returned unchanged,
+        and the caller's domain is not mutated.
+        """
+        if not isinstance(domain, (list, tuple)):
+            return domain
+        changed = False
+        result = []
+        for term in domain:
+            new_term = term
+            if (
+                isinstance(term, (list, tuple))
+                and len(term) == 3
+                and term[0] == "leica_lead_number"
+                and term[1] in LEICA_LEAD_NUMBER_SEARCH_OPERATORS
+            ):
+                field_name, operator, value = term
+                if operator == "in" and isinstance(value, (list, tuple)):
+                    new_value = [self._leica_lead_number_search_term(item) for item in value]
+                    if list(new_value) != list(value):
+                        new_term = (field_name, operator, new_value)
+                        changed = True
+                elif operator != "in":
+                    new_value = self._leica_lead_number_search_term(value)
+                    if new_value != value:
+                        new_term = (field_name, operator, new_value)
+                        changed = True
+            elif (
+                isinstance(term, (list, tuple))
+                and term
+                and isinstance(term[0], (list, tuple))
+            ):
+                new_term = self._normalize_leica_lead_number_domain(term)
+                if new_term is not term:
+                    changed = True
+            result.append(new_term)
+        return result if changed else domain
+
+    @api.model
+    def _search(self, domain, offset=0, limit=None, order=None, access_rights_uid=None):
+        # Covers the search box, the Leica Lead # field, and search/search_read RPC.
+        domain = self._normalize_leica_lead_number_domain(domain)
+        return super()._search(
+            domain,
+            offset=offset,
+            limit=limit,
+            order=order,
+            access_rights_uid=access_rights_uid,
+        )
 
     @api.model_create_multi
     def create(self, vals_list):
