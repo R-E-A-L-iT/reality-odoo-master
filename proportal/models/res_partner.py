@@ -29,12 +29,59 @@ class ResPartner(models.Model):
     )
     portal_companies_ids = fields.Many2many('res.partner', relation='res_partner_companies_rel', column1='res_partner_id', column2='id', string='Portal Companies', domain=[('active', '=', True), ('is_company', '!=', False)])
 
+    # Value comes from a user-level search, not the owner inverse. A related
+    # One2many is computed as superuser and then the web client reads those
+    # lots as the user, which trips the multi-company rule.
     products = fields.One2many(
-        "stock.lot", "owner", string="Products", readonly=True, domain=[('company_id', '=', 1)],
+        "stock.lot",
+        "owner",
+        string="Products",
+        compute="_compute_customer_products",
+        compute_sudo=False,
+        readonly=True,
+        domain=[("company_id", "=", 1)],
     )
     parentProducts = fields.One2many(
-        related="parent_id.products", string="Company Products", readonly=True
+        "stock.lot",
+        string="Company Products",
+        compute="_compute_parent_products",
+        compute_sudo=False,
+        readonly=True,
     )
+
+    def _customer_product_lot_domain(self):
+        """Lots for the Products tab that this user is allowed to read.
+
+        Company 1 is the existing tab filter. Searching as the current user
+        also applies the stock.lot company rule, so lots in an unticked
+        company are omitted instead of raising AccessError.
+        """
+        self.ensure_one()
+        if not self.id:
+            return [("id", "=", 0)]
+        return [("owner", "=", self.id), ("company_id", "=", 1)]
+
+    @api.depends_context("allowed_company_ids")
+    def _compute_customer_products(self):
+        Lot = self.env["stock.lot"]
+        for partner in self:
+            if not partner.id:
+                partner.products = Lot.browse()
+            else:
+                partner.products = Lot.search(partner._customer_product_lot_domain())
+
+    @api.depends("parent_id")
+    @api.depends_context("allowed_company_ids")
+    def _compute_parent_products(self):
+        Lot = self.env["stock.lot"]
+        for partner in self:
+            parent = partner.parent_id
+            if not parent.id:
+                partner.parentProducts = Lot.browse()
+            else:
+                # Search directly. Reading parent.products can still prefetch
+                # the inverse One2many and hit the company rule.
+                partner.parentProducts = Lot.search(parent._customer_product_lot_domain())
 
     type = fields.Selection(
         selection_add=[("renewal", "Renewal contact")],

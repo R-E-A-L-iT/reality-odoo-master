@@ -19,6 +19,17 @@ from odoo import models, fields, api, Command
 
 _logger = logging.getLogger(__name__)
 
+# Serials sale_stock_renting stores on a rental line. A stored compute
+# loads them as superuser, so the shared cache can hold a lot the user
+# cannot read. The next read of that lot raises the multi-company rule.
+_RENTAL_LOT_FIELDS = (
+    "reserved_lot_ids",
+    "pickedup_lot_ids",
+    "returned_lot_ids",
+    "unavailable_lot_ids",
+)
+
+
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
@@ -187,6 +198,65 @@ class SaleOrderLine(models.Model):
 
     def get_sale_order_line_multiline_description_sale(self, product):
         return product.get_product_multiline_description_sale()
+
+    def _proquotes_drop_rental_lot_cache(self):
+        """Drop hidden rental serials from the cache, not from the database.
+
+        ``reserved_lot_ids``, ``pickedup_lot_ids`` and ``returned_lot_ids``
+        are ordinary many2manys. Reading one applies the lot rule and omits
+        serials in an unticked company. A stored compute (line description,
+        delivered quantity) runs as superuser and puts every linked serial
+        in the shared cache first. The next ``name`` read on that recordset
+        is what raises "Stock Production Lot multi-company".
+
+        Only a clean cache entry is rewritten, so a real edit of the serials
+        is still flushed. The relation in the database is left alone.
+        """
+        if not self or self.env.context.get("proquotes_dropping_rental_lots"):
+            return
+        self = self.with_context(proquotes_dropping_rental_lots=True)
+        # compute_sudo keeps the user id and sets su. Search as that user.
+        user_lots = self.env(su=False)["stock.lot"]
+        dirty = self.env.cache._dirty
+        for name in _RENTAL_LOT_FIELDS:
+            field = self._fields.get(name)
+            if not field:
+                continue
+            dirty_ids = dirty.get(field, ())
+            for line in self:
+                if not line.id or line.id in dirty_ids:
+                    continue
+                if not self.env.cache.contains(line, field):
+                    continue
+                cached = self.env.cache.get(line, field) or ()
+                if not isinstance(cached, (tuple, list)):
+                    continue
+                cached_ids = tuple(cached)
+                if not cached_ids:
+                    continue
+                visible = user_lots.search([("id", "in", list(cached_ids))])
+                visible_ids = tuple(id_ for id_ in cached_ids if id_ in set(visible._ids))
+                if visible_ids == cached_ids:
+                    continue
+                self.env.cache.set(line, field, visible_ids)
+
+    def _compute_name(self):
+        # Name is stored, so this compute is superuser and may cache every
+        # reserved / picked up / returned serial before the form reads them.
+        self._proquotes_drop_rental_lot_cache()
+        super()._compute_name()
+        self._proquotes_drop_rental_lot_cache()
+
+    def _compute_qty_delivered(self):
+        self._proquotes_drop_rental_lot_cache()
+        super()._compute_qty_delivered()
+        self._proquotes_drop_rental_lot_cache()
+
+    def _get_sale_order_line_multiline_description_sale(self):
+        self._proquotes_drop_rental_lot_cache()
+        description = super()._get_sale_order_line_multiline_description_sale()
+        self._proquotes_drop_rental_lot_cache()
+        return description
 
     def _proquotes_counts_in_totals(self):
         """Whether this line contributes to quote totals.
@@ -408,8 +478,16 @@ class SaleOrderLine(models.Model):
     def write(self, vals):
         vals = self._proquotes_align_selection_flags(vals)
         orders_before = self._orders_to_retax()
+        # Changing the rental end date recomputes the line description and
+        # the delivered quantity, both of which read the line's serials.
+        rental_dates = {"return_date", "start_date", "reservation_begin"} & set(vals)
+        if rental_dates:
+            self._proquotes_drop_rental_lot_cache()
 
         res = super().write(vals)
+
+        if rental_dates:
+            self._proquotes_drop_rental_lot_cache()
 
         if self.env.context.get("skip_apply_canadian_sales_taxes"):
             return res

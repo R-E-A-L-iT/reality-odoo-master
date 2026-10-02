@@ -22,4 +22,13 @@ _logger = logging.getLogger(__name__)
 class person(models.Model):
     _inherit = "res.partner"
 
-    products = fields.One2many("stock.lot", "owner", string="Products")
+    # proportal owns the compute. Repeat it here so this later override
+    # does not drop back to a plain inverse One2many (which ignores rules).
+    products = fields.One2many(
+        "stock.lot",
+        "owner",
+        string="Products",
+        compute="_compute_customer_products",
+        compute_sudo=False,
+        readonly=True,
+    )
