@@ -10,8 +10,9 @@ class TestOptionalFlagDefaults(TransactionCase):
     """Lines created without the proquotes boolean flags must still save.
 
     The flag columns are NOT NULL. Odoo's own create paths (down payment
-    wizard, extra delivered lines, delivery and cart lines) never pass them,
-    so the fields need default=False.
+    wizard, extra delivered lines, delivery and cart lines) never pass them.
+    is_optional and is_quantityLocked default to False. is_selected defaults
+    to True so it matches selected.
     """
 
     @classmethod
@@ -110,7 +111,27 @@ class TestOptionalFlagDefaults(TransactionCase):
             'name': 'Line created without proquotes flags',
             'product_uom_qty': 1.0,
         })
-        self.assertEqual(self._stored_flags(line)[line.id], (False, False, False))
+        self.assertEqual(self._stored_flags(line)[line.id], (False, True, False))
+        self.assertEqual(line.selected, 'true')
+
+    def test_optional_product_context_mirrors_checkboxes(self):
+        """Add Optional Product sets the strings. The checkboxes follow them.
+
+        Otherwise the first onchange copies the boolean defaults back and
+        turns the optional line into a normal selected line.
+        """
+        vals = self.env['sale.order.line'].with_context(
+            default_optional='yes',
+            default_selected='false',
+        ).default_get([
+            'selected', 'is_selected', 'optional', 'is_optional',
+            'quantityLocked', 'is_quantityLocked',
+        ])
+        self.assertEqual(vals['selected'], 'false')
+        self.assertFalse(vals['is_selected'])
+        self.assertEqual(vals['optional'], 'yes')
+        self.assertTrue(vals['is_optional'])
+        self.assertFalse(vals['is_quantityLocked'])
 
     def test_down_payment_on_confirmed_order_with_unselected_optional(self):
         order = self._quote()
@@ -136,7 +157,7 @@ class TestOptionalFlagDefaults(TransactionCase):
         self.assertTrue(order.invoice_ids)
         stored = self._stored_flags(down_payment_lines)
         for line in down_payment_lines:
-            self.assertEqual(stored[line.id], (False, False, False))
+            self.assertEqual(stored[line.id], (False, True, False))
 
         # The down payment must not make the unselected line invoiceable.
         self.assertEqual(unselected.qty_to_invoice, 0.0)

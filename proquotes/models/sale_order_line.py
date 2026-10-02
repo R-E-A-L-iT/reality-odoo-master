@@ -81,18 +81,22 @@ class SaleOrderLine(models.Model):
         help="Field to Lock Quantity on Products",
     )
 
-    # The database column is NOT NULL (required=True). default=False lets
-    # every create path that does not pass these keys still insert a value:
-    # the down payment wizard, sale_stock/rental extra lines, delivery and
-    # website cart lines. Without it those creates fail with "a mandatory
-    # field is not set". The backend form always sends them, so it is
-    # unaffected.
+    # The columns are NOT NULL. A create that omits a key still inserts the
+    # default, which is what the down payment wizard, delivery lines and the
+    # cart rely on.
+    #
+    # is_selected matches selected's default ('true'). The form's first
+    # onchange treats every default as a user change and copies the
+    # checkboxes onto the strings. A False default rewrote selected to
+    # 'false', so a product added by hand did not count. is_optional stays
+    # False (optional is 'no'). is_quantityLocked stays False, so that same
+    # onchange leaves quantity unlocked unless a template passed its own value.
     is_optional = fields.Boolean(
         required=True, default=False, string="Optional",
         help="Field to Mark Product as Optional",
     )
     is_selected = fields.Boolean(
-        required=True, default=False, string="Selected",
+        required=True, default=True, string="Selected",
         help="Field to Mark Wether Customer has Selected Product",
     )
     is_quantityLocked = fields.Boolean(
@@ -134,6 +138,28 @@ class SaleOrderLine(models.Model):
         return ids
 
     # if line is being created retroactively by stock.picking (delivery), override creation
+
+    @api.model
+    def default_get(self, fields_list):
+        """Mirror string defaults from the line-create context onto the checkboxes.
+
+        "Add Optional Product" sets default_selected and default_optional.
+        The checkbox onchange copies the booleans back onto those strings, so
+        the booleans have to start from the same context or they undo it.
+        """
+        vals = super().default_get(fields_list)
+        ctx = self.env.context
+        if 'default_is_selected' not in ctx and 'default_selected' in ctx and 'is_selected' in fields_list:
+            vals['is_selected'] = ctx['default_selected'] == 'true'
+        if 'default_is_optional' not in ctx and 'default_optional' in ctx and 'is_optional' in fields_list:
+            vals['is_optional'] = ctx['default_optional'] == 'yes'
+        if (
+            'default_is_quantityLocked' not in ctx
+            and 'default_quantityLocked' in ctx
+            and 'is_quantityLocked' in fields_list
+        ):
+            vals['is_quantityLocked'] = ctx['default_quantityLocked'] == 'yes'
+        return vals
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
