@@ -56,6 +56,8 @@
                             <field name="leica_registered" string="Has the lead been registered already?" readonly="1"/>
                             <field name="leica_registration_date" readonly="1" invisible="not leica_registered"/>
                             <field name="leica_registration_error" readonly="1" invisible="not leica_registration_error or leica_registered"/>
+                            <field name="leica_lead_number"/>
+                            <field name="leica_lead_status"/>
                         </group>
                         <group string="End-user Requests">
                             <field name="leica_has_demo_request"/>
@@ -128,6 +130,77 @@
                            string="Email Subject"
                            placeholder="Enter the email subject for outgoing emails..."/>
                 </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_search_leica_lead_number" model="ir.ui.view">
+        <field name="name">crm.lead.search.leica.lead.number</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[@name='name']" position="after">
+                <field name="leica_lead_number"/>
+                <field name="leica_lead_status"/>
+            </xpath>
+            <xpath expr="//search/field[@name='name']" position="attributes">
+                <attribute name="filter_domain">['|','|','|','|',('partner_name', 'ilike', self),('email_from', 'ilike', self), ('contact_name', 'ilike', self), ('name', 'ilike', self), ('leica_lead_number', 'ilike', self)]</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='inactive']" position="before">
+                <separator/>
+                <filter string="Leica: Submitted" name="leica_status_submitted" domain="[('leica_lead_status', '=', 'submitted')]"/>
+                <filter string="Leica: Pending" name="leica_status_pending" domain="[('leica_lead_status', '=', 'pending')]"/>
+                <filter string="Leica: Accepted" name="leica_status_accepted" domain="[('leica_lead_status', '=', 'accepted')]"/>
+                <filter string="Leica: Denied" name="leica_status_denied" domain="[('leica_lead_status', '=', 'denied')]"/>
+            </xpath>
+            <xpath expr="//filter[@name='group_by_lead_properties']" position="before">
+                <filter string="Leica Status" name="group_by_leica_lead_status" context="{'group_by': 'leica_lead_status'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_search_opportunity_leica" model="ir.ui.view">
+        <field name="name">crm.lead.search.opportunity.leica</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[@name='name']" position="after">
+                <field name="leica_lead_number"/>
+                <field name="leica_lead_status"/>
+            </xpath>
+            <xpath expr="//filter[@name='inactive']" position="before">
+                <separator/>
+                <filter string="Leica: Submitted" name="leica_status_submitted" domain="[('leica_lead_status', '=', 'submitted')]"/>
+                <filter string="Leica: Pending" name="leica_status_pending" domain="[('leica_lead_status', '=', 'pending')]"/>
+                <filter string="Leica: Accepted" name="leica_status_accepted" domain="[('leica_lead_status', '=', 'accepted')]"/>
+                <filter string="Leica: Denied" name="leica_status_denied" domain="[('leica_lead_status', '=', 'denied')]"/>
+            </xpath>
+            <xpath expr="//filter[@name='group_by_lead_properties']" position="before">
+                <filter string="Leica Status" name="group_by_leica_lead_status" context="{'group_by': 'leica_lead_status'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_leads_leica" model="ir.ui.view">
+        <field name="name">crm.lead.tree.lead.leica</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="leica_lead_number" optional="hide"/>
+                <field name="leica_lead_status" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_oppor_leica" model="ir.ui.view">
+        <field name="name">crm.lead.tree.opportunity.leica</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="leica_lead_number" optional="hide"/>
+                <field name="leica_lead_status" optional="hide"/>
             </xpath>
         </field>
     </record>
