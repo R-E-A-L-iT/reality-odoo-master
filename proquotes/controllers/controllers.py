@@ -6,7 +6,7 @@ import base64
 import binascii
 
 from odoo import fields, http, _
-from odoo.exceptions import AccessError, MissingError, UserError
+from odoo.exceptions import AccessError, MissingError, UserError, ValidationError
 from odoo.http import request
 from odoo.http import Response
 from odoo.addons.website.controllers import form
@@ -543,6 +543,14 @@ class QuotePortalFix(cPortal):
         )
         if posted_key:
             return {'error': rental_message(posted_key, lang)}
+        # The inputs are what the customer is signing. A date save can have
+        # stored a different start; write this pair before the signature,
+        # and before confirm copies line dates back onto the order.
+        if order_sudo.is_rental_order and rental_start and rental_end:
+            try:
+                order_sudo.portal_store_signed_rental_dates(rental_start, rental_end)
+            except (ValidationError, UserError):
+                return {'error': rental_message("order", lang)}
         rental_error = order_sudo.portal_rental_sign_error(lang)
         if rental_error:
             return {'error': rental_error}

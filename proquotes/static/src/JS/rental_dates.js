@@ -148,6 +148,45 @@ export function runRentalStartEdit(startValue, endValue, hooks) {
 }
 
 /**
+ * Body of ``/update_rental_dates``. Both days are required. An end-only
+ * refresh, or a start that is still the previous day, is not a payload.
+ * @param {string} startValue
+ * @param {string} endValue
+ * @returns {{rental_start: string, rental_end: string}|null}
+ */
+export function rentalDatesSavePayload(startValue, endValue) {
+    const start = (startValue || "").trim();
+    const end = (endValue || "").trim();
+    if (!validateRentalDates(start, end).ok) {
+        return null;
+    }
+    return { rental_start: start, rental_end: end };
+}
+
+/**
+ * Saves posted after a start edit that may auto-shift the end.
+ *
+ * The live refresh is not a save. The one payload carries the edited
+ * start and the shifted end. It must not carry an older start.
+ * @param {string} startValue new start
+ * @param {string} endValue end before the edit
+ * @returns {Array<{rental_start: string, rental_end: string}>}
+ */
+export function autoshiftSavePayloads(startValue, endValue) {
+    let end = (endValue || "").trim();
+    const result = runRentalStartEdit(startValue, end, {
+        setEnd(value) {
+            end = value;
+        },
+        refreshLivePrice() {
+            // The end input's refresh must not post its own save.
+        },
+    });
+    const payload = rentalDatesSavePayload(result.start, end);
+    return payload ? [payload] : [];
+}
+
+/**
  * Which message Accept & Sign should show.
  * Incomplete input is quiet while the customer is typing, and a block at sign time.
  * @param {string|null} reason

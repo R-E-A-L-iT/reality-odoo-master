@@ -29,6 +29,8 @@ rental_calendar_days = _dates.rental_calendar_days
 rental_dates_editable = _dates.rental_dates_editable
 rental_message = _dates.rental_message
 posted_sign_block_key = _dates.posted_sign_block_key
+rental_confirm_needs_restore = _dates.rental_confirm_needs_restore
+signed_rental_period_after_confirm = _dates.signed_rental_period_after_confirm
 sign_block_reason = _dates.sign_block_reason
 signature_default_name = _dates.signature_default_name
 validate_portal_rental_pair = _dates.validate_portal_rental_pair
@@ -193,14 +195,16 @@ class PortalRentalDateTests(unittest.TestCase):
         rental = (ROOT / "controllers/rental.py").read_text(encoding="utf-8")
         accept = (ROOT / "controllers/controllers.py").read_text(encoding="utf-8")
         update = rental.split("def update_rental_dates", 1)[1].split("def _rental_dates_payload", 1)[0]
-        self.assertLess(update.index("portal_rental_dates_editable"), update.index(".write("))
-        self.assertLess(update.index("validate_portal_rental_pair"), update.index(".write("))
+        self.assertLess(update.index("portal_rental_dates_editable"), update.index("portal_store_signed_rental_dates"))
+        self.assertLess(update.index("validate_portal_rental_pair"), update.index("portal_store_signed_rental_dates"))
         self.assertIn('return {"error": rental_message("locked", lang)}', update)
         self.assertIn('return {"error": rental_message(reason, lang)}', update)
         self.assertIn("ValidationError", rental)
         sign = accept.split("def portal_quote_accept", 1)[1]
-        self.assertLess(sign.index("posted_sign_block_key"), sign.index("portal_rental_sign_error"))
+        self.assertLess(sign.index("posted_sign_block_key"), sign.index("portal_store_signed_rental_dates"))
+        self.assertLess(sign.index("portal_store_signed_rental_dates"), sign.index("portal_rental_sign_error"))
         self.assertLess(sign.index("portal_rental_sign_error"), sign.index("'signed_by'"))
+        self.assertLess(sign.index("portal_store_signed_rental_dates"), sign.index("action_confirm"))
         self.assertIn("rental_start=None, rental_end=None", sign)
         js = (ROOT / "static/src/JS/rental.js").read_text(encoding="utf-8")
         self.assertIn("show.bs.modal", js)
@@ -221,6 +225,49 @@ class PortalRentalDateTests(unittest.TestCase):
         self.assertIn("rental_start_date <= rental_return_date", model)
         self.assertIn("def portal_signature_default_name", model)
         self.assertIn("self.partner_id.name", model.split("def portal_signature_default_name", 1)[1].split("def portal_rental_sign_error", 1)[0])
+        store = model.split("def portal_store_signed_rental_dates", 1)[1].split("def _portal_line_date_vals", 1)[0]
+        self.assertLess(store.index(".write("), store.index("_portal_sync_rental_line_dates"))
+        self.assertLess(store.index("_portal_sync_rental_line_dates"), store.index("_portal_apply_rental_prices"))
+        confirm = model.split("def action_confirm", 1)[1].split("def _action_confirm", 1)[0]
+        self.assertLess(confirm.index("_portal_sync_rental_line_dates"), confirm.index("super().action_confirm()"))
+        self.assertLess(confirm.index("super().action_confirm()"), confirm.index("_restore_signed_rental_if_confirm_moved"))
+
+    def test_confirm_keeps_the_signed_period_and_total(self):
+        # Stand-in figures, not a customer total. One day versus a longer period.
+        signed = {
+            "rental_start_date": datetime(2026, 10, 15, 4, 0, 0),
+            "rental_return_date": datetime(2026, 10, 16, 4, 0, 0),
+            "amount_total": 1.0,
+        }
+        confirmed = {
+            "rental_start_date": datetime(2026, 9, 17, 4, 0, 0),
+            "rental_return_date": datetime(2026, 10, 16, 4, 0, 0),
+            "amount_total": 12.0,
+        }
+        self.assertTrue(rental_confirm_needs_restore(
+            signed["rental_start_date"],
+            signed["rental_return_date"],
+            signed["amount_total"],
+            confirmed["rental_start_date"],
+            confirmed["rental_return_date"],
+            confirmed["amount_total"],
+        ))
+        kept = signed_rental_period_after_confirm(signed, confirmed)
+        self.assertEqual(kept["rental_start_date"], signed["rental_start_date"])
+        self.assertEqual(kept["rental_return_date"], signed["rental_return_date"])
+        self.assertEqual(kept["amount_total"], signed["amount_total"])
+        same = signed_rental_period_after_confirm(signed, dict(signed))
+        self.assertEqual(same["rental_start_date"], signed["rental_start_date"])
+        self.assertEqual(same["rental_return_date"], signed["rental_return_date"])
+        self.assertEqual(same["amount_total"], signed["amount_total"])
+        self.assertFalse(rental_confirm_needs_restore(
+            signed["rental_start_date"],
+            signed["rental_return_date"],
+            signed["amount_total"],
+            signed["rental_start_date"],
+            signed["rental_return_date"],
+            signed["amount_total"],
+        ))
 
     def test_python_modules_parse(self):
         for path in (
