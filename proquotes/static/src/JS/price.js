@@ -6,7 +6,7 @@
 import { jsonrpc } from "@web/core/network/rpc_service";
 import { renderToFragment } from "@web/core/utils/render";
 import publicWidget from "@web/legacy/js/public/public_widget";
-import { validateRentalDates } from "./rental_dates";
+import { resolveRentalStartEdit, validateRentalDates } from "./rental_dates";
 
 //	var publicWidget = require("web.public.widget");
 
@@ -42,11 +42,25 @@ import { validateRentalDates } from "./rental_dates";
 			this._rentalValueTotal();
 		},
 
-		_onRentalDatesInput: function () {
+		_onRentalDatesInput: function (ev) {
 			// Client-side rental estimate only. Saving the dates, and
 			// re-rendering the server totals, is rental.js. This must not
 			// post /select: that replaces the whole quote, including the
 			// date inputs and any inline validation message.
+			// This widget is registered before rental.js, so a start that
+			// lands after the end is shifted here first. Otherwise the
+			// estimate would read the intermediate invalid pair. The value
+			// write does not dispatch another input/change.
+			const current = ev && ev.currentTarget;
+			const field = current && current.id === "rental-start" ? current : ev && ev.target;
+			const start = document.getElementById("rental-start");
+			const end = document.getElementById("rental-end");
+			if (field && field.id === "rental-start" && start && end && !start.disabled && !end.disabled) {
+				const adjusted = resolveRentalStartEdit(start.value, end.value);
+				if (end.value !== adjusted.end) {
+					end.value = adjusted.end;
+				}
+			}
 			this._rentalValueTotal();
 		},
 

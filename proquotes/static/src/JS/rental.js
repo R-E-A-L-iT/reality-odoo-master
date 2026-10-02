@@ -3,7 +3,7 @@
 
 import { jsonrpc } from "@web/core/network/rpc_service";
 import publicWidget from "@web/legacy/js/public/public_widget";
-import { guardSignModalShow, signBlockKind, validateRentalDates } from "./rental_dates";
+import { guardSignModalShow, resolveRentalStartEdit, signBlockKind, validateRentalDates } from "./rental_dates";
 
 const SAVE_DELAY_MS = 600;
 
@@ -127,10 +127,14 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         return this._super(...arguments);
     },
 
-    _onRentalDateEdited() {
-        this._syncEndMin();
+    _onRentalDateEdited(ev) {
         const start = document.getElementById("rental-start");
         const end = document.getElementById("rental-end");
+        // Start moved past the current end: shift the end before validation
+        // so the order error is never shown and the debounced save posts the
+        // shifted pair only. An end edit leaves the inputs alone.
+        this._shiftEndForStartEdit(ev, start, end);
+        this._syncEndMin();
         const verdict = validateRentalDates(start && start.value, end && end.value);
         if (!verdict.ok) {
             this._cancelPendingSave();
@@ -143,6 +147,27 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         }
         this._clearError();
         this._scheduleSave();
+    },
+
+    /**
+     * Start input only. ``price.js`` can handle the same event first and
+     * must see the shifted end, so it calls ``resolveRentalStartEdit`` too.
+     * Setting ``value`` does not dispatch ``input`` or ``change``, so this
+     * does not schedule a second save.
+     */
+    _shiftEndForStartEdit(ev, start, end) {
+        const current = ev && ev.currentTarget;
+        const field = current && current.id === "rental-start" ? current : ev && ev.target;
+        if (!start || !end || !field || field.id !== "rental-start") {
+            return;
+        }
+        if (start.disabled || end.disabled) {
+            return;
+        }
+        const adjusted = resolveRentalStartEdit(start.value, end.value);
+        if (end.value !== adjusted.end) {
+            end.value = adjusted.end;
+        }
     },
 
     _syncEndMin() {
