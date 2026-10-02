@@ -56,6 +56,8 @@
                             <field name="leica_registered" string="Has the lead been registered already?" readonly="1"/>
                             <field name="leica_registration_date" readonly="1" invisible="not leica_registered"/>
                             <field name="leica_registration_error" readonly="1" invisible="not leica_registration_error or leica_registered"/>
+                            <field name="leica_lead_number"/>
+                            <field name="leica_lead_status"/>
                         </group>
                         <group string="End-user Requests">
                             <field name="leica_has_demo_request"/>
@@ -128,6 +130,20 @@
                            string="Email Subject"
                            placeholder="Enter the email subject for outgoing emails..."/>
                 </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_search_leica_lead_number" model="ir.ui.view">
+        <field name="name">crm.lead.search.leica.lead.number</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[@name='name']" position="after">
+                <field name="leica_lead_number"/>
+            </xpath>
+            <xpath expr="//search/field[@name='name']" position="attributes">
+                <attribute name="filter_domain">['|','|','|','|',('partner_name', 'ilike', self),('email_from', 'ilike', self), ('contact_name', 'ilike', self), ('name', 'ilike', self), ('leica_lead_number', 'ilike', self)]</attribute>
             </xpath>
         </field>
     </record>

@@ -36,6 +36,20 @@ LEICA_MEDIA_CATEGORY_SEL = [
 ]
 LEICA_MEDIA_CATEGORY_LABEL = dict(LEICA_MEDIA_CATEGORY_SEL)
 
+# Dealer-portal emails share one lead number (digits only, no '#').
+# A future parser should map these generic subjects onto leica_lead_status:
+#   submitted: "CONFIRMATION: New Sales Lead #NNNNN submitted (MM/DD/YYYY HH:MM PM)"
+#   accepted:  "New Sales Lead (<Company> - NNNNN)"
+#              body: "Prospect accepted - entered and prospected by dealer: ..."
+#   denied:    "Sales Lead (<Company> - NNNNN) - Prospect denied"
+# pending is kept for manual use. Those emails never say pending.
+LEICA_LEAD_STATUS_SEL = [
+    ("submitted", "Submitted"),
+    ("pending", "Pending"),
+    ("accepted", "Accepted"),
+    ("denied", "Denied"),
+]
+
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
@@ -57,6 +71,32 @@ class CrmLead(models.Model):
         string="Last Leica Registration Error",
         readonly=True,
         help="Error returned by the last failed registration attempt. Cleared on success."
+    )
+    # tracking=True writes the change on the lead chatter. crm.lead already
+    # inherits mail.thread, so no extra inherit is required.
+    leica_lead_number = fields.Char(
+        string="Leica Lead #",
+        index=True,
+        tracking=True,
+        copy=False,
+        help="Leica dealer-portal lead number, digits only, without a leading '#'. "
+             "Taken from 'CONFIRMATION: New Sales Lead #NNNNN submitted "
+             "(MM/DD/YYYY HH:MM PM)'. The same number appears in "
+             "'New Sales Lead (<Company> - NNNNN)' (accepted) and "
+             "'Sales Lead (<Company> - NNNNN) - Prospect denied' (denied). "
+             "Example stored value: 12345."
+    )
+    leica_lead_status = fields.Selection(
+        selection=LEICA_LEAD_STATUS_SEL,
+        string="Leica Lead Status",
+        tracking=True,
+        copy=False,
+        help="Status of this lead on Leica's dealer portal. "
+             "Submitted matches 'CONFIRMATION: New Sales Lead #NNNNN submitted (...)'. "
+             "Accepted matches 'New Sales Lead (<Company> - NNNNN)' when the body says "
+             "the prospect was accepted. "
+             "Denied matches 'Sales Lead (<Company> - NNNNN) - Prospect denied'. "
+             "Pending is available for manual use; those emails do not say pending."
     )
 
     leica_can_register = fields.Boolean(
@@ -217,8 +257,27 @@ class CrmLead(models.Model):
             return stage.probability_override
         return None
 
+    @api.model
+    def _normalize_leica_lead_number(self, value):
+        """Drop surrounding whitespace and one leading '#' from a portal lead number.
+
+        The confirmation subject is 'CONFIRMATION: New Sales Lead #NNNNN submitted'.
+        Store the digits only, for example 12345.
+        """
+        if value is False or value is None:
+            return False
+        text = str(value).strip()
+        if text.startswith("#"):
+            text = text[1:].strip()
+        return text or False
+
     @api.model_create_multi
     def create(self, vals_list):
+        for vals in vals_list:
+            if "leica_lead_number" in vals:
+                vals["leica_lead_number"] = self._normalize_leica_lead_number(
+                    vals.get("leica_lead_number")
+                )
         leads = super().create(vals_list)
 
         for lead in leads:
@@ -283,6 +342,11 @@ class CrmLead(models.Model):
         return leads
 
     def write(self, vals):
+        if "leica_lead_number" in vals:
+            vals = dict(vals)
+            vals["leica_lead_number"] = self._normalize_leica_lead_number(
+                vals.get("leica_lead_number")
+            )
         if 'stage_id' not in vals:
             return super().write(vals)
 
