@@ -669,16 +669,25 @@ label[for="terms-checkbox"] {
    dim the text, so the dates render black and look empty. Keep the enabled
    white text, slightly quieter, and force the WebKit fill color. opacity: 1
    stops the extra dimming. No hover or focus ring: the fields are not editable.
-   The calendar glyph is drawn in the disabled indicator rule below. */
+   The calendar glyph is a background on the input itself. Chrome does not
+   paint ::-webkit-calendar-picker-indicator on a disabled date input (the
+   text rule in this file is what the portal preview actually applies), so a
+   background on that pseudo-element stays invisible. Longhands, not the
+   `background` shorthand: the shorthand clears the image. */
 #rental-start:disabled,
 #rental-end:disabled {
 	color: rgba(255, 255, 255, 0.75) !important;
 	-webkit-text-fill-color: rgba(255, 255, 255, 0.75) !important;
 	opacity: 1;
 	cursor: not-allowed;
-	background: rgba(0, 0, 0, 0.30) !important;
+	background-color: rgba(0, 0, 0, 0.30) !important;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E") !important;
+	background-repeat: no-repeat !important;
+	background-position: right 10px center !important;
+	background-size: 16px 16px !important;
 	border-color: rgba(255, 255, 255, 0.15) !important;
 	box-shadow: none !important;
+	padding-right: 34px;
 }
 
 #rental-start:disabled:hover,
@@ -689,7 +698,12 @@ label[for="terms-checkbox"] {
 #rental-end:disabled:focus-visible {
 	color: rgba(255, 255, 255, 0.75) !important;
 	-webkit-text-fill-color: rgba(255, 255, 255, 0.75) !important;
-	background: rgba(0, 0, 0, 0.30) !important;
+	cursor: not-allowed;
+	background-color: rgba(0, 0, 0, 0.30) !important;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E") !important;
+	background-repeat: no-repeat !important;
+	background-position: right 10px center !important;
+	background-size: 16px 16px !important;
 	border-color: rgba(255, 255, 255, 0.15) !important;
 	box-shadow: none !important;
 	outline: none;
@@ -697,22 +711,15 @@ label[for="terms-checkbox"] {
 
 #rental-start:disabled::-webkit-calendar-picker-indicator,
 #rental-end:disabled::-webkit-calendar-picker-indicator {
-	/* Chrome drops the native glyph on a disabled date input once
-	   -webkit-text-fill-color is set, and invert(1) turned whatever was
-	   left into black on this dark red field, so the icon vanished.
-	   Draw a light calendar glyph instead. The enabled inputs do not
-	   restyle the indicator. */
-	display: block;
-	-webkit-appearance: none;
-	appearance: none;
-	opacity: 1;
-	cursor: not-allowed;
-	width: 16px;
-	height: 16px;
-	margin-inline-start: 6px;
+	/* The native indicator is not drawn. Leave it out of the hit target so
+	   the cursor stays not-allowed on the glyph painted above. */
+	opacity: 0;
+	width: 0;
+	height: 0;
 	padding: 0;
-	background: center / 16px 16px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M3 10h18M8 3v4M16 3v4'/%3E%3C/svg%3E");
-	filter: none;
+	margin: 0;
+	cursor: not-allowed;
+	pointer-events: none;
 }
 
 #rental-info-section .rental-dates-error {

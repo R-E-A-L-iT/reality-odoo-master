@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { guardSignModalShow, parsePortalDate, resolveRentalStartEdit, runRentalStartEdit, signBlockKind, validateRentalDates } from "../static/src/JS/rental_dates.js";
+import { readFileSync } from "node:fs";
+import { autoshiftSavePayloads, guardSignModalShow, parsePortalDate, rentalDatesSavePayload, resolveRentalStartEdit, runRentalStartEdit, signBlockKind, validateRentalDates } from "../static/src/JS/rental_dates.js";
 import { autoSignNameBlocked } from "../static/src/JS/signer_name.js";
 
 function check(start, end) {
@@ -223,6 +224,29 @@ assert.deepEqual(refreshes, [
     ["refresh", "2026-09-18", "2026-09-19"],
 ]);
 assert.deepEqual(autoshiftSaves, [["2026-09-18", "2026-09-19"]]);
+
+// After an auto-shift the one save posts the new start and the shifted end.
+// It does not post the previous start, and the end refresh is not a second save.
+const shiftedPayloads = autoshiftSavePayloads("2026-10-15", "2026-10-12");
+assert.deepEqual(shiftedPayloads, [
+    { rental_start: "2026-10-15", rental_end: "2026-10-16" },
+]);
+const previousStart = rentalDatesSavePayload("2026-10-10", "2026-10-16");
+assert.notDeepEqual(shiftedPayloads[0], previousStart);
+assert.equal(shiftedPayloads[0].rental_start, "2026-10-15");
+assert.equal(shiftedPayloads[0].rental_end, "2026-10-16");
+assert.equal(rentalDatesSavePayload("", "2026-10-16"), null);
+assert.equal(rentalDatesSavePayload("2026-10-15", ""), null);
+
+const rentalSource = readFileSync(new URL("../static/src/JS/rental.js", import.meta.url), "utf8");
+const editedHandler = rentalSource.split("_onRentalDateEdited(ev)")[1].split("\n    _syncEndMin()")[0];
+assert.ok(editedHandler.indexOf("autoshiftRefreshingNow") < editedHandler.indexOf("_scheduleSave"));
+assert.match(rentalSource, /rentalDatesSavePayload/);
+assert.match(rentalSource, /proquotesAutoshift/);
+assert.match(rentalSource, /dataset\[AUTOSHIFT_FLAG\] = "1"/);
+const refreshBody = rentalSource.split("refreshLivePrice()")[1].split("setAutoshiftRefreshing(false)")[0];
+assert.match(refreshBody, /setAutoshiftRefreshing\(true\)/);
+assert.match(refreshBody, /dispatchEvent/);
 
 // A start that does not move the end does not refresh.
 const noRefresh = [];

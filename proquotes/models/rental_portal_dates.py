@@ -245,6 +245,55 @@ def posted_sign_block_key(is_rental, start_value, end_value):
     return None
 
 
+def rental_confirm_needs_restore(
+    signed_start,
+    signed_end,
+    signed_total,
+    confirmed_start,
+    confirmed_end,
+    confirmed_total,
+    rounding=0.01,
+):
+    """True when confirmation moved the period or the total that was signed.
+
+    Confirmation may write line dates and reprice. The stored result has to
+    stay on the period and total that were already saved.
+    """
+    if signed_start != confirmed_start or signed_end != confirmed_end:
+        return True
+    if signed_total is None or confirmed_total is None:
+        return signed_total != confirmed_total
+    return abs(float(signed_total) - float(confirmed_total)) >= float(rounding)
+
+
+def signed_rental_period_after_confirm(signed, confirmed, rounding=0.01):
+    """Period and total to keep after confirmation.
+
+    ``signed`` is what the customer signed. ``confirmed`` is what
+    ``action_confirm`` left on the order. When confirm moved either date
+    or the total, the signed values are the ones that stay.
+    """
+    if rental_confirm_needs_restore(
+        signed.get("rental_start_date"),
+        signed.get("rental_return_date"),
+        signed.get("amount_total"),
+        confirmed.get("rental_start_date"),
+        confirmed.get("rental_return_date"),
+        confirmed.get("amount_total"),
+        rounding,
+    ):
+        return {
+            "rental_start_date": signed.get("rental_start_date"),
+            "rental_return_date": signed.get("rental_return_date"),
+            "amount_total": signed.get("amount_total"),
+        }
+    return {
+        "rental_start_date": confirmed.get("rental_start_date"),
+        "rental_return_date": confirmed.get("rental_return_date"),
+        "amount_total": confirmed.get("amount_total"),
+    }
+
+
 def sign_block_reason(is_rental, start_dt, end_dt):
     """Why Accept & Sign must stop before writing a signature.
 

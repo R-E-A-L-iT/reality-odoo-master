@@ -26,6 +26,7 @@ from .rental_portal_dates import (
     choose_tz_name,
     local_midnight_to_utc,
     portal_calendar_date,
+    rental_confirm_needs_restore,
     rental_dates_editable,
     rental_message,
     sign_block_reason,
@@ -226,6 +227,114 @@ class order(models.Model):
                 line.price_unit = price
         if hasattr(self, "_compute_tax_totals"):
             self._compute_tax_totals()
+
+    def portal_store_signed_rental_dates(self, rental_start, rental_end):
+        """Store a portal period on the order and on every product line.
+
+        The header dates are what the quote prices from. Line ``start_date``
+        and ``return_date`` are what confirmation copies back onto the
+        header. Leaving the lines on an older start makes confirmation
+        restore that start and reprice. Both sides get the same pair.
+        """
+        self.ensure_one()
+        start_utc = self.portal_rental_datetime_utc((rental_start or "").strip())
+        end_utc = self.portal_rental_datetime_utc((rental_end or "").strip())
+        if start_utc > end_utc:
+            raise ValidationError(rental_message("order", "en"))
+        self.sudo().write({
+            "rental_start_date": start_utc,
+            "rental_return_date": end_utc,
+        })
+        self._portal_sync_rental_line_dates()
+        self._portal_apply_rental_prices()
+
+    def _portal_line_date_vals(self, start_dt, end_dt):
+        """Writable line date fields for this period. Computed fields are skipped."""
+        line_fields = self.env["sale.order.line"]._fields
+        vals = {}
+        for name, value in (("start_date", start_dt), ("return_date", end_dt)):
+            field = line_fields.get(name)
+            if not field:
+                continue
+            if getattr(field, "compute", None) and not getattr(field, "inverse", None):
+                continue
+            vals[name] = value
+        return vals
+
+    def _portal_sync_rental_line_dates(self):
+        """Copy the order period onto product lines so confirm cannot restore an older start."""
+        self.ensure_one()
+        if not self.rental_start_date or not self.rental_return_date:
+            return
+        vals = self._portal_line_date_vals(self.rental_start_date, self.rental_return_date)
+        if not vals:
+            return
+        lines = self.order_line.filtered(lambda line: not line.display_type)
+        if lines:
+            lines.sudo().write(vals)
+
+    def _rental_confirm_pin(self):
+        """Period, pickup, total, and line prices just before confirmation."""
+        self.ensure_one()
+        return {
+            "rental_start_date": self.rental_start_date,
+            "rental_return_date": self.rental_return_date,
+            "pickup_date": self.pickup_date,
+            "amount_total": self.amount_total,
+            "line_prices": [(line.id, line.price_unit) for line in self.order_line],
+        }
+
+    def _restore_signed_rental_if_confirm_moved(self, pin):
+        """Put back the signed period and line prices when confirm changed them."""
+        self.ensure_one()
+        # Confirm writes these fields. Drop the prefetch from before that write.
+        self.invalidate_recordset()
+        self.order_line.invalidate_recordset()
+        rounding = (self.currency_id.rounding or 0.01) if self.currency_id else 0.01
+        if not rental_confirm_needs_restore(
+            pin.get("rental_start_date"),
+            pin.get("rental_return_date"),
+            pin.get("amount_total"),
+            self.rental_start_date,
+            self.rental_return_date,
+            self.amount_total,
+            rounding,
+        ):
+            return
+        vals = {
+            "rental_start_date": pin.get("rental_start_date"),
+            "rental_return_date": pin.get("rental_return_date"),
+        }
+        if pin.get("pickup_date") and "pickup_date" in self._fields:
+            vals["pickup_date"] = pin.get("pickup_date")
+        self.sudo().write(vals)
+        self._portal_sync_rental_line_dates()
+        Line = self.env["sale.order.line"]
+        for line_id, price in pin.get("line_prices") or ():
+            line = Line.browse(line_id)
+            if not line.exists() or line.order_id != self:
+                continue
+            if float_compare(line.price_unit, price, precision_rounding=rounding) != 0:
+                line.sudo().write({"price_unit": price})
+        if hasattr(self, "_compute_tax_totals"):
+            self._compute_tax_totals()
+
+    def action_confirm(self):
+        """Confirm without moving a rental period or its total.
+
+        Line dates are aligned to the header first. If confirmation still
+        rewrites the dates or the total, the signed values are written back.
+        """
+        pins = []
+        for order in self:
+            if not order.is_rental_order or not order.rental_start_date or not order.rental_return_date:
+                continue
+            order._portal_sync_rental_line_dates()
+            pins.append((order, order._rental_confirm_pin()))
+        res = super().action_confirm()
+        for order, pin in pins:
+            order._restore_signed_rental_if_confirm_moved(pin)
+        return res
 
     partner_id = fields.Many2one(
         'res.partner', 

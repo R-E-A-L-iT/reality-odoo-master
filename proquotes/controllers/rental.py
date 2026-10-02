@@ -77,11 +77,7 @@ class RentalCustomerPortal(cPortal):
             # returned as JSON so the portal never shows the raw RPC dialog.
             if start_utc > end_utc:
                 return {"error": rental_message("order", lang)}
-            order_sudo.sudo().write({
-                "rental_start_date": start_utc,
-                "rental_return_date": end_utc,
-            })
-            order_sudo.sudo()._portal_apply_rental_prices()
+            order_sudo.portal_store_signed_rental_dates(start_raw, end_raw)
         except (ValidationError, UserError):
             request.env.cr.rollback()
             _logger.info(

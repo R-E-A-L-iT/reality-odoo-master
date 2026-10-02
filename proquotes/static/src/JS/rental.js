@@ -3,7 +3,7 @@
 
 import { jsonrpc } from "@web/core/network/rpc_service";
 import publicWidget from "@web/legacy/js/public/public_widget";
-import { guardSignModalShow, runRentalStartEdit, signBlockKind, validateRentalDates } from "./rental_dates";
+import { guardSignModalShow, rentalDatesSavePayload, runRentalStartEdit, signBlockKind, validateRentalDates } from "./rental_dates";
 
 const SAVE_DELAY_MS = 600;
 
@@ -92,10 +92,30 @@ if (typeof document !== "undefined" && !document.__proquotesSignModalGuard) {
     document.addEventListener("show.bs.modal", onSignModalShow);
 }
 
-// True while the shifted end input's own input/change events are firing.
-// Those events refresh the live price. They must not schedule a second save;
-// the start-date handler schedules the one debounced save afterwards.
-let autoshiftRefreshing = false;
+// The end input's refresh dispatches input/change so the live total updates.
+// rental.js is bundled more than once, so a module-local flag is not enough:
+// the widget that runs can be a different copy. The marker lives on
+// documentElement, which every copy can see. While it is set, no copy may
+// schedule a save. The start edit schedules the one save afterwards, and
+// that save posts both days.
+const AUTOSHIFT_FLAG = "proquotesAutoshift";
+
+function autoshiftRefreshingNow() {
+    const root = document.documentElement;
+    return !!(root && root.dataset[AUTOSHIFT_FLAG] === "1");
+}
+
+function setAutoshiftRefreshing(active) {
+    const root = document.documentElement;
+    if (!root) {
+        return;
+    }
+    if (active) {
+        root.dataset[AUTOSHIFT_FLAG] = "1";
+    } else {
+        delete root.dataset[AUTOSHIFT_FLAG];
+    }
+}
 
 /**
  * Move the end to start + 1 before bubble listeners read the inputs, and
@@ -105,7 +125,7 @@ let autoshiftRefreshing = false;
  * @returns {boolean} true when the end day changed
  */
 function autoshiftEndForStartEvent(ev) {
-    if (autoshiftRefreshing) {
+    if (autoshiftRefreshingNow()) {
         return false;
     }
     const target = ev && ev.target;
@@ -126,16 +146,16 @@ function autoshiftEndForStartEvent(ev) {
         },
         refreshLivePrice() {
             shifted = true;
-            autoshiftRefreshing = true;
+            setAutoshiftRefreshing(true);
             try {
                 // Same listeners as a hand edit of the end date. Programmatic
                 // value assignment does not fire these, so the live total and
-                // multiplier never moved. ``change`` commits the date value
-                // so the later save reads the shifted day.
+                // multiplier never moved. The document flag above stops every
+                // copy of this widget from treating that as its own save.
                 end.dispatchEvent(new Event("input", { bubbles: true }));
                 end.dispatchEvent(new Event("change", { bubbles: true }));
             } finally {
-                autoshiftRefreshing = false;
+                setAutoshiftRefreshing(false);
             }
         },
     });
@@ -185,8 +205,9 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
 
     _onRentalDateEdited(ev) {
         // The shifted end's synthetic input/change is only the live refresh.
-        // Scheduling here as well as on the start event would post twice.
-        if (autoshiftRefreshing) {
+        // Scheduling here would post a second pair, and a bundled second copy
+        // of this file does not share a module-local flag.
+        if (autoshiftRefreshingNow()) {
             return;
         }
         const start = document.getElementById("rental-start");
@@ -278,7 +299,7 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         document.getElementById("rental-end")?.classList.remove("is-invalid");
     },
 
-    _saveRentalDates() {
+    _saveRentalDates(allowFollowUp = true) {
         this._cancelPendingSave();
         const startEl = document.getElementById("rental-start");
         const endEl = document.getElementById("rental-end");
@@ -291,14 +312,17 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         if ((startEl && startEl.disabled) || (endEl && endEl.disabled)) {
             return Promise.resolve({ success: true, unchanged: true });
         }
-        const verdict = validateRentalDates(start, end);
-        if (!verdict.ok) {
+        const payload = rentalDatesSavePayload(start, end);
+        if (!payload) {
+            const verdict = validateRentalDates(start, end);
             const kind = verdict.reason === "order" ? "order" : "invalid";
             const message = this._message(kind) || kind;
             this._showError(message);
             return Promise.resolve({ error: message });
         }
-        if (start === this._lastSavedStart && end === this._lastSavedEnd) {
+        const savedStart = payload.rental_start;
+        const savedEnd = payload.rental_end;
+        if (savedStart === this._lastSavedStart && savedEnd === this._lastSavedEnd) {
             return Promise.resolve({ success: true, unchanged: true });
         }
         if (!this.orderDetail || !this.orderDetail.orderId) {
@@ -309,8 +333,8 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
             "/my/orders/" + this.orderDetail.orderId + "/update_rental_dates",
             {
                 access_token: this.orderDetail.token,
-                rental_start: start,
-                rental_end: end,
+                rental_start: savedStart,
+                rental_end: savedEnd,
             }
         ).then((data) => {
             if (seq !== this._saveSeq) {
@@ -318,7 +342,13 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
             }
             const currentStart = document.getElementById("rental-start")?.value || "";
             const currentEnd = document.getElementById("rental-end")?.value || "";
-            if (currentStart !== start || currentEnd !== end) {
+            if (currentStart !== savedStart || currentEnd !== savedEnd) {
+                // The request already stored this pair. The inputs have since
+                // moved (the dates the customer is looking at). Write those
+                // next, or the stored start stays on the pair that was posted.
+                if (allowFollowUp) {
+                    return this._saveRentalDates(false);
+                }
                 return { error: this._message("save") };
             }
             if (!data || data.error) {
@@ -335,8 +365,8 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
                 }
                 return { error: message };
             }
-            this._lastSavedStart = start;
-            this._lastSavedEnd = end;
+            this._lastSavedStart = savedStart;
+            this._lastSavedEnd = savedEnd;
             this._clearError();
             this._applyPriceUpdate(data);
             return data;
