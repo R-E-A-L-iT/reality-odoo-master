@@ -65,6 +65,7 @@
             "proquotes/static/src/JS/fold.js",
             "proquotes/static/src/JS/rental_dates.js",
             "proquotes/static/src/JS/rental.js",
+            "proquotes/static/src/JS/signer_name.js",
             "proquotes/static/src/JS/poNumber.js",
             "proquotes/static/src/JS/rental.js",
             "proquotes/static/src/JS/website_preview.js",

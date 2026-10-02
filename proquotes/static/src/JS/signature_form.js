@@ -9,6 +9,7 @@ import { useService } from "@web/core/utils/hooks";
 import { patch } from "@web/core/utils/patch";
 import { flushPortalRentalDates } from "./rental";
 import { validateRentalDates } from "./rental_dates";
+import { autoSignNameBlocked } from "./signer_name";
 
 /**
  * This Component is a signature request form. It uses
@@ -94,11 +95,7 @@ class SignatureForm extends Component {
             }
         }
         const name = this.signature.name;
-        if (
-            (name === 'Public User' ||
-            name.toLowerCase().includes('public user')) && this.signature.signMode === "auto"
-
-        ) {
+        if (autoSignNameBlocked(name, this.signature.signMode)) {
             alert("You must input your own name to automatically sign the document.");
             return;
         }

@@ -42,7 +42,37 @@ MESSAGES = {
         "fr": "Les dates de location ne peuvent pas être enregistrées. Veuillez réessayer.",
         "en": "The rental dates could not be saved. Please try again.",
     },
+    "locked": {
+        "fr": "Ces dates de location ne peuvent plus être modifiées.",
+        "en": "These rental dates can no longer be changed.",
+    },
 }
+
+
+def rental_dates_editable(state, locked=False):
+    """Portal rental dates may be saved only on an unlocked draft or sent quote.
+
+    Confirmed, done, and cancelled orders are not editable. Odoo's ``locked``
+    flag blocks a draft or sent quote the same way.
+    """
+    if locked:
+        return False
+    return state in ("draft", "sent")
+
+
+def signature_default_name(partner_name, user_name=None, user_is_public=None):
+    """Name pre-filled on Accept & Sign.
+
+    Standard sale portal uses the order customer (``sale.order.partner_id.name``).
+    The website public user is named ``Public user for ...``, and Auto
+    signature rejects that string. A logged-in portal user signs as the
+    order customer as well: ``user_name`` and ``user_is_public`` do not
+    change the result.
+    """
+    del user_name, user_is_public
+    if not partner_name:
+        return ""
+    return str(partner_name).strip()
 
 
 def normalize_lang_code(lang):

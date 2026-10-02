@@ -26,8 +26,10 @@ paid_rental_days = _dates.paid_rental_days
 parse_portal_date = _dates.parse_portal_date
 portal_calendar_date = _dates.portal_calendar_date
 rental_calendar_days = _dates.rental_calendar_days
+rental_dates_editable = _dates.rental_dates_editable
 rental_message = _dates.rental_message
 sign_block_reason = _dates.sign_block_reason
+signature_default_name = _dates.signature_default_name
 validate_portal_rental_pair = _dates.validate_portal_rental_pair
 
 class PortalRentalDateTests(unittest.TestCase):
@@ -121,6 +123,29 @@ class PortalRentalDateTests(unittest.TestCase):
         self.assertIn("before signing", rental_message("missing_sign", "en_US"))
         self.assertIn("avant de signer", rental_message("missing_sign", "fr_FR"))
         self.assertEqual(rental_message("order", "es_ES"), MESSAGES["order"]["en"])
+        self.assertIn("no longer be changed", rental_message("locked", "en_CA"))
+        self.assertIn("ne peuvent plus", rental_message("locked", "fr_CA"))
+
+    def test_dates_editable_only_on_unlocked_draft_or_sent(self):
+        self.assertTrue(rental_dates_editable("draft", False))
+        self.assertTrue(rental_dates_editable("sent", False))
+        self.assertFalse(rental_dates_editable("draft", True))
+        self.assertFalse(rental_dates_editable("sent", True))
+        self.assertFalse(rental_dates_editable("sale", False))
+        self.assertFalse(rental_dates_editable("done", False))
+        self.assertFalse(rental_dates_editable("cancel", False))
+        self.assertFalse(rental_dates_editable(False, False))
+
+    def test_signature_prefill_is_the_customer_for_public_and_portal_users(self):
+        customer = "Jane Customer"
+        public_user = "Public user for R-E-A-L.iT Solutions"
+        portal_user = "Jane Portal"
+        # Anonymous visitor: do not prefill the website public user.
+        self.assertEqual(signature_default_name(customer, public_user, True), customer)
+        # Logged-in portal user: still the order partner, not env.user.
+        self.assertEqual(signature_default_name(customer, portal_user, False), customer)
+        self.assertNotIn("public user", signature_default_name(customer, public_user, True).lower())
+        self.assertEqual(signature_default_name(None, public_user, True), "")
 
     def test_choose_tz_skips_blanks(self):
         self.assertEqual(
@@ -140,15 +165,24 @@ class PortalRentalDateTests(unittest.TestCase):
             "rental_start_date.strftime('%Y-%m-%d')",
             xml,
         )
-        for key in ("order", "invalid", "save"):
+        for key in ("order", "invalid", "save", "locked"):
             self.assertIn(MESSAGES[key]["en"], xml)
             self.assertIn(MESSAGES[key]["fr"], xml)
+        self.assertIn("portal_rental_dates_editable()", xml)
+        self.assertIn("t-att-disabled=\"None if rental_dates_editable else 'disabled'\"", xml)
+        self.assertIn(
+            't-set="default_name" t-value="sale_order.portal_signature_default_name()"',
+            xml,
+        )
+        self.assertNotIn('t-value="env.user.name"', xml)
 
     def test_controller_validates_before_write_and_sign_before_signature(self):
         rental = (ROOT / "controllers/rental.py").read_text(encoding="utf-8")
         accept = (ROOT / "controllers/controllers.py").read_text(encoding="utf-8")
         update = rental.split("def update_rental_dates", 1)[1].split("def _rental_dates_payload", 1)[0]
+        self.assertLess(update.index("portal_rental_dates_editable"), update.index(".write("))
         self.assertLess(update.index("validate_portal_rental_pair"), update.index(".write("))
+        self.assertIn('return {"error": rental_message("locked", lang)}', update)
         self.assertIn('return {"error": rental_message(reason, lang)}', update)
         self.assertIn("ValidationError", rental)
         sign = accept.split("def portal_quote_accept", 1)[1]
@@ -156,6 +190,8 @@ class PortalRentalDateTests(unittest.TestCase):
         model = (ROOT / "models/sale_order.py").read_text(encoding="utf-8")
         self.assertIn("rental_period_coherence", model)
         self.assertIn("rental_start_date <= rental_return_date", model)
+        self.assertIn("def portal_signature_default_name", model)
+        self.assertIn("self.partner_id.name", model.split("def portal_signature_default_name", 1)[1].split("def portal_rental_sign_error", 1)[0])
 
     def test_python_modules_parse(self):
         for path in (

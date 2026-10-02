@@ -57,6 +57,10 @@ class RentalCustomerPortal(cPortal):
             return {"error": "Access Denied"}
 
         lang = portal_lang_code()
+        # A confirmed or locked order keeps the dates that were accepted.
+        # The portal link must not rewrite them.
+        if not order_sudo.portal_rental_dates_editable():
+            return {"error": rental_message("locked", lang)}
         # Validate before any write. A native date input reports each
         # intermediate valid day while the customer is typing; an end day
         # that sorts before the start must not reach the SQL constraint.

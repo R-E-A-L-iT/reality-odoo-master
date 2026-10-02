@@ -26,8 +26,10 @@ from .rental_portal_dates import (
     choose_tz_name,
     local_midnight_to_utc,
     portal_calendar_date,
+    rental_dates_editable,
     rental_message,
     sign_block_reason,
+    signature_default_name,
 )
 
 _logger = logging.getLogger(__name__)
@@ -157,6 +159,31 @@ class order(models.Model):
         """Portal calendar day → naive UTC datetime (local midnight)."""
         self.ensure_one()
         return local_midnight_to_utc(date_str, self._portal_rental_tz_name())
+
+    def portal_rental_dates_editable(self):
+        """True when the portal may still change this order's rental dates."""
+        self.ensure_one()
+        locked = bool(self.locked) if "locked" in self._fields else False
+        return rental_dates_editable(self.state, locked)
+
+    def portal_signature_default_name(self):
+        """Accept & Sign prefill: the order customer, not the website user.
+
+        Anonymous visitors are the public user (``Public user for ...``),
+        which Auto signature refuses. A logged-in portal user still signs
+        with the order partner's name, matching sale portal.
+        """
+        self.ensure_one()
+        user = self.env.user
+        user_is_public = False
+        is_public_fn = getattr(user, "_is_public", None)
+        if callable(is_public_fn):
+            user_is_public = bool(is_public_fn())
+        return signature_default_name(
+            self.partner_id.name,
+            user.name if user else "",
+            user_is_public,
+        )
 
     def portal_rental_sign_error(self, lang=None):
         """Message blocking Accept & Sign, or ``None`` when the period is usable."""

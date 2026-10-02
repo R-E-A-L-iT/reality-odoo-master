@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { parsePortalDate, validateRentalDates } from "../static/src/JS/rental_dates.js";
+import { autoSignNameBlocked } from "../static/src/JS/signer_name.js";
 
 function check(start, end) {
     return validateRentalDates(start, end);
@@ -33,5 +34,17 @@ for (const end of sequence) {
     }
 }
 assert.deepEqual(saved, ["2026-09-29", "2026-09-20"]);
+
+// Auto signature rejects the website public user and accepts a real customer.
+// The prefill is the order partner in both cases, so a logged-in portal
+// user ("Jane Portal") and an anonymous visitor signing as "Jane Customer"
+// both pass. Draw mode is not this check.
+const publicUser = "Public user for R-E-A-L.iT Solutions";
+assert.equal(autoSignNameBlocked(publicUser, "auto"), true);
+assert.equal(autoSignNameBlocked("Public User", "auto"), true);
+assert.equal(autoSignNameBlocked("Jane Customer", "auto"), false);
+assert.equal(autoSignNameBlocked("Jane Portal", "auto"), false);
+assert.equal(autoSignNameBlocked(publicUser, "draw"), false);
+assert.equal(autoSignNameBlocked("", "auto"), false);
 
 console.log("rental date checks ok");

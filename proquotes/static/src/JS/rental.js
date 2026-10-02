@@ -112,6 +112,9 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         if (kind === "save") {
             return el.dataset.msgSave || "";
         }
+        if (kind === "locked") {
+            return el.dataset.msgLocked || "";
+        }
         return kind || "";
     },
 
@@ -141,6 +144,13 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         const endEl = document.getElementById("rental-end");
         const start = startEl ? startEl.value : "";
         const end = endEl ? endEl.value : "";
+        // Confirmed and locked orders render the inputs disabled. Do not
+        // post a save, and do not block Accept & Sign: the dates cannot
+        // have changed. A request that still arrives is rejected server-side
+        // and shown from data.error below.
+        if ((startEl && startEl.disabled) || (endEl && endEl.disabled)) {
+            return Promise.resolve({ success: true, unchanged: true });
+        }
         const verdict = validateRentalDates(start, end);
         if (!verdict.ok) {
             const kind = verdict.reason === "order" ? "order" : "invalid";
@@ -174,6 +184,15 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
             if (!data || data.error) {
                 const message = (data && data.error) || this._message("save");
                 this._showError(message);
+                const lockedMessage = this._message("locked");
+                if (lockedMessage && message === lockedMessage) {
+                    if (startEl) {
+                        startEl.disabled = true;
+                    }
+                    if (endEl) {
+                        endEl.disabled = true;
+                    }
+                }
                 return { error: message };
             }
             this._lastSavedStart = start;
