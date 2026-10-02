@@ -169,10 +169,24 @@ class SaleOrderLine(models.Model):
     def get_sale_order_line_multiline_description_sale(self, product):
         return product.get_product_multiline_description_sale()
 
+    def _proquotes_counts_in_totals(self):
+        """Whether this line contributes to quote totals.
+
+        Same rule as the tax-totals widget: not a section or note, and the
+        customer selected it. sectionSelected is intentionally not part of
+        this rule.
+        """
+        self.ensure_one()
+        return not self.display_type and self.selected == 'true'
+
     @api.depends('product_uom_qty', 'selected', 'discount', 'price_unit', 'tax_id')
     def _compute_amount(self):
         """
         Compute the amounts of the SO line.
+
+        Unselected optional lines and zero-quantity lines contribute nothing:
+        subtotal, tax, and total are all zero. Otherwise the tax engine
+        totals are stored unchanged.
         """
         for line in self:
             tax_results = self.env['account.tax'].with_company(line.company_id)._compute_taxes([
@@ -180,13 +194,11 @@ class SaleOrderLine(models.Model):
             ])
             totals = list(tax_results['totals'].values())[0]
             if line.selected == 'false' or line.product_uom_qty == 0:
-                amount_untaxed = 0.00
-                _logger.info('>>>>>>>>>>iff>>>>>>.amount_untaxed: %s,', amount_untaxed)
-
+                amount_untaxed = 0.0
+                amount_tax = 0.0
             else:
                 amount_untaxed = totals['amount_untaxed']
-                _logger.info('>>>>>>>>else>>>>>>>>. amount_untaxed: %s,', amount_untaxed)
-            amount_tax = totals['amount_tax']
+                amount_tax = totals['amount_tax']
 
             line.update({
                 'price_subtotal': amount_untaxed,

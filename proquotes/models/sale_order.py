@@ -1997,11 +1997,11 @@ class order(models.Model):
             return {"warning": {"title": "Renewal Automation", "message": error_msg}}
 
     @api.depends_context('lang')
-    @api.depends('order_line.tax_id', 'order_line.price_unit', 'amount_total', 'amount_untaxed', 'currency_id')
+    @api.depends('order_line.tax_id', 'order_line.price_unit', 'order_line.selected', 'amount_total', 'amount_untaxed', 'currency_id')
     def _compute_tax_totals(self):
         for order in self:
             order = order.with_company(order.company_id)
-            order_lines = order.order_line.filtered(lambda x: not x.display_type and x.selected == "true")
+            order_lines = order.order_line.filtered(lambda x: x._proquotes_counts_in_totals())
             order.tax_totals = order.env['account.tax']._prepare_tax_totals(
                 [x._convert_to_tax_base_line_dict() for x in order_lines],
                 order.currency_id or order.company_id.currency_id,
@@ -2141,22 +2141,34 @@ class order(models.Model):
         
         return groups
 
-    def _amount_all(self):
-        # Ensure sale order lines are selected to included in calculation
-        for order in self:
-            amount_untaxed = amount_tax = 0.0
-            for line in order.order_line:
-                if line.selected == "true" and line.sectionSelected == "true":
-                    amount_untaxed += line.price_subtotal
-                    amount_tax += line.price_tax
+    @api.depends('order_line.price_subtotal', 'order_line.price_tax', 'order_line.price_total', 'order_line.selected')
+    def _compute_amounts(self):
+        """Stored order totals include only lines the customer selected.
 
-            order.update(
-                {
-                    "amount_untaxed": amount_untaxed,
-                    "amount_tax": amount_tax,
-                    "amount_total": amount_untaxed + amount_tax,
-                }
-            )
+        Odoo 17 sums every non-display line here. ``_amount_all`` used to
+        filter selected lines, but that is the Odoo <= 14 method name and
+        nothing in 17 calls it, so unselected optional lines kept their tax
+        in amount_tax.
+        """
+        for order in self:
+            order = order.with_company(order.company_id)
+            order_lines = order.order_line.filtered(lambda line: line._proquotes_counts_in_totals())
+
+            if order.company_id.tax_calculation_rounding_method == 'round_globally':
+                tax_results = order.env['account.tax']._compute_taxes([
+                    line._convert_to_tax_base_line_dict()
+                    for line in order_lines
+                ])
+                totals = tax_results['totals']
+                amount_untaxed = totals.get(order.currency_id, {}).get('amount_untaxed', 0.0)
+                amount_tax = totals.get(order.currency_id, {}).get('amount_tax', 0.0)
+            else:
+                amount_untaxed = sum(order_lines.mapped('price_subtotal'))
+                amount_tax = sum(order_lines.mapped('price_tax'))
+
+            order.amount_untaxed = amount_untaxed
+            order.amount_tax = amount_tax
+            order.amount_total = order.amount_untaxed + order.amount_tax
 
     def _compute_amount_undiscounted(self):
         # Ensure sale order lines are selected to included in calculation
