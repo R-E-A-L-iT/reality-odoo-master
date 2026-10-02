@@ -552,7 +552,9 @@ class order(models.Model):
         self.ensure_one()
         items = []
 
-        selected_lines = self.order_line.filtered(lambda l: l.is_selected and not l.display_type)
+        selected_lines = self.order_line.filtered(
+            lambda l: l.selected == 'true' and not l.display_type
+        )
 
         for line in selected_lines:
             items.append({
@@ -911,9 +913,10 @@ class order(models.Model):
                 # Avoid touching quantity if it is already correct.
                 # Do NOT set selected/sectionSelected to 'true' here — component SOLs
                 # must stay selected='false' so they remain hidden on the quote.
-                # The selected field on component lines is not read by any rental
-                # processing code (all rental filters use x_is_rental_kit_component),
-                # so keeping it false has no functional side-effect.
+                # The rental schedule includes a line when selected is 'true'
+                # (an unset value counts as that default). Leaving these lines
+                # 'false' keeps them off the schedule. Pickup and return still
+                # key off x_is_rental_kit_component, not this flag.
                 update_vals = {
                     "name": vals["name"],
                     "price_unit": 0.0,

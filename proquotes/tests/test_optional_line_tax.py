@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from unittest.mock import patch
 
 from lxml import etree
@@ -264,3 +265,121 @@ class TestOptionalLineTax(TransactionCase):
         self.assertFalse(written_ids)
         self.assertFalse(posted_ids)
         self.assertFalse(selected.is_selected)
+
+    def test_approve_items_json_uses_selected_string(self):
+        """Approve JSON follows selected, even when is_selected is stale.
+
+        Existing rows can have selected='true' with is_selected false, and
+        the reverse. The checkbox boolean is not the filter.
+        """
+        order = self._create_quote()
+        selected = order.order_line.filtered(lambda line: line.sequence == 1)
+        unselected = order.order_line.filtered(lambda line: line.sequence == 2)
+        self.env.cr.execute(
+            "UPDATE sale_order_line SET is_selected = FALSE WHERE id = %s",
+            [selected.id],
+        )
+        self.env.cr.execute(
+            "UPDATE sale_order_line SET is_selected = TRUE WHERE id = %s",
+            [unselected.id],
+        )
+        self.env.invalidate_all()
+
+        items = json.loads(order.get_approve_items_json())
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]['model'], selected.product_id.name)
+        self.assertEqual(items[0]['quantity'], selected.product_uom_qty)
+        self.assertEqual(items[0]['price'], selected.price_unit)
+        self.assertEqual(items[0]['type'], 'new_product')
+
+    def test_rental_schedule_uses_selected_string(self):
+        """The rental schedule view includes a line by selected, not is_selected.
+
+        selected defaults to 'true' and is required, so a line created the
+        way core does (no selected key) is included. NULL, when the column
+        allows it, is treated as that default. Explicit 'false' is left out
+        even if the checkbox boolean is true.
+        """
+        if 'sale.rental.schedule' not in self.env:
+            self.skipTest('sale_renting is not installed')
+        schedule = self.env['sale.rental.schedule']
+        query = schedule._query()
+        self.assertNotIn('is_selected', query)
+        self.assertIn('sol.product_id IS NOT NULL', query)
+        self.assertIn('sol.is_rental', query)
+        self.assertIn("COALESCE(NULLIF(sol.selected, ''), 'true') = 'true'", query)
+
+        order = self.env['sale.order'].create({
+            'partner_id': self.partner.id,
+            'pricelist_id': self.pricelist.id,
+            'company_id': self.company.id,
+            'order_line': [
+                Command.create({
+                    'product_id': self.product.id,
+                    'name': 'Selected rental line',
+                    'product_uom_qty': 1.0,
+                    'price_unit': 100.0,
+                    'selected': 'true',
+                    'is_selected': True,
+                }),
+                Command.create({
+                    'product_id': self.product.id,
+                    'name': 'Unselected rental line',
+                    'product_uom_qty': 1.0,
+                    'price_unit': 50.0,
+                    'selected': 'false',
+                    'is_selected': False,
+                }),
+                Command.create({
+                    'product_id': self.product.id,
+                    'name': 'Default rental line',
+                    'product_uom_qty': 1.0,
+                    'price_unit': 100.0,
+                }),
+            ],
+        })
+        selected = order.order_line.filtered(lambda line: line.name == 'Selected rental line')
+        unselected = order.order_line.filtered(lambda line: line.name == 'Unselected rental line')
+        default_line = order.order_line.filtered(lambda line: line.name == 'Default rental line')
+        self.assertEqual(default_line.selected, 'true')
+
+        self.env.cr.execute(
+            """
+            UPDATE sale_order_line
+               SET is_rental = TRUE,
+                   is_selected = CASE WHEN id = %s THEN TRUE ELSE FALSE END
+             WHERE id IN %s
+            """,
+            [unselected.id, tuple(order.order_line.ids)],
+        )
+        self.env.cr.execute(
+            """
+            SELECT is_nullable
+              FROM information_schema.columns
+             WHERE table_name = 'sale_order_line'
+               AND column_name = 'selected'
+            """
+        )
+        selected_nullable = self.env.cr.fetchone()[0] == 'YES'
+        if selected_nullable:
+            self.env.cr.execute(
+                "UPDATE sale_order_line SET selected = NULL WHERE id = %s",
+                [default_line.id],
+            )
+        self.env.invalidate_all()
+        self.assertFalse(selected.is_selected)
+        self.assertTrue(unselected.is_selected)
+        self.assertEqual(selected.selected, 'true')
+        self.assertEqual(unselected.selected, 'false')
+
+        schedule.init()
+        if 'order_line_id' in schedule._fields:
+            rows = schedule.search([('order_line_id', 'in', order.order_line.ids)])
+            found = set(rows.mapped('order_line_id').ids)
+        else:
+            rows = schedule.search([('id', 'in', order.order_line.ids)])
+            found = set(rows.ids)
+
+        self.assertIn(selected.id, found)
+        self.assertIn(default_line.id, found)
+        self.assertNotIn(unselected.id, found)
