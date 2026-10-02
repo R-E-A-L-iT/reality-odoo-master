@@ -1166,6 +1166,7 @@
         <xpath expr="//td[@id='subtotal']" position="replace">
             <td t-if="not line.is_downpayment" class="text-left" id="subtotal">
                 <span class="proquotesLineTotal oe_order_line_price_subtotal"
+                    t-att-data-line-id="line.id"
                     t-out="line.price_subtotal if line.selected == 'true' else 0.0"
                     t-options="{'widget': 'monetary', 'display_currency': sale_order.currency_id}"/>
             </td>
@@ -1404,10 +1405,14 @@
 
                 </div>
 
-                <!-- Rental Start | Rental End | Request Dates button, all
-                     on one line — the button doesn't do anything yet, per
-                     request, just a placeholder trigger for a future
-                     date-request flow. -->
+                <!-- Rental Start | Rental End. Values are company-local calendar
+                     days (see sale.order.portal_rental_date), not the raw UTC
+                     timestamp. The end input cannot be picked before the start. -->
+                <t t-set="rental_msg_order" t-value="'La date de début de location doit être antérieure ou égale à la date de fin de location.' if language == 'fr_CA' else 'The rental start date must be on or before the rental end date.'"/>
+                <t t-set="rental_msg_invalid" t-value="'Veuillez saisir une date de début et une date de fin de location valides.' if language == 'fr_CA' else 'Enter a valid rental start date and a valid rental end date.'"/>
+                <t t-set="rental_msg_save" t-value="'Les dates de location ne peuvent pas être enregistrées. Veuillez réessayer.' if language == 'fr_CA' else 'The rental dates could not be saved. Please try again.'"/>
+                <t t-set="rental_msg_locked" t-value="'Ces dates de location ne peuvent plus être modifiées.' if language == 'fr_CA' else 'These rental dates can no longer be changed.'"/>
+                <t t-set="rental_dates_editable" t-value="sale_order.portal_rental_dates_editable()"/>
                 <div class="row mb-3" t-if="sale_order.is_rental_order">
                     <div class="col-md-4 mb-2">
                         <label for="rental-start" class="form-label fw-bold">
@@ -1417,7 +1422,8 @@
                         <input id="rental-start"
                                type="date"
                                class="form-control"
-                               t-att-value="sale_order.rental_start_date and sale_order.rental_start_date.strftime('%Y-%m-%d') or ''"/>
+                               t-att-disabled="None if rental_dates_editable else 'disabled'"
+                               t-att-value="sale_order.portal_rental_date(sale_order.rental_start_date)"/>
                     </div>
 
                     <div class="col-md-4 mb-2">
@@ -1428,7 +1434,21 @@
                         <input id="rental-end"
                                type="date"
                                class="form-control"
-                               t-att-value="sale_order.rental_return_date and sale_order.rental_return_date.strftime('%Y-%m-%d') or ''"/>
+                               t-att-disabled="None if rental_dates_editable else 'disabled'"
+                               t-att-min="sale_order.portal_rental_date(sale_order.rental_start_date) or False"
+                               t-att-value="sale_order.portal_rental_date(sale_order.rental_return_date)"/>
+                    </div>
+
+                    <div class="col-12">
+                        <p id="rental-dates-error"
+                           class="rental-dates-error"
+                           role="alert"
+                           aria-live="polite"
+                           hidden="hidden"
+                           t-att-data-msg-order="rental_msg_order"
+                           t-att-data-msg-invalid="rental_msg_invalid"
+                           t-att-data-msg-save="rental_msg_save"
+                           t-att-data-msg-locked="rental_msg_locked"/>
                     </div>
 
                     <!-- <div class="col-md-4 mb-2 d-flex align-items-end">
@@ -1833,7 +1853,11 @@
         </xpath>
 
         <xpath expr="//t[@t-call=&quot;portal.signature_form&quot;]/t[2]" position="replace">
-            <t t-set="default_name" t-value="env.user.name"/>
+            <!-- Order customer, not env.user. Anonymous portal visitors are
+                 "Public user for ...", which Auto signature rejects, and a
+                 logged-in portal user still signs as the order partner.
+                 sale_order.portal_signature_default_name() is that partner name. -->
+            <t t-set="default_name" t-value="sale_order.portal_signature_default_name()"/>
         </xpath>
 
         <!-- The footer image used to render here, standalone, right before
