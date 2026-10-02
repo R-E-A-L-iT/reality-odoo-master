@@ -631,8 +631,15 @@ class order(models.Model):
                         pricelist.display_name,
                     )
 
-        # Normal write first
+        # Normal write first. A rental end-date change recomputes line
+        # serials (reserved / picked up / returned) as superuser; drop that
+        # cache so the save's form read does not fetch the hidden lot.
+        rental_dates = {"rental_start_date", "rental_return_date"} & set(vals)
+        if rental_dates:
+            self.order_line._proquotes_drop_rental_lot_cache()
         res = super().write(vals)
+        if rental_dates:
+            self.order_line._proquotes_drop_rental_lot_cache()
 
         # Avoid recursion when we fix things ourselves
         if self.env.context.get('skip_company_consistency'):
@@ -1441,6 +1448,27 @@ class order(models.Model):
 
     def _recompute_prices(self):
         lines_to_recompute = self._get_update_prices_lines()
+        # Update Prices reads the line, and on a rental line that read
+        # includes reserved_lot_ids / pickedup_lot_ids / returned_lot_ids.
+        # Drop a superuser-filled cache so ``stock.lot.name`` is only read
+        # for serials in the ticked companies.
+        lines_to_recompute._proquotes_drop_rental_lot_cache()
+        try:
+            self._proquotes_recompute_price_values(lines_to_recompute)
+        except AccessError as err:
+            message = err.args[0] if err.args else ""
+            if "stock.lot" not in message:
+                raise
+            # The price figure does not display serials. A rental line can
+            # still read stock.lot.name on a serial linked in an unticked
+            # company (the lot many2many, or the move line that points at
+            # it). Recompute the numbers as superuser, then drop the lot
+            # cache so those serials are not returned to the form.
+            self._proquotes_recompute_price_values(lines_to_recompute.sudo())
+        lines_to_recompute._proquotes_drop_rental_lot_cache()
+        self.show_update_pricelist = False
+
+    def _proquotes_recompute_price_values(self, lines_to_recompute):
         lines_to_recompute.invalidate_recordset(['pricelist_item_id'])
         lines_to_recompute._compute_price_unit()
         # Special case: we want to overwrite the existing discount on _recompute_prices call
@@ -1450,7 +1478,6 @@ class order(models.Model):
             if not lines.discount:
                 lines.discount = 0.0
         lines_to_recompute._compute_discount()
-        self.show_update_pricelist = False
     
     # force ecommerce template use instead if quote created from ecommerce order
     def action_quotation_send(self):

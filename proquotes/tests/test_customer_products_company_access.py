@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from odoo import Command
+from datetime import timedelta
+
+from odoo import Command, fields
 from odoo.exceptions import AccessError
 from odoo.tests import TransactionCase, tagged
 
@@ -179,3 +181,76 @@ class TestCustomerProductsCompanyAccess(TransactionCase):
         self.assertNotIn(self.lot, picked)
         if picked:
             picked.read(_LOT_DISPLAY_FIELDS)
+
+    def test_update_prices_does_not_read_hidden_company_lots(self):
+        """Changing a rental end date and updating prices must not raise.
+
+        The Customer Products tab is a different field. Update Prices
+        follows the serials stored on the rental line. A stored compute
+        loads those serials as superuser; reading ``name`` afterwards
+        raises the lot multi-company rule. The price update has to finish,
+        and the serial must stay linked without being shown.
+        """
+        only_b = [self.company_b.id]
+        order = self.rental_order
+        if "rent_ok" in self.product._fields:
+            self.product.sudo().write({"rent_ok": True})
+        start = fields.Datetime.now()
+        end = start + timedelta(days=4)
+        date_vals = {}
+        if "rental_start_date" in order._fields:
+            date_vals["rental_start_date"] = start
+            date_vals["rental_return_date"] = end
+        if date_vals:
+            order.write(date_vals)
+        order.write({
+            "order_line": [Command.create({
+                "product_id": self.product.id,
+                "product_uom_qty": 1.0,
+                "name": self.product.name,
+                "price_unit": 10.0,
+            })],
+        })
+        line = order.order_line.filtered(lambda item: item.product_id == self.product)[:1]
+        self.assertTrue(line)
+        lot_fields = [
+            name for name in ("reserved_lot_ids", "pickedup_lot_ids", "returned_lot_ids")
+            if name in line._fields
+        ]
+        for name in lot_fields:
+            line.sudo().write({name: [Command.link(self.lot.id)]})
+
+        user_line = line.with_user(self.user).with_context(allowed_company_ids=only_b)
+        if lot_fields:
+            # Same cache a stored superuser compute leaves behind.
+            self.env.invalidate_all()
+            line.sudo()[lot_fields[0]]
+            with self.assertRaises(AccessError):
+                user_line[lot_fields[0]].mapped("name")
+            user_line._proquotes_drop_rental_lot_cache()
+            self.assertNotIn(self.lot, user_line[lot_fields[0]])
+            user_line[lot_fields[0]].mapped("name")
+
+            self.env.invalidate_all()
+            line.sudo()[lot_fields[0]]
+        user_order = order.with_user(self.user).with_context(allowed_company_ids=only_b)
+        user_order.action_update_prices()
+        self.assertNotIn(self.lot, user_order.products)
+        if lot_fields:
+            self.assertNotIn(self.lot, user_line[lot_fields[0]])
+            user_line[lot_fields[0]].mapped("name")
+            self.env.invalidate_all()
+            self.assertIn(self.lot, line.sudo()[lot_fields[0]])
+            hidden = self._lots(line, lot_fields[0], only_b)
+            self.assertNotIn(self.lot, hidden)
+
+        if "return_date" in line._fields:
+            if lot_fields:
+                self.env.invalidate_all()
+                line.sudo()[lot_fields[0]]
+            user_line.write({"return_date": end + timedelta(days=2)})
+            if lot_fields:
+                self.assertNotIn(self.lot, user_line[lot_fields[0]])
+                user_line[lot_fields[0]].mapped("name")
+                self.env.invalidate_all()
+                self.assertIn(self.lot, line.sudo()[lot_fields[0]])

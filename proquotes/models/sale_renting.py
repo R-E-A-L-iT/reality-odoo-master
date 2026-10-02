@@ -36,6 +36,9 @@ class SaleOrderLine(models.Model):
 	def _get_pricelist_price(self):
 		"""Override to apply custom rental pricing formula when enabled on the product."""
 		self.ensure_one()
+		# Rental pricing can read serials on the line. A superuser compute
+		# may already have cached lots from an unticked company.
+		self._proquotes_drop_rental_lot_cache()
 
 		# Use order-level is_rental_order + product rent_ok instead of line.is_rental.
 		# line.is_rental is stored at creation time and requires 'in_rental_app' context,
