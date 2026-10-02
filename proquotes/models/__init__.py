@@ -35,3 +35,4 @@ from . import ccp_scanner_config
 from . import ccp_type_config
 from . import rental_order_wizard
 from . import confirmation_activity_template
+from . import sale_order_invoicing
