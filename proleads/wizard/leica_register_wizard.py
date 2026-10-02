@@ -3,7 +3,7 @@ from odoo.exceptions import UserError
 
 
 class LeicaRegisterConfirmWizard(models.TransientModel):
-    """Shows the user exactly what will be sent in the Leica lead log email and
+    """Shows the user exactly what will be sent in the Leica lead log and
     asks for confirmation before sending it. A lead can only be registered once,
     so this is the last chance to fix anything."""
     _name = "leica.register.confirm.wizard"

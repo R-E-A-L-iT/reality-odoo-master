@@ -10,7 +10,7 @@
                 <button name="action_leica_register" type="object" string="Register with Leica"
                         class="oe_highlight"
                         invisible="not leica_can_register or leica_registered"
-                        help="Opens a confirmation window showing exactly what will be sent in the Leica lead log email."/>
+                        help="Opens a confirmation window showing exactly what will be sent to your AI assistant."/>
             </xpath>
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="partner_company_id" />

@@ -1,15 +1,12 @@
 import re
 import logging
 
-from markupsafe import Markup
 
 from odoo import fields, models, api, _, tools
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
-LEICA_LEAD_LOG_EMAIL = "grokbot@r-e-a-l.it"
-LEICA_LEAD_LOG_SUBJECT = "Leica lead log request"
 
 LEICA_MARKET_SEGMENT_SEL = [
     ("bld_construction", "Building & Construction"),
@@ -46,12 +43,12 @@ class CrmLead(models.Model):
         string="Registered with Leica",
         default=False,
         readonly=True,
-        help="Set automatically after the 'Register with Leica' lead log request email is sent."
+        help="Set automatically once the Leica lead log has been sent to your AI assistant."
     )
     leica_registration_date = fields.Datetime(
         string="Leica Registration Date",
         readonly=True,
-        help="When the Leica lead log request email was sent."
+        help="When the Leica lead log was sent to the AI assistant."
     )
     leica_registration_error = fields.Text(
         string="Last Leica Registration Error",
@@ -447,43 +444,54 @@ class CrmLead(models.Model):
             ]),
         ]
 
-    def _leica_lead_log_body(self, data):
-        cell = "padding:6px 12px;border:1px solid #dee2e6;vertical-align:top;"
-        rows = Markup()
-        for section, items in self._leica_lead_log_sections(data):
-            rows += Markup(
-                '<tr><th colspan="2" style="%sbackground:#f1f3f5;text-align:left;font-size:15px;">%s</th></tr>'
-            ) % (cell, section)
-            for label, value in items:
-                if value in (False, None, ""):
-                    value = "N/A"
-                rows += Markup(
-                    '<tr><td style="%sfont-weight:bold;white-space:nowrap;">%s</td><td style="%swhite-space:pre-wrap;">%s</td></tr>'
-                ) % (cell, label, cell, value)
-        return Markup(
-            '<div style="font-family:Arial,sans-serif;font-size:14px;">'
-            '<p>A new lead is ready to be logged with Leica.</p>'
-            '<table style="border-collapse:collapse;">%s</table>'
-            '</div>'
-        ) % rows
-
-    # email the lead log request; returns (ok, message)
-    def _send_leica_lead_log_email(self, data):
+    def _leica_log_subuser(self):
+        """Whose AI logs this lead: the assistant of whoever pressed the button."""
         self.ensure_one()
-        mail = self.env["mail.mail"].sudo().create({
-            "subject": LEICA_LEAD_LOG_SUBJECT,
-            "email_to": LEICA_LEAD_LOG_EMAIL,
-            "email_from": self.env.user.email_formatted or self.env.company.email_formatted,
-            "body_html": self._leica_lead_log_body(data),
-            "auto_delete": False,
-        })
-        mail.send(raise_exception=False)
+        if "promessaging.subuser" not in self.env:
+            return None
+        return self.env.user._promessaging_default_subuser()
 
-        if mail.state == "exception":
-            reason = mail.failure_reason or _("unknown error")
-            _logger.error("Leica lead log email for lead %s failed: %s", self.id, reason)
-            return False, _("Could not send the Leica lead log email to %s: %s") % (LEICA_LEAD_LOG_EMAIL, reason)
-        return True, _("Leica lead log request sent to %s.") % LEICA_LEAD_LOG_EMAIL
+    def _send_leica_lead_log(self, data):
+        """Send the lead log to the acting user's default AI assistant.
+
+        Returns (ok, message). Different people logging leads reach different
+        assistants, so the one that answers is whoever they have set.
+        """
+        self.ensure_one()
+        subuser = self._leica_log_subuser()
+        if not subuser:
+            return False, _(
+                "You have no Default AI Assistant set, so there is nobody to log this "
+                "lead with. Set one on your user, under Settings, Users, Access Rights."
+            )
+
+        payload = {
+            "prompt": _("Log this lead on the Leica portal."),
+            "lead": data,
+            "lead_log": self._leica_lead_log_sections(data),
+            "requested_by": {
+                "user_id": self.env.user.id,
+                "name": self.env.user.name,
+                "email": self.env.user.email or "",
+            },
+            "reply": subuser.sudo()._reply_instructions(
+                thread_model=self._name, thread_id=self.id,
+            ),
+        }
+        payload["reply"]["sync"] = _(
+            'Answer with JSON {"reply": "what happened"} to post it on the lead, or '
+            "post back later to the reply endpoint."
+        )
+
+        result = subuser.sudo().dispatch("lead_log", payload, record=self)
+        if not result.get("ok"):
+            error = result.get("error") or _("unknown error")
+            _logger.error("Leica lead log for lead %s failed: %s", self.id, error)
+            return False, _(
+                "Could not reach %(name)s (%(error)s).",
+                name=subuser.sudo().name, error=error,
+            )
+        return True, _("Leica lead log sent to %s.") % subuser.sudo().name
 
     @api.model
     def _fmt_leica_date(self, d):
@@ -550,7 +558,7 @@ class CrmLead(models.Model):
         }
 
     def _leica_do_register(self):
-        """Email the lead log request. Called by the confirmation wizard.
+        """Send the lead log to the user's AI assistant. Called by the wizard.
         Returns a display_notification client action; never raises after the
         attempt so failure state survives in the database."""
         self.ensure_one()
@@ -562,7 +570,7 @@ class CrmLead(models.Model):
                 "This lead cannot be registered with Leica yet. Missing:\n- %s"
             ) % "\n- ".join(missing))
 
-        ok, message = self._send_leica_lead_log_email(self._leica_portal_data())
+        ok, message = self._send_leica_lead_log(self._leica_portal_data())
 
         system_partner = self.env.ref("base.user_root").partner_id
         if ok:

@@ -6,7 +6,7 @@
     "license": "LGPL-3",
     'summary': 'Adds automation for lead registration',
     'description': ' ',
-    'depends': ['base', 'crm', 'website_crm', 'procontact'],
+    'depends': ['base', 'crm', 'website_crm', 'procontact', 'promessaging'],
     "data": [
         "security/ir.model.access.csv",
         "views/leadsBackend.xml",

@@ -10,7 +10,7 @@
                 <field name="is_media_segment" invisible="1"/>
                 <div class="alert alert-warning" role="alert">
                     <strong>Please verify this information carefully.</strong>
-                    The data below will be emailed to grokbot@r-e-a-l.it for logging with Leica
+                    The data below will be sent to your AI assistant to log with Leica
                     exactly as shown. A lead can only be registered <strong>once</strong> —
                     if anything is wrong, cancel and correct it on the lead first.
                 </div>
@@ -52,7 +52,7 @@
                     <button name="action_confirm_register" type="object"
                             string="Confirm &amp; Register with Leica"
                             class="btn-primary"
-                            confirm="This will email the Leica lead log request. This action cannot be undone. Continue?"/>
+                            confirm="This will send the Leica lead log to your AI assistant. This action cannot be undone. Continue?"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
