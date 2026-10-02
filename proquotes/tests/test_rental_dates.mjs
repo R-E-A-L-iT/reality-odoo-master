@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { guardSignModalShow, parsePortalDate, resolveRentalStartEdit, signBlockKind, validateRentalDates } from "../static/src/JS/rental_dates.js";
+import { guardSignModalShow, parsePortalDate, resolveRentalStartEdit, runRentalStartEdit, signBlockKind, validateRentalDates } from "../static/src/JS/rental_dates.js";
 import { autoSignNameBlocked } from "../static/src/JS/signer_name.js";
 
 function check(start, end) {
@@ -199,5 +199,61 @@ function editStart(start, end) {
 const shiftedOnce = editStart("2026-10-15", "2026-10-01");
 assert.equal(shiftedOnce.error, null);
 assert.deepEqual(posted, [["2026-10-15", "2026-10-16"]]);
+
+// Auto-shift runs the live price refresh once and saves the shifted pair once.
+// The previous end is not saved.
+const refreshes = [];
+const autoshiftSaves = [];
+const autoshift = runRentalStartEdit("2026-09-18", "2026-09-16", {
+    setEnd(value) {
+        refreshes.push(["setEnd", value]);
+    },
+    refreshLivePrice(start, end) {
+        refreshes.push(["refresh", start, end]);
+    },
+});
+assert.equal(autoshift.refreshLivePrice, true);
+assert.equal(autoshift.error, null);
+assert.equal(autoshift.end, "2026-09-19");
+if (check(autoshift.start, autoshift.end).ok) {
+    autoshiftSaves.push([autoshift.start, autoshift.end]);
+}
+assert.deepEqual(refreshes, [
+    ["setEnd", "2026-09-19"],
+    ["refresh", "2026-09-18", "2026-09-19"],
+]);
+assert.deepEqual(autoshiftSaves, [["2026-09-18", "2026-09-19"]]);
+
+// A start that does not move the end does not refresh.
+const noRefresh = [];
+const unchanged = runRentalStartEdit("2026-09-17", "2026-09-20", {
+    refreshLivePrice() {
+        noRefresh.push("refresh");
+    },
+});
+assert.equal(unchanged.refreshLivePrice, false);
+assert.deepEqual(noRefresh, []);
+
+// Start edit with the end missing: do not invent an end, do not refresh,
+// and Accept & Sign still blocks with the missing-date message.
+const missingRefreshes = [];
+const missingEnd = runRentalStartEdit("2026-09-17", "", {
+    setEnd() {
+        missingRefreshes.push("setEnd");
+    },
+    refreshLivePrice() {
+        missingRefreshes.push("refresh");
+    },
+});
+assert.deepEqual(missingRefreshes, []);
+assert.equal(missingEnd.refreshLivePrice, false);
+assert.equal(missingEnd.end, "");
+assert.equal(missingEnd.error, "incomplete");
+const missingAfterStart = check(missingEnd.start, missingEnd.end);
+assert.equal(missingAfterStart.ok, false);
+assert.equal(signBlockKind(missingAfterStart.reason), "missing");
+result = opening("modalaccept", missingAfterStart);
+assert.equal(result.blocked, true);
+assert.equal(result.defaultPrevented, true);
 
 console.log("rental date checks ok");

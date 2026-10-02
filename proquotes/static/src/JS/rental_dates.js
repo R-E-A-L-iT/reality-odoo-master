@@ -115,6 +115,39 @@ export function resolveRentalStartEdit(startValue, endValue) {
 }
 
 /**
+ * Start-date edit plus whether the live price refresh must run.
+ *
+ * ``refreshLivePrice`` is true only when the end day actually moves to
+ * start + 1. The portal then has to run the same refresh a manual end
+ * edit runs (the end input's listeners). A missing or unchanged end does
+ * not. Callers must save the returned pair at most once.
+ *
+ * @param {string} startValue
+ * @param {string} endValue current end, before the edit is applied
+ * @param {{setEnd?: function(string): void, refreshLivePrice?: function(string, string): void}=} hooks
+ * @returns {{start: string, end: string, error: (string|null), refreshLivePrice: boolean}}
+ */
+export function runRentalStartEdit(startValue, endValue, hooks) {
+    const adjusted = resolveRentalStartEdit(startValue, endValue);
+    const previousEnd = (endValue || "").trim();
+    const refreshLivePrice = adjusted.error === null && adjusted.end !== previousEnd;
+    if (refreshLivePrice && hooks) {
+        if (typeof hooks.setEnd === "function") {
+            hooks.setEnd(adjusted.end);
+        }
+        if (typeof hooks.refreshLivePrice === "function") {
+            hooks.refreshLivePrice(adjusted.start, adjusted.end);
+        }
+    }
+    return {
+        start: adjusted.start,
+        end: adjusted.end,
+        error: adjusted.error,
+        refreshLivePrice,
+    };
+}
+
+/**
  * Which message Accept & Sign should show.
  * Incomplete input is quiet while the customer is typing, and a block at sign time.
  * @param {string|null} reason
