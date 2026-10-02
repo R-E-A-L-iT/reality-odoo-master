@@ -70,17 +70,24 @@ class SaleOrderLine(models.Model):
         help="Field to Lock Quantity on Products",
     )
 
+    # The database column is NOT NULL (required=True). default=False lets
+    # every create path that does not pass these keys still insert a value:
+    # the down payment wizard, sale_stock/rental extra lines, delivery and
+    # website cart lines. Without it those creates fail with "a mandatory
+    # field is not set". The backend form always sends them, so it is
+    # unaffected.
     is_optional = fields.Boolean(
-        required=True, string="Optional",
+        required=True, default=False, string="Optional",
         help="Field to Mark Product as Optional",
     )
     is_selected = fields.Boolean(
-        required=True, string="Selected",
+        required=True, default=False, string="Selected",
         help="Field to Mark Wether Customer has Selected Product",
     )
     is_quantityLocked = fields.Boolean(
         string="Lock Quantity",
         required=True,
+        default=False,
         help="Field to Lock Quantity on Products",
     )
 

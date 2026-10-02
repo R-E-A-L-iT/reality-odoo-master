@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """Fill NULL required booleans so this upgrade can add NOT NULL.
 
-is_optional, is_selected and is_quantityLocked are required with no default.
-Odoo skips backfilling a boolean whose default is not True, then ALTER COLUMN
-SET NOT NULL fails on the existing NULL rows. NULL already reads as False in
+is_optional, is_selected and is_quantityLocked are required. Until 17.0.17.3
+they had no default; they now default to False, but Odoo still skips
+backfilling a boolean whose default is not True, so ALTER COLUMN SET NOT NULL
+would fail on the existing NULL rows. NULL already reads as False in
 the ORM, so writing FALSE does not change what users see.
 
 A column that is not there yet (fresh database, or an upgrade from before the
