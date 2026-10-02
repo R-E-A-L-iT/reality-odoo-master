@@ -664,6 +664,45 @@ label[for="terms-checkbox"] {
 	border-color: #ffd666 !important;
 }
 
+/* Confirmed quotes disable #rental-start and #rental-end. The section behind
+   them is dark red, and Chrome/Safari ignore `color` on disabled inputs and
+   dim the text, so the dates render black and look empty. Keep the enabled
+   white text, slightly quieter, and force the WebKit fill color. opacity: 1
+   stops the extra dimming. No hover or focus ring: the fields are not editable.
+   The enabled inputs do not restyle the native calendar icon; invert it here
+   so the disabled icon stays visible on the same dark field. */
+#rental-start:disabled,
+#rental-end:disabled {
+	color: rgba(255, 255, 255, 0.75) !important;
+	-webkit-text-fill-color: rgba(255, 255, 255, 0.75) !important;
+	opacity: 1;
+	cursor: not-allowed;
+	background: rgba(0, 0, 0, 0.30) !important;
+	border-color: rgba(255, 255, 255, 0.15) !important;
+	box-shadow: none !important;
+}
+
+#rental-start:disabled:hover,
+#rental-end:disabled:hover,
+#rental-start:disabled:focus,
+#rental-end:disabled:focus,
+#rental-start:disabled:focus-visible,
+#rental-end:disabled:focus-visible {
+	color: rgba(255, 255, 255, 0.75) !important;
+	-webkit-text-fill-color: rgba(255, 255, 255, 0.75) !important;
+	background: rgba(0, 0, 0, 0.30) !important;
+	border-color: rgba(255, 255, 255, 0.15) !important;
+	box-shadow: none !important;
+	outline: none;
+}
+
+#rental-start:disabled::-webkit-calendar-picker-indicator,
+#rental-end:disabled::-webkit-calendar-picker-indicator {
+	filter: invert(1);
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
 #rental-info-section .rental-dates-error {
 	color: #ffd666;
 	font-size: 0.95rem;

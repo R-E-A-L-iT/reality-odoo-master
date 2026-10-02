@@ -26,6 +26,39 @@ export function parsePortalDate(value) {
 }
 
 /**
+ * ``YYYY-MM-DD`` for a calendar day held the same way as ``parsePortalDate``
+ * (UTC year/month/day). Do not format with local getters: a UTC midnight
+ * is the previous evening in timezones behind UTC.
+ * @param {Date} date
+ * @returns {string}
+ */
+function formatPortalDate(date) {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    return year + "-" + month + "-" + day;
+}
+
+/**
+ * Add calendar days to a portal ``YYYY-MM-DD`` value.
+ * Uses the UTC calendar day from ``parsePortalDate`` and ``setUTCDate``,
+ * not ``new Date("YYYY-MM-DD")``, so the result does not depend on the
+ * browser timezone.
+ * @param {string} value
+ * @param {number} days
+ * @returns {string|null}
+ */
+export function addPortalDays(value, days) {
+    const date = parsePortalDate(value);
+    if (!date || typeof days !== "number" || !Number.isFinite(days)) {
+        return null;
+    }
+    const next = new Date(date.getTime());
+    next.setUTCDate(next.getUTCDate() + days);
+    return formatPortalDate(next);
+}
+
+/**
  * Decide whether the portal may save the rental period.
  * Incomplete dates are not an error to show — the customer is still typing.
  * @param {string} startValue
@@ -47,6 +80,38 @@ export function validateRentalDates(startValue, endValue) {
         return { ok: false, reason: "order" };
     }
     return { ok: true, reason: null };
+}
+
+/**
+ * Apply a start-date edit.
+ *
+ * When the new start is after the current end, the end moves to the next
+ * calendar day and there is no order error. The customer does not have to
+ * move the end first. Equal or earlier starts are left as they are.
+ *
+ * This is only for a start edit. An end date typed before the start still
+ * fails ``validateRentalDates`` with ``order``.
+ *
+ * The portal end input has no ``max`` and there is no maximum rental
+ * length on this path. The only bound is ``min`` = the start day, and
+ * start + 1 day always satisfies it.
+ *
+ * @param {string} startValue new start
+ * @param {string} endValue current end
+ * @returns {{start: string, end: string, error: (string|null)}}
+ */
+export function resolveRentalStartEdit(startValue, endValue) {
+    const start = (startValue || "").trim();
+    const end = (endValue || "").trim();
+    const verdict = validateRentalDates(start, end);
+    if (verdict.reason !== "order") {
+        return { start, end, error: verdict.ok ? null : verdict.reason };
+    }
+    const shifted = addPortalDays(start, 1);
+    if (!shifted) {
+        return { start, end, error: "invalid" };
+    }
+    return { start, end: shifted, error: null };
 }
 
 /**
