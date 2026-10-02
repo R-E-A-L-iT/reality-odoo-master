@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_pro_upgrade_testkit_wizard_form" model="ir.ui.view">
+        <field name="name">pro.upgrade.testkit.wizard.form</field>
+        <field name="model">pro.upgrade.testkit.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Rebuild Enginelly test suite">
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        <p>
+                            <strong>OriginCopy / staging only.</strong>
+                            This rebuilds a tagged sales and rental suite via ORM.
+                            Do not install or run this on production.
+                        </p>
+                        <p class="mb-0">
+                            Prior documents whose customer reference or note contains
+                            <code>[ENGINELLY-TESTKIT]</code> are cancelled first so re-runs
+                            do not pile open quotes, orders, or invoices.
+                        </p>
+                    </div>
+                    <group invisible="not last_run_id">
+                        <field name="last_run_id" readonly="1"/>
+                        <field name="state" readonly="1"/>
+                    </group>
+                    <field name="report_html" nolabel="1" invisible="not last_run_id"/>
+                </sheet>
+                <footer>
+                    <button name="action_rebuild"
+                            type="object"
+                            string="Rebuild Enginelly test suite"
+                            class="btn-primary"
+                            confirm="Cancel prior Enginelly-tagged test documents and rebuild the suite?"/>
+                    <button name="action_open_run"
+                            type="object"
+                            string="Open run"
+                            class="btn-secondary"
+                            invisible="not last_run_id"/>
+                    <button name="action_open_orders"
+                            type="object"
+                            string="Open created orders"
+                            class="btn-secondary"
+                            invisible="not last_run_id"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pro_upgrade_testkit_rebuild" model="ir.actions.act_window">
+        <field name="name">Rebuild Enginelly test suite</field>
+        <field name="res_model">pro.upgrade.testkit.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_pro_upgrade_testkit_wizard_form"/>
+    </record>
+
+</odoo>
