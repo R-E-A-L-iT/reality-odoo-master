@@ -6,7 +6,7 @@
 import { jsonrpc } from "@web/core/network/rpc_service";
 import { renderToFragment } from "@web/core/utils/render";
 import publicWidget from "@web/legacy/js/public/public_widget";
-import { resolveRentalStartEdit, validateRentalDates } from "./rental_dates";
+import { validateRentalDates } from "./rental_dates";
 
 //	var publicWidget = require("web.public.widget");
 
@@ -42,25 +42,14 @@ import { resolveRentalStartEdit, validateRentalDates } from "./rental_dates";
 			this._rentalValueTotal();
 		},
 
-		_onRentalDatesInput: function (ev) {
+		_onRentalDatesInput: function () {
 			// Client-side rental estimate only. Saving the dates, and
 			// re-rendering the server totals, is rental.js. This must not
 			// post /select: that replaces the whole quote, including the
 			// date inputs and any inline validation message.
-			// This widget is registered before rental.js, so a start that
-			// lands after the end is shifted here first. Otherwise the
-			// estimate would read the intermediate invalid pair. The value
-			// write does not dispatch another input/change.
-			const current = ev && ev.currentTarget;
-			const field = current && current.id === "rental-start" ? current : ev && ev.target;
-			const start = document.getElementById("rental-start");
-			const end = document.getElementById("rental-end");
-			if (field && field.id === "rental-start" && start && end && !start.disabled && !end.disabled) {
-				const adjusted = resolveRentalStartEdit(start.value, end.value);
-				if (end.value !== adjusted.end) {
-					end.value = adjusted.end;
-				}
-			}
+			// A start that lands after the end is shifted in rental.js
+			// before this bubble handler, and that shift dispatches input
+			// on #rental-end so this same function runs for the new day.
 			this._rentalValueTotal();
 		},
 
@@ -202,10 +191,11 @@ import { resolveRentalStartEdit, validateRentalDates } from "./rental_dates";
 
 			var totalLandingEnglish = document.getElementById("total-rental-value-english");
 			var totalLandingFrench  = document.getElementById("total-rental-value-french");
-			if (totalLandingEnglish == undefined && totalLandingFrench == undefined) {
-				return;
-			}
-
+			// getElementById returns null, and null == undefined, so this used
+			// to return before the rental estimate whenever the landing nodes
+			// were absent. The quote page has no landing total. Keep going so
+			// an end-date edit still refreshes the estimate.
+			if (totalLandingEnglish != null || totalLandingFrench != null) {
 			// TOTAL RENTAL VALUE (now quantity-aware)
 			var total = 0;
 			var items = document.getElementsByClassName("quoteLineRow");
@@ -231,6 +221,7 @@ import { resolveRentalStartEdit, validateRentalDates } from "./rental_dates";
 			if (totalLandingFrench != undefined) {
 				totalLandingFrench.innerHTML =
 					Intl.NumberFormat('en-US', { style: "decimal", minimumFractionDigits: 2 }).format(total) + ' $';
+			}
 			}
 
 			var rentalEstimateEnglish = document.getElementById("rental-estimate-total-english");

@@ -3,7 +3,7 @@
 
 import { jsonrpc } from "@web/core/network/rpc_service";
 import publicWidget from "@web/legacy/js/public/public_widget";
-import { guardSignModalShow, resolveRentalStartEdit, signBlockKind, validateRentalDates } from "./rental_dates";
+import { guardSignModalShow, runRentalStartEdit, signBlockKind, validateRentalDates } from "./rental_dates";
 
 const SAVE_DELAY_MS = 600;
 
@@ -92,6 +92,62 @@ if (typeof document !== "undefined" && !document.__proquotesSignModalGuard) {
     document.addEventListener("show.bs.modal", onSignModalShow);
 }
 
+// True while the shifted end input's own input/change events are firing.
+// Those events refresh the live price. They must not schedule a second save;
+// the start-date handler schedules the one debounced save afterwards.
+let autoshiftRefreshing = false;
+
+/**
+ * Move the end to start + 1 before bubble listeners read the inputs, and
+ * run the end-date refresh. A missing end is not filled, so Accept & Sign
+ * still sees an empty end and keeps the dialog closed.
+ * @param {Event} ev
+ * @returns {boolean} true when the end day changed
+ */
+function autoshiftEndForStartEvent(ev) {
+    if (autoshiftRefreshing) {
+        return false;
+    }
+    const target = ev && ev.target;
+    if (!target || target.id !== "rental-start" || target.disabled) {
+        return false;
+    }
+    const end = document.getElementById("rental-end");
+    if (!end || end.disabled) {
+        return false;
+    }
+    let shifted = false;
+    runRentalStartEdit(target.value, end.value, {
+        setEnd(value) {
+            end.value = value;
+            if (target.value) {
+                end.min = target.value;
+            }
+        },
+        refreshLivePrice() {
+            shifted = true;
+            autoshiftRefreshing = true;
+            try {
+                // Same listeners as a hand edit of the end date. Programmatic
+                // value assignment does not fire these, so the live total and
+                // multiplier never moved. ``change`` commits the date value
+                // so the later save reads the shifted day.
+                end.dispatchEvent(new Event("input", { bubbles: true }));
+                end.dispatchEvent(new Event("change", { bubbles: true }));
+            } finally {
+                autoshiftRefreshing = false;
+            }
+        },
+    });
+    return shifted;
+}
+
+if (typeof document !== "undefined" && !document.__proquotesRentalAutoshift) {
+    document.__proquotesRentalAutoshift = true;
+    document.addEventListener("input", autoshiftEndForStartEvent, true);
+    document.addEventListener("change", autoshiftEndForStartEvent, true);
+}
+
 publicWidget.registry.rental = publicWidget.Widget.extend({
     selector: ".o_portal_sale_sidebar",
     events: {
@@ -128,12 +184,17 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
     },
 
     _onRentalDateEdited(ev) {
+        // The shifted end's synthetic input/change is only the live refresh.
+        // Scheduling here as well as on the start event would post twice.
+        if (autoshiftRefreshing) {
+            return;
+        }
         const start = document.getElementById("rental-start");
         const end = document.getElementById("rental-end");
-        // Start moved past the current end: shift the end before validation
-        // so the order error is never shown and the debounced save posts the
-        // shifted pair only. An end edit leaves the inputs alone.
-        this._shiftEndForStartEdit(ev, start, end);
+        // Capture already shifted a real browser event. This covers a
+        // listener that did not go through document, and does not dispatch
+        // again once the end day is already start + 1.
+        autoshiftEndForStartEvent(ev);
         this._syncEndMin();
         const verdict = validateRentalDates(start && start.value, end && end.value);
         if (!verdict.ok) {
@@ -147,27 +208,6 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         }
         this._clearError();
         this._scheduleSave();
-    },
-
-    /**
-     * Start input only. ``price.js`` can handle the same event first and
-     * must see the shifted end, so it calls ``resolveRentalStartEdit`` too.
-     * Setting ``value`` does not dispatch ``input`` or ``change``, so this
-     * does not schedule a second save.
-     */
-    _shiftEndForStartEdit(ev, start, end) {
-        const current = ev && ev.currentTarget;
-        const field = current && current.id === "rental-start" ? current : ev && ev.target;
-        if (!start || !end || !field || field.id !== "rental-start") {
-            return;
-        }
-        if (start.disabled || end.disabled) {
-            return;
-        }
-        const adjusted = resolveRentalStartEdit(start.value, end.value);
-        if (end.value !== adjusted.end) {
-            end.value = adjusted.end;
-        }
     },
 
     _syncEndMin() {
