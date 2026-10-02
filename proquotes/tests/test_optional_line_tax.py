@@ -447,3 +447,73 @@ class TestOptionalLineTax(TransactionCase):
         self.assertFalse(line.is_selected)
         self.assertEqual(line.selected, 'false')
         self.assertLess(order.amount_total, before)
+
+    def test_manual_line_without_template_is_selected(self):
+        """A product added by hand on a draft with no template counts.
+
+        The first form onchange copies the checkbox defaults onto the
+        strings. Selected starts ticked, so selected stays 'true' and the
+        line is in the total. Optional stays off and quantity stays unlocked.
+        """
+        order_form = Form(self.env['sale.order'])
+        order_form.partner_id = self.partner
+        with order_form.order_line.new() as line_form:
+            line_form.product_id = self.product
+            self.assertTrue(line_form.is_selected)
+            self.assertEqual(line_form.selected, 'true')
+            self.assertFalse(line_form.is_optional)
+            self.assertEqual(line_form.optional, 'no')
+            self.assertFalse(line_form.is_quantityLocked)
+            self.assertEqual(line_form.quantityLocked, 'no')
+        order = order_form.save()
+
+        line = order.order_line.filtered(
+            lambda sol: sol.product_id == self.product and not sol.display_type
+        )[:1]
+        self.assertTrue(line)
+        self.assertEqual(line.selected, 'true')
+        self.assertTrue(line.is_selected)
+        self.assertEqual(line.optional, 'no')
+        self.assertFalse(line.is_optional)
+        self.assertEqual(line.quantityLocked, 'no')
+        self.assertFalse(line.is_quantityLocked)
+        self.assertGreater(order.amount_total, 0.0)
+
+    def test_extra_manual_line_on_template_order_is_selected(self):
+        """An extra product on a template quote is selected. The template line is not changed."""
+        template = self.env['sale.order.template'].create({
+            'name': 'Sale checkbox template',
+            'sale_order_template_line_ids': [Command.create({
+                'name': 'Template product line',
+                'product_id': self.product.id,
+                'product_uom_id': self.product.uom_id.id,
+                'product_uom_qty': 1.0,
+                'selected': 'false',
+                'optional': 'yes',
+                'quantityLocked': 'yes',
+            })],
+        })
+        order_form = Form(self.env['sale.order'])
+        order_form.partner_id = self.partner
+        order_form.sale_order_template_id = template
+        with order_form.order_line.new() as line_form:
+            line_form.product_id = self.product
+        order = order_form.save()
+
+        lines = order.order_line.filtered(
+            lambda sol: sol.product_id == self.product and not sol.display_type
+        )
+        self.assertEqual(len(lines), 2)
+        template_line = lines.filtered(lambda sol: sol.optional == 'yes')
+        manual_line = lines.filtered(lambda sol: sol.optional == 'no')
+        self.assertEqual(len(template_line), 1)
+        self.assertEqual(len(manual_line), 1)
+        self.assertEqual(template_line.selected, 'false')
+        self.assertFalse(template_line.is_selected)
+        self.assertEqual(template_line.quantityLocked, 'yes')
+        self.assertTrue(template_line.is_quantityLocked)
+        self.assertEqual(manual_line.selected, 'true')
+        self.assertTrue(manual_line.is_selected)
+        self.assertEqual(manual_line.quantityLocked, 'no')
+        self.assertFalse(manual_line.is_quantityLocked)
+        self.assertGreater(order.amount_total, 0.0)
