@@ -5,7 +5,7 @@ from unittest.mock import patch
 from lxml import etree
 
 from odoo import Command
-from odoo.tests import TransactionCase, tagged
+from odoo.tests import Form, TransactionCase, tagged
 
 
 @tagged('post_install', '-at_install')
@@ -383,3 +383,67 @@ class TestOptionalLineTax(TransactionCase):
         self.assertIn(selected.id, found)
         self.assertIn(default_line.id, found)
         self.assertNotIn(unselected.id, found)
+
+    def test_template_draft_checkbox_is_editable(self):
+        """Selected on a new template quote is editable and updates the total.
+
+        The checkbox fields are plain stored booleans. A quotation template
+        copies the string flags. The form onchange fills the checkboxes from
+        those strings, and turning Selected off stores selected='false'.
+        The readonly rule follows the order state, so a draft stays editable.
+        """
+        arch = etree.fromstring(self.env['sale.order'].get_view(view_type='form')['arch'])
+        editable_on_draft = "parent.state not in ('draft', 'sent')"
+        for fname in ('is_selected', 'is_optional', 'is_quantityLocked'):
+            nodes = arch.xpath("//field[@name='%s']" % fname)
+            self.assertTrue(nodes, fname)
+            self.assertTrue(
+                all(node.get('readonly') == editable_on_draft for node in nodes),
+                fname,
+            )
+
+        template = self.env['sale.order.template'].create({
+            'name': 'Sale checkbox template',
+            'sale_order_template_line_ids': [Command.create({
+                'name': 'Template product line',
+                'product_id': self.product.id,
+                'product_uom_id': self.product.uom_id.id,
+                'product_uom_qty': 1.0,
+                'selected': 'true',
+                'optional': 'no',
+                'quantityLocked': 'yes',
+            })],
+        })
+        order_form = Form(self.env['sale.order'])
+        order_form.partner_id = self.partner
+        order_form.sale_order_template_id = template
+        order = order_form.save()
+
+        line = order.order_line.filtered(
+            lambda sol: sol.product_id == self.product and not sol.display_type
+        )[:1]
+        self.assertTrue(line)
+        self.assertEqual(line.selected, 'true')
+        self.assertTrue(line.is_selected)
+        self.assertEqual(line.optional, 'no')
+        self.assertFalse(line.is_optional)
+        self.assertEqual(line.quantityLocked, 'yes')
+        self.assertTrue(line.is_quantityLocked)
+
+        line.with_context(skip_apply_canadian_sales_taxes=True).write({
+            'price_unit': self.product.list_price,
+            'tax_id': [Command.set(self.tax.ids)],
+        })
+        before = order.amount_total
+        self.assertGreater(before, 0.0)
+
+        index = next(
+            i for i, sol in enumerate(order.order_line) if sol == line
+        )
+        with Form(order) as saved_form:
+            with saved_form.order_line.edit(index) as line_form:
+                line_form.is_selected = False
+
+        self.assertFalse(line.is_selected)
+        self.assertEqual(line.selected, 'false')
+        self.assertLess(order.amount_total, before)

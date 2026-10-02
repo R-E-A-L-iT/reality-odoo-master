@@ -2368,7 +2368,11 @@ class SaleOrderTemplateHandler(models.Model):
             data = self._compute_line_data_for_template_change(line)
             data.update({
                 'special': line.special,
-                'hiddenSection': line.hiddenSection
+                'hiddenSection': line.hiddenSection,
+                'optional': line.optional,
+                'selected': line.selected,
+                'sectionSelected': line.sectionSelected,
+                'quantityLocked': line.quantityLocked,
             })
 
             if line.product_id:
@@ -2400,6 +2404,11 @@ class SaleOrderTemplateHandler(models.Model):
                     'customer_lead': self._get_customer_lead(line.product_id.product_tmpl_id),
                 })
 
+            # The checkboxes are plain stored fields. Fill them from the
+            # strings here, in the onchange, so the form shows the template
+            # selection. This is not a compute: reading a saved order must
+            # not write the line.
+            data = self.env['sale.order.line']._proquotes_align_selection_flags(data)
             order_lines.append((0, 0, data))
 
         self.order_line = order_lines
@@ -2421,7 +2430,7 @@ class PreconfigSaleOrder(models.Model):
                     'display_type': 'line_section',
                 }))
                 for line in section.product_line_ids:
-                    new_lines.append((0, 0, {
+                    new_lines.append((0, 0, self.env['sale.order.line']._proquotes_align_selection_flags({
                         'order_id': self.id,
                         'product_id': line.product_id.id,
                         'name': line.product_name,
@@ -2431,6 +2440,6 @@ class PreconfigSaleOrder(models.Model):
                         'price_unit': line.price_unit,
                         'discount': line.discount,
                         'product_uom_qty': 1,
-                    }))
+                    })))
             if new_lines:
                 self.order_line = new_lines

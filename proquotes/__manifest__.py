@@ -87,7 +87,7 @@
         ],
     },
 
-    "version": "17.0.17.4",
+    "version": "17.0.17.5",
 
     # always loaded
     "data": [
