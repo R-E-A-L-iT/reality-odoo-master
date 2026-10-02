@@ -64,3 +64,29 @@ export function signBlockKind(reason) {
     }
     return "missing";
 }
+
+/**
+ * Cancel Bootstrap's ``show.bs.modal`` for ``#modalaccept``.
+ *
+ * The Accept & Sign buttons use ``data-bs-toggle="modal"``. That data-api
+ * listener lives on ``document`` and does not look at ``defaultPrevented``
+ * on the click, so a click handler cannot keep the dialog closed. Bootstrap
+ * does honor ``preventDefault`` on ``show.bs.modal``.
+ *
+ * ``verdict`` is null when there is nothing to block (not a rental quote, or
+ * the date inputs are disabled). A usable period is ``verdict.ok``.
+ *
+ * @param {Event|{target?: {id?: string}, preventDefault?: function}} event
+ * @param {{ok: boolean}|null} verdict
+ * @returns {boolean} true when the dialog must stay closed
+ */
+export function guardSignModalShow(event, verdict) {
+    const id = event && event.target ? event.target.id : "";
+    if (id !== "modalaccept" || !verdict || verdict.ok) {
+        return false;
+    }
+    if (typeof event.preventDefault === "function") {
+        event.preventDefault();
+    }
+    return true;
+}

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { parsePortalDate, signBlockKind, validateRentalDates } from "../static/src/JS/rental_dates.js";
+import { guardSignModalShow, parsePortalDate, signBlockKind, validateRentalDates } from "../static/src/JS/rental_dates.js";
 import { autoSignNameBlocked } from "../static/src/JS/signer_name.js";
 
 function check(start, end) {
@@ -55,5 +55,56 @@ assert.equal(signBlockKind("incomplete"), "missing");
 assert.equal(signBlockKind(check("", "2026-09-20").reason), "missing");
 assert.equal(signBlockKind(check("2026-09-17", "2026-09-02").reason), "order");
 assert.equal(signBlockKind(check("2026-09-17", "2026-09-20").reason), null);
+
+// Bootstrap's data-api ignores click preventDefault. show.bs.modal does not.
+function showEvent(id) {
+    let prevented = false;
+    return {
+        target: { id },
+        preventDefault() {
+            prevented = true;
+        },
+        get defaultPrevented() {
+            return prevented;
+        },
+    };
+}
+
+function opening(id, verdict) {
+    const event = showEvent(id);
+    const blocked = guardSignModalShow(event, verdict);
+    return { blocked, defaultPrevented: event.defaultPrevented };
+}
+
+const missing = check("", "2026-09-20");
+const reversed = check("2026-09-20", "2026-09-17");
+const impossible = check("2026-02-31", "2026-03-02");
+const valid = check("2026-09-17", "2026-09-20");
+
+let result = opening("modalaccept", missing);
+assert.equal(result.blocked, true);
+assert.equal(result.defaultPrevented, true);
+
+result = opening("modalaccept", reversed);
+assert.equal(result.blocked, true);
+assert.equal(result.defaultPrevented, true);
+
+result = opening("modalaccept", impossible);
+assert.equal(result.blocked, true);
+assert.equal(result.defaultPrevented, true);
+
+result = opening("modalaccept", valid);
+assert.equal(result.blocked, false);
+assert.equal(result.defaultPrevented, false);
+
+// Not a rental, or the inputs are disabled: verdict is null, dialog opens.
+result = opening("modalaccept", null);
+assert.equal(result.blocked, false);
+assert.equal(result.defaultPrevented, false);
+
+// Decline and any other dialog are left alone.
+result = opening("modaldecline", missing);
+assert.equal(result.blocked, false);
+assert.equal(result.defaultPrevented, false);
 
 console.log("rental date checks ok");

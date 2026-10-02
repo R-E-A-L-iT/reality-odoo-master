@@ -3,7 +3,7 @@
 
 import { jsonrpc } from "@web/core/network/rpc_service";
 import publicWidget from "@web/legacy/js/public/public_widget";
-import { signBlockKind, validateRentalDates } from "./rental_dates";
+import { guardSignModalShow, signBlockKind, validateRentalDates } from "./rental_dates";
 
 const SAVE_DELAY_MS = 600;
 
@@ -71,6 +71,27 @@ export function portalRentalSignBlock() {
     return message;
 }
 
+/**
+ * Bootstrap opens #modalaccept from a document click listener that ignores
+ * preventDefault. show.bs.modal is the event it does cancel.
+ */
+function onSignModalShow(ev) {
+    const start = document.getElementById("rental-start");
+    const end = document.getElementById("rental-end");
+    const verdict = start && end && !start.disabled && !end.disabled
+        ? validateRentalDates(start.value, end.value)
+        : null;
+    if (!guardSignModalShow(ev, verdict)) {
+        return;
+    }
+    portalRentalSignBlock();
+}
+
+if (typeof document !== "undefined" && !document.__proquotesSignModalGuard) {
+    document.__proquotesSignModalGuard = true;
+    document.addEventListener("show.bs.modal", onSignModalShow);
+}
+
 publicWidget.registry.rental = publicWidget.Widget.extend({
     selector: ".o_portal_sale_sidebar",
     events: {
@@ -78,7 +99,6 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         "input #rental-end": "_onRentalDateEdited",
         "change #rental-start": "_onRentalDateEdited",
         "change #rental-end": "_onRentalDateEdited",
-        "click a[data-bs-target='#modalaccept']": "_onAcceptSignClick",
     },
 
     async start() {
@@ -105,16 +125,6 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
             flushSave = null;
         }
         return this._super(...arguments);
-    },
-
-    _onAcceptSignClick(ev) {
-        // The link opens the sign dialog by itself. Stop that when the
-        // period is missing or invalid, and leave the inline message.
-        if (!portalRentalSignBlock()) {
-            return;
-        }
-        ev.preventDefault();
-        ev.stopPropagation();
     },
 
     _onRentalDateEdited() {
