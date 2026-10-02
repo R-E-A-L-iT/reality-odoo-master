@@ -1412,6 +1412,7 @@
                 <t t-set="rental_msg_invalid" t-value="'Veuillez saisir une date de début et une date de fin de location valides.' if language == 'fr_CA' else 'Enter a valid rental start date and a valid rental end date.'"/>
                 <t t-set="rental_msg_save" t-value="'Les dates de location ne peuvent pas être enregistrées. Veuillez réessayer.' if language == 'fr_CA' else 'The rental dates could not be saved. Please try again.'"/>
                 <t t-set="rental_msg_locked" t-value="'Ces dates de location ne peuvent plus être modifiées.' if language == 'fr_CA' else 'These rental dates can no longer be changed.'"/>
+                <t t-set="rental_msg_missing" t-value="'Veuillez choisir une date de début et une date de fin de location avant de signer.' if language == 'fr_CA' else 'Please choose both rental start and end dates before signing.'"/>
                 <t t-set="rental_dates_editable" t-value="sale_order.portal_rental_dates_editable()"/>
                 <div class="row mb-3" t-if="sale_order.is_rental_order">
                     <div class="col-md-4 mb-2">
@@ -1448,7 +1449,8 @@
                            t-att-data-msg-order="rental_msg_order"
                            t-att-data-msg-invalid="rental_msg_invalid"
                            t-att-data-msg-save="rental_msg_save"
-                           t-att-data-msg-locked="rental_msg_locked"/>
+                           t-att-data-msg-locked="rental_msg_locked"
+                           t-att-data-msg-missing="rental_msg_missing"/>
                     </div>
 
                     <!-- <div class="col-md-4 mb-2 d-flex align-items-end">

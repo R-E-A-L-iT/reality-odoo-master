@@ -28,6 +28,7 @@ portal_calendar_date = _dates.portal_calendar_date
 rental_calendar_days = _dates.rental_calendar_days
 rental_dates_editable = _dates.rental_dates_editable
 rental_message = _dates.rental_message
+posted_sign_block_key = _dates.posted_sign_block_key
 sign_block_reason = _dates.sign_block_reason
 signature_default_name = _dates.signature_default_name
 validate_portal_rental_pair = _dates.validate_portal_rental_pair
@@ -116,12 +117,23 @@ class PortalRentalDateTests(unittest.TestCase):
         self.assertEqual(sign_block_reason(True, False, end), "missing_sign")
         self.assertEqual(sign_block_reason(True, start, False), "missing_sign")
         self.assertEqual(sign_block_reason(True, end, start), "order")
+        self.assertIsNone(posted_sign_block_key(False, "", ""))
+        self.assertIsNone(posted_sign_block_key(True, None, None))
+        self.assertEqual(posted_sign_block_key(True, "", "2026-09-20"), "missing_sign")
+        self.assertEqual(posted_sign_block_key(True, "2026-09-17", ""), "missing_sign")
+        self.assertEqual(posted_sign_block_key(True, "2026-02-31", "2026-03-02"), "invalid")
+        self.assertEqual(posted_sign_block_key(True, "2026-09-20", "2026-09-17"), "order")
+        self.assertIsNone(posted_sign_block_key(True, "2026-09-17", "2026-09-20"))
 
     def test_messages_english_and_french(self):
         self.assertIn("on or before", rental_message("order", "en_CA"))
         self.assertIn("antérieure ou égale", rental_message("order", "fr_CA"))
-        self.assertIn("before signing", rental_message("missing_sign", "en_US"))
-        self.assertIn("avant de signer", rental_message("missing_sign", "fr_FR"))
+        self.assertEqual(
+            rental_message("missing_sign", "en_US"),
+            "Please choose both rental start and end dates before signing.",
+        )
+        self.assertIn("avant de signer", rental_message("missing_sign", "fr_CA"))
+        self.assertIn("choisir", rental_message("missing_sign", "fr_FR"))
         self.assertEqual(rental_message("order", "es_ES"), MESSAGES["order"]["en"])
         self.assertIn("no longer be changed", rental_message("locked", "en_CA"))
         self.assertIn("ne peuvent plus", rental_message("locked", "fr_CA"))
@@ -165,9 +177,10 @@ class PortalRentalDateTests(unittest.TestCase):
             "rental_start_date.strftime('%Y-%m-%d')",
             xml,
         )
-        for key in ("order", "invalid", "save", "locked"):
+        for key in ("order", "invalid", "save", "locked", "missing_sign"):
             self.assertIn(MESSAGES[key]["en"], xml)
             self.assertIn(MESSAGES[key]["fr"], xml)
+        self.assertIn("data-msg-missing", xml)
         self.assertIn("portal_rental_dates_editable()", xml)
         self.assertIn("t-att-disabled=\"None if rental_dates_editable else 'disabled'\"", xml)
         self.assertIn(
@@ -186,7 +199,21 @@ class PortalRentalDateTests(unittest.TestCase):
         self.assertIn('return {"error": rental_message(reason, lang)}', update)
         self.assertIn("ValidationError", rental)
         sign = accept.split("def portal_quote_accept", 1)[1]
+        self.assertLess(sign.index("posted_sign_block_key"), sign.index("portal_rental_sign_error"))
         self.assertLess(sign.index("portal_rental_sign_error"), sign.index("'signed_by'"))
+        self.assertIn("rental_start=None, rental_end=None", sign)
+        js = (ROOT / "static/src/JS/rental.js").read_text(encoding="utf-8")
+        self.assertLess(js.index("portalRentalSignBlock"), js.index("preventDefault"))
+        self.assertIn("modalaccept", js)
+        form = (ROOT / "static/src/JS/signature_form.js").read_text(encoding="utf-8")
+        submit = form.split("async onClickSubmit", 1)[1]
+        self.assertLess(submit.index("portalRentalSignBlock"), submit.index("this.rpc"))
+        self.assertLess(submit.index("data.error"), submit.index("force_refresh"))
+        price = (ROOT / "static/src/JS/price.js").read_text(encoding="utf-8")
+        update_total = price.split("_updateTotal", 1)[1]
+        self.assertLess(update_total.index('"undefined"'), update_total.index("innerHTML = total"))
+        manifest = (ROOT / "__manifest__.py").read_text(encoding="utf-8")
+        self.assertNotIn("rental_duration_display.js", manifest)
         model = (ROOT / "models/sale_order.py").read_text(encoding="utf-8")
         self.assertIn("rental_period_coherence", model)
         self.assertIn("rental_start_date <= rental_return_date", model)

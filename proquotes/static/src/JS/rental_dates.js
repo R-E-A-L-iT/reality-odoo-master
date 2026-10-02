@@ -48,3 +48,19 @@ export function validateRentalDates(startValue, endValue) {
     }
     return { ok: true, reason: null };
 }
+
+/**
+ * Which message Accept & Sign should show.
+ * Incomplete input is quiet while the customer is typing, and a block at sign time.
+ * @param {string|null} reason
+ * @returns {"order"|"invalid"|"missing"|null}
+ */
+export function signBlockKind(reason) {
+    if (!reason) {
+        return null;
+    }
+    if (reason === "order" || reason === "invalid") {
+        return reason;
+    }
+    return "missing";
+}

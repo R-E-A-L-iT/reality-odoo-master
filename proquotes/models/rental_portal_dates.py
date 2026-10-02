@@ -35,8 +35,8 @@ MESSAGES = {
         "en": "Enter a valid rental start date and a valid rental end date.",
     },
     "missing_sign": {
-        "fr": "Veuillez saisir une date de début et une date de fin de location avant de signer.",
-        "en": "Enter a rental start date and a rental end date before signing.",
+        "fr": "Veuillez choisir une date de début et une date de fin de location avant de signer.",
+        "en": "Please choose both rental start and end dates before signing.",
     },
     "save": {
         "fr": "Les dates de location ne peuvent pas être enregistrées. Veuillez réessayer.",
@@ -218,6 +218,31 @@ def paid_rental_days(cal_days):
     extra_days = remaining % 7
     remainder_paid = min((full_weeks * 4) + min(extra_days, 4), 12)
     return (full_months * 12) + remainder_paid
+
+
+def posted_sign_block_key(is_rental, start_value, end_value):
+    """Message key for dates sent with Accept & Sign, or ``None``.
+
+    Non-rental quotes are ignored. ``None`` for both values means the client
+    did not send dates (older pages, or a quote with the inputs disabled),
+    so the stored period is checked separately. A rental that does send a
+    missing or invalid pair is blocked even when an older period is still
+    stored, because clearing an input does not write that empty value.
+    """
+    if not is_rental:
+        return None
+    if start_value is None and end_value is None:
+        return None
+    start = start_value.strip() if isinstance(start_value, str) else ""
+    end = end_value.strip() if isinstance(end_value, str) else ""
+    if not start or not end:
+        return "missing_sign"
+    reason = validate_portal_rental_pair(start, end)
+    if reason == "order":
+        return "order"
+    if reason:
+        return "invalid"
+    return None
 
 
 def sign_block_reason(is_rental, start_dt, end_dt):

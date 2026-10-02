@@ -7,9 +7,15 @@ import { redirect } from "@web/core/utils/urls";
 import { NameAndSignature } from "@web/core/signature/name_and_signature";
 import { useService } from "@web/core/utils/hooks";
 import { patch } from "@web/core/utils/patch";
-import { flushPortalRentalDates } from "./rental";
-import { validateRentalDates } from "./rental_dates";
+import { flushPortalRentalDates, portalRentalSignBlock } from "./rental";
 import { autoSignNameBlocked } from "./signer_name";
+
+function signRequestFailedMessage() {
+    const french = (document.documentElement.lang || "").toLowerCase().startsWith("fr");
+    return french
+        ? "La soumission ne peut pas être signée. Veuillez réessayer."
+        : "The quote could not be signed. Please try again.";
+}
 
 /**
  * This Component is a signature request form. It uses
@@ -67,30 +73,37 @@ class SignatureForm extends Component {
      *
      * @returns {Promise}
      */
+    _hideSignModal() {
+        const modal = this.rootRef.el && this.rootRef.el.closest(".modal");
+        const ModalApi = window.bootstrap && window.bootstrap.Modal;
+        if (!modal || !ModalApi) {
+            return;
+        }
+        ModalApi.getOrCreateInstance(modal).hide();
+    }
+
     async onClickSubmit() {
+        // The page button normally stops the dialog from opening. This is
+        // the backstop when the dialog is already open: same inline message,
+        // and close the dialog so that message is not hidden behind it.
+        const blocked = portalRentalSignBlock();
+        if (blocked) {
+            this.state.error = blocked;
+            this.state.success = false;
+            this._hideSignModal();
+            return;
+        }
         const start = document.getElementById("rental-start");
         const end = document.getElementById("rental-end");
-        if (start && end) {
+        if (start && end && !start.disabled && !end.disabled) {
             // Save the period first. Accept writes the signature before
             // confirm, so a missing or invalid period has to be rejected
             // here and on the server before that write.
-            const verdict = validateRentalDates(start.value, end.value);
-            if (!verdict.ok) {
-                const err = document.getElementById("rental-dates-error");
-                const message = (err && (verdict.reason === "order" ? err.dataset.msgOrder : err.dataset.msgInvalid))
-                    || "Enter a valid rental start date and a valid rental end date.";
-                if (err) {
-                    err.textContent = message;
-                    err.hidden = false;
-                }
-                start.classList.add("is-invalid");
-                end.classList.add("is-invalid");
-                this.state.error = message;
-                return;
-            }
             const saved = await flushPortalRentalDates();
             if (saved && saved.error) {
                 this.state.error = saved.error;
+                this.state.success = false;
+                this._hideSignModal();
                 return;
             }
         }
@@ -100,7 +113,26 @@ class SignatureForm extends Component {
             return;
         }
         const signature = this.signature.getSignatureImage()[1];
-        const data = await this.rpc(this.props.callUrl, { name, signature });
+        const payload = { name, signature };
+        if (start && end && !start.disabled && !end.disabled) {
+            payload.rental_start = start.value || "";
+            payload.rental_end = end.value || "";
+        }
+        let data;
+        try {
+            data = await this.rpc(this.props.callUrl, payload);
+        } catch (error) {
+            this.state.success = false;
+            this.state.error = signRequestFailedMessage();
+            return;
+        }
+        if (!data || data.error) {
+            // A readable {error: ...} from the accept route is shown in the
+            // dialog. It must not be treated as success.
+            this.state.success = false;
+            this.state.error = (data && data.error) || signRequestFailedMessage();
+            return;
+        }
         if (data.force_refresh) {
             if (data.redirect_url) {
                 redirect(data.redirect_url);
@@ -110,8 +142,8 @@ class SignatureForm extends Component {
             // do not resolve if we reload the page
             return new Promise(() => {});
         }
-        this.state.error = data.error || false;
-        this.state.success = !data.error && {
+        this.state.error = false;
+        this.state.success = {
             message: data.message,
             redirectUrl: data.redirect_url,
             redirectMessage: data.redirect_message,

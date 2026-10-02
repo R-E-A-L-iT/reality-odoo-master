@@ -522,6 +522,12 @@ import { validateRentalDates } from "./rental_dates";
 		},
 
 		_updateTotal: function (total) {
+			// /select does not return a total. Writing that missing value
+			// stringifies to "undefined" on the first <b> in #portalTotal,
+			// which is the sign dialog amount ("For an amount of").
+			if (total === undefined || total === null || total === "undefined") {
+				return;
+			}
 			var div = document.querySelector("#portalTotal b");
 			if (div != null) {
 				document.querySelector("#portalTotal b").innerHTML = total;

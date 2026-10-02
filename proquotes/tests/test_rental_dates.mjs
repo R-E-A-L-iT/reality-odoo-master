@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { parsePortalDate, validateRentalDates } from "../static/src/JS/rental_dates.js";
+import { parsePortalDate, signBlockKind, validateRentalDates } from "../static/src/JS/rental_dates.js";
 import { autoSignNameBlocked } from "../static/src/JS/signer_name.js";
 
 function check(start, end) {
@@ -46,5 +46,14 @@ assert.equal(autoSignNameBlocked("Jane Customer", "auto"), false);
 assert.equal(autoSignNameBlocked("Jane Portal", "auto"), false);
 assert.equal(autoSignNameBlocked(publicUser, "draw"), false);
 assert.equal(autoSignNameBlocked("", "auto"), false);
+
+// Accept & Sign: a cleared date is a missing-date block, not a quiet incomplete.
+assert.equal(signBlockKind(null), null);
+assert.equal(signBlockKind("order"), "order");
+assert.equal(signBlockKind("invalid"), "invalid");
+assert.equal(signBlockKind("incomplete"), "missing");
+assert.equal(signBlockKind(check("", "2026-09-20").reason), "missing");
+assert.equal(signBlockKind(check("2026-09-17", "2026-09-02").reason), "order");
+assert.equal(signBlockKind(check("2026-09-17", "2026-09-20").reason), null);
 
 console.log("rental date checks ok");

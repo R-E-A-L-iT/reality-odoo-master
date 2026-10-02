@@ -13,7 +13,11 @@ from odoo.addons.website.controllers import form
 from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
-from odoo.addons.proquotes.models.rental_portal_dates import normalize_lang_code
+from odoo.addons.proquotes.models.rental_portal_dates import (
+    normalize_lang_code,
+    posted_sign_block_key,
+    rental_message,
+)
 from odoo.addons.website.controllers.main import Website as WebsiteINH
 from odoo.osv import expression
 import re
@@ -515,7 +519,8 @@ class QuotePortalFix(cPortal):
     """
     
     @http.route(['/my/orders/<int:order_id>/accept'], type='json', auth="public", website=True)
-    def portal_quote_accept(self, order_id, access_token=None, name=None, signature=None):
+    def portal_quote_accept(self, order_id, access_token=None, name=None, signature=None,
+                             rental_start=None, rental_end=None):
         # get from query string if not on json param
         access_token = access_token or request.httprequest.args.get('access_token')
         try:
@@ -530,7 +535,15 @@ class QuotePortalFix(cPortal):
 
         # Rental quotes need a usable period before the signature is stored.
         # The signature write commits on its own, so this has to run first.
-        rental_error = order_sudo.portal_rental_sign_error(_portal_lang_code())
+        # Dates posted from the portal inputs are checked as well: clearing
+        # an input does not save, so the stored period can still look valid.
+        lang = _portal_lang_code()
+        posted_key = posted_sign_block_key(
+            bool(order_sudo.is_rental_order), rental_start, rental_end
+        )
+        if posted_key:
+            return {'error': rental_message(posted_key, lang)}
+        rental_error = order_sudo.portal_rental_sign_error(lang)
         if rental_error:
             return {'error': rental_error}
 
