@@ -203,8 +203,10 @@ class PortalRentalDateTests(unittest.TestCase):
         self.assertLess(sign.index("portal_rental_sign_error"), sign.index("'signed_by'"))
         self.assertIn("rental_start=None, rental_end=None", sign)
         js = (ROOT / "static/src/JS/rental.js").read_text(encoding="utf-8")
-        self.assertLess(js.index("portalRentalSignBlock"), js.index("preventDefault"))
+        self.assertIn("show.bs.modal", js)
+        self.assertIn("guardSignModalShow", js)
         self.assertIn("modalaccept", js)
+        self.assertNotIn("data-bs-target='#modalaccept'", js)
         form = (ROOT / "static/src/JS/signature_form.js").read_text(encoding="utf-8")
         submit = form.split("async onClickSubmit", 1)[1]
         self.assertLess(submit.index("portalRentalSignBlock"), submit.index("this.rpc"))
