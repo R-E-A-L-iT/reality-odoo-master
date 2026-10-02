@@ -335,17 +335,27 @@ class invoice(models.Model):
                 invoice_object.message_subscribe(partner_ids=[partner.id])
 
 
-        # Find the related sale orders
-        sale_orders = invoice_object.invoice_line_ids.mapped('sale_line_ids.order_id')
-
-        for order in sale_orders:
-            for line in invoice_object.invoice_line_ids:
-                # Get the corresponding sale order line
-                sale_line = line.sale_line_ids.filtered(lambda l: l.order_id == order)
-
-                # Remove the invoice line if the related sale line is not selected
-                if sale_line and not sale_line.selected:
-                    line.unlink()
+        # Drop draft customer-invoice product lines whose sale lines are all
+        # unselected. ``selected`` is 'true'/'false', so ``not selected`` never
+        # matched. Refunds are left alone so a credit note can still reverse a
+        # posted unselected line in full. Section and note lines are left
+        # alone: on account.move.line, display_type is 'product' for a real
+        # product line, and a sale section is not an unselected product line.
+        lines_to_drop = self.env['account.move.line']
+        for move in invoice_object:
+            if move.move_type != 'out_invoice' or move.state != 'draft':
+                continue
+            for line in move.invoice_line_ids:
+                if line.display_type not in (False, 'product'):
+                    continue
+                sale_lines = line.sale_line_ids
+                if sale_lines and all(
+                    sale_line._proquotes_is_unselected_product_line()
+                    for sale_line in sale_lines
+                ):
+                    lines_to_drop |= line
+        if lines_to_drop:
+            lines_to_drop.unlink()
 
         return invoice_object
 
