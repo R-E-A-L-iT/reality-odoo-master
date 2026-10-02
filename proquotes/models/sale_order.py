@@ -246,7 +246,29 @@ class order(models.Model):
     # partner_ids = fields.Many2many("res.partner", "display_name", string="Contacts")
     email_contacts = fields.Many2many("res.partner", "display_name", string="Email Contacts")
 
-    products = fields.One2many(related="partner_id.products", readonly=True)
+    products = fields.One2many(
+        "stock.lot",
+        string="Products",
+        compute="_compute_customer_products",
+        compute_sudo=False,
+        readonly=True,
+    )
+
+    @api.depends("partner_id")
+    @api.depends_context("allowed_company_ids")
+    def _compute_customer_products(self):
+        """Customer lots the salesperson may read in the ticked companies.
+
+        Not a related field: related fields compute as superuser, so the
+        form then tries to read lots from companies that are not ticked.
+        """
+        Lot = self.env["stock.lot"]
+        for order in self:
+            partner = order.partner_id
+            if not partner.id:
+                order.products = Lot.browse()
+            else:
+                order.products = Lot.search(partner._customer_product_lot_domain())
 
     customer_po_number = fields.Char(string="PO Number")
 
