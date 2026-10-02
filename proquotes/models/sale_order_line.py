@@ -156,22 +156,34 @@ class SaleOrderLine(models.Model):
             self.optional = 'yes'
         else:
             self.optional = 'no'
+
+    def _proquotes_align_selection_flags(self, vals):
+        """Copy string flags onto booleans, or the other way, on a real write.
+
+        The form checkbox edits the booleans and the portal edits ``selected``.
+        This keeps one write from leaving them apart. It must not run from a
+        compute: reading the form used to save the line and recompute totals.
+        """
+        vals = dict(vals)
+        if 'selected' in vals and 'is_selected' not in vals:
+            vals['is_selected'] = vals['selected'] == 'true'
+        elif 'is_selected' in vals and 'selected' not in vals:
+            vals['selected'] = 'true' if vals['is_selected'] else 'false'
+        if 'optional' in vals and 'is_optional' not in vals:
+            vals['is_optional'] = vals['optional'] == 'yes'
+        elif 'is_optional' in vals and 'optional' not in vals:
+            vals['optional'] = 'yes' if vals['is_optional'] else 'no'
+        if 'quantityLocked' in vals and 'is_quantityLocked' not in vals:
+            vals['is_quantityLocked'] = vals['quantityLocked'] == 'yes'
+        elif 'is_quantityLocked' in vals and 'quantityLocked' not in vals:
+            vals['quantityLocked'] = 'yes' if vals['is_quantityLocked'] else 'no'
+        return vals
+
+    @api.depends('selected')
     def _check_selected_line(self):
+        """Display helper only. Do not assign stored fields from here."""
         for rec in self:
-            rec.demo_selected = False
-            rec.is_quantityLocked = False
-            if rec.selected == 'true':
-                rec.is_selected = True
-            else:
-                rec.is_selected = False
-            if rec.optional == 'yes':
-                rec.is_optional = True
-            else:
-                rec.is_optional = False
-            if rec.quantityLocked == 'yes':
-                rec.is_quantityLocked = True
-            else:
-                rec.is_quantityLocked = False
+            rec.demo_selected = rec.selected == 'true'
 
     def get_sale_order_line_multiline_description_sale(self, product):
         return product.get_product_multiline_description_sale()
@@ -322,6 +334,7 @@ class SaleOrderLine(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        vals_list = [self._proquotes_align_selection_flags(vals) for vals in vals_list]
         # Trace EVERY sale.order.line creation so we can see exactly when and
         # how Odoo adds spurious lines during rental pickup/return.
         for vals in vals_list:
@@ -393,6 +406,7 @@ class SaleOrderLine(models.Model):
 
 
     def write(self, vals):
+        vals = self._proquotes_align_selection_flags(vals)
         orders_before = self._orders_to_retax()
 
         res = super().write(vals)

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from unittest.mock import patch
 
+from lxml import etree
+
 from odoo import Command
 from odoo.tests import TransactionCase, tagged
 
@@ -172,3 +174,93 @@ class TestOptionalLineTax(TransactionCase):
         optional.write({'is_selected': False, 'selected': 'false'})
         self.assertFalse(optional.is_selected)
         self._assert_amounts(order, 100.0, 13.0, 113.0)
+
+    def _form_read_spec(self):
+        """Field spec for the combined sale order form, including line fields."""
+        arch = etree.fromstring(self.env['sale.order'].get_view(view_type='form')['arch'])
+        spec = {}
+
+        def add_field(target, node):
+            name = node.get('name')
+            if not name or name in target:
+                return
+            children = {}
+            for sub in node.xpath(
+                './tree/field[@name]|./list/field[@name]|./form/field[@name]|./kanban/field[@name]'
+            ):
+                add_field(children, sub)
+            target[name] = {'fields': children} if children else {}
+
+        for node in arch.xpath('//field[@name]'):
+            if node.xpath('ancestor::field[@name]'):
+                continue
+            add_field(spec, node)
+        spec.setdefault('amount_total', {})
+        spec.setdefault('amount_untaxed', {})
+        spec.setdefault('amount_tax', {})
+        spec.setdefault('tax_totals', {})
+        line_fields = spec.setdefault('order_line', {'fields': {}})['fields']
+        for fname in (
+            'demo_selected', 'is_selected', 'is_optional', 'selected',
+            'price_subtotal', 'price_tax', 'price_total', 'price_unit', 'tax_id',
+        ):
+            line_fields.setdefault(fname, {})
+        order_fields = self.env['sale.order']._fields
+        for fname in ('is_rental_order', 'rental_status', 'margin', 'margin_percent'):
+            if fname in order_fields:
+                spec.setdefault(fname, {})
+        return spec
+
+    def test_opening_confirmed_order_does_not_write(self):
+        """Reading the confirmed form must not save the order or post tracking.
+
+        Confirmed lines can have is_selected out of sync with selected, and a
+        stored total that no longer matches the lines. The form used to write
+        the booleans while computing demo_selected, which recomputed and
+        tracked amount_total.
+        """
+        order = self._create_quote()
+        order.action_confirm()
+        self.assertEqual(order.state, 'sale')
+        if 'is_rental_order' in order._fields:
+            order.with_context(mail_notrack=True, tracking_disable=True).write({
+                'is_rental_order': True,
+            })
+        self.env.flush_all()
+        self.env.cr.precommit.run()
+
+        selected = order.order_line.filtered(lambda line: line.sequence == 1)
+        self.env.cr.execute(
+            "UPDATE sale_order_line SET is_selected = FALSE WHERE id = %s",
+            [selected.id],
+        )
+        self.env.cr.execute(
+            "UPDATE sale_order SET amount_total = 0 WHERE id = %s",
+            [order.id],
+        )
+        self.env.invalidate_all()
+
+        order_model = type(order)
+        original_write = order_model._write
+        original_post = order_model.message_post
+        written_ids = []
+        posted_ids = []
+
+        def _spy_write(self, vals):
+            if order in self:
+                written_ids.append(order.id)
+            return original_write(self, vals)
+
+        def _spy_post(self, **kwargs):
+            if order in self:
+                posted_ids.append(order.id)
+            return original_post(self, **kwargs)
+
+        with patch.object(order_model, '_write', autospec=True, side_effect=_spy_write), \
+             patch.object(order_model, 'message_post', autospec=True, side_effect=_spy_post):
+            order.web_read(self._form_read_spec())
+            self.env.cr.flush()
+
+        self.assertFalse(written_ids)
+        self.assertFalse(posted_ids)
+        self.assertFalse(selected.is_selected)
