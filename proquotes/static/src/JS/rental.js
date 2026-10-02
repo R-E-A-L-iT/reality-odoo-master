@@ -3,7 +3,7 @@
 
 import { jsonrpc } from "@web/core/network/rpc_service";
 import publicWidget from "@web/legacy/js/public/public_widget";
-import { validateRentalDates } from "./rental_dates";
+import { signBlockKind, validateRentalDates } from "./rental_dates";
 
 const SAVE_DELAY_MS = 600;
 
@@ -17,6 +17,60 @@ export function flushPortalRentalDates() {
     return Promise.resolve({ skipped: true });
 }
 
+const SIGN_DATASET = {
+    order: "msgOrder",
+    invalid: "msgInvalid",
+    missing: "msgMissing",
+};
+
+function signFallback(kind) {
+    const french = (document.documentElement.lang || "").toLowerCase().startsWith("fr");
+    if (kind === "order") {
+        return french
+            ? "La date de début de location doit être antérieure ou égale à la date de fin de location."
+            : "The rental start date must be on or before the rental end date.";
+    }
+    if (kind === "invalid") {
+        return french
+            ? "Veuillez saisir une date de début et une date de fin de location valides."
+            : "Enter a valid rental start date and a valid rental end date.";
+    }
+    return french
+        ? "Veuillez choisir une date de début et une date de fin de location avant de signer."
+        : "Please choose both rental start and end dates before signing.";
+}
+
+/**
+ * Block Accept & Sign when the rental inputs are editable but not a usable period.
+ * Returns the inline message, or null when signing may continue (not a rental,
+ * inputs disabled, or both dates valid). Shows the same #rental-dates-error
+ * treatment used while editing.
+ */
+export function portalRentalSignBlock() {
+    const start = document.getElementById("rental-start");
+    const end = document.getElementById("rental-end");
+    if (!start || !end || start.disabled || end.disabled) {
+        return null;
+    }
+    const verdict = validateRentalDates(start.value, end.value);
+    if (verdict.ok) {
+        return null;
+    }
+    const kind = signBlockKind(verdict.reason);
+    const err = document.getElementById("rental-dates-error");
+    const message = (err && err.dataset[SIGN_DATASET[kind]]) || signFallback(kind);
+    if (err) {
+        err.textContent = message;
+        err.hidden = false;
+    }
+    start.classList.add("is-invalid");
+    end.classList.add("is-invalid");
+    if (err && typeof err.scrollIntoView === "function") {
+        err.scrollIntoView({ block: "center" });
+    }
+    return message;
+}
+
 publicWidget.registry.rental = publicWidget.Widget.extend({
     selector: ".o_portal_sale_sidebar",
     events: {
@@ -24,6 +78,7 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         "input #rental-end": "_onRentalDateEdited",
         "change #rental-start": "_onRentalDateEdited",
         "change #rental-end": "_onRentalDateEdited",
+        "click a[data-bs-target='#modalaccept']": "_onAcceptSignClick",
     },
 
     async start() {
@@ -50,6 +105,16 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
             flushSave = null;
         }
         return this._super(...arguments);
+    },
+
+    _onAcceptSignClick(ev) {
+        // The link opens the sign dialog by itself. Stop that when the
+        // period is missing or invalid, and leave the inline message.
+        if (!portalRentalSignBlock()) {
+            return;
+        }
+        ev.preventDefault();
+        ev.stopPropagation();
     },
 
     _onRentalDateEdited() {
@@ -228,7 +293,7 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         if (newTotal && oldTotal) {
             oldTotal.innerHTML = newTotal.innerHTML;
         }
-        if (data.order_amount_total) {
+        if (data.order_amount_total && data.order_amount_total !== "undefined") {
             const bold = document.querySelector("#portalTotal b");
             if (bold) {
                 bold.textContent = data.order_amount_total;
