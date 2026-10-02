@@ -1999,6 +1999,12 @@ class order(models.Model):
     @api.depends_context('lang')
     @api.depends('order_line.tax_id', 'order_line.price_unit', 'order_line.selected', 'amount_total', 'amount_untaxed', 'currency_id')
     def _compute_tax_totals(self):
+        """Fill the tax widget only.
+
+        Stored amount_untaxed / amount_tax / amount_total are owned by
+        ``_compute_amounts``. Writing them here saved the order whenever
+        something read ``tax_totals``, including opening the form.
+        """
         for order in self:
             order = order.with_company(order.company_id)
             order_lines = order.order_line.filtered(lambda x: x._proquotes_counts_in_totals())
@@ -2006,8 +2012,6 @@ class order(models.Model):
                 [x._convert_to_tax_base_line_dict() for x in order_lines],
                 order.currency_id or order.company_id.currency_id,
             )
-            # _logger.info('>>>>>>>>>>>>>>>>. order.tax_totals: %s,', order.tax_totals)
-            order.sudo().update({'amount_total': float(order.tax_totals['amount_total'])})
 
     def _notify_get_recipients_groups(self, message, model_description, msg_vals=None):
         """ Create individual recipient groups with partner-specific tracking URLs, avoiding duplicates. """
@@ -2141,7 +2145,14 @@ class order(models.Model):
         
         return groups
 
-    @api.depends('order_line.price_subtotal', 'order_line.price_tax', 'order_line.price_total', 'order_line.selected')
+    @api.depends(
+        'order_line.price_subtotal',
+        'order_line.price_tax',
+        'order_line.price_total',
+        'order_line.selected',
+        'order_line.is_selected',
+        'order_line.is_optional',
+    )
     def _compute_amounts(self):
         """Stored order totals include only lines the customer selected.
 
@@ -2149,6 +2160,12 @@ class order(models.Model):
         filter selected lines, but that is the Odoo <= 14 method name and
         nothing in 17 calls it, so unselected optional lines kept their tax
         in amount_tax.
+
+        ``is_selected`` and ``is_optional`` are in the depends so a portal
+        or backend toggle recomputes these stored totals. The lines that
+        count are still chosen by ``_proquotes_counts_in_totals``
+        (``selected == 'true'``). The backend checkbox copies
+        ``is_selected`` onto ``selected`` before save.
         """
         for order in self:
             order = order.with_company(order.company_id)
