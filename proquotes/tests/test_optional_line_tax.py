@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from unittest.mock import patch
+
 from odoo import Command
 from odoo.tests import TransactionCase, tagged
 
@@ -120,15 +122,35 @@ class TestOptionalLineTax(TransactionCase):
     def test_reading_tax_totals_does_not_change_write_date(self):
         """Reading the tax widget must not save the order.
 
-        flush, record write_date, invalidate, read tax_totals, flush.
+        In tests, write_date comes from the transaction's fixed cr.now() and
+        write_uid is the same user, so those values stay equal even if the
+        order is saved. The real check is that sale.order._write is not
+        called for this order.
+
+        Only the widget is invalidated. Invalidating stored amount fields
+        makes their recompute look like a change (empty cache) and the
+        following flush calls _write even when the numbers are unchanged.
         """
         order = self._create_quote()
         self.env.flush_all()
         write_date = order.write_date
         write_uid = order.write_uid
-        order.invalidate_recordset()
-        self.assertIn('amount_total', order.tax_totals)
-        self.env.flush_all()
+        order.invalidate_recordset(['tax_totals'])
+
+        order_model = type(order)
+        original_write = order_model._write
+        written_ids = []
+
+        def _spy_write(self, vals):
+            if order in self:
+                written_ids.append(order.id)
+            return original_write(self, vals)
+
+        with patch.object(order_model, '_write', autospec=True, side_effect=_spy_write):
+            self.assertIn('amount_total', order.tax_totals)
+            self.env.flush_all()
+
+        self.assertFalse(written_ids)
         self.assertEqual(order.write_date, write_date)
         self.assertEqual(order.write_uid, write_uid)
 
