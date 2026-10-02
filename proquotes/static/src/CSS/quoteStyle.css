@@ -660,6 +660,17 @@ label[for="terms-checkbox"] {
 	outline: none;
 }
 
+#rental-info-section .form-control.is-invalid {
+	border-color: #ffd666 !important;
+}
+
+#rental-info-section .rental-dates-error {
+	color: #ffd666;
+	font-size: 0.95rem;
+	font-weight: 600;
+	margin: 4px 0 0;
+}
+
 /* Terms folding */
 #terms-checkbox:checked ~ #rentalTerms {
     display: block;

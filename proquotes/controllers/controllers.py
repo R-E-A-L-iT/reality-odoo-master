@@ -13,12 +13,22 @@ from odoo.addons.website.controllers import form
 from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
+from odoo.addons.proquotes.models.rental_portal_dates import normalize_lang_code
 from odoo.addons.website.controllers.main import Website as WebsiteINH
 from odoo.osv import expression
 import re
 from werkzeug.utils import redirect
 
 _logger = logging.getLogger(__name__)
+
+
+def _portal_lang_code():
+    """Website language for portal messages (``fr_CA`` vs English)."""
+    lang = getattr(request, "lang", None)
+    code = normalize_lang_code(lang) if lang else ""
+    if code:
+        return code
+    return request.env.context.get("lang") or "en_US"
 
 
 # class CustomPortalSaleOrder(http.Controller):
@@ -517,6 +527,12 @@ class QuotePortalFix(cPortal):
             return {'error': _('The order is not in a state requiring customer signature.')}
         if not signature:
             return {'error': _('Signature is missing.')}
+
+        # Rental quotes need a usable period before the signature is stored.
+        # The signature write commits on its own, so this has to run first.
+        rental_error = order_sudo.portal_rental_sign_error(_portal_lang_code())
+        if rental_error:
+            return {'error': rental_error}
 
         try:
             order_sudo.write({

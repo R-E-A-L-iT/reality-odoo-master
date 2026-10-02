@@ -43,6 +43,7 @@
             "proquotes/static/src/CSS/backend.css",
             "proquotes/static/src/CSS/ccp_selection.css",
             "proquotes/static/src/JS/fold.js",
+            "proquotes/static/src/JS/rental_dates.js",
             "proquotes/static/src/JS/rental.js",
             "proquotes/static/src/JS/poNumber.js",
             "proquotes/static/src/JS/rental.js",
@@ -62,6 +63,7 @@
             "proquotes/static/src/CSS/invoicePreview.css",
             "proquotes/static/src/JS/price.js",
             "proquotes/static/src/JS/fold.js",
+            "proquotes/static/src/JS/rental_dates.js",
             "proquotes/static/src/JS/rental.js",
             "proquotes/static/src/JS/poNumber.js",
             "proquotes/static/src/JS/rental.js",
@@ -85,7 +87,7 @@
         ],
     },
 
-    "version": "17.0.17.1",
+    "version": "17.0.17.2",
 
     # always loaded
     "data": [

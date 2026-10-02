@@ -6,6 +6,7 @@
 import { jsonrpc } from "@web/core/network/rpc_service";
 import { renderToFragment } from "@web/core/utils/render";
 import publicWidget from "@web/legacy/js/public/public_widget";
+import { validateRentalDates } from "./rental_dates";
 
 //	var publicWidget = require("web.public.widget");
 
@@ -15,8 +16,10 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 			"change .optionalSectionCheckbox": "_updateSectionSelectionEvent",
 			"change .priceChange": "_updatePriceTotalsEvent",
 			"change .quantityChange": "_updateQuantityEvent",
-			"change #rental-start": "_updatePriceTotalsEvent",
-			"change #rental-end": "_updatePriceTotalsEvent",
+			"input #rental-start": "_onRentalDatesInput",
+			"input #rental-end": "_onRentalDatesInput",
+			"change #rental-start": "_onRentalDatesInput",
+			"change #rental-end": "_onRentalDatesInput",
 		},
 
 		async start() {
@@ -36,6 +39,14 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 
 		_onLoad: function () {
 			this._updatePriceTotalsEvent();
+			this._rentalValueTotal();
+		},
+
+		_onRentalDatesInput: function () {
+			// Client-side rental estimate only. Saving the dates, and
+			// re-rendering the server totals, is rental.js. This must not
+			// post /select: that replaces the whole quote, including the
+			// date inputs and any inline validation message.
 			this._rentalValueTotal();
 		},
 
@@ -217,7 +228,11 @@ import publicWidget from "@web/legacy/js/public/public_widget";
 				return;
 			}
 
-			if (!startDate || !endDate || startDate.value == "" || endDate.value == "") {
+			const rentalVerdict = validateRentalDates(
+				startDate && startDate.value,
+				endDate && endDate.value
+			);
+			if (!startDate || !endDate || !rentalVerdict.ok) {
 				if (rentalEstimateEnglish != undefined) {
 					rentalEstimateEnglish.innerHTML = "$ 0.00";
 				} else if (rentalEstimateFrench != undefined) {

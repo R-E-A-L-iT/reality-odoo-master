@@ -22,6 +22,14 @@ from odoo.http import request, route
 from odoo.tools import float_is_zero, float_compare
 from odoo import models, fields, api
 
+from .rental_portal_dates import (
+    choose_tz_name,
+    local_midnight_to_utc,
+    portal_calendar_date,
+    rental_message,
+    sign_block_reason,
+)
+
 _logger = logging.getLogger(__name__)
 
 VIEWED_XMLIDS = {'sale.mt_order_viewed', 'sale.mt_quote_viewed'}
@@ -98,6 +106,99 @@ class order(models.Model):
             else:
                 order.duration_days = 0
             order.remaining_hours = 0
+
+    def _portal_rental_tz_name(self):
+        """Timezone for a portal rental calendar day.
+
+        The backend datetime widget uses the viewing user's timezone. Portal
+        visitors are the public user, whose timezone is empty or UTC and would
+        store the typed day as midnight UTC (the previous evening in Toronto).
+        Prefer the order company's timezone so the portal and company staff
+        show the same calendar day. A signed-in user's timezone, the request
+        timezone, and the salesperson are fallbacks.
+        """
+        self.ensure_one()
+        company = self.company_id
+        partner_tz = company.partner_id.tz if company and company.partner_id else False
+        calendar_tz = False
+        if company:
+            try:
+                calendar = company.resource_calendar_id
+            except Exception:
+                calendar = False
+            if calendar:
+                calendar_tz = calendar.tz
+        user = self.env.user
+        user_tz = False
+        if user and user.tz:
+            is_public = False
+            is_public_fn = getattr(user, "_is_public", None)
+            if callable(is_public_fn):
+                is_public = bool(is_public_fn())
+            if not is_public:
+                user_tz = user.tz
+        salesperson_tz = self.user_id.tz if self.user_id else False
+        return choose_tz_name([
+            partner_tz,
+            calendar_tz,
+            user_tz,
+            self.env.context.get("tz"),
+            salesperson_tz,
+        ])
+
+    def portal_rental_date(self, dt):
+        """``YYYY-MM-DD`` for the portal date input. Empty when ``dt`` is unset."""
+        self.ensure_one()
+        if not dt:
+            return ""
+        return portal_calendar_date(dt, self._portal_rental_tz_name())
+
+    def portal_rental_datetime_utc(self, date_str):
+        """Portal calendar day → naive UTC datetime (local midnight)."""
+        self.ensure_one()
+        return local_midnight_to_utc(date_str, self._portal_rental_tz_name())
+
+    def portal_rental_sign_error(self, lang=None):
+        """Message blocking Accept & Sign, or ``None`` when the period is usable."""
+        self.ensure_one()
+        reason = sign_block_reason(
+            bool(self.is_rental_order),
+            self.rental_start_date,
+            self.rental_return_date,
+        )
+        if not reason:
+            return None
+        return rental_message(reason, lang)
+
+    def _portal_apply_rental_prices(self):
+        """Reprice rental lines from the dates just saved.
+
+        Core ``_recompute_rental_prices`` walks lines flagged ``is_rental``.
+        Portal quotes price through the custom formula, which keys off
+        ``is_rental_order`` and ``rent_ok`` instead, so those lines are
+        updated from ``_get_pricelist_price`` as well.
+        """
+        self.ensure_one()
+        if not self.is_rental_order:
+            return
+        if getattr(self, "has_rented_products", False):
+            self._recompute_rental_prices()
+        lines = self.order_line.filtered(
+            lambda line: (
+                not line.display_type
+                and line.product_id
+                and line.product_id.rent_ok
+                and line.product_id.product_tmpl_id.use_custom_rental_price
+                and line._get_custom_rental_daily_price()
+            )
+        )
+        for line in lines:
+            price = line._get_pricelist_price()
+            rounding = self.currency_id.rounding or 0.01
+            if float_compare(line.price_unit, price, precision_rounding=rounding) != 0:
+                line.price_unit = price
+        if hasattr(self, "_compute_tax_totals"):
+            self._compute_tax_totals()
 
     partner_id = fields.Many2one(
         'res.partner', 

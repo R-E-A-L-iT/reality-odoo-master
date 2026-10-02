@@ -7,6 +7,8 @@ import { redirect } from "@web/core/utils/urls";
 import { NameAndSignature } from "@web/core/signature/name_and_signature";
 import { useService } from "@web/core/utils/hooks";
 import { patch } from "@web/core/utils/patch";
+import { flushPortalRentalDates } from "./rental";
+import { validateRentalDates } from "./rental_dates";
 
 /**
  * This Component is a signature request form. It uses
@@ -65,6 +67,32 @@ class SignatureForm extends Component {
      * @returns {Promise}
      */
     async onClickSubmit() {
+        const start = document.getElementById("rental-start");
+        const end = document.getElementById("rental-end");
+        if (start && end) {
+            // Save the period first. Accept writes the signature before
+            // confirm, so a missing or invalid period has to be rejected
+            // here and on the server before that write.
+            const verdict = validateRentalDates(start.value, end.value);
+            if (!verdict.ok) {
+                const err = document.getElementById("rental-dates-error");
+                const message = (err && (verdict.reason === "order" ? err.dataset.msgOrder : err.dataset.msgInvalid))
+                    || "Enter a valid rental start date and a valid rental end date.";
+                if (err) {
+                    err.textContent = message;
+                    err.hidden = false;
+                }
+                start.classList.add("is-invalid");
+                end.classList.add("is-invalid");
+                this.state.error = message;
+                return;
+            }
+            const saved = await flushPortalRentalDates();
+            if (saved && saved.error) {
+                this.state.error = saved.error;
+                return;
+            }
+        }
         const name = this.signature.name;
         if (
             (name === 'Public User' ||
