@@ -3,18 +3,66 @@
 
 import { jsonrpc } from "@web/core/network/rpc_service";
 import publicWidget from "@web/legacy/js/public/public_widget";
-import { guardSignModalShow, rentalDatesSavePayload, runRentalStartEdit, signBlockKind, validateRentalDates } from "./rental_dates";
+import { guardSignModalShow, modalAmountAfterFlush, plainDisplayedAmount, priceGateAfterSave, rentalDatesSavePayload, runRentalStartEdit, signBlockKind, signClickAction, updatingPriceMessage, validateRentalDates } from "./rental_dates";
 
 const SAVE_DELAY_MS = 600;
 
 // Accept & Sign flushes a pending date edit before the signature is written.
-let flushSave = null;
-
+// The function lives on document so a second copy of this file (it is in
+// both asset bundles) flushes the widget that actually saves.
 export function flushPortalRentalDates() {
-    if (typeof flushSave === "function") {
-        return flushSave();
+    const flush = typeof document !== "undefined" && document.__proquotesFlushRentalDates;
+    if (typeof flush === "function") {
+        return flush();
     }
     return Promise.resolve({ skipped: true });
+}
+
+export function readPriceGate() {
+    const root = typeof document !== "undefined" && document.documentElement;
+    const gate = root && root.dataset.proquotesPriceGate;
+    return gate || "ready";
+}
+
+/**
+ * Block the signature submit while the total on screen is not the total
+ * for the dates on screen. ``null`` when signing may continue.
+ */
+export function portalPriceSignBlock() {
+    const action = signClickAction(readPriceGate());
+    if (action.open) {
+        return null;
+    }
+    if (readPriceGate() === "error") {
+        const err = document.getElementById("rental-dates-error");
+        if (err && !err.hidden && err.textContent) {
+            return err.textContent;
+        }
+    }
+    return updatingPriceMessage(document.documentElement.lang);
+}
+
+/**
+ * Remember the server total the customer is looking at, and write it into
+ * the sign dialog. ``formatted`` is the currency string; ``amount`` is the
+ * plain number sent back with Accept & Sign.
+ */
+export function rememberDisplayedAmount(amount, formatted) {
+    const root = document.documentElement;
+    const plain = plainDisplayedAmount(amount);
+    if (plain !== null && root) {
+        root.dataset.proquotesDisplayedAmount = plain;
+    }
+    if (!formatted || formatted === "undefined") {
+        return;
+    }
+    document.querySelectorAll('[data-id="total_amount"]').forEach((node) => {
+        node.textContent = formatted;
+    });
+    const bold = document.querySelector("#portalTotal b");
+    if (bold) {
+        bold.textContent = formatted;
+    }
 }
 
 const SIGN_DATASET = {
@@ -75,7 +123,85 @@ export function portalRentalSignBlock() {
  * Bootstrap opens #modalaccept from a document click listener that ignores
  * preventDefault. show.bs.modal is the event it does cancel.
  */
+export function readDisplayedAmount() {
+    const root = document.documentElement;
+    const stored = (root && root.dataset.proquotesDisplayedAmount) || "";
+    return plainDisplayedAmount(stored) || "";
+}
+
+function openAcceptModal() {
+    const modal = document.getElementById("modalaccept");
+    const ModalApi = window.bootstrap && window.bootstrap.Modal;
+    if (!modal || !ModalApi) {
+        return;
+    }
+    ModalApi.getOrCreateInstance(modal).show();
+}
+
+function flushAndMaybeOpen() {
+    if (document.__proquotesSignWait) {
+        return document.__proquotesSignWait;
+    }
+    const flush = document.__proquotesFlushRentalDates;
+    const run = Promise.resolve(
+        typeof flush === "function" ? flush() : { skipped: true }
+    ).then((result) => {
+        document.__proquotesSignWait = null;
+        if (result && result.superseded) {
+            if (signClickAction(readPriceGate()).open) {
+                openAcceptModal();
+            }
+            return result;
+        }
+        if (result && result.error) {
+            return result;
+        }
+        const amount = modalAmountAfterFlush(
+            null,
+            result && (result.order_amount_total || result.amount_total)
+        );
+        if (amount !== null && result) {
+            rememberDisplayedAmount(result.amount_total, result.order_amount_total || amount);
+        }
+        if (signClickAction(readPriceGate()).open) {
+            openAcceptModal();
+        }
+        return result;
+    }).catch((error) => {
+        document.__proquotesSignWait = null;
+        throw error;
+    });
+    document.__proquotesSignWait = run;
+    return run;
+}
+
+function onAcceptClick(ev) {
+    const target = ev.target && ev.target.closest && ev.target.closest("a, button");
+    if (!target || target.getAttribute("data-bs-target") !== "#modalaccept") {
+        return;
+    }
+    const action = signClickAction(readPriceGate());
+    if (action.open) {
+        return;
+    }
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (action.flush && action.openAfterSuccess) {
+        flushAndMaybeOpen();
+    }
+}
+
 function onSignModalShow(ev) {
+    const action = signClickAction(readPriceGate());
+    if (ev && ev.target && ev.target.id === "modalaccept" && !action.open) {
+        if (typeof ev.preventDefault === "function") {
+            ev.preventDefault();
+        }
+        if (action.flush && action.openAfterSuccess) {
+            flushAndMaybeOpen();
+        }
+        return;
+    }
     const start = document.getElementById("rental-start");
     const end = document.getElementById("rental-end");
     const verdict = start && end && !start.disabled && !end.disabled
@@ -89,6 +215,7 @@ function onSignModalShow(ev) {
 
 if (typeof document !== "undefined" && !document.__proquotesSignModalGuard) {
     document.__proquotesSignModalGuard = true;
+    document.addEventListener("click", onAcceptClick, true);
     document.addEventListener("show.bs.modal", onSignModalShow);
 }
 
@@ -98,6 +225,23 @@ if (typeof document !== "undefined" && !document.__proquotesSignModalGuard) {
 // documentElement, which every copy can see. While it is set, no copy may
 // schedule a save. The start edit schedules the one save afterwards, and
 // that save posts both days.
+// rental.js is listed twice in each asset bundle. Each copy has its own
+// widget instance, so the debounce timer, the request in flight, and the
+// last saved pair have to live on document. Otherwise one copy can apply
+// an older total after the other has already repriced.
+function rentalSaveState() {
+    if (!document.__proquotesRentalSave) {
+        document.__proquotesRentalSave = {
+            seq: 0,
+            inflight: null,
+            pending: null,
+            lastStart: null,
+            lastEnd: null,
+        };
+    }
+    return document.__proquotesRentalSave;
+}
+
 const AUTOSHIFT_FLAG = "proquotesAutoshift";
 
 function autoshiftRefreshingNow() {
@@ -179,8 +323,6 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
 
     async start() {
         await this._super(...arguments);
-        this._saveSeq = 0;
-        this._pendingSave = null;
         const table = this.el.querySelector("table#sales_order_table");
         const fromJquery = this.$el.find("table#sales_order_table").data() || {};
         this.orderDetail = {
@@ -189,18 +331,81 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         };
         const start = document.getElementById("rental-start");
         const end = document.getElementById("rental-end");
-        this._lastSavedStart = start ? start.value : "";
-        this._lastSavedEnd = end ? end.value : "";
+        const shared = rentalSaveState();
+        if (shared.lastStart === null || shared.lastEnd === null) {
+            shared.lastStart = start ? start.value : "";
+            shared.lastEnd = end ? end.value : "";
+        }
         this._syncEndMin();
-        flushSave = () => this._saveRentalDates();
+        const shown = document.getElementById("approve_total_var");
+        if (shown && shown.textContent && !readDisplayedAmount()) {
+            rememberDisplayedAmount(shown.textContent.trim(), "");
+        }
+        document.__proquotesFlushRentalDates = () => this._saveRentalDates();
+        document.__proquotesFlushOwner = this;
+        if (!document.documentElement.dataset.proquotesPriceGate) {
+            this._setPriceGate("ready");
+        }
     },
 
     destroy() {
-        this._cancelPendingSave();
-        if (flushSave) {
-            flushSave = null;
+        if (document.__proquotesFlushOwner === this) {
+            this._cancelPendingSave();
+            document.__proquotesFlushRentalDates = null;
+            document.__proquotesFlushOwner = null;
         }
         return this._super(...arguments);
+    },
+
+    _setPriceGate(gate) {
+        const root = document.documentElement;
+        if (root) {
+            root.dataset.proquotesPriceGate = gate;
+        }
+        const waiting = gate === "pending" || gate === "inflight";
+        document.querySelectorAll("#total, #portalTotal").forEach((el) => {
+            el.classList.toggle("proquotes-price-updating", waiting);
+        });
+        document.querySelectorAll("a, button").forEach((btn) => {
+            if (btn.getAttribute("data-bs-target") !== "#modalaccept") {
+                return;
+            }
+            btn.classList.toggle("proquotes-sign-waiting", gate !== "ready");
+            btn.setAttribute("aria-disabled", gate === "ready" ? "false" : "true");
+        });
+        document.querySelectorAll("#modalaccept button").forEach((btn) => {
+            btn.disabled = gate !== "ready";
+        });
+        this._priceStatusNodes().forEach((node) => {
+            if (waiting) {
+                node.hidden = false;
+                node.textContent = updatingPriceMessage(root && root.lang);
+            } else {
+                node.hidden = true;
+                node.textContent = "";
+            }
+        });
+    },
+
+    _priceStatusNodes() {
+        const spots = [
+            ["rental-price-status", document.querySelector("#portalTotal")],
+            ["rental-price-status-quote", document.querySelector("#total")],
+        ];
+        return spots.map(([id, before]) => {
+            let node = document.getElementById(id);
+            if (!node) {
+                node = document.createElement("p");
+                node.id = id;
+                node.className = "rental-price-status";
+                node.setAttribute("role", "status");
+                node.hidden = true;
+            }
+            if (before && before.parentNode && node.parentNode !== before.parentNode) {
+                before.parentNode.insertBefore(node, before);
+            }
+            return node;
+        });
     },
 
     _onRentalDateEdited(ev) {
@@ -220,6 +425,9 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         const verdict = validateRentalDates(start && start.value, end && end.value);
         if (!verdict.ok) {
             this._cancelPendingSave();
+            if (!rentalSaveState().inflight) {
+                this._setPriceGate(readPriceGate() === "error" ? "error" : "ready");
+            }
             if (verdict.reason === "order" || verdict.reason === "invalid") {
                 this._showError(this._message(verdict.reason));
             } else {
@@ -246,16 +454,19 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
 
     _scheduleSave() {
         this._cancelPendingSave();
-        this._pendingSave = setTimeout(() => {
-            this._pendingSave = null;
+        this._setPriceGate("pending");
+        const shared = rentalSaveState();
+        shared.pending = setTimeout(() => {
+            shared.pending = null;
             this._saveRentalDates();
         }, SAVE_DELAY_MS);
     },
 
     _cancelPendingSave() {
-        if (this._pendingSave) {
-            clearTimeout(this._pendingSave);
-            this._pendingSave = null;
+        const shared = rentalSaveState();
+        if (shared.pending) {
+            clearTimeout(shared.pending);
+            shared.pending = null;
         }
     },
 
@@ -300,7 +511,19 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
     },
 
     _saveRentalDates(allowFollowUp = true) {
-        this._cancelPendingSave();
+        const shared = rentalSaveState();
+        if (shared.pending) {
+            clearTimeout(shared.pending);
+            shared.pending = null;
+        }
+        if (shared.inflight) {
+            return shared.inflight.then((prior) => {
+                if (prior && prior.error) {
+                    return prior;
+                }
+                return this._saveRentalDates(false);
+            });
+        }
         const startEl = document.getElementById("rental-start");
         const endEl = document.getElementById("rental-end");
         const start = startEl ? startEl.value : "";
@@ -310,6 +533,7 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
         // have changed. A request that still arrives is rejected server-side
         // and shown from data.error below.
         if ((startEl && startEl.disabled) || (endEl && endEl.disabled)) {
+            this._setPriceGate("ready");
             return Promise.resolve({ success: true, unchanged: true });
         }
         const payload = rentalDatesSavePayload(start, end);
@@ -318,18 +542,29 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
             const kind = verdict.reason === "order" ? "order" : "invalid";
             const message = this._message(kind) || kind;
             this._showError(message);
+            this._setPriceGate("error");
             return Promise.resolve({ error: message });
         }
         const savedStart = payload.rental_start;
         const savedEnd = payload.rental_end;
-        if (savedStart === this._lastSavedStart && savedEnd === this._lastSavedEnd) {
-            return Promise.resolve({ success: true, unchanged: true });
+        if (savedStart === shared.lastStart && savedEnd === shared.lastEnd) {
+            this._setPriceGate("ready");
+            return Promise.resolve({
+                success: true,
+                unchanged: true,
+                amount_total: readDisplayedAmount(),
+                order_amount_total: (document.querySelector("#portalTotal b") || {}).textContent || "",
+            });
         }
         if (!this.orderDetail || !this.orderDetail.orderId) {
-            return Promise.resolve({ error: this._message("save") });
+            const message = this._message("save");
+            this._showError(message);
+            this._setPriceGate("error");
+            return Promise.resolve({ error: message });
         }
-        const seq = ++this._saveSeq;
-        return jsonrpc(
+        const seq = ++shared.seq;
+        this._setPriceGate("inflight");
+        const promise = jsonrpc(
             "/my/orders/" + this.orderDetail.orderId + "/update_rental_dates",
             {
                 access_token: this.orderDetail.token,
@@ -337,8 +572,8 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
                 rental_end: savedEnd,
             }
         ).then((data) => {
-            if (seq !== this._saveSeq) {
-                return { error: this._message("save") };
+            if (seq !== shared.seq) {
+                return { superseded: true };
             }
             const currentStart = document.getElementById("rental-start")?.value || "";
             const currentEnd = document.getElementById("rental-end")?.value || "";
@@ -347,8 +582,10 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
                 // moved (the dates the customer is looking at). Write those
                 // next, or the stored start stays on the pair that was posted.
                 if (allowFollowUp) {
+                    shared.inflight = null;
                     return this._saveRentalDates(false);
                 }
+                this._setPriceGate("error");
                 return { error: this._message("save") };
             }
             if (!data || data.error) {
@@ -363,21 +600,30 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
                         endEl.disabled = true;
                     }
                 }
+                this._setPriceGate("error");
                 return { error: message };
             }
-            this._lastSavedStart = savedStart;
-            this._lastSavedEnd = savedEnd;
+            shared.lastStart = savedStart;
+            shared.lastEnd = savedEnd;
             this._clearError();
             this._applyPriceUpdate(data);
+            this._setPriceGate(priceGateAfterSave(data));
             return data;
         }).catch(() => {
-            if (seq !== this._saveSeq) {
-                return { error: this._message("save") };
+            if (seq !== shared.seq) {
+                return { superseded: true };
             }
             const message = this._message("save");
             this._showError(message);
+            this._setPriceGate("error");
             return { error: message };
+        }).finally(() => {
+            if (shared.inflight === promise) {
+                shared.inflight = null;
+            }
         });
+        shared.inflight = promise;
+        return promise;
     },
 
     /**
@@ -399,10 +645,9 @@ publicWidget.registry.rental = publicWidget.Widget.extend({
             oldTotal.innerHTML = newTotal.innerHTML;
         }
         if (data.order_amount_total && data.order_amount_total !== "undefined") {
-            const bold = document.querySelector("#portalTotal b");
-            if (bold) {
-                bold.textContent = data.order_amount_total;
-            }
+            rememberDisplayedAmount(data.amount_total, data.order_amount_total);
+        } else if (data.amount_total !== undefined && data.amount_total !== null) {
+            rememberDisplayedAmount(data.amount_total, "");
         }
     },
 

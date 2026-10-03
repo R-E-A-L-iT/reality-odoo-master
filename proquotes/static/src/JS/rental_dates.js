@@ -217,6 +217,116 @@ export function signBlockKind(reason) {
  * @param {{ok: boolean}|null} verdict
  * @returns {boolean} true when the dialog must stay closed
  */
+/**
+ * What Accept & Sign should do while the rental total may be stale.
+ *
+ * ``pending`` and ``inflight`` are a date save that has not yet applied
+ * the server total for the dates on screen. The dialog stays closed, the
+ * save runs immediately, and the dialog opens only after that save
+ * succeeds. ``error`` stays closed. ``ready`` may open.
+ *
+ * @param {"ready"|"pending"|"inflight"|"error"|string} gate
+ * @returns {{open: boolean, flush: boolean, openAfterSuccess: boolean}}
+ */
+export function signClickAction(gate) {
+    if (gate === "pending" || gate === "inflight") {
+        return { open: false, flush: true, openAfterSuccess: true };
+    }
+    if (gate === "error") {
+        return { open: false, flush: false, openAfterSuccess: false };
+    }
+    return { open: true, flush: false, openAfterSuccess: false };
+}
+
+/**
+ * Gate after the save for the dates now on screen finishes.
+ * @param {{error?: string}|null|undefined} result
+ * @returns {"ready"|"error"}
+ */
+export function priceGateAfterSave(result) {
+    if (!result || result.error) {
+        return "error";
+    }
+    return "ready";
+}
+
+/**
+ * Plain number to send with Accept & Sign.
+ * A formatted currency string (``10 644,60 $``, ``$1,234.56``) is not a
+ * plain number and must not be sent.
+ * @param {string|number|null|undefined} value
+ * @returns {string|null}
+ */
+export function plainDisplayedAmount(value) {
+    if (value === undefined || value === null || value === "" || typeof value === "boolean") {
+        return null;
+    }
+    if (typeof value === "number") {
+        return Number.isFinite(value) ? String(value) : null;
+    }
+    const text = String(value).trim();
+    if (!/^-?\d+(\.\d+)?$/.test(text)) {
+        return null;
+    }
+    return Number.isFinite(Number(text)) ? text : null;
+}
+
+/**
+ * Total to remember after a portal update that is not a date save
+ * (optional line, quantity, section). The formatted currency string is
+ * for display only. The remembered amount stays the previous plain number
+ * when the response has no plain ``amount_total``.
+ * @param {string|number|null} previousAmount
+ * @param {{amount_total?: string|number, order_amount_total?: string}|null} payload
+ * @returns {string|null}
+ */
+export function displayedAmountAfterPortalUpdate(previousAmount, payload) {
+    const next = plainDisplayedAmount(payload && payload.amount_total);
+    if (next !== null) {
+        return next;
+    }
+    return plainDisplayedAmount(previousAmount);
+}
+
+/**
+ * Amount shown in the sign dialog after a flushed save.
+ * The server total, never the total that was on screen before this save.
+ * @param {string|number|null} previousAmount
+ * @param {string|number|null} serverAmount
+ * @returns {string|number|null}
+ */
+export function modalAmountAfterFlush(previousAmount, serverAmount) {
+    if (serverAmount === undefined || serverAmount === null || serverAmount === "") {
+        return null;
+    }
+    return serverAmount;
+}
+
+/**
+ * Pending save blocks the dialog. After the flush succeeds, the dialog
+ * may open and its amount is the server total.
+ * @param {string|number} previousAmount
+ * @param {string|number} serverAmount
+ */
+export function signFlowFromPendingSave(previousAmount, serverAmount) {
+    const during = signClickAction("pending");
+    const after = signClickAction(priceGateAfterSave({ success: true }));
+    return {
+        blockedWhilePending: during.open === false && during.flush === true && during.openAfterSuccess === true,
+        opensAfterFlush: after.open === true,
+        modalAmount: modalAmountAfterFlush(previousAmount, serverAmount),
+    };
+}
+
+/**
+ * @param {string} [lang]
+ * @returns {string}
+ */
+export function updatingPriceMessage(lang) {
+    const french = (lang || "").toLowerCase().startsWith("fr");
+    return french ? "Mise à jour du prix…" : "Updating price…";
+}
+
 export function guardSignModalShow(event, verdict) {
     const id = event && event.target ? event.target.id : "";
     if (id !== "modalaccept" || !verdict || verdict.ok) {

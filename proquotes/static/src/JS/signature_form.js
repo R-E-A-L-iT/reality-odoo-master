@@ -7,7 +7,7 @@ import { redirect } from "@web/core/utils/urls";
 import { NameAndSignature } from "@web/core/signature/name_and_signature";
 import { useService } from "@web/core/utils/hooks";
 import { patch } from "@web/core/utils/patch";
-import { flushPortalRentalDates, portalRentalSignBlock } from "./rental";
+import { flushPortalRentalDates, portalPriceSignBlock, portalRentalSignBlock, readDisplayedAmount, rememberDisplayedAmount } from "./rental";
 import { autoSignNameBlocked } from "./signer_name";
 
 function signRequestFailedMessage() {
@@ -96,12 +96,13 @@ class SignatureForm extends Component {
         const start = document.getElementById("rental-start");
         const end = document.getElementById("rental-end");
         if (start && end && !start.disabled && !end.disabled) {
-            // Save the period first. Accept writes the signature before
-            // confirm, so a missing or invalid period has to be rejected
-            // here and on the server before that write.
+            // The total in this dialog has to be the server total for the
+            // dates on screen. A pending save is flushed before the signature
+            // is posted. A failed save stays blocked.
             const saved = await flushPortalRentalDates();
-            if (saved && saved.error) {
-                this.state.error = saved.error;
+            const priceBlocked = portalPriceSignBlock();
+            if ((saved && saved.error) || priceBlocked) {
+                this.state.error = (saved && saved.error) || priceBlocked;
                 this.state.success = false;
                 this._hideSignModal();
                 return;
@@ -117,6 +118,7 @@ class SignatureForm extends Component {
         if (start && end && !start.disabled && !end.disabled) {
             payload.rental_start = start.value || "";
             payload.rental_end = end.value || "";
+            payload.displayed_amount = readDisplayedAmount();
         }
         let data;
         try {
@@ -128,7 +130,11 @@ class SignatureForm extends Component {
         }
         if (!data || data.error) {
             // A readable {error: ...} from the accept route is shown in the
-            // dialog. It must not be treated as success.
+            // dialog. It must not be treated as success. A stale total comes
+            // back with the repriced amount so the dialog can show it.
+            if (data && data.order_amount_total) {
+                rememberDisplayedAmount(data.amount_total, data.order_amount_total);
+            }
             this.state.success = false;
             this.state.error = (data && data.error) || signRequestFailedMessage();
             return;

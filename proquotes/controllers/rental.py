@@ -102,6 +102,7 @@ class RentalCustomerPortal(cPortal):
             "rental_start": order.portal_rental_date(order.rental_start_date),
             "rental_end": order.portal_rental_date(order.rental_return_date),
             "paid_days": paid_rental_days(cal_days),
+            "amount_total": order.amount_total,
             "order_amount_total": formatLang(
                 request.env, order.amount_total, currency_obj=order.currency_id
             ),

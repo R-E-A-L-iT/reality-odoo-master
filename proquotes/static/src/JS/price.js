@@ -7,6 +7,7 @@ import { jsonrpc } from "@web/core/network/rpc_service";
 import { renderToFragment } from "@web/core/utils/render";
 import publicWidget from "@web/legacy/js/public/public_widget";
 import { validateRentalDates } from "./rental_dates";
+import { rememberDisplayedAmount } from "./rental";
 
 //	var publicWidget = require("web.public.widget");
 
@@ -94,7 +95,7 @@ import { validateRentalDates } from "./rental_dates";
                         self.$("#portal_sale_content").html(
                             $(data["sale_inner_template"])
                         );
-                        this._updateView(data["order_amount_total"]);
+                        this._updateView(data["order_amount_total"], data["amount_total"]);
                     }
                 });
             }, 800);
@@ -354,7 +355,7 @@ import { validateRentalDates } from "./rental_dates";
 					self.$("#portal_sale_content").html(
 						$(data["sale_inner_template"])
 					);
-					this._updateView(data["order_amount_total"]);
+					this._updateView(data["order_amount_total"], data["amount_total"]);
 				}
 			});
 		},
@@ -379,7 +380,7 @@ import { validateRentalDates } from "./rental_dates";
 					self.$("#portal_sale_content").html(
 						$(data["sale_inner_template"])
 					);
-					this._updateView(data["order_amount_total"]);
+					this._updateView(data["order_amount_total"], data["amount_total"]);
 				}
 			});
 		},
@@ -526,17 +527,21 @@ import { validateRentalDates } from "./rental_dates";
 			}
 		},
 
-		_updateTotal: function (total) {
-			// /select does not return a total. Writing that missing value
-			// stringifies to "undefined" on the first <b> in #portalTotal,
-			// which is the sign dialog amount ("For an amount of").
+		_updateTotal: function (total, amount) {
+			// A missing formatted total must not be written as the string
+			// "undefined" on the first <b> in #portalTotal, which is the
+			// sign dialog amount ("For an amount of"). A plain amount from
+			// the same response is still remembered for Accept & Sign.
+			// The formatted currency string is display only.
 			if (total === undefined || total === null || total === "undefined") {
+				rememberDisplayedAmount(amount, "");
 				return;
 			}
 			var div = document.querySelector("#portalTotal b");
 			if (div != null) {
 				document.querySelector("#portalTotal b").innerHTML = total;
 			}
+			rememberDisplayedAmount(amount, total);
              // Get all spans with the class 'is-section-subtotal'
             document.querySelectorAll('span.is-section-subtotal').forEach(function(subtotalSpan) {
                 // Get the section_id and amount from the current span
@@ -553,12 +558,12 @@ import { validateRentalDates } from "./rental_dates";
             });
 		},
 
-		_updateView: function (total) {
+		_updateView: function (total, amount) {
 			this._multipleChoiceView();
 			this._optionalView();
 			this._updateFoldDisplay();
 			this._rentalValueTotal();
-			this._updateTotal(total);
+			this._updateTotal(total, amount);
 		},
 	});
 //});

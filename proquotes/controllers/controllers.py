@@ -14,10 +14,13 @@ from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal as cPortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.proquotes.models.rental_portal_dates import (
+    accept_amount_mismatch,
     normalize_lang_code,
     posted_sign_block_key,
+    rental_confirm_needs_restore,
     rental_message,
 )
+from odoo.tools.misc import formatLang
 from odoo.addons.website.controllers.main import Website as WebsiteINH
 from odoo.osv import expression
 import re
@@ -57,7 +60,20 @@ class QuoteCustomerPortal(cPortal):
         return not (re.search(reg, string) == None)
 
     def _get_portal_order_details(self, order_sudo):
-        return {}
+        """Raw and formatted order total for portal price updates.
+
+        Selection, quantity, and section routes re-render the quote and
+        change ``amount_total`` without a rental date save. The page needs
+        the plain number (sent with Accept & Sign) separately from the
+        currency string shown in the dialog.
+        """
+        total = order_sudo.amount_total
+        return {
+            "amount_total": total,
+            "order_amount_total": formatLang(
+                request.env, total, currency_obj=order_sudo.currency_id
+            ),
+        }
 
     @http.route(
         ["/my/orders/<int:order_id>/ponumber"], type="json", auth="public", website=True
@@ -520,7 +536,7 @@ class QuotePortalFix(cPortal):
     
     @http.route(['/my/orders/<int:order_id>/accept'], type='json', auth="public", website=True)
     def portal_quote_accept(self, order_id, access_token=None, name=None, signature=None,
-                             rental_start=None, rental_end=None):
+                             rental_start=None, rental_end=None, displayed_amount=None):
         # get from query string if not on json param
         access_token = access_token or request.httprequest.args.get('access_token')
         try:
@@ -546,11 +562,43 @@ class QuotePortalFix(cPortal):
         # The inputs are what the customer is signing. A date save can have
         # stored a different start; write this pair before the signature,
         # and before confirm copies line dates back onto the order.
+        before_start = order_sudo.rental_start_date
+        before_return = order_sudo.rental_return_date
+        before_total = order_sudo.amount_total
         if order_sudo.is_rental_order and rental_start and rental_end:
             try:
                 order_sudo.portal_store_signed_rental_dates(rental_start, rental_end)
             except (ValidationError, UserError):
                 return {'error': rental_message("order", lang)}
+        if order_sudo.is_rental_order:
+            order_sudo.invalidate_recordset([
+                "rental_start_date", "rental_return_date", "amount_total",
+            ])
+            if order_sudo.currency_id and order_sudo.currency_id.rounding:
+                rounding = order_sudo.currency_id.rounding
+            else:
+                rounding = 0.01
+            changed = rental_confirm_needs_restore(
+                before_start,
+                before_return,
+                before_total,
+                order_sudo.rental_start_date,
+                order_sudo.rental_return_date,
+                order_sudo.amount_total,
+                rounding,
+            )
+            if accept_amount_mismatch(
+                displayed_amount, order_sudo.amount_total, changed, rounding
+            ):
+                return {
+                    "error": rental_message("stale_total", lang),
+                    "amount_total": order_sudo.amount_total,
+                    "order_amount_total": formatLang(
+                        request.env,
+                        order_sudo.amount_total,
+                        currency_obj=order_sudo.currency_id,
+                    ),
+                }
         rental_error = order_sudo.portal_rental_sign_error(lang)
         if rental_error:
             return {'error': rental_error}
