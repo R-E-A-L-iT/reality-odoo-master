@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { autoshiftSavePayloads, guardSignModalShow, parsePortalDate, rentalDatesSavePayload, resolveRentalStartEdit, runRentalStartEdit, signBlockKind, validateRentalDates } from "../static/src/JS/rental_dates.js";
+import { autoshiftSavePayloads, guardSignModalShow, modalAmountAfterFlush, parsePortalDate, priceGateAfterSave, rentalDatesSavePayload, resolveRentalStartEdit, runRentalStartEdit, signBlockKind, signClickAction, signFlowFromPendingSave, updatingPriceMessage, validateRentalDates } from "../static/src/JS/rental_dates.js";
 import { autoSignNameBlocked } from "../static/src/JS/signer_name.js";
 
 function check(start, end) {
@@ -279,5 +279,39 @@ assert.equal(signBlockKind(missingAfterStart.reason), "missing");
 result = opening("modalaccept", missingAfterStart);
 assert.equal(result.blocked, true);
 assert.equal(result.defaultPrevented, true);
+
+// A pending date save blocks Accept & Sign. Flushing it opens the dialog
+// only after the server total for the dates on screen is known, and that
+// amount is the fresh total, not the one that was already on the page.
+const pendingClick = signClickAction("pending");
+assert.equal(pendingClick.open, false);
+assert.equal(pendingClick.flush, true);
+assert.equal(pendingClick.openAfterSuccess, true);
+assert.equal(signClickAction("inflight").open, false);
+assert.equal(signClickAction("error").open, false);
+assert.equal(signClickAction("error").flush, false);
+assert.equal(signClickAction("ready").open, true);
+assert.equal(priceGateAfterSave({ error: "save" }), "error");
+assert.equal(priceGateAfterSave({ success: true }), "ready");
+const fastSign = signFlowFromPendingSave("previous-total", "fresh-total");
+assert.equal(fastSign.blockedWhilePending, true);
+assert.equal(fastSign.opensAfterFlush, true);
+assert.equal(fastSign.modalAmount, "fresh-total");
+assert.notEqual(fastSign.modalAmount, "previous-total");
+assert.equal(modalAmountAfterFlush("previous-total", ""), null);
+assert.equal(updatingPriceMessage("fr_CA"), "Mise à jour du prix…");
+assert.equal(updatingPriceMessage("en_US"), "Updating price…");
+
+const rentalGate = readFileSync(new URL("../static/src/JS/rental.js", import.meta.url), "utf8");
+assert.match(rentalGate, /proquotesPriceGate/);
+assert.match(rentalGate, /__proquotesFlushRentalDates/);
+assert.match(rentalGate, /__proquotesRentalSave/);
+assert.match(rentalGate, /signClickAction/);
+assert.match(rentalGate, /data-id="total_amount"/);
+const formSource = readFileSync(new URL("../static/src/JS/signature_form.js", import.meta.url), "utf8");
+assert.match(formSource, /displayed_amount/);
+const submitSource = formSource.split("async onClickSubmit")[1];
+assert.ok(submitSource.indexOf("flushPortalRentalDates") < submitSource.indexOf("this.rpc"));
+assert.ok(submitSource.indexOf("displayed_amount") < submitSource.indexOf("this.rpc"));
 
 console.log("rental date checks ok");

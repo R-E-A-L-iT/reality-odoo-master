@@ -722,6 +722,28 @@ label[for="terms-checkbox"] {
 	pointer-events: none;
 }
 
+/* While a rental date save has not applied the server total, the amounts
+   on screen are the previous period. Dim them and keep Accept & Sign
+   clickable (so the click can flush the save) but visibly waiting.
+   pointer-events stay on: Bootstrap's disabled button would swallow the click. */
+#total.proquotes-price-updating,
+#portalTotal.proquotes-price-updating {
+	opacity: 0.45;
+}
+
+a[data-bs-target="#modalaccept"].proquotes-sign-waiting,
+button[data-bs-target="#modalaccept"].proquotes-sign-waiting {
+	opacity: 0.55;
+	cursor: progress;
+}
+
+.rental-price-status {
+	color: #6b4a00;
+	font-size: 0.9rem;
+	font-weight: 600;
+	margin: 0 0 0.35rem;
+}
+
 #rental-info-section .rental-dates-error {
 	color: #ffd666;
 	font-size: 0.95rem;

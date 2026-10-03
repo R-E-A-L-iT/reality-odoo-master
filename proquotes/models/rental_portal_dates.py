@@ -46,6 +46,10 @@ MESSAGES = {
         "fr": "Ces dates de location ne peuvent plus être modifiées.",
         "en": "These rental dates can no longer be changed.",
     },
+    "stale_total": {
+        "fr": "Le total a été mis à jour pour ces dates. Veuillez le vérifier et signer de nouveau.",
+        "en": "The total has been updated for these dates. Please review it and sign again.",
+    },
 }
 
 
@@ -264,6 +268,28 @@ def rental_confirm_needs_restore(
     if signed_total is None or confirmed_total is None:
         return signed_total != confirmed_total
     return abs(float(signed_total) - float(confirmed_total)) >= float(rounding)
+
+
+def accept_amount_mismatch(displayed, stored_total, changed, rounding=0.01):
+    """True when Accept & Sign must stop so the customer can review the total.
+
+    A portal accept that stores the rental dates can reprice the order in
+    that same request. The amount on screen is whatever the page sent.
+    Signing is refused when this request changed the period or the total
+    and the page did not send the new total, and when a sent amount does
+    not match the total now stored. An unchanged order with no amount sent
+    (an older page) may continue.
+    """
+    missing = displayed is None or (isinstance(displayed, str) and not displayed.strip())
+    if missing:
+        return bool(changed)
+    try:
+        shown = float(displayed)
+    except (TypeError, ValueError):
+        return True
+    if stored_total is None:
+        return True
+    return abs(shown - float(stored_total)) >= float(rounding)
 
 
 def signed_rental_period_after_confirm(signed, confirmed, rounding=0.01):

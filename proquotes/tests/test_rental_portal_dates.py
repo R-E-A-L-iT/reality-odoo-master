@@ -28,6 +28,7 @@ portal_calendar_date = _dates.portal_calendar_date
 rental_calendar_days = _dates.rental_calendar_days
 rental_dates_editable = _dates.rental_dates_editable
 rental_message = _dates.rental_message
+accept_amount_mismatch = _dates.accept_amount_mismatch
 posted_sign_block_key = _dates.posted_sign_block_key
 rental_confirm_needs_restore = _dates.rental_confirm_needs_restore
 signed_rental_period_after_confirm = _dates.signed_rental_period_after_confirm
@@ -205,7 +206,10 @@ class PortalRentalDateTests(unittest.TestCase):
         self.assertLess(sign.index("portal_store_signed_rental_dates"), sign.index("portal_rental_sign_error"))
         self.assertLess(sign.index("portal_rental_sign_error"), sign.index("'signed_by'"))
         self.assertLess(sign.index("portal_store_signed_rental_dates"), sign.index("action_confirm"))
+        self.assertLess(sign.index("accept_amount_mismatch"), sign.index("'signed_by'"))
         self.assertIn("rental_start=None, rental_end=None", sign)
+        self.assertIn("displayed_amount=None", sign)
+        self.assertIn('rental_message("stale_total", lang)', sign)
         js = (ROOT / "static/src/JS/rental.js").read_text(encoding="utf-8")
         self.assertIn("show.bs.modal", js)
         self.assertIn("guardSignModalShow", js)
@@ -268,6 +272,29 @@ class PortalRentalDateTests(unittest.TestCase):
             signed["rental_return_date"],
             signed["amount_total"],
         ))
+
+    def test_accept_rejects_a_displayed_total_that_does_not_match(self):
+        # Stand-in figures, not a customer total. The page still shows the
+        # previous amount while this request reprices the order.
+        self.assertTrue(accept_amount_mismatch(2.0, 5.0, changed=True))
+        self.assertTrue(accept_amount_mismatch(None, 5.0, changed=True))
+        self.assertTrue(accept_amount_mismatch("not-a-number", 5.0, changed=True))
+        # The customer already has the repriced total on screen.
+        self.assertFalse(accept_amount_mismatch(5.0, 5.0, changed=True))
+        # Nothing moved, and the page sent the stored total.
+        self.assertFalse(accept_amount_mismatch(5.0, 5.0, changed=False))
+        # An older page sends no amount and the order did not change.
+        self.assertFalse(accept_amount_mismatch(None, 5.0, changed=False))
+        # The order was already repriced, and the page still shows the old total.
+        self.assertTrue(accept_amount_mismatch(2.0, 5.0, changed=False))
+        self.assertEqual(
+            _dates.rental_message("stale_total", "fr_CA"),
+            _dates.MESSAGES["stale_total"]["fr"],
+        )
+        self.assertEqual(
+            _dates.rental_message("stale_total", "en_US"),
+            _dates.MESSAGES["stale_total"]["en"],
+        )
 
     def test_python_modules_parse(self):
         for path in (
