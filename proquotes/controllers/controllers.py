@@ -60,7 +60,20 @@ class QuoteCustomerPortal(cPortal):
         return not (re.search(reg, string) == None)
 
     def _get_portal_order_details(self, order_sudo):
-        return {}
+        """Raw and formatted order total for portal price updates.
+
+        Selection, quantity, and section routes re-render the quote and
+        change ``amount_total`` without a rental date save. The page needs
+        the plain number (sent with Accept & Sign) separately from the
+        currency string shown in the dialog.
+        """
+        total = order_sudo.amount_total
+        return {
+            "amount_total": total,
+            "order_amount_total": formatLang(
+                request.env, total, currency_obj=order_sudo.currency_id
+            ),
+        }
 
     @http.route(
         ["/my/orders/<int:order_id>/ponumber"], type="json", auth="public", website=True

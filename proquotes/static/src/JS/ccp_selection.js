@@ -2,6 +2,7 @@
 
 import { jsonrpc } from "@web/core/network/rpc_service";
 import publicWidget from "@web/legacy/js/public/public_widget";
+import { rememberDisplayedAmount } from "./rental";
 
 publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
     selector: ".o_portal_sale_sidebar",
@@ -261,6 +262,7 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
                 if (data.sale_inner_template) {
                     self.$("#portal_sale_content").html($(data.sale_inner_template));
                 }
+                rememberDisplayedAmount(data.amount_total, data.order_amount_total);
 
                 // Move to confirmation step
                 self._showStep(container, 3);
@@ -313,6 +315,7 @@ publicWidget.registry.ccpSelection = publicWidget.Widget.extend({
                 if (data.sale_inner_template) {
                     self.$("#portal_sale_content").html($(data.sale_inner_template));
                 }
+                rememberDisplayedAmount(data.amount_total, data.order_amount_total);
 
                 self._resetSelection(container);
             } else {

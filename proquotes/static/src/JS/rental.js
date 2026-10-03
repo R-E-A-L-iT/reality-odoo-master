@@ -3,7 +3,7 @@
 
 import { jsonrpc } from "@web/core/network/rpc_service";
 import publicWidget from "@web/legacy/js/public/public_widget";
-import { guardSignModalShow, modalAmountAfterFlush, priceGateAfterSave, rentalDatesSavePayload, runRentalStartEdit, signBlockKind, signClickAction, updatingPriceMessage, validateRentalDates } from "./rental_dates";
+import { guardSignModalShow, modalAmountAfterFlush, plainDisplayedAmount, priceGateAfterSave, rentalDatesSavePayload, runRentalStartEdit, signBlockKind, signClickAction, updatingPriceMessage, validateRentalDates } from "./rental_dates";
 
 const SAVE_DELAY_MS = 600;
 
@@ -49,10 +49,11 @@ export function portalPriceSignBlock() {
  */
 export function rememberDisplayedAmount(amount, formatted) {
     const root = document.documentElement;
-    if (amount !== undefined && amount !== null && amount !== "") {
-        root.dataset.proquotesDisplayedAmount = String(amount);
+    const plain = plainDisplayedAmount(amount);
+    if (plain !== null && root) {
+        root.dataset.proquotesDisplayedAmount = plain;
     }
-    if (!formatted) {
+    if (!formatted || formatted === "undefined") {
         return;
     }
     document.querySelectorAll('[data-id="total_amount"]').forEach((node) => {
@@ -124,7 +125,8 @@ export function portalRentalSignBlock() {
  */
 export function readDisplayedAmount() {
     const root = document.documentElement;
-    return (root && root.dataset.proquotesDisplayedAmount) || "";
+    const stored = (root && root.dataset.proquotesDisplayedAmount) || "";
+    return plainDisplayedAmount(stored) || "";
 }
 
 function openAcceptModal() {

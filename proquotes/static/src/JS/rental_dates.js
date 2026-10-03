@@ -251,6 +251,44 @@ export function priceGateAfterSave(result) {
 }
 
 /**
+ * Plain number to send with Accept & Sign.
+ * A formatted currency string (``10 644,60 $``, ``$1,234.56``) is not a
+ * plain number and must not be sent.
+ * @param {string|number|null|undefined} value
+ * @returns {string|null}
+ */
+export function plainDisplayedAmount(value) {
+    if (value === undefined || value === null || value === "" || typeof value === "boolean") {
+        return null;
+    }
+    if (typeof value === "number") {
+        return Number.isFinite(value) ? String(value) : null;
+    }
+    const text = String(value).trim();
+    if (!/^-?\d+(\.\d+)?$/.test(text)) {
+        return null;
+    }
+    return Number.isFinite(Number(text)) ? text : null;
+}
+
+/**
+ * Total to remember after a portal update that is not a date save
+ * (optional line, quantity, section). The formatted currency string is
+ * for display only. The remembered amount stays the previous plain number
+ * when the response has no plain ``amount_total``.
+ * @param {string|number|null} previousAmount
+ * @param {{amount_total?: string|number, order_amount_total?: string}|null} payload
+ * @returns {string|null}
+ */
+export function displayedAmountAfterPortalUpdate(previousAmount, payload) {
+    const next = plainDisplayedAmount(payload && payload.amount_total);
+    if (next !== null) {
+        return next;
+    }
+    return plainDisplayedAmount(previousAmount);
+}
+
+/**
  * Amount shown in the sign dialog after a flushed save.
  * The server total, never the total that was on screen before this save.
  * @param {string|number|null} previousAmount

@@ -274,15 +274,17 @@ def accept_amount_mismatch(displayed, stored_total, changed, rounding=0.01):
     """True when Accept & Sign must stop so the customer can review the total.
 
     A portal accept that stores the rental dates can reprice the order in
-    that same request. The amount on screen is whatever the page sent.
-    Signing is refused when this request changed the period or the total
-    and the page did not send the new total, and when a sent amount does
-    not match the total now stored. An unchanged order with no amount sent
-    (an older page) may continue.
+    that same request. Signing is refused only when this request changed
+    the period or the total and the page did not send that new total.
+    Optional lines and quantities change ``amount_total`` on their own
+    routes. This accept did not reprice those, so a different sent amount
+    must not refuse the signature.
     """
+    if not changed:
+        return False
     missing = displayed is None or (isinstance(displayed, str) and not displayed.strip())
     if missing:
-        return bool(changed)
+        return True
     try:
         shown = float(displayed)
     except (TypeError, ValueError):

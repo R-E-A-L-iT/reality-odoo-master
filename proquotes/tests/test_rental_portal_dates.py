@@ -210,6 +210,9 @@ class PortalRentalDateTests(unittest.TestCase):
         self.assertIn("rental_start=None, rental_end=None", sign)
         self.assertIn("displayed_amount=None", sign)
         self.assertIn('rental_message("stale_total", lang)', sign)
+        details = accept.split("def _get_portal_order_details", 1)[1].split("def poNumber", 1)[0]
+        self.assertIn('"amount_total"', details)
+        self.assertLess(details.index("amount_total"), details.index("order_amount_total"))
         js = (ROOT / "static/src/JS/rental.js").read_text(encoding="utf-8")
         self.assertIn("show.bs.modal", js)
         self.assertIn("guardSignModalShow", js)
@@ -285,8 +288,12 @@ class PortalRentalDateTests(unittest.TestCase):
         self.assertFalse(accept_amount_mismatch(5.0, 5.0, changed=False))
         # An older page sends no amount and the order did not change.
         self.assertFalse(accept_amount_mismatch(None, 5.0, changed=False))
-        # The order was already repriced, and the page still shows the old total.
-        self.assertTrue(accept_amount_mismatch(2.0, 5.0, changed=False))
+        # Optional lines and quantities already stored a new total. This
+        # accept did not reprice, so a different sent amount is not a refusal.
+        self.assertFalse(accept_amount_mismatch(2.0, 5.0, changed=False))
+        self.assertFalse(accept_amount_mismatch("10 644,60 $", 5.0, changed=False))
+        # A formatted string is not the plain total when this request did reprice.
+        self.assertTrue(accept_amount_mismatch("10 644,60 $", 5.0, changed=True))
         self.assertEqual(
             _dates.rental_message("stale_total", "fr_CA"),
             _dates.MESSAGES["stale_total"]["fr"],
